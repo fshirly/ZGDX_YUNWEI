@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.sysroomcommunity.mapper.SysRoomCommunityMapper">
+	<resultMap id="RoomCommunityMap" type="sysRoomCommunity">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+		<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+		<result column="UserName" property="userName" jdbcType="VARCHAR" />
+		<result column="Password" property="passWord" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getRoomCommunityByConditions" resultType="hashmap"
+		resultMap="RoomCommunityMap" parameterType="page">
+		select ID , IPAddress,DomainID,UserName,Password,Port
+		from
+		SysRoomCommunity where 1=1
+		<if test="params.ipAddress != null and params.ipAddress != '' ">
+			and IPAddress like ${concat("'%'","'"+params.ipAddress+"'","'%'")}
+		</if>
+		<if test="params.userName != null and params.userName != '' ">
+			and
+			UserName like ${concat("'%'","'"+params.userName+"'","'%'")}
+		</if>
+	</select>
+
+	<insert id="insertRoomCommunity" parameterType="sysRoomCommunity">
+		insert into SysRoomCommunity (ID,IPAddress,DomainID,UserName,Password,Port)
+		values (#{id,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR},
+		#{domainID,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},
+		#{passWord,jdbcType=VARCHAR},#{port,jdbcType=INTEGER}
+		)
+	</insert>
+
+	<select id="getCommunityByIPAndPort" parameterType="sysRoomCommunity"
+		resultType="Integer">
+		select count(1) from SysRoomCommunity
+		where IPAddress=#{ipAddress,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} 
+	</select>
+
+	<select id="getCommunityByIPAndID" parameterType="sysRoomCommunity"
+		resultType="Integer">
+		select count(1) from SysRoomCommunity
+		where IPAddress=#{ipAddress,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} and ID !=
+		#{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="getCommunityByID" parameterType="Integer"
+		resultType="sysRoomCommunity">
+		select
+		com.ID,com.IPAddress,com.Port,com.UserName,com.Password,com.DomainID,manage.DomainName
+		as domainName
+		from SysRoomCommunity com
+		left join SysManagedDomain manage on com.DomainID=manage.DomainID
+		where ID=#{id,jdbcType=INTEGER}
+  </select>
+
+	<update id="updateCommunityByID" parameterType="sysRoomCommunity">
+		update SysRoomCommunity
+		set
+		IPAddress=#{ipAddress},Port=#{port},UserName=#{userName},Password=#{passWord},DomainID=#{domainID}
+		where ID=#{id,jdbcType=INTEGER}
+  	</update>
+
+	<delete id="delRoomCommunity" parameterType="hashmap">
+		delete from SysRoomCommunity where ID in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+	    </foreach>
+	</delete>
+	
+	<select id="getRoomCommunityByIP" parameterType="sysRoomCommunity" resultType="sysRoomCommunity">
+	select com.*,manage.DomainName as domainName
+    from SysRoomCommunity com
+    left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+    where IPAddress=#{ipAddress,jdbcType=VARCHAR} 
+	</select>
+	
+	<update id="updateCommunityByIP" parameterType="sysRoomCommunity">
+		update SysRoomCommunity
+		<set>
+		<if test="port != null" >
+        Port=#{port,jdbcType=INTEGER},
+      	</if>
+      	<if test="userName != null" >
+        UserName=#{userName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="passWord != null" >
+        Password=#{passWord,jdbcType=VARCHAR},
+      	</if>
+      	<if test="domainID != null" >
+        DomainID=#{domainID,jdbcType=INTEGER},
+      	</if>
+		</set>
+		where IPAddress=#{ipAddress,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+  	</update>
+  	
+	 <select id="getRoomByTask"  resultType="sysRoomCommunity" parameterType="Integer">
+	  select com.*
+	  from SysRoomCommunity com
+	  left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+	  left join MOZoneManager z on com.IPAddress=z.IPAddress and com.Port=z.Port
+	  left join SysPerfPollTask task on task.MOID=z.MOID
+	  where task.TaskID=#{taskId} 
+	 </select>
+	 
+	 <select id="getRoomCommunityByIPAndPort" parameterType="sysRoomCommunity" resultType="sysRoomCommunity">
+		select com.*,manage.DomainName as domainName
+	    from SysRoomCommunity com
+	    left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+	    where IPAddress=#{ipAddress,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+	 </select>
+	 
+	 <select id="getByComditions" parameterType="sysRoomCommunity" resultType="sysRoomCommunity">
+		select com.*
+	    from SysRoomCommunity com
+	    where IPAddress like ${concat("'%'","'"+ipAddress+"'","'%'")} and Port=#{port,jdbcType=INTEGER}
+	 </select>
+	 
+</mapper>
+

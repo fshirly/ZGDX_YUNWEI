@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmtype.mapper.AlarmTypeMapper">
+	<resultMap 	 id="AlarmTypeMap" type="typeInfo">
+		<id column="AlarmTypeID" property="alarmTypeID"  jdbcType="INTEGER" />
+		<result column="AlarmTypeName" property="alarmTypeName" jdbcType="VARCHAR"/>
+		<result column="IsSystem" property="isSystem" jdbcType="INTEGER"/>
+	</resultMap>
+	<resultMap id="AlarmEventDefineMap" type="alarmEventDefine">
+		<id column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+		<result column="AlarmName" property="alarmName" jdbcType="VARCHAR" />
+		<result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+		<result column="AlarmTypeID" property="alarmTypeID" jdbcType="INTEGER" />
+		<result column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+		<result column="CategoryID" property="categoryID" jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+		<result column="AlarmSourceMOID" property="alarmSourceMOID"	jdbcType="INTEGER" />
+		<result column="Description" property="description" jdbcType="VARCHAR" />
+		<result column="AlarmManual" property="alarmManual" jdbcType="VARCHAR" />
+		<result column="IsSystem" property="isSystem" jdbcType="SMALLINT" />
+	</resultMap>
+	<!--SQL语句  -->
+	
+	<select id="queryInfoList" resultType="hashmap"  resultMap="AlarmTypeMap"  parameterType="page">
+		select AlarmTypeID,AlarmTypeName  from AlarmType   where 1=1	
+		<if test="params.alarmTypeName != null and params.alarmTypeName != '' ">
+			and AlarmTypeName like 	${concat("'%'","'"+params.alarmTypeName+"'","'%'")}	
+    	</if>
+	</select>
+	
+	<select id="queryByID" resultMap="AlarmTypeMap"    parameterType="java.lang.Integer">
+		select AlarmTypeID,AlarmTypeName,IsSystem  from AlarmType   where AlarmTypeID = #{alarmTypeID,jdbcType=INTEGER}	
+	</select>
+	
+	<select id="checkName" resultType="Integer"    parameterType="java.lang.String">
+		select count(1)  from AlarmType   where AlarmTypeName = #{alarmTypeName,jdbcType=VARCHAR}	
+	</select>
+	
+	<select id="checkNameBeforeUpdate" resultType="Integer" parameterType="typeInfo">
+		select count(1) from AlarmType where 1=1 and AlarmTypeName = #{alarmTypeName,jdbcType=VARCHAR} and AlarmTypeID != #{alarmTypeID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getIsUsed"  resultType="Integer" parameterType="java.lang.Integer">
+		select  count(1) 
+		from AlarmEventDefine d
+		left join  AlarmType e  on  d.AlarmTypeID = e.AlarmTypeID 
+		where  e.AlarmTypeID = #{alarmTypeID}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from AlarmType
+    	where AlarmTypeID = #{alarmTypeID,jdbcType=INTEGER} 
+	</delete>
+	
+	<insert id="insertSelective" parameterType="typeInfo" >
+		insert into AlarmType
+		(AlarmTypeID,AlarmTypeName,IsSystem)
+		values
+		(#{alarmTypeID,jdbcType=INTEGER},#{alarmTypeName,jdbcType=VARCHAR},#{isSystem,jdbcType=INTEGER})
+ 	</insert>
+	
+	<update id="updateByPrimaryKey"  parameterType="typeInfo" >
+		update AlarmType 
+		<set>
+			<if test="alarmTypeName != null" >
+				AlarmTypeName = #{alarmTypeName,jdbcType=VARCHAR}
+			</if>
+		</set> 
+		where AlarmTypeID =#{alarmTypeID,jdbcType=INTEGER}
+	</update>
+	<select id="getAllAlarmType" resultType="hashmap" resultMap="AlarmTypeMap">
+	select AlarmTypeID,AlarmTypeName,IsSystem from AlarmType
+	</select>
+</mapper>

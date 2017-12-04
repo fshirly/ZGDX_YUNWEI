@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dataobject.mapper.DataSecurityBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.dataobject.entity.DataSecurityBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="DATAOBJECT_ID" property="dataobjectId" jdbcType="VARCHAR" />
+        <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <resultMap id="roleWithDataSecurityResultMap" type="com.fable.insightview.platform.dataobject.entity.RoleWithDataSecurityBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <id column="PID" property="pid" jdbcType="VARCHAR" />
+        <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+        <result column="DATAOBJECT_ID" property="dataObjectId" jdbcType="VARCHAR" />
+        <result column="DATASECURITY_ID" property="dataSecurityId" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <!-- 查询所有的角色，并附带数据权限信息 -->
+    <select id="queryRoleTree" resultMap="roleWithDataSecurityResultMap" parameterType="com.fable.insightview.platform.dataobject.entity.DataObjectBean" >
+        SELECT r.id,r.role_name,r.pid,ds.id AS datasecurity_id,ds.dataobject_id FROM fbs_role r LEFT JOIN FBS_DATA_SECURITY ds ON r.id = ds.role_id AND ds.dataobject_id=#{id,jdbcType=VARCHAR} 
+    </select>
+    
+    <!-- 批量更新数据对象的权限 -->    
+    <update id="updateDataSecuritys" parameterType="java.util.Map">
+    	<!-- 删除该对象下的所有的权限条件 -->
+    	DELETE FROM FBS_DATA_SECURITY_ITEM WHERE security_id IN (SELECT s.id FROM FBS_DATA_SECURITY s WHERE s.dataobject_id = #{dataObjectId, jdbcType=VARCHAR});
+    	
+    	<!-- 删除该对象下的所有的权限 -->
+    	DELETE FROM FBS_DATA_SECURITY WHERE dataobject_id = #{dataObjectId, jdbcType=VARCHAR};
+    	
+    	<!-- 新增该对象下的所有权限 -->
+    	<if test="dataSecuritys.size() > 0">
+	    	INSERT INTO FBS_DATA_SECURITY(id,sys_id,dataobject_id,role_id,creator_id,creator_name,created_time) 
+		    	<foreach collection="dataSecuritys" item= "ds" open="VALUES" separator="," close=";">
+				  	(#{ds.id,jdbcType=VARCHAR},#{ds.sysId,jdbcType=VARCHAR},#{ds.dataobjectId,jdbcType=VARCHAR},
+					#{ds.roleId,jdbcType=VARCHAR},#{ds.creatorId,jdbcType=VARCHAR},#{ds.creatorName,jdbcType=VARCHAR},now())
+			    </foreach >
+    	</if>
+    	
+    	<!-- 新增该对象下的所有权限条件 -->
+    	<if test="dsItems.size() > 0">
+	    	INSERT INTO FBS_DATA_SECURITY_ITEM(id,sys_id,security_id,left_bracket,property_name,operator,value,right_bracket,logic_symbol,sortorder,note,creator_id,creator_name,created_time) 
+		    	<foreach collection="dsItems" item= "item" open="VALUES" separator="," close=";">
+				  	(#{item.id,jdbcType=VARCHAR},#{item.sysId,jdbcType=VARCHAR},#{item.securityId,jdbcType=VARCHAR},#{item.leftBracket,jdbcType=VARCHAR},
+				  	#{item.propertyName,jdbcType=VARCHAR},#{item.operator,jdbcType=VARCHAR},#{item.value,jdbcType=VARCHAR},#{item.rightBracket,jdbcType=VARCHAR},
+					#{item.logicSymbol,jdbcType=VARCHAR},#{item.sortorder,jdbcType=INTEGER},#{item.note,jdbcType=VARCHAR},#{item.creatorId,jdbcType=VARCHAR},#{item.creatorName,jdbcType=VARCHAR},now())
+			    </foreach >
+		</if>
+    </update>
+</mapper>

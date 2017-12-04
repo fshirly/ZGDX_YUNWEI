@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="insightview-monitor-war:war">
+    <output-path>$PROJECT_DIR$/monitor/insightview-monitor-war/target</output-path>
+    <root id="archive" name="insightview-monitor-war.war">
+      <element id="artifact" artifact-name="insightview-monitor-war:war exploded" />
+    </root>
+  </artifact>
+</component>

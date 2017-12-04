@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping> 
+ 
+    <class> 
+ 
+        <id column="ID" name="id" type="long"> 
+            <generator class="native"/> 
+        </id>
+		
+		<dynamic-component insert="true" name="customProperties" optimistic-lock="true" unique="false" update="true"/>
+     
+    </class> 
+      
+</hibernate-mapping>

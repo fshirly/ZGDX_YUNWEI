@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.syslog.mapper.SysSyslogRulesMapper" >
+  <resultMap id="syslogRulesMap" type="com.fable.insightview.monitor.syslog.entity.SysSyslogRulesBean" >
+    <id column="RuleID" property="ruleID" jdbcType="INTEGER" />
+    <result column="RuleName" property="ruleName" jdbcType="VARCHAR" />
+    <result column="filterExpression" property="filterExpression" jdbcType="VARCHAR" />
+    <result column="ServerIP" property="serverIP" jdbcType="VARCHAR" />
+    <result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+  </resultMap>     
+  <select id="getSyslogRules" resultType="hashmap" resultMap="syslogRulesMap" parameterType="page">
+  	select rule.RuleID,rule.RuleName,rule.FilterExpression,rule.ServerIP,rule.AlarmOID,rule.Note
+	from SysSyslogRules rule
+	where 1=1
+      <if test="params.ruleName != '' and params.ruleName != null ">
+		and rule.RuleName like  ${concat("'%'","'"+params.ruleName+"'","'%'")}
+      </if>
+      <if test="params.serverIP != '' and params.serverIP != null and (params.isAll ==1 or params.isAll =='1' )">
+		and (rule.ServerIP like  ${concat("'%'","'"+params.serverIP+"'","'%'")} or rule.ServerIP = "*")
+      </if>
+      <if test="params.serverIP != '' and params.serverIP != null and  params.isAll !=1 and params.isAll !='1' ">
+		and rule.ServerIP like  ${concat("'%'","'"+params.serverIP+"'","'%'")}
+      </if>
+      <if test="(params.serverIP == '' or params.serverIP == null) and (params.isAll ==1 or params.isAll =='1' )">
+		and rule.ServerIP = "*"
+      </if>
+      order by rule.RuleID desc
+  </select>
+  
+  <select id="getSyslogRuleByID" parameterType="Integer" resultType="syslogRule">
+  	select rule.RuleID,rule.RuleName,rule.FilterExpression,rule.ServerIP,rule.AlarmOID,rule.Note
+	from SysSyslogRules rule
+ 	where 1=1 and rule.RuleID = #{ruleID,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getRuleByCondition" parameterType="syslogRule" resultType="syslogRule">
+  	select rule.RuleID,rule.RuleName,rule.FilterExpression,rule.ServerIP,rule.AlarmOID,rule.Note
+	from SysSyslogRules rule
+ 	 where 1=1
+ 	  <if test="ruleID != null and ruleID != '' and ruleID != -1" >
+        and RuleID != #{ruleID,jdbcType=INTEGER} 
+      </if>
+ 	  <if test="ruleName != null and ruleName != ''" >
+        and RuleName = #{ruleName,jdbcType=VARCHAR}
+      </if> 
+  </select>
+  
+  <insert id="insertSyslogRule" parameterType="syslogRule">
+	insert into SysSyslogRules (RuleID,RuleName,FilterExpression,ServerIP,AlarmOID,Note)
+	values (#{ruleID,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR},#{filterExpression,jdbcType=VARCHAR},
+			 #{serverIP,jdbcType=VARCHAR},#{alarmOID,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateSyslogRuleByID" parameterType="syslogRule" >
+    update SysSyslogRules
+    <set>
+      <if test="ruleName != null" >
+        RuleName = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="filterExpression != null" >
+        FilterExpression = #{filterExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIP != null" >
+        ServerIP = #{serverIP,jdbcType=INTEGER},
+      </if>
+       <if test="alarmOID != null" >
+        AlarmOID = #{alarmOID,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where RuleID = #{ruleID,jdbcType=INTEGER}
+  </update>
+  
+   <delete id="delSyslogRuleByID" parameterType="Integer">
+	delete from SysSyslogRules where RuleID = #{ruleID,jdbcType=INTEGER}
+  </delete>
+  <delete id="delSyslogRuleByIDs" parameterType="String">
+	delete from SysSyslogRules where RuleID in (${ruleIDs})
+  </delete>
+</mapper>

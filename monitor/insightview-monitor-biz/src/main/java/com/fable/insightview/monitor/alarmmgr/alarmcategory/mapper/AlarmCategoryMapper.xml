@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmcategory.mapper.AlarmCategoryMapper">
+	<resultMap id="AlarmCategoryMap" type="gategoryInfo">
+		<id column="CategoryID" property="categoryID" jdbcType="INTEGER" />
+		<result column="CategoryName" property="categoryName" jdbcType="VARCHAR" />
+		<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+		<result column="IsSystem" property="isSystem" jdbcType="INTEGER" />
+		<result column="Descr" property="descr" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="AlarmEventDefineMap" type="alarmEventDefine">
+		<id column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+		<result column="AlarmName" property="alarmName" jdbcType="VARCHAR" />
+		<result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+		<result column="AlarmTypeID" property="alarmTypeID" jdbcType="INTEGER" />
+		<result column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+		<result column="CategoryID" property="categoryID" jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+		<result column="AlarmSourceMOID" property="alarmSourceMOID"
+			jdbcType="INTEGER" />
+		<result column="Description" property="description" jdbcType="VARCHAR" />
+		<result column="AlarmManual" property="alarmManual" jdbcType="VARCHAR" />
+		<result column="IsSystem" property="isSystem" jdbcType="SMALLINT" />
+	</resultMap>
+	<!--  -->
+	<select id="queryInfoList" resultType="hashmap" resultMap="AlarmCategoryMap" parameterType="page">
+		select CategoryID,CategoryName,AlarmOID,IsSystem,Descr from
+		AlarmCategory where 1=1
+		<if test="params.categoryName != null and  params.categoryName !='' ">
+			and CategoryName  like ${concat("'%'","'"+params.categoryName+"'","'%'")}
+  		</if>
+		<if test="params.alarmOID != null and  params.alarmOID != '' ">
+			and AlarmOID like ${concat("'%'","'"+params.alarmOID+"'","'%'")}
+  		</if>
+	</select>
+
+	<select id="queryByID" resultMap="AlarmCategoryMap"
+		parameterType="java.lang.Integer">
+		select CategoryID,CategoryName,AlarmOID,IsSystem,Descr
+		from AlarmCategory where CategoryID = #{categoryID,jdbcType=INTEGER}
+	</select>
+
+	<select id="checkName" resultType="Integer" parameterType="java.lang.String">
+		select count(1) from AlarmCategory where CategoryName = #{categoryName,jdbcType=VARCHAR}	
+	</select>
+	
+	<select id="checkNameBeforeUpdate" resultType="Integer" parameterType="gategoryInfo">
+		select count(1) from AlarmCategory where 1=1 and CategoryName = #{categoryName,jdbcType=VARCHAR}
+			 and CategoryID != #{categoryID,jdbcType=INTEGER}
+	</select>
+
+	<select id="getIsUsed" resultType="Integer" parameterType="java.lang.Integer">
+		select count(1)
+		from AlarmEventDefine d
+		left join AlarmCategory e on d.CategoryID = e.CategoryID
+		where e.CategoryID = #{categoryID}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from AlarmCategory
+		where CategoryID = #{categoryID,jdbcType=INTEGER}
+  	</delete>
+
+	<insert id="insertSelective"	parameterType="gategoryInfo">
+		insert into AlarmCategory
+		(CategoryID,CategoryName,AlarmOID,IsSystem, Descr)
+		values
+		(#{categoryID,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR},
+		#{alarmOID,jdbcType=VARCHAR},#{isSystem,jdbcType=INTEGER},#{descr,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateByPrimaryKey"	parameterType="gategoryInfo">
+		update AlarmCategory
+		<set>
+			<if test="categoryName != null">
+				CategoryName = #{categoryName,jdbcType=VARCHAR},
+      	</if>
+			<if test="alarmOID !=null">
+				AlarmOID = #{alarmOID,jdbcType=INTEGER},
+     	</if>
+			<if test="descr !=null">
+				Descr = #{descr,jdbcType=VARCHAR},
+   		</if>
+		</set>
+		where CategoryID = #{categoryID,jdbcType=INTEGER}
+	</update>
+	<select id="getAllAlarmGategory" resultType="hashmap" resultMap="AlarmCategoryMap">
+		select CategoryID,CategoryName,AlarmOID,IsSystem,Descr from AlarmCategory where 1=1
+  </select>
+
+	<select id="getAlarmGategoryById" resultType="gategoryInfo" parameterType="Integer">
+		select CategoryID,CategoryName,AlarmOID,IsSystem,Descr
+		from AlarmCategory
+		where CategoryID =#{categoryID,jdbcType=INTEGER}
+  </select>
+
+
+
+</mapper>

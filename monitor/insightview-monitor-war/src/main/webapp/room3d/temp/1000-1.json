@@ -1,0 +1,872 @@
+{
+  "v": "3.6",
+  "d": [
+    {
+      "c": "ht.CSGShape",
+      "i": 434,
+      "p": {
+        "position": {
+          "x": 373.3,
+          "y": 470.03
+        },
+        "width": 2899.4576126884,
+        "height": 1303.3861368203013,
+        "tall": 360,
+        "elevation": 180,
+        "points": {
+          "__a": [
+            {
+              "x": -1066.75,
+              "y": -181.66
+            },
+            {
+              "x": 1823.03,
+              "y": -146.36
+            },
+            {
+              "x": 1809.11,
+              "y": 1097.8
+            },
+            {
+              "x": -1076.43,
+              "y": 1121.73
+            },
+            {
+              "x": -1063.53,
+              "y": -133.28
+            }
+          ]
+        },
+        "thickness": 24,
+        "closePath": true
+      },
+      "s": {
+        "shape.border.width": 10,
+        "shape.border.join": "miter",
+        "shape.border.color": "rgb(180, 180, 180)",
+        "all.color": "rgb(244, 244, 244)",
+        "border.color": "black",
+        "border.width": 1,
+        "back.color": "rgb(202, 220, 230)",
+        "front.color": "rgb(218,233,242)",
+        "top.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 435,
+      "p": {
+        "position": {
+          "x": -1028.67,
+          "y": -144.66
+        },
+        "width": 60,
+        "height": 60,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 436,
+      "p": {
+        "position": {
+          "x": -1032.16,
+          "y": 1086.92
+        },
+        "width": 64.11613559538159,
+        "height": 55.883864404618436,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 437,
+      "p": {
+        "host": {
+          "__i": 434
+        },
+        "rotation": 3.1332993870101604,
+        "position": {
+          "x": -436.63,
+          "y": 1116.42
+        },
+        "width": 140,
+        "height": 24.023999999999997,
+        "tall": 298,
+        "elevation": 149
+      },
+      "s": {
+        "dw.toggleable": false,
+        "shape3d": "frame",
+        "attach.index": 2,
+        "attach.offset": 2245.82
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 438,
+      "p": {
+        "tag": 12325,
+        "host": {
+          "__i": 434
+        },
+        "rotation": 3.1332993870101604,
+        "rotationZ": 3.14,
+        "position": {
+          "x": -438.14,
+          "y": 1116.46
+        },
+        "width": 120,
+        "height": 24.023999999999997,
+        "tall": 286,
+        "elevation": 143
+      },
+      "s": {
+        "shape3d": "door1",
+        "attach.index": 2,
+        "attach.offset": 2250.33
+      },
+      "a": {
+        "mark": "door"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 439,
+      "p": {
+        "position": {
+          "x": -137.57,
+          "y": 1112.31
+        },
+        "width": 60,
+        "height": 60,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 440,
+      "p": {
+        "position": {
+          "x": 816.99,
+          "y": 1103.64
+        },
+        "width": 60,
+        "height": 60,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 441,
+      "p": {
+        "position": {
+          "x": 1786.49,
+          "y": -114.66
+        },
+        "width": 60,
+        "height": 60,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 442,
+      "p": {
+        "position": {
+          "x": 1774.09,
+          "y": 1067.64
+        },
+        "width": 60,
+        "height": 60,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "all.color": "rgb(255,255,255)"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 443,
+      "p": {
+        "rotation": -1.5707963267948966,
+        "position": {
+          "x": 242.67,
+          "y": 472.28
+        },
+        "width": 1266.9651874864683,
+        "height": 15,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "dw.toggleable": false,
+        "all.color": "rgba(192,219,237, 0.8)",
+        "all.reverse.cull": true,
+        "all.transparent": true
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 446,
+      "p": {
+        "position": {
+          "x": 1022.97,
+          "y": 414.41
+        },
+        "width": 1546.9744116620861,
+        "height": 15,
+        "tall": 360,
+        "elevation": 180
+      },
+      "s": {
+        "dw.toggleable": false,
+        "all.color": "rgba(192,219,237, 0.8)",
+        "all.reverse.cull": true,
+        "all.transparent": true
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 447,
+      "p": {
+        "tag": 12435,
+        "position": {
+          "x": 832.56,
+          "y": 7.47
+        },
+        "width": 80,
+        "height": 60,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "front.image": "ups_front",
+        "left.image": "ups_side",
+        "right.image": "ups_side",
+        "back.image": "ups_back",
+        "all.color": "#e2e2e5"
+      },
+      "a": {
+        "mark": "ups"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 448,
+      "p": {
+        "rotation": 1.5244290826205245,
+        "position": {
+          "x": 1067.77,
+          "y": 14.93
+        },
+        "width": 70,
+        "height": 40,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "front.image": "air-front",
+        "back.image": "air-back",
+        "all.color": "rgb(225,225,225)"
+      },
+      "a": {
+        "mark": "air"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 449,
+      "p": {
+        "host": {
+          "__i": 434
+        },
+        "rotation": 3.1332993870101604,
+        "position": {
+          "x": 627.18,
+          "y": 1107.6
+        },
+        "width": 140,
+        "height": 24.023999999999997,
+        "tall": 298,
+        "elevation": 149
+      },
+      "s": {
+        "dw.toggleable": false,
+        "shape3d": "frame",
+        "attach.index": 2,
+        "attach.offset": 1181.97
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 450,
+      "p": {
+        "host": {
+          "__i": 434
+        },
+        "rotation": 3.1332993870101604,
+        "rotationZ": 3.14,
+        "position": {
+          "x": 627.97,
+          "y": 1107.57
+        },
+        "width": 120,
+        "height": 24.023999999999997,
+        "tall": 286,
+        "elevation": 143
+      },
+      "s": {
+        "shape3d": "door1",
+        "attach.index": 2,
+        "attach.offset": 1178.18
+      },
+      "a": {
+        "mark": "door"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 451,
+      "p": {
+        "position": {
+          "x": 675.76,
+          "y": 608.55
+        },
+        "width": 160.010696,
+        "height": 80.03056699999999,
+        "tall": 75.38,
+        "elevation": 37.69
+      },
+      "s": {
+        "shape3d": "wooden_office_pear_table_rect"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 452,
+      "p": {
+        "position": {
+          "x": 838.57,
+          "y": 607.62
+        },
+        "width": 160.01,
+        "height": 80.03,
+        "tall": 75.38,
+        "elevation": 37.69
+      },
+      "s": {
+        "shape3d": "wooden_office_pear_table_rect"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 453,
+      "p": {
+        "position": {
+          "x": 1000.77,
+          "y": 607.09
+        },
+        "width": 160.010696,
+        "height": 80.03056699999999,
+        "tall": 75.38,
+        "elevation": 37.69
+      },
+      "s": {
+        "shape3d": "wooden_office_pear_table_rect"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 454,
+      "p": {
+        "rotation": 3.141592653589793,
+        "position": {
+          "x": 675.76,
+          "y": 698.16
+        },
+        "width": 62.62200899999999,
+        "height": 59.668000000000006,
+        "tall": 87.34,
+        "elevation": 43.67
+      },
+      "s": {
+        "shape3d": "officeChair"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 455,
+      "p": {
+        "rotation": 3.14,
+        "position": {
+          "x": 831.36,
+          "y": 696.96
+        },
+        "width": 62.62,
+        "height": 59.67,
+        "tall": 87.34,
+        "elevation": 43.67
+      },
+      "s": {
+        "shape3d": "officeChair"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 456,
+      "p": {
+        "rotation": 3.14,
+        "position": {
+          "x": 994.44,
+          "y": 699.49
+        },
+        "width": 62.62,
+        "height": 59.67,
+        "tall": 87.34,
+        "elevation": 43.67
+      },
+      "s": {
+        "shape3d": "officeChair"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 457,
+      "p": {
+        "position": {
+          "x": 692.25,
+          "y": 606.91
+        },
+        "width": 62,
+        "height": 38,
+        "tall": 44,
+        "elevation": 102.12
+      },
+      "s": {
+        "shape3d": "imac"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 458,
+      "p": {
+        "position": {
+          "x": 857.55,
+          "y": 602.38
+        },
+        "width": 62,
+        "height": 38,
+        "tall": 44,
+        "elevation": 98.22
+      },
+      "s": {
+        "shape3d": "imac"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 459,
+      "p": {
+        "position": {
+          "x": 1000.38,
+          "y": 602.11
+        },
+        "width": 62,
+        "height": 38,
+        "tall": 44,
+        "elevation": 99.06
+      },
+      "s": {
+        "shape3d": "imac"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 460,
+      "p": {
+        "tag": 12386,
+        "rotation": 4.71,
+        "position": {
+          "x": -769.51,
+          "y": 688
+        },
+        "width": 70,
+        "height": 40,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "front.image": "air-front",
+        "back.image": "air-back",
+        "all.color": "rgb(225,225,225)"
+      },
+      "a": {
+        "mark": "air"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 463,
+      "p": {
+        "position": {
+          "x": 383.68,
+          "y": 602.56
+        },
+        "width": 139.65724185592342,
+        "height": 122.89091202168697,
+        "tall": 103.72,
+        "elevation": 56.04
+      },
+      "s": {
+        "shape3d": "littlePlant"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 464,
+      "p": {
+        "position": {
+          "x": 507.26,
+          "y": 22.87
+        },
+        "width": 80,
+        "height": 60,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "front.image": "ups_front",
+        "left.image": "ups_side",
+        "right.image": "ups_side",
+        "back.image": "ups_back",
+        "all.color": "#e2e2e5"
+      },
+      "a": {
+        "mark": "ups"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 465,
+      "p": {
+        "rotation": 4.691784006602761,
+        "position": {
+          "x": -826.56,
+          "y": 296.35
+        },
+        "width": 70,
+        "height": 40,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "front.image": "air-front",
+        "back.image": "air-back",
+        "all.color": "rgb(225,225,225)"
+      },
+      "a": {
+        "mark": "air"
+      }
+    },
+    {
+      "c": "ht.Shape",
+      "i": 466,
+      "p": {
+        "position": {
+          "x": 371.95,
+          "y": 463.1
+        },
+        "width": 2894.714894300108,
+        "height": 1302.6399621096677,
+        "tall": 2,
+        "elevation": -1,
+        "segments": {
+          "__a": [1, 2, 2, 2, 2]
+        },
+        "points": {
+          "__a": [
+            {
+              "x": -1060.86,
+              "y": -188.22
+            },
+            {
+              "x": 1819.31,
+              "y": -146
+            },
+            {
+              "x": 1807.34,
+              "y": 1092.78
+            },
+            {
+              "x": -1075.41,
+              "y": 1114.42
+            },
+            {
+              "x": -1056.74,
+              "y": -60.62
+            }
+          ]
+        },
+        "thickness": -1,
+        "closePath": true
+      },
+      "s": {
+        "isFloor": 1,
+        "shape.border.join": "miter",
+        "shape.background": null,
+        "shape.border.color": "#1ABC9C",
+        "all.color": "rgb(244, 244, 244)",
+        "shape.repeat.image": "floor",
+        "repeat.uv.length": 64,
+        "shape3d.top.image": "floor",
+        "shape3d.bottom.color": "rgb(224,224,224)"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 467,
+      "p": {
+        "tag": 12280,
+        "host": {
+          "__i": 468
+        },
+        "position": {
+          "x": -753.54,
+          "y": -12.04
+        },
+        "width": 85,
+        "height": 80,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "shape3d": "42u_body",
+        "shape3d.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rack"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 468,
+      "p": {
+        "tag": "rackDoor_12280",
+        "host": {
+          "__i": 467
+        },
+        "position": {
+          "x": -753.54,
+          "y": 27.96
+        },
+        "width": 85,
+        "height": 5,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "attach.operation": null,
+        "all.color": "rgb(45, 45, 45)",
+        "front.image": "cabinet-back-door",
+        "front.uv": [1, 1, 1, 0, 0, 0, 0, 1],
+        "back.visible": false,
+        "all.reverse.color": "rgb(45, 45, 45)",
+        "dw.expanded": true,
+        "dw.angle": 1.57
+      },
+      "a": {
+        "mark": "rackDoor"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 469,
+      "p": {
+        "tag": 12342,
+        "host": {
+          "__i": 470
+        },
+        "position": {
+          "x": -668.43,
+          "y": -12.04
+        },
+        "width": 85,
+        "height": 80,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "shape3d": "42u_body",
+        "shape3d.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rack"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 470,
+      "p": {
+        "tag": "rackDoor_12342",
+        "host": {
+          "__i": 469
+        },
+        "position": {
+          "x": -668.43,
+          "y": 27.96
+        },
+        "width": 85,
+        "height": 5,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "attach.operation": null,
+        "all.color": "rgb(45, 45, 45)",
+        "front.image": "cabinet-back-door",
+        "front.uv": [1, 1, 1, 0, 0, 0, 0, 1],
+        "back.visible": false,
+        "all.reverse.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rackDoor"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 471,
+      "p": {
+        "parent": {
+          "__i": 473
+        },
+        "tag": 12483,
+        "host": {
+          "__i": 472
+        },
+        "position": {
+          "x": -560.23,
+          "y": -12.04
+        },
+        "width": 85,
+        "height": 80,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "shape3d": "42u_body",
+        "shape3d.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rack"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 472,
+      "p": {
+        "parent": {
+          "__i": 473
+        },
+        "tag": "rackDoor_12483",
+        "host": {
+          "__i": 471
+        },
+        "position": {
+          "x": -560.23,
+          "y": 27.96
+        },
+        "width": 85,
+        "height": 5,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "attach.operation": null,
+        "all.color": "rgb(45, 45, 45)",
+        "front.image": "cabinet-back-door",
+        "front.uv": [1, 1, 1, 0, 0, 0, 0, 1],
+        "back.visible": false,
+        "all.reverse.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rackDoor"
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 473,
+      "p": {
+        "tag": 12526,
+        "host": {
+          "__i": 474
+        },
+        "position": {
+          "x": -450.7,
+          "y": -12.04
+        },
+        "width": 85,
+        "height": 80,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "shape3d": "42u_body",
+        "shape3d.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rack"
+      }
+    },
+    {
+      "c": "ht.DoorWindow",
+      "i": 474,
+      "p": {
+        "tag": "rackDoor_12526",
+        "host": {
+          "__i": 473
+        },
+        "position": {
+          "x": -450.7,
+          "y": 27.96
+        },
+        "width": 85,
+        "height": 5,
+        "tall": 260,
+        "elevation": 130
+      },
+      "s": {
+        "attach.operation": null,
+        "all.color": "rgb(45, 45, 45)",
+        "front.image": "cabinet-back-door",
+        "front.uv": [1, 1, 1, 0, 0, 0, 0, 1],
+        "back.visible": false,
+        "all.reverse.color": "rgb(45, 45, 45)"
+      },
+      "a": {
+        "mark": "rackDoor"
+      }
+    }
+  ]
+}

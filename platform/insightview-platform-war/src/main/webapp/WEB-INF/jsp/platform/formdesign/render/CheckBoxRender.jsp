@@ -1,0 +1,1 @@
+<input type="checkbox" id="${attribute.id}" name="${attribute.columnName}" elementType="normal" class="checkbox" value="${value }"></div><div class="div_right">${attribute.attributesLabel}

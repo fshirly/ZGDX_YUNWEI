@@ -1,0 +1,26 @@
+#container {
+	margin: 0 auto;
+	text-align: left;
+	font-size: 13px;
+	font: Î¢ÈíÑÅºÚ;
+}
+
+.smallpart {
+	height: 310px;
+	width: 680px;
+	margin-top: 10px; 
+	margin-left: 10px; 
+	float: left;
+	background-color: rgb(200,200,205); 
+}
+
+.smallpart tr {
+	background-color: #fff;
+}
+
+.showbtn {
+	width: 80px;
+	margin-left: 10px;
+	vertical-align: middle;
+}
+

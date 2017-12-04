@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.supplier.mapper.SupplierMapper" > 
+  <resultMap id="SupplierResultMap" type="com.fable.insightview.platform.supplier.enitity.Supplier" >
+    <id column="ProviderId" property="providerId" jdbcType="INTEGER" />
+    <result column="ProviderName" property="providerName" jdbcType="VARCHAR" />
+    <result column="ContactsTelCode" property="contactsTelCode" jdbcType="VARCHAR" />
+    <result column="Contacts" property="contacts" jdbcType="VARCHAR" />
+    <result column="ProxyFirmName" property="proxyFirmName" jdbcType="VARCHAR" />
+    <result column="ServiceFirmName" property="serviceFirmName" jdbcType="VARCHAR" />
+    <result column="AccessoryType" property="accessoryType" jdbcType="INTEGER" />
+    <result column="AccessoryName" property="accessoryName" jdbcType="VARCHAR" />
+    <result column="ProxyName" property="proxyName" jdbcType="VARCHAR" />
+    <result column="ProductType" property="productType" jdbcType="INTEGER" />
+    <result column="CertificateUrl" property="certificateUrl" jdbcType="VARCHAR" />
+    <result column="Fax" property="fax" jdbcType="VARCHAR" />
+    <result column="Email" property="email" jdbcType="VARCHAR" />
+    <result column="TechSupportTel" property="techSupportTel" jdbcType="VARCHAR" />
+    <result column="EstablishedTime" property="establishedTime" jdbcType="TIMESTAMP" />
+    <result column="EmployNum" property="employNum" jdbcType="INTEGER" />
+    <result column="RegisteredFund" property="registeredFund" jdbcType="FLOAT" />
+    <result column="descr" property="descr" jdbcType="VARCHAR" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ProviderAccessoryInfoResultMap" type="com.fable.insightview.platform.supplier.enitity.ProviderAccessoryInfo" >
+    <id column="ProviderAccessoryId" property="providerAccessoryId" jdbcType="INTEGER" />
+    <result column="ProviderId" property="providerId" jdbcType="INTEGER" />
+    <result column="AccessoryType" property="accessoryType" jdbcType="VARCHAR" />
+    <result column="AccessoryUrl" property="accessoryUrl" jdbcType="VARCHAR" />
+    <result column="AccessoryName" property="accessoryName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ProviderSoftHardwareProxyResultMap" type="com.fable.insightview.platform.supplier.enitity.ProviderSoftHardwareProxy" >
+    <id column="ProxyId" property="proxyId" jdbcType="INTEGER" />
+    <result column="ProviderId" property="providerId" jdbcType="INTEGER" />
+    <result column="ProductType" property="productType" jdbcType="INTEGER" />
+    <result column="ProxyBeginTime" property="proxyBeginTime" jdbcType="TIMESTAMP" />
+    <result column="ProxyEndTime" property="proxyEndTime" jdbcType="TIMESTAMP" />
+    <result column="ProxyName" property="proxyName" jdbcType="VARCHAR" />
+    <result column="ProxyFirmName" property="proxyFirmName" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="CertificateUrl" property="certificateUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ProviderServiceCertificateResultMap" type="com.fable.insightview.platform.supplier.enitity.ProviderServiceCertificate" >
+    <id column="ServiceId" property="serviceId" jdbcType="INTEGER" />
+    <result column="ProviderId" property="providerId" jdbcType="INTEGER" />
+    <result column="ProductType" property="productType" jdbcType="INTEGER" />
+    <result column="ServiceName" property="serviceName" jdbcType="VARCHAR" />
+    <result column="ServiceFirmName" property="serviceFirmName" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="CertificateUrl" property="certificateUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <select id="getSupplier" resultType="hashmap" resultMap="SupplierResultMap" parameterType="page">
+   select pis.ProviderId,pis.ProviderName,pis.ContactsTelCode,pis.Contacts,pis.fax,pis.techSupportTel,pis.email
+   from (
+  	select distinct
+  		 pi.ProviderId,pi.ProviderName,pi.ContactsTelCode,pi.Contacts,pi.fax,pi.techSupportTel,pi.email
+  	from 
+  		ProviderInfo pi
+  	left join 
+  		ProviderSoftHardwareProxy pp on pi.ProviderId = pp.ProviderID
+  	left join 
+  		ProviderServiceCertificate pc on pi.ProviderId = pc.ProviderID
+  	where  1=1  
+  	  <if test="params.providerName != null and params.providerName != '' " >
+        and pi.ProviderName like ${concat("'%'","'"+params.providerName+"'","'%'")}
+      </if>
+      <if test="params.proxyFirmName != null and params.proxyFirmName != '' " >
+        and pp.ProxyFirmName like ${concat("'%'","'"+params.proxyFirmName+"'","'%'")}
+      </if>
+      <if test="params.serviceFirmName != null and params.serviceFirmName != '' " >
+        and pc.serviceFirmName like ${concat("'%'","'"+params.serviceFirmName+"'","'%'")}
+      </if>
+      ) pis
+  </select>  
+  
+   <select id="getAttachment" resultMap="ProviderAccessoryInfoResultMap" parameterType="page">
+  	select 
+  		 p.ProviderAccessoryId,p.AccessoryType,p.AccessoryName,p.AccessoryUrl
+  	from 
+  		ProviderAccessoryInfo p
+  	where 
+  	 <if test="params.providerId != null and params.providerId != '' " >
+  		p.providerId = #{params.providerId,jdbcType=INTEGER} 
+  	 </if>	
+  </select>  
+  
+  <select id="getSoftHardware" resultMap="ProviderSoftHardwareProxyResultMap" parameterType="page">
+  	select 
+  		 p.ProxyId,p.ProxyName,p.ProxyFirmName,p.CertificateUrl,p.ProductType,p.Description,p.proxyBeginTime,p.proxyEndTime
+  	from 
+  		ProviderSoftHardwareProxy p
+  	where 1=1
+  	  <if test="params.providerId != null and params.providerId != '' " >
+        and p.ProviderId = #{params.providerId,jdbcType=INTEGER} 
+      </if>	
+  </select> 
+  
+  <select id="getServiceInfo" resultMap="ProviderServiceCertificateResultMap" parameterType="page">
+  	select 
+  		 p.ServiceId,p.ServiceName,p.ServiceFirmName,p.Description,p.CertificateUrl,p.ServiceBeginTime,p.ServiceEndTime
+  	from 
+  		ProviderServiceCertificate p
+  	where 1=1
+  	 <if test="params.providerId != null and params.providerId != '' " >
+  		and p.providerId = #{params.providerId,jdbcType=INTEGER} 
+  	 </if>	
+  </select>  
+  
+ <insert id="insertSupplierInfo" useGeneratedKeys="true" keyProperty="providerId" parameterType="com.fable.insightview.platform.supplier.enitity.Supplier" >
+  	  insert into ProviderInfo
+     	
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="providerId != null" >
+        ProviderId,
+      </if>
+      <if test="establishedTime != null" >
+        EstablishedTime,
+      </if>
+      <if test="providerName != null" >
+        providerName,
+      </if>
+      <if test="contactsTelCode != null" >
+        ContactsTelCode,
+      </if>
+      <if test="contacts != null" >
+        Contacts,
+      </if>
+      <if test="fax != null" >
+        Fax,
+      </if>
+      <if test="email != null" >
+        Email,
+      </if>
+      <if test="techSupportTel != null" >
+        TechSupportTel,
+      </if>
+      <if test="employNum != null" >
+        EmployNum,
+      </if>
+      <if test="registeredFund != null" >
+        RegisteredFund,
+      </if>
+      <if test="uRL != null" >
+        URL,
+      </if>
+      <if test="descr != null" >
+        Descr,
+      </if>
+      <if test="address != null" >
+        Address
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="providerId != null" >
+        #{providerId,jdbcType=INTEGER},
+      </if>
+      <if test="establishedTime != null" >
+        #{establishedTime,jdbcType=INTEGER},
+      </if>
+       <if test="providerName != null" >
+        #{providerName,jdbcType=INTEGER},
+      </if>
+     <if test="contactsTelCode != null" >
+        #{contactsTelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+         #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        #{fax,jdbcType=INTEGER},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="techSupportTel != null" >
+       #{techSupportTel,jdbcType=VARCHAR},
+      </if>
+      <if test="employNum != null" >
+         #{employNum,jdbcType=INTEGER},
+      </if>
+      <if test="registeredFund != null" >
+        #{registeredFund,jdbcType=FLOAT},
+      </if>
+       <if test="uRL != null" >
+        #{uRL,jdbcType=VARCHAR},
+      </if>
+       <if test="descr != null" >
+        #{descr,jdbcType=VARCHAR},
+      </if>
+       <if test="address != null" >
+        #{address,jdbcType=VARCHAR}
+      </if>
+   	 </trim>
+	</insert>
+	 <insert id="insertPAInfo" useGeneratedKeys="true" keyProperty="providerAccessoryId" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderAccessoryInfo" >
+  	  insert into ProviderAccessoryInfo
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="providerAccessoryId != null" >
+        ProviderAccessoryId,
+      </if>
+      <if test="providerId != null" >
+        ProviderId,
+      </if>
+      <if test="accessoryType != null" >
+        AccessoryType,
+      </if>
+      <if test="accessoryUrl != null" >
+        AccessoryUrl,
+      </if>
+      <if test="accessoryName != null" >
+        AccessoryName
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="providerAccessoryId != null" >
+        #{providerAccessoryId,jdbcType=INTEGER},
+      </if>
+      <if test="providerId != null" >
+        #{providerId,jdbcType=INTEGER},
+      </if>
+       <if test="accessoryType != null" >
+        #{accessoryType,jdbcType=INTEGER},
+      </if>
+     <if test="accessoryUrl != null" >
+        #{accessoryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="accessoryName != null" >
+         #{accessoryName,jdbcType=VARCHAR}
+      </if>
+   	 </trim>
+	</insert>
+	<insert id="insertSHPInfo" useGeneratedKeys="true" keyProperty="proxyId" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderSoftHardwareProxy" >
+  	  insert into ProviderSoftHardwareProxy
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="proxyId != null" >
+        ProxyId,
+      </if>
+      <if test="providerId != null" >
+        ProviderId,
+      </if>
+      <if test="productType != null" >
+        productType,
+      </if>
+      <if test="proxyBeginTime != null" >
+        proxyBeginTime,
+      </if>
+      <if test="proxyEndTime != null" >
+        proxyEndTime,
+      </if>
+      <if test="proxyName != null" >
+        ProxyName,
+      </if>
+      <if test="proxyFirmName != null" >
+        ProxyFirmName,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+      <if test="certificateUrl != null" >
+        CertificateUrl
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="proxyId != null" >
+        #{proxyId,jdbcType=INTEGER},
+      </if>
+      <if test="providerId != null" >
+        #{providerId,jdbcType=INTEGER},
+      </if>
+       <if test="productType != null" >
+        #{productType,jdbcType=INTEGER},
+      </if>
+     <if test="proxyBeginTime != null" >
+        #{proxyBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="proxyEndTime != null" >
+         #{proxyEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="proxyName != null" >
+        #{proxyName,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyFirmName != null" >
+         #{proxyFirmName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateUrl != null" >
+         #{certificateUrl,jdbcType=VARCHAR}
+      </if>
+   	 </trim>
+	</insert>
+	<insert id="insertPSCInfo" useGeneratedKeys="true" keyProperty="serviceId" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderServiceCertificate" >
+  	  insert into ProviderServiceCertificate
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        ServiceId,
+      </if>
+      <if test="providerId != null" >
+        ProviderId,
+      </if>
+      <if test="serviceBeginTime != null" >
+        ServiceBeginTime,
+      </if>
+      <if test="serviceEndTime != null" >
+        ServiceEndTime,
+      </if>
+      <if test="serviceName != null" >
+        ServiceName,
+      </if>
+      <if test="serviceFirmName != null" >
+        ServiceFirmName,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+      <if test="certificateUrl != null" >
+        CertificateUrl
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        #{serviceId,jdbcType=INTEGER},
+      </if>
+      <if test="providerId != null" >
+        #{providerId,jdbcType=INTEGER},
+      </if>
+     <if test="serviceBeginTime != null" >
+        #{serviceBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serviceEndTime != null" >
+         #{serviceEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serviceName != null" >
+        #{serviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceFirmName != null" >
+         #{serviceFirmName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateUrl != null" >
+         #{certificateUrl,jdbcType=VARCHAR}
+      </if>
+   	 </trim>
+	</insert>
+	
+	<!-- 从供应商表中查询某条记录 -->
+	<select id="queryBaseS" resultMap="SupplierResultMap"  parameterType="java.lang.Integer">
+		select 
+			p.ProviderId,p.ProviderName,p.Contacts,p.ContactsTelCode,p.fax,p.TechSupportTel,p.Email,
+			p.EstablishedTime,p.EmployNum,p.RegisteredFund,p.Address,p.URL,p.Descr
+		from 
+			ProviderInfo p 
+		where 
+			p.ProviderId = #{id}
+	</select>
+	
+	<update id="editSupplierInfo" parameterType="com.fable.insightview.platform.supplier.enitity.Supplier" >
+    	update 
+    		ProviderInfo p 
+  		set
+       		p.EstablishedTime = #{establishedTime,jdbcType=TIMESTAMP},
+       		p.ProviderName = #{providerName,jdbcType=VARCHAR},
+       		p.ContactsTelCode = #{contactsTelCode,jdbcType=VARCHAR},
+       		p.contacts = #{contacts,jdbcType=VARCHAR},
+       		p.Fax = #{fax,jdbcType=VARCHAR},
+       		p.Email = #{email,jdbcType=VARCHAR},
+       		p.TechSupportTel = #{techSupportTel,jdbcType=VARCHAR},
+       		p.EmployNum = #{employNum,jdbcType=VARCHAR},
+       		p.URL = #{uRL,jdbcType=VARCHAR},
+       		p.Descr = #{descr,jdbcType=VARCHAR},
+       		p.RegisteredFund = #{registeredFund,jdbcType=FLOAT},
+       		p.Address = #{address,jdbcType=VARCHAR}
+       		<!--  ,p.outTime = #{outTime,jdbcType=TIMESTAMP}-->
+    	where 
+   			p.providerId = #{providerId,jdbcType=INTEGER}
+	</update> 
+	
+	<update id="editPAInfo" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderAccessoryInfo" >
+    	update 
+    		ProviderAccessoryInfo p 
+  		set
+       		p.AccessoryType = #{accessoryType,jdbcType=INTEGER},
+       		p.AccessoryName = #{accessoryName,jdbcType=VARCHAR},
+       		p.AccessoryUrl = #{accessoryUrl,jdbcType=VARCHAR}
+       		<!--  ,p.outTime = #{outTime,jdbcType=TIMESTAMP}-->
+    	where 
+   			p.ProviderAccessoryId = #{providerAccessoryId,jdbcType=INTEGER}
+	</update> 
+	
+	<update id="editSHPInfo" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderSoftHardwareProxy" >
+    	update 
+    		ProviderSoftHardwareProxy p 
+  		set
+       		p.ProductType = #{productType,jdbcType=INTEGER},
+       		p.ProxyName = #{proxyName,jdbcType=VARCHAR},
+       		p.ProxyFirmName = #{proxyFirmName,jdbcType=VARCHAR},
+       		p.ProxyBeginTime = #{proxyBeginTime,jdbcType=TIMESTAMP},
+       		p.ProxyEndTime = #{proxyEndTime,jdbcType=TIMESTAMP},
+       		p.Description = #{description,jdbcType=VARCHAR},
+       		p.CertificateUrl = #{certificateUrl,jdbcType=VARCHAR}
+       		<!--  ,p.outTime = #{outTime,jdbcType=TIMESTAMP}-->
+    	where 
+   			p.ProxyId = #{proxyId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="editPSCInfo" parameterType="com.fable.insightview.platform.supplier.enitity.ProviderServiceCertificate" >
+    	update 
+    		ProviderServiceCertificate p 
+  		set
+       		p.ServiceName = #{serviceName,jdbcType=VARCHAR},
+       		p.ServiceFirmName = #{serviceFirmName,jdbcType=VARCHAR},
+       		p.ServiceBeginTime = #{serviceBeginTime,jdbcType=TIMESTAMP},
+       		p.ServiceEndTime = #{serviceEndTime,jdbcType=TIMESTAMP},
+       		p.Description = #{description,jdbcType=VARCHAR},
+       		p.CertificateUrl = #{certificateUrl,jdbcType=VARCHAR}
+       		<!--  ,p.outTime = #{outTime,jdbcType=TIMESTAMP}-->
+    	where 
+   			p.ServiceId = #{serviceId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="deletePai" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderAccessoryInfo 
+    	where 
+    		ProviderAccessoryId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deletePshp" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderSoftHardwareProxy 
+    	where 
+    		ProxyId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deletePsc" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderServiceCertificate 
+    	where 
+    		ServiceId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteProviderAccessoryInfo" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderAccessoryInfo 
+    	where 
+    		providerId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteProviderSoftHardwareProxy" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderSoftHardwareProxy 
+    	where 
+    		providerId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteProviderServiceCertificate" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderServiceCertificate 
+    	where 
+    		providerId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteSupplier" parameterType="java.lang.Integer">
+    	delete from  
+    		ProviderInfo 
+    	where 
+    		providerId =  #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="haveUser" parameterType="java.lang.Integer" resultType="Integer">
+	  	select 
+	  		 count(*)
+	  	from 
+	  		SysProviderUser s 
+	  	where 1=1
+	        and s.ProviderId = #{id,jdbcType=INTEGER} 
+  </select> 
+  
+  <select id="usingSupplierName" parameterType="java.lang.Integer" resultType="String">
+	  	select 
+	  		 ProviderName
+	  	from 
+	  		ProviderInfo s 
+	  	where 1=1
+	        and s.ProviderId = #{id,jdbcType=INTEGER} 
+  </select> 
+  
+   <select id="queryProviderServiceCertificate" parameterType="java.lang.Integer" resultMap="ProviderServiceCertificateResultMap">
+	select 
+  		 p.ServiceId,p.ServiceName,p.ServiceFirmName,p.Description,p.CertificateUrl,p.ServiceBeginTime,p.ServiceEndTime
+  	from 
+  		ProviderServiceCertificate p
+  	where 1=1
+     and p.ServiceId = #{id,jdbcType=INTEGER} 
+  </select> 
+  
+  <select id="queryProviderSoftHardwareProxy" parameterType="java.lang.Integer" resultMap="ProviderSoftHardwareProxyResultMap">
+	select 
+  		 p.ProxyId,p.ProxyName,p.ProxyFirmName,p.CertificateUrl,p.ProductType,p.Description,p.proxyBeginTime,p.proxyEndTime
+  	from 
+  		ProviderSoftHardwareProxy p
+  	where 1=1
+     and p.ProxyId = #{id,jdbcType=INTEGER} 
+  </select> 
+</mapper>

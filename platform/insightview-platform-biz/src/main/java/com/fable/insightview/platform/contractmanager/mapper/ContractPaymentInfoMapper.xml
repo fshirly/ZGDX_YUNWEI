@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.contractmanager.mapper.ContractPaymentInfoMapper">
+<resultMap  id="ContractPaymentMapper" type="com.fable.insightview.platform.contractmanager.entity.ContractPayment">
+<id column="PaymentID" property="paymentID" jdbcType="INTEGER"/>
+<result column="ContractID" property="contractID" jdbcType="INTEGER"/>
+<result column="PlanPayTime" property="planPayTime" jdbcType="TIMESTAMP"/>
+<result column="PlanPayAmount" property="planPayAmount" jdbcType="DOUBLE"/>
+<result column="PaymentTime" property="paymentTime" jdbcType="TIMESTAMP"/>
+<result column="Amount" property="amount" jdbcType="DOUBLE"/>
+<result column="PaymentHandler" property="handler" jdbcType="VARCHAR"/>
+<result column="PaymentDesc" property="desc" jdbcType="VARCHAR"/>
+<result column="CertificateUrl" property="certificateUrl" jdbcType="VARCHAR"/>
+</resultMap>
+<select id="queryContractPaymengList" resultType="hashmap" resultMap="ContractPaymentMapper" parameterType="page">
+    select * from ContractPayment where 1=1  
+    <if test="params.contractID!=null and params.contractID!=''">
+     and ContractID=#{params.contractID}
+    </if>
+    ORDER BY PlanPayTime
+</select>
+<insert id="insertContractPaymentInfo" parameterType="com.fable.insightview.platform.contractmanager.entity.ContractPayment">
+  insert into ContractPayment(PaymentID,ContractID,PlanPayTime,PlanPayAmount)values(
+     #{paymentID,jdbcType=INTEGER},
+     #{contractID,jdbcType=INTEGER},
+     #{planPayTime,jdbcType=TIMESTAMP},
+     #{planPayAmount,jdbcType=DOUBLE}
+  )
+</insert>
+<insert id="insertContractPaymentInfoNoPlan" parameterType="com.fable.insightview.platform.contractmanager.entity.ContractPayment">
+insert into ContractPayment(PaymentID,ContractID,PaymentTime,Amount,PaymentHandler,PaymentDesc,CertificateUrl)values(
+     #{paymentID,jdbcType=INTEGER},
+     #{contractID,jdbcType=INTEGER},
+     #{paymentTime,jdbcType=TIMESTAMP},
+     #{amount,jdbcType=DOUBLE},
+     #{handler,jdbcType=VARCHAR},
+     #{desc,jdbcType=VARCHAR},
+     #{certificateUrl,jdbcType=VARCHAR})
+</insert>
+<select id="getContractSingTime" parameterType="Integer" resultType="Date">
+   select SignTime from ProjectContract where ID=#{contractID,jdbcType=INTEGER}
+</select>
+<select id="queryContractPaymentInfo" parameterType="Integer" resultType="hashmap" resultMap="ContractPaymentMapper">
+  select * from ContractPayment where   paymentID=#{paymentID,jdbcType=INTEGER}
+</select>
+<update id="updateContractPaymentInfo"  parameterType="com.fable.insightview.platform.contractmanager.entity.ContractPayment" >
+   update ContractPayment set
+      PlanPayTime= #{planPayTime,jdbcType=TIMESTAMP},
+      PlanPayAmount=#{planPayAmount,jdbcType=DOUBLE},
+      PaymentTime=#{paymentTime,jdbcType=TIMESTAMP},
+      Amount=#{amount,jdbcType=DOUBLE},
+      PaymentHandler= #{handler,jdbcType=VARCHAR},
+      PaymentDesc=#{desc,jdbcType=VARCHAR},
+      CertificateUrl=#{certificateUrl,jdbcType=VARCHAR} where PaymentID= #{paymentID,jdbcType=INTEGER}
+</update>
+<delete id="deleteContractPaymentInfo" parameterType="Integer">
+  delete from ContractPayment where paymentID=#{paymentID,jdbcType=INTEGER}
+</delete>
+<select id="validatorPlanTimeDouble"  parameterType="com.fable.insightview.platform.contractmanager.entity.ContractPayment" resultType="Integer">
+  select count(*) from ContractPayment where ContractID=#{contractID,jdbcType=INTEGER} and PlanPayTime=#{planPayTime,jdbcType=TIMESTAMP}
+</select>
+<!-- 判断计划付款金额 -->
+<select id="validatorPlanment" parameterType="Integer"  resultType="Double">
+  select sum(PlanPayAmount) from ContractPayment where ContractID=#{contractID,jdbcType=INTEGER}
+</select>
+<!-- 判断实际付款金额 -->
+<select id="validatorNoPlanment" parameterType="Integer"  resultType="Double">
+  select round(sum(Amount),6) from ContractPayment where ContractID=#{contractID,jdbcType=INTEGER}
+</select>
+</mapper>

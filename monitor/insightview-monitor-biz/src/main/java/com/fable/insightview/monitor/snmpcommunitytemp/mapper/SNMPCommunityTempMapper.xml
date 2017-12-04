@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.snmpcommunitytemp.mapper.SNMPCommunityTempMapper">
+	<resultMap id="snmpTempMap" type="com.fable.insightview.monitor.snmpcommunitytemp.entity.SNMPCommunityTempBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="DeviceIP" property="deviceIp" jdbcType="VARCHAR" />
+		<result column="DomainID" property="domainId" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="SnmpPort" property="snmpPort" jdbcType="INTEGER" />
+		<result column="SnmpVersion" property="snmpVersion" jdbcType="INTEGER" />
+		<result column="ReadCommunity" property="readCommunity" jdbcType="VARCHAR" />
+		<result column="WriteCommunity" property="writeCommunity" jdbcType="VARCHAR" />
+		<result column="UsmUser" property="usmUser" jdbcType="VARCHAR" />
+		<result column="SecurityLevel" property="securityLevel" jdbcType="VARCHAR" />
+		<result column="AuthAlogrithm" property="authAlogrithm" jdbcType="VARCHAR" />
+		<result column="AuthKey" property="authKey" jdbcType="VARCHAR" />
+		<result column="EncryptionAlogrithm" property="encryptionAlogrithm" jdbcType="VARCHAR" />
+		<result column="EncryptionKey" property="encryptionKey" jdbcType="VARCHAR" />
+		<result column="ContexName" property="contexName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insertSNMPCommunityTemp" parameterType="com.fable.insightview.monitor.snmpcommunitytemp.entity.SNMPCommunityTempBean">
+	insert into SNMPCommunityCache (ID, DeviceIP, DomainID,MOID, SnmpPort,SnmpVersion,ReadCommunity,USMUser,
+    SecurityLevel,AuthAlogrithm,AuthKey,EncryptionAlogrithm,EncryptionKey,ContexName,WriteCommunity)
+    values (#{id,jdbcType=INTEGER}, #{deviceIp,jdbcType=VARCHAR}, #{domainId,jdbcType=INTEGER}, 
+      #{moId,jdbcType=INTEGER}, #{snmpPort,jdbcType=INTEGER}, #{snmpVersion,jdbcType=INTEGER}, 
+      #{readCommunity,jdbcType=VARCHAR}, #{usmUser,jdbcType=VARCHAR}, #{securityLevel,jdbcType=VARCHAR}, 
+      #{authAlogrithm,jdbcType=VARCHAR}, #{authKey,jdbcType=VARCHAR}, #{encryptionAlogrithm,jdbcType=VARCHAR}, 
+      #{encryptionKey,jdbcType=VARCHAR}, #{contexName,jdbcType=VARCHAR}, #{writeCommunity,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+	<select id="listSnmpAndSnmpTem" resultType="com.fable.insightview.platform.snmpcommunity.entity.SNMPCommunityBean"  parameterType="page">
+		select candt.* from (
+		select t.id,t.Alias,t.DomainID,t.SnmpPort,t.SnmpVersion,
+         t.ReadCommunity,t.USMUser,t.SecurityLevel,t.AuthAlogrithm,t.AuthKey,
+         t.EncryptionAlogrithm,t.EncryptionKey,t.ContexName,t.WriteCommunity from SNMPCommunity t  
+		union all
+		select null as id,temp.DeviceIP as alias,temp.DomainID,temp.SnmpPort,temp.SnmpVersion,
+		        temp.ReadCommunity,temp.USMUser,temp.SecurityLevel,temp.AuthAlogrithm,temp.AuthKey,
+		        temp.EncryptionAlogrithm,temp.EncryptionKey,temp.ContexName,temp.WriteCommunity
+		from SNMPCommunityCache temp where 1=1
+		 	and temp.DeviceIP = #{params.deviceIp}
+		)candt
+	</select>
+	
+	<select id="getSnmpTempByIP" parameterType="String" resultType="com.fable.insightview.monitor.snmpcommunitytemp.entity.SNMPCommunityTempBean">
+		select * from SNMPCommunityCache where DeviceIP = #{deviceIp}
+	</select>
+</mapper>
+

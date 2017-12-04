@@ -1,0 +1,17 @@
+@CHARSET "utf-8"; 		 
+ 		 
+ 		 /*~~ left.css ~~*/			
+		 .nav{list-style: none;width:100%!important;height:100%!important;overflow:scroll;}
+		 .firLi{ color:#595D5E;/*width:190px;height:36px;line-height:36px;*/background:url(../images/main/list_bg.gif) no-repeat;}
+		 .firLi a{display:block;width:173px;height:36px;line-height:36px;text-indent:25px;color:#1b1b1b;font:'微软雅黑';font-size:14px;cursor:pointer;}
+		 .firLi a:link {text-decoration: none; color:#1b1b1b;}
+		 .firLi a:visited {text-decoration: none;color:#1b1b1b;}
+		 .firLi a:hover {text-decoration: none;color:#595D5E;background:url(../images/main/list_onmouse.gif) no-repeat;}
+		 
+		 /*~~ 左侧导航二级菜单 ~~*/
+		 .hdUl{display:none;list-style:none;width:173px;background-color:#FFFs;}
+		 .hdLi{cursor:pointer;}
+		 .hdLi a{display:block;width:157px;height:28px;line-height:28px;text-indent:55px;font-size:12px;font:'宋体';color:#1b1b1b;margin:0px auto;}
+		 .hdLi a:link {text-decoration: none; color:#1b1b1b;}
+		 .hdLi a:hover {text-decoration: none;color:#1b1b1b;background:url(../images/main/list_select.gif);}
+		 .visited_left{text-decoration: none;color:#1b1b1b;background:url(../images/main/list_select.gif);}

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.listview.mapper.ListviewBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.listview.entity.ListviewBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="TITLE" property="title" jdbcType="VARCHAR" />
+        <result column="DATAOBJECT_ID" property="dataobjectId" jdbcType="VARCHAR" />
+        <result column="FILTER" property="filter" jdbcType="VARCHAR" />
+        <result column="SORT_ORDER" property="sortOrder" jdbcType="VARCHAR" />
+        <result column="PAGE_SIZE" property="pageSize" jdbcType="DECIMAL" />
+        <result column="PAGE_SIZE_LIST" property="pageSizeList" jdbcType="VARCHAR" />
+        <result column="COL_COUNT" property="colCount" jdbcType="DECIMAL" />
+        <result column="IS_EXPORT" property="isExport" jdbcType="CHAR" />
+        <result column="IS_AUTO_BIND" property="isAutoBind" jdbcType="CHAR" />
+        <result column="IS_RIGHT" property="isRight" jdbcType="CHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_ID" property="updateId" jdbcType="VARCHAR" />
+        <result column="UPDATE_NAME" property="updateName" jdbcType="VARCHAR" />
+        <result column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, NAME, TITLE, DATAOBJECT_ID, FILTER, SORT_ORDER, PAGE_SIZE, PAGE_SIZE_LIST, 
+        COL_COUNT, IS_EXPORT, IS_AUTO_BIND, IS_RIGHT, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME, 
+        UPDATE_ID, UPDATE_NAME, UPDATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_LISTVIEW
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_LISTVIEW
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.listview.entity.ListviewBean" >
+        insert into FBS_LISTVIEW (ID, SYS_ID, NAME, 
+            TITLE, DATAOBJECT_ID, FILTER, 
+            SORT_ORDER, PAGE_SIZE, PAGE_SIZE_LIST, 
+            COL_COUNT, IS_EXPORT, IS_AUTO_BIND, 
+            IS_RIGHT, NOTE, CREATOR_ID, 
+            CREATOR_NAME, CREATED_TIME, UPDATE_ID, 
+            UPDATE_NAME, UPDATED_TIME)
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+            #{title,jdbcType=VARCHAR}, #{dataobjectId,jdbcType=VARCHAR}, #{filter,jdbcType=VARCHAR}, 
+            #{sortOrder,jdbcType=VARCHAR}, #{pageSize,jdbcType=DECIMAL}, #{pageSizeList,jdbcType=VARCHAR}, 
+            #{colCount,jdbcType=DECIMAL}, #{isExport,jdbcType=CHAR}, #{isAutoBind,jdbcType=CHAR}, 
+            #{isRight,jdbcType=CHAR}, #{note,jdbcType=VARCHAR}, #{creatorId,jdbcType=VARCHAR}, 
+            #{creatorName,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=VARCHAR}, 
+            #{updateName,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewBean" >
+        insert into FBS_LISTVIEW
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="name != null" >
+                NAME,
+            </if>
+            <if test="title != null" >
+                TITLE,
+            </if>
+            <if test="dataobjectId != null" >
+                DATAOBJECT_ID,
+            </if>
+            <if test="filter != null" >
+                FILTER,
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER,
+            </if>
+            <if test="pageSize != null" >
+                PAGE_SIZE,
+            </if>
+            <if test="pageSizeList != null" >
+                PAGE_SIZE_LIST,
+            </if>
+            <if test="colCount != null" >
+                COL_COUNT,
+            </if>
+            <if test="isExport != null" >
+                IS_EXPORT,
+            </if>
+            <if test="isAutoBind != null" >
+                IS_AUTO_BIND,
+            </if>
+            <if test="isRight != null" >
+                IS_RIGHT,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+            <if test="updateId != null" >
+                UPDATE_ID,
+            </if>
+            <if test="updateName != null" >
+                UPDATE_NAME,
+            </if>
+            <if test="updatedTime != null" >
+                UPDATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="dataobjectId != null" >
+                #{dataobjectId,jdbcType=VARCHAR},
+            </if>
+            <if test="filter != null" >
+                #{filter,jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null" >
+                #{sortOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="pageSize != null" >
+                #{pageSize,jdbcType=DECIMAL},
+            </if>
+            <if test="pageSizeList != null" >
+                #{pageSizeList,jdbcType=VARCHAR},
+            </if>
+            <if test="colCount != null" >
+                #{colCount,jdbcType=DECIMAL},
+            </if>
+            <if test="isExport != null" >
+                #{isExport,jdbcType=CHAR},
+            </if>
+            <if test="isAutoBind != null" >
+                #{isAutoBind,jdbcType=CHAR},
+            </if>
+            <if test="isRight != null" >
+                #{isRight,jdbcType=CHAR},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null" >
+                #{updateId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null" >
+                #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="updatedTime != null" >
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewBean" >
+        update FBS_LISTVIEW
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                TITLE = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="dataobjectId != null" >
+                DATAOBJECT_ID = #{dataobjectId,jdbcType=VARCHAR},
+            </if>
+            <if test="filter != null" >
+                FILTER = #{filter,jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER = #{sortOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="pageSize != null" >
+                PAGE_SIZE = #{pageSize,jdbcType=DECIMAL},
+            </if>
+            <if test="pageSizeList != null" >
+                PAGE_SIZE_LIST = #{pageSizeList,jdbcType=VARCHAR},
+            </if>
+            <if test="colCount != null" >
+                COL_COUNT = #{colCount,jdbcType=DECIMAL},
+            </if>
+            <if test="isExport != null" >
+                IS_EXPORT = #{isExport,jdbcType=CHAR},
+            </if>
+            <if test="isAutoBind != null" >
+                IS_AUTO_BIND = #{isAutoBind,jdbcType=CHAR},
+            </if>
+            <if test="isRight != null" >
+                IS_RIGHT = #{isRight,jdbcType=CHAR},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null" >
+                UPDATE_ID = #{updateId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null" >
+                UPDATE_NAME = #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="updatedTime != null" >
+                UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.listview.entity.ListviewBean" >
+        update FBS_LISTVIEW
+        set 
+        	<!-- SYS_ID = #{sysId,jdbcType=VARCHAR}, -->
+            NAME = #{name,jdbcType=VARCHAR},
+            TITLE = #{title,jdbcType=VARCHAR},
+            DATAOBJECT_ID = #{dataobjectId,jdbcType=VARCHAR},
+            FILTER = #{filter,jdbcType=VARCHAR},
+            SORT_ORDER = #{sortOrder,jdbcType=VARCHAR},
+            PAGE_SIZE = #{pageSize,jdbcType=DECIMAL},
+            PAGE_SIZE_LIST = #{pageSizeList,jdbcType=VARCHAR},
+            COL_COUNT = #{colCount,jdbcType=DECIMAL},
+            IS_EXPORT = #{isExport,jdbcType=CHAR},
+            IS_AUTO_BIND = #{isAutoBind,jdbcType=CHAR},
+            IS_RIGHT = #{isRight,jdbcType=CHAR},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            UPDATE_ID = #{updateId,jdbcType=VARCHAR},
+            UPDATE_NAME = #{updateName,jdbcType=VARCHAR},
+            UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from FBS_LISTVIEW
+		where NAME = #{name,jdbcType=VARCHAR}
+		<!-- and (sys_id='${@com.fable.sys.util.UserSession@getSysId()}' or sys_id = '${@com.fable.sys.util.UserSession@getDefaultSysId()}' ) -->
+	</select>
+	<select id="selectListviewBeans" resultMap="BaseResultMap"
+		parameterType="com.fable.insightview.platform.listview.entity.ListviewBean">
+		select
+		<include refid="Base_Column_List" />
+		from FBS_LISTVIEW
+		where 1=1
+		<if test="name != null and name != '' ">
+			and name like '%'||#{name,jdbcType=VARCHAR}||'%' 
+		</if>
+		<if test="title != null and title != '' ">
+			and title like '%'||#{title,jdbcType=VARCHAR}||'%' 
+		</if>
+		order by name
+	</select>
+	<select id="selectTreeDictionaryByDynamicSql" resultType="com.fable.insightview.platform.common.entity.TreeDictionaryBean"
+		parameterType="java.lang.String">
+		${value}
+	</select>
+	<select id="selectByDynamicSql" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		${value}
+	</select>
+	<select id="selectCountByDynamicSql" resultType="long" parameterType="java.lang.String">
+		${value}
+	</select>
+</mapper>

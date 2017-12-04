@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.tasklog.mapper.PfTaskLogUsersMapper">
+	<resultMap type="com.fable.insightview.platform.tasklog.PfOrgTree" id="orgTree">
+		<id column="orgId" property="orgId" jdbcType="INTEGER" javaType="INTEGER" />
+		<result column="orgName" property="orgName" jdbcType="VARCHAR" javaType="STRING" />
+		<collection property="depts" ofType="com.fable.insightview.platform.tasklog.PfDeptTree">
+			<id column="DeptID" property="deptId" jdbcType="INTEGER" javaType="INTEGER" />
+			<result column="DeptName" property="deptName" jdbcType="VARCHAR" javaType="STRING" />
+		</collection>
+	</resultMap>
+	<select id="queryUserIds" resultType="INTEGER">
+		SELECT UserId FROM PfTaskLogUsers
+	</select>
+
+	<insert id="add">
+		INSERT INTO PfTaskLogUsers(UserId) VALUES(#{userId})
+	</insert>
+	
+	<insert id="addMulti">
+		INSERT INTO PfTaskLogUsers(UserId) VALUES
+		<foreach collection="array" separator="," item="userId">
+			(#{userId})
+		</foreach>
+	</insert>
+
+	<delete id="delete">
+		DELETE FROM PfTaskLogUsers WHERE UserId=#{userId}
+	</delete>
+
+	<select id="queryUsers" parameterType="page" resultType="HASHMAP">
+		select sui.UserID,sui.UserName,sui.MobilePhone,org.OrganizationID,org.OrganizationName,sd.DeptID,sd.DeptName
+		from SysUserInfo sui, SysEmployment se, SysOrganization org, SysDepartment sd
+		WHERE
+		sui.UserID=se.UserID AND se.OrganizationID=org.OrganizationID
+		AND se.DeptID=sd.DeptID AND sui.UserID IN (SELECT UserId FROM PfTaskLogUsers)
+		<if test="params.deptId !=null and params.deptId > 0">
+			AND sd.DeptID=#{params.deptId}
+		</if>
+		<if test="params.orgId !=null and params.orgId > 0">
+			AND org.OrganizationID=#{params.orgId}
+		</if>
+	</select>
+
+	<select id="queryTrees" resultMap="orgTree">
+		SELECT org.OrganizationID orgId, org.OrganizationName orgName, sdt.DeptID,sdt.DeptName FROM
+		SysOrganization org,SysDepartment sdt,SysEmployment se
+		WHERE se.DeptID=sdt.DeptID AND se.OrganizationID=org.OrganizationID
+		AND se.UserID IN (SELECT UserId FROM PfTaskLogUsers) GROUP BY sdt.DeptID
+	</select>
+</mapper>

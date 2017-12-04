@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*~~ 通用样式 ~~*/
+@import url("../../plugin/easyui/themes/default/easyui.css");
+@import url("../style_one/css/global.css");
+@import url("../../plugin/easyui/themes/icon.css");
+/*~~ 主页面样式 ~~*/
+@import url("../style_one/css/main.css");
+/*~~ 左侧样式 ~~*/
+@import url("../style_one/css/left.css");
+/*~~ 右侧样式 ~~*/
+@import url("../style_one/css/right.css");
+
+@import url("../../plugin/dTree/dtree.css");
+@import url("../../plugin/dTree/combo/combo.css");
+@import url("../../plugin/autocomplete/jquery.autocomplete.css");
+
+

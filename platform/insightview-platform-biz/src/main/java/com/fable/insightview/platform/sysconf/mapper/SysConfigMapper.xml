@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.sysconf.mapper.SysConfigMapper">
+	<resultMap id="sysConfigMap" type="com.fable.insightview.platform.sysconf.entity.SysConfig">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="Type" property="type" jdbcType="VARCHAR" />
+		<result column="ParaKey" property="paraKey" jdbcType="VARCHAR" />
+		<result column="ParaValue" property="paraValue" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getConfByTypeID" resultMap="sysConfigMap" parameterType="Integer">
+		select Type,ParaKey,ParaValue from SysConfig where Type = #{type,jdbcType=INTEGER}
+    </select>
+
+	<select id="getConfParamValue" resultType="String">
+		select ParaValue from SysConfig where Type = #{type} and
+		ParaKey = #{paraKey,jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insertConfig" parameterType="com.fable.insightview.platform.sysconf.entity.SysConfig">
+    insert into SysConfig (ID,Type,ParaKey,ParaValue)
+	values (#{id,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+			#{paraKey,jdbcType=VARCHAR},#{paraValue,jdbcType=VARCHAR})
+    </insert>
+    
+    <delete id="delByType" parameterType="Integer">
+    delete from SysConfig where Type = #{type,jdbcType=INTEGER}
+    </delete>
+    
+    <update id="updateVal" parameterType="com.fable.insightview.platform.sysconf.entity.SysConfig">
+    	UPDATE SysConfig SET ParaValue=#{paraValue,jdbcType=VARCHAR} 
+    	WHERE Type=#{type,jdbcType=INTEGER} AND ParaKey=#{paraKey,jdbcType=VARCHAR}
+    </update>
+</mapper>

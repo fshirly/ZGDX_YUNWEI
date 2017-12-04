@@ -1,0 +1,95 @@
+ @CHARSET "utf-8";	
+ #tblResAssetType{
+		          background-color:rgb(200,200,205);
+		          width:348px;
+		          height:240px;
+		          margin:10px 8px;
+		    }
+		    .txtAG{
+		           background-color:#fff;
+		          text-align: right;
+		          width:110px;
+		    }
+		    .txtBC{
+		          background-color:#fff;
+		          width:200px;
+		    }
+		    .iptST{
+		          width:156px;
+		          height:20px;
+		    }
+		    
+/*资产登记的查询区域样式*/	
+           #tblResAssetQuery{
+
+           }
+           #tblResAssetQuery input,select{
+
+           }
+         .Btn{
+               margin-left:50px;
+               font-family:'宋体';
+               font-size:12px;
+         }
+		 .Btn a{display:block;width:62px;height:24px;line-height:24px;text-align:center;background:url(../images/main/btn.gif) no-repeat;margin-top:6px;
+		 						  font-family:'宋体';font-size:12px;color:#FFF;}
+		 .Btn a:link {text-decoration: none; color:#FFF;}
+		 .Btn a:visited{text-decoration: none;color:#FFF;}
+		 .Btn a:hover{text-decoration: none;color:#FFF;background:url(../images/main/btn_onmouse.gif) no-repeat;}
+		 #tblAddResAsset{
+		          background-color:rgb(200,200,205);
+		          margin:10px 8px;
+		    }
+		    #tblAddResAssetCost{
+		          background-color:rgb(200,200,205);
+		          margin:10px 8px;
+		    }
+		    .captionCls{
+		           text-align: left;
+		           font-weight: bold;
+		           height:20px;
+		           /* background-color:#94B9E6; */
+		           background-color:#fff;
+		           vertical-align: middle;
+		    }
+		    .mustInput{
+		           color:red;
+		    }
+		    .staHide{
+		           display:none;
+		    }
+		    .shortWID{
+		           width:130px;
+		    }
+		    .pasClass{
+		           width: 600px;
+		           height: 400px;
+		           padding: 10px 10px;
+		    }
+		    .bodySpad{
+		           padding: 10px 10px;
+		    }
+		    .speHeight{
+		           height:250px;
+		    }
+		    .speWidth{
+		           width:150px;
+		    }
+		    #zhejiu{
+		        list-style: none;
+		        width: 660px;
+		        height:60px;
+		    }
+		    .nodepreciateInfo{
+		        margin-left:160px;
+		        color:red;
+		        height:60px;
+		        font-size: 16px;
+		        padding:20px 0;
+		    }
+		    .lineSt{
+		        width:100%;
+		        color:#94B9E6;
+		        height:2px;
+		    }
+         	    

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.message.mapper.PfMessageMapper">
+
+	<insert id="insert" parameterType="com.fable.insightview.platform.message.entity.PfMessage">
+		INSERT INTO SmsNotificationTask (ID, PhoneNumber,Message,SendedTimes,MaxTimes,Status,LastUpdateTime,ExpectSendTime,Source,NotifyType)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{phoneNumber,jdbcType=VARCHAR},#{message,jdbcType=VARCHAR},
+		#{sendedTimes,jdbcType=INTEGER},#{maxTimes,jdbcType=INTEGER},#{status,jdbcType=INTEGER},
+		#{lastUpdateTime,jdbcType=TIMESTAMP},#{expectSendTime,jdbcType=TIMESTAMP},#{source,jdbcType=INTEGER},#{notifyType,jdbcType=INTEGER});
+	</insert>
+	
+	<insert id="batchInsert" parameterType="LIST">
+		INSERT INTO SmsNotificationTask (ID, PhoneNumber,Message,SendedTimes,MaxTimes,Status,LastUpdateTime,ExpectSendTime,Source,NotifyType)
+		VALUES
+		<foreach collection="list" separator="," item="msg">
+			(#{msg.id,jdbcType=INTEGER},#{msg.phoneNumber,jdbcType=VARCHAR},#{msg.message,jdbcType=VARCHAR},
+			#{msg.sendedTimes,jdbcType=INTEGER},#{msg.maxTimes,jdbcType=INTEGER},#{msg.status,jdbcType=INTEGER},
+			#{msg.lastUpdateTime,jdbcType=TIMESTAMP},#{msg.expectSendTime,jdbcType=TIMESTAMP},#{msg.source,jdbcType=INTEGER},#{msg.notifyType,jdbcType=INTEGER})
+		</foreach>
+	</insert>
+	
+</mapper>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.positionManagement.mapper.PositionManagementMapper" > 
+  <resultMap id="PositionManagementResultMap" type="com.fable.insightview.platform.positionManagement.enitity.PositionManagement" >
+    <id column="PostID" property="postID" jdbcType="INTEGER" />
+    <result column="PostName" property="postName" jdbcType="VARCHAR" />
+    <result column="OrganisationID" property="organisationID" jdbcType="INTEGER" />
+    <result column="IsImportant" property="isImportant" jdbcType="INTEGER" />
+    <result column="PostDivision" property="postDivision" jdbcType="VARCHAR" />
+    <result column="ID" property="ID" jdbcType="INTEGER" />
+    <result column="UserID" property="userID" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <select id="getPositionManagementList" resultMap="PositionManagementResultMap" parameterType="page">
+  	select 
+  		s.PostID,s.PostName,so.OrganizationName,s.OrganizationID,s.IsImportant 
+  	from 
+  		STPostManage s 
+  	left join SysOrganization so on s.OrganizationID = so.OrganizationID
+
+  	where  1=1  
+  	<if test="params.postName != null and params.postName != '' " >
+        		and s.PostName like ${concat("'%'","'"+params.postName+"'","'%'")}
+    </if> 
+    <if test="params.isImportant != null and params.isImportant != '' " >
+        		and s.IsImportant = ${params.isImportant}
+     </if> 
+     <if test="params.organizationID != null and params.organizationID != '' and params.organizationID !=-1" >
+        		and s.OrganizationID = ${params.organizationID}
+     </if>   
+  </select>
+  
+  <select id="getPostPersonalNumList" resultMap="PositionManagementResultMap" parameterType="page">
+  		SELECT PostID, COUNT(*) postPersonalNum
+  	
+  	   FROM
+  	       STPostUserManage 
+  	     GROUP BY PostID
+  </select>
+  
+  
+    <select id="getPersonalNum" resultType="Integer" parameterType="java.lang.Integer">
+  		SELECT COUNT(*)
+  	   FROM
+  	       STPostUserManage 
+  	     WHERE  PostID = #{postID}
+  </select>
+  
+  
+    <select id="getOrganizationName" resultType="String" parameterType="java.lang.Integer">
+  		SELECT OrganizationName
+  	
+  	   FROM
+  	      SysOrganization
+  	     WHERE
+  	        OrganizationID = #{organizationID}
+  </select>
+    
+  <select id="getPositionMessage" resultMap="PositionManagementResultMap" parameterType="page">
+  	select
+  	    s.PostID,s.OrganizationID,s.PostName,so.OrganizationName,s.IsImportant,s.PostDivision
+  	from
+  	    STPostManage s
+  	left join SysOrganization so on s.OrganizationID = so.OrganizationID
+  	
+  	where 1=1
+  	<if test="params.postID != null and params.postID != '' " >
+        		and s.PostID =  #{params.postID}
+    </if> 
+  </select>
+    
+    <select id="initPositionPersonalTabList" resultMap="PositionManagementResultMap" parameterType="page">
+    select
+      su.ID,su.PostID,se.EmployeeCode,sui.UserName ,sui.MobilePhone,sui.Email
+    from 
+        STPostUserManage su
+     left join SysUserInfo sui on su.UserID = sui.UserID
+     left join SysEmployment se on su.UserID = se.UserID
+     
+     where 
+        su.PostID = #{params.postID}
+    	
+    </select>
+    
+   <select id="initPositionMessageAddPersonalTable" resultMap="PositionManagementResultMap" parameterType="page">
+    select
+      se.EmployeeCode,sui.UserName ,sui.MobilePhone,sui.Email,sui.UserID
+    from 
+       SysUserInfo sui 
+     left join SysEmployment se on sui.UserID = se.UserID
+     LEFT JOIN STPostUserManage stu ON stu.UserID = sui.UserID
+     where sui.State = 0  AND sui.userID NOT IN  (SELECT UserID  FROM STPostUserManage)
+           and se.OrganizationID = #{params.organizationID}
+		  <if test="params.userName != null and params.userName != '' " >
+	    		and sui.UserName like ${concat("'%'","'"+params.userName+"'","'%'")}
+	      </if> 
+	      <if test="params.employeeCode != null and params.employeeCode != '' " >
+	    		and se.EmployeeCode like ${concat("'%'","'"+params.employeeCode+"'","'%'")}
+	       </if> 
+    </select>
+    
+  	<update id="updatePositionPersonal" parameterType="com.fable.insightview.platform.positionManagement.enitity.PositionManagement" >
+    	update 
+    		STPostManage s
+    	set
+    		s.PostName = #{postName},
+    		s.OrganizationID = #{organizationID},
+    		s.IsImportant = #{isImportant},
+    		s.PostDivision = #{postDivision}
+     	where 
+     		s.PostID = #{postID}	
+	</update>
+	
+	<delete id="deletePositionPersonal" parameterType="com.fable.insightview.platform.positionManagement.enitity.PositionManagement" >
+    	delete 
+    		from STPostManage
+     	where 
+     		STPostManage.PostID = #{postID}	
+	</delete>
+	
+	<delete id="deletePositionPersonalMessage" parameterType="com.fable.insightview.platform.positionManagement.enitity.PositionManagement" >
+    	delete 
+    		from STPostUserManage
+     	where 
+     		STPostUserManage.ID = #{ID}	
+	</delete>  
+  
+  <insert id="insertPositionPersonal" keyProperty="postID"  parameterType="com.fable.insightview.platform.positionManagement.enitity.PositionManagement"> 
+   insert into STPostManage
+   <trim prefix="(" suffix=")" suffixOverrides="," >
+   	  <if test="postID != null" >
+        PostID,
+      </if>
+      <if test="postName != null" >
+        PostName,
+      </if>
+      <if test="organizationID != null">
+      	OrganizationID,
+      </if>
+      <if test="isImportant != null" >
+        IsImportant,
+      </if>
+      <if test="postDivision != null" >
+        PostDivision
+      </if>
+   </trim>
+   <trim prefix="values (" suffix=")" suffixOverrides="," >
+   	  <if test="postID != null" >
+        #{postID,jdbcType=INTEGER},
+      </if>
+      <if test="postName != null" >
+         #{postName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationID != null">
+      	#{organizationID,jdbcType=INTEGER},
+      </if>
+      <if test="isImportant != null" >
+        #{isImportant,jdbcType=INTEGER},
+      </if>
+     <if test="postDivision != null" >
+        #{postDivision,jdbcType=VARCHAR}
+      </if>
+   </trim>
+  </insert>  
+  
+  
+<resultMap id="PostUserManageResultMap" type="com.fable.insightview.platform.positionManagement.enitity.PostUserManage" >
+    <id column="PostID" property="postID" jdbcType="INTEGER" />
+    <result column="UserID" property="userID" jdbcType="INTEGER" />
+    <result column="ID" property="ID" jdbcType="INTEGER" />
+</resultMap>
+	<delete id="delIsertPostUserMsg" parameterType="com.fable.insightview.platform.positionManagement.enitity.PostUserManage" >
+    	delete 
+    		from 
+    		    STPostUserManage
+            where STPostUserManage.PostID = #{postID}
+
+	</delete>  
+
+  <insert id="insertPersonalToPosition"  parameterType="com.fable.insightview.platform.positionManagement.enitity.PostUserManage"> 
+   insert into STPostUserManage
+   <trim prefix="(" suffix=")" suffixOverrides="," >
+        ID,
+   	  <if test="postID != null" >
+        PostID,
+      </if>
+      <if test="userID != null" >
+        UserID
+      </if>
+      
+   </trim>
+   <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{ID,jdbcType=INTEGER},
+       
+       <if test="postID != null" >
+         #{postID,jdbcType=INTEGER},
+       </if>
+       
+       <if test="userID != null" >
+         #{userID,jdbcType=INTEGER},
+       </if>
+
+   </trim>
+  </insert>
+  
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dataobject.mapper.DataObjectBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.dataobject.entity.DataObjectBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="OBJECT_NAME" property="objectName" jdbcType="VARCHAR" />
+        <result column="TYPE" property="type" jdbcType="CHAR" />
+        <result column="FBS_SQL" property="fbsSql" jdbcType="CLOB" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_ID" property="updateId" jdbcType="VARCHAR" />
+        <result column="UPDATE_NAME" property="updateName" jdbcType="VARCHAR" />
+        <result column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, OBJECT_NAME, TYPE, FBS_SQL, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME, 
+        UPDATE_ID, UPDATE_NAME, UPDATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_DATAOBJECT
+        where ID = #{id,jdbcType=VARCHAR}
+        <!-- and (sys_id='${@com.fable.sys.util.UserSession@getSysId()}' or sys_id = '${@com.fable.sys.util.UserSession@getDefaultSysId()}' ) -->
+    </select>
+    
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_DATAOBJECT
+        where OBJECT_NAME = #{objectName,jdbcType=VARCHAR}
+    </select>
+    <select id="selectDataObjects" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_DATAOBJECT
+        <!-- where  (sys_id='${@com.fable.sys.util.UserSession@getSysId()}' or sys_id = '${@com.fable.sys.util.UserSession@getDefaultSysId()}' ) -->
+    </select>
+    
+    <sql id="ids" >
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </sql>
+    
+    <!-- 批量删除数据对象 -->
+    <delete id="deleteDataObjects" parameterType="java.lang.String">
+		<!-- 删除从表FBS_DATAOBJECT_FIELD_LABEL -->
+		DELETE FROM FBS_DATAOBJECT_FIELD_LABEL WHERE dataobject_id IN <include refid="ids"/>;
+		
+		<!-- 删除从表FBS_DATA_SECURITY_ITEM -->
+		DELETE FROM FBS_DATA_SECURITY_ITEM WHERE security_id IN (SELECT id FROM FBS_DATA_SECURITY WHERE dataobject_id IN <include refid="ids"/>);
+		
+		<!-- 删除从表FBS_DATA_SECURITY -->
+		DELETE FROM FBS_DATA_SECURITY WHERE dataobject_id IN <include refid="ids"/>;
+
+		<!-- 删除主表FBS_DATAOBJECT -->
+		DELETE FROM FBS_DATAOBJECT WHERE id IN <include refid="ids"/>;
+	</delete>
+	
+	<!-- 新增数据对象 -->
+    <insert id="createDataObject" parameterType="com.fable.insightview.platform.dataobject.entity.DataObjectBean">
+    	<!-- 先插入主表FBS_DATAOBJECT -->
+		INSERT INTO FBS_DATAOBJECT(id,sys_id,object_name,type,fbs_sql,note,creator_id,creator_name,created_time,update_id,update_name,updated_time)
+			VALUES(#{id,jdbcType=VARCHAR},#{sysId,jdbcType=VARCHAR},#{objectName,jdbcType=VARCHAR},
+				#{type,jdbcType=CHAR},#{fbsSql,jdbcType=CLOB},#{note,jdbcType=VARCHAR},#{creatorId,jdbcType=VARCHAR},
+				#{creatorName,jdbcType=VARCHAR},now(),#{updateId,jdbcType=VARCHAR},#{updateName,jdbcType=VARCHAR},now());
+		
+		<!-- 再插入从表FBS_DATAOBJECT_FIELD_LABEL -->
+		<!-- <include refid="createDataObjectFieldLabels"/> -->
+		INSERT INTO FBS_DATAOBJECT_FIELD_LABEL(id,sys_id,dataobject_id,property_name,display_title,note,creator_id,creator_name,created_time) 
+	    	<foreach collection="fieldLabels" item= "fieldLabel" open="VALUES" close=";" separator=",">
+		  		(#{fieldLabel.id,jdbcType=VARCHAR},#{fieldLabel.sysId,jdbcType=VARCHAR},#{fieldLabel.dataobjectId,jdbcType=VARCHAR},
+				#{fieldLabel.propertyName,jdbcType=VARCHAR},#{fieldLabel.displayTitle,jdbcType=VARCHAR},#{fieldLabel.note,jdbcType=VARCHAR},
+				#{fieldLabel.creatorId,jdbcType=VARCHAR},#{fieldLabel.creatorName,jdbcType=VARCHAR},now())
+		    </foreach >
+	</insert>
+	
+	<!-- 更新数据对象 -->
+    <update id="updateDataObject" parameterType="com.fable.insightview.platform.dataobject.entity.DataObjectBean">
+    	<!-- 更新FBS_DATAOBJECT主记录 -->
+		UPDATE FBS_DATAOBJECT 
+		SET object_name=#{objectName,jdbcType=VARCHAR},note=#{note,jdbcType=VARCHAR},update_id=#{updateId,jdbcType=VARCHAR},update_name=#{updateName,jdbcType=VARCHAR},updated_time=now()
+			<!-- 只有自定义SQL类型可以修改SQL -->
+			<if test="3 == type" >
+                , fbs_sql=#{fbsSql,jdbcType=CLOB}
+            </if>
+        WHERE id=#{id,jdbcType=VARCHAR};
+        
+        <!-- 清空指定dataObjectId下的所有子记录 -->
+        DELETE FROM FBS_DATAOBJECT_FIELD_LABEL WHERE dataobject_id=#{id,jdbcType=VARCHAR};
+        
+        <!-- 再插入从表FBS_DATAOBJECT_FIELD_LABEL -->
+        <!-- <include refid="createDataObjectFieldLabels"/> -->
+		INSERT INTO FBS_DATAOBJECT_FIELD_LABEL(id,sys_id,dataobject_id,property_name,display_title,note,creator_id,creator_name,created_time) 
+	    	<foreach collection="fieldLabels" item= "fieldLabel" open="VALUES" separator="," close=";">
+			  	(#{fieldLabel.id,jdbcType=VARCHAR},#{fieldLabel.sysId,jdbcType=VARCHAR},#{fieldLabel.dataobjectId,jdbcType=VARCHAR},
+				#{fieldLabel.propertyName,jdbcType=VARCHAR},#{fieldLabel.displayTitle,jdbcType=VARCHAR},#{fieldLabel.note,jdbcType=VARCHAR},
+				#{fieldLabel.creatorId,jdbcType=VARCHAR},#{fieldLabel.creatorName,jdbcType=VARCHAR},now())
+		    </foreach >
+	</update>
+	
+	<update id="updateDataObjectsWithProcdure">
+	    <!-- {call update_dataObject('${@com.fable.sys.util.UserSession@getSysId()}')} -->
+	</update>
+</mapper>

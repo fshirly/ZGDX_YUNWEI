@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.userAuthenticate.mapper.UserInfoMapper" > 
+  <resultMap id="UserInfoMap" type="com.fable.insightview.platform.userAuthenticate.entity.UserInfoBean" >
+    <id column="UserID" property="userId" jdbcType="INTEGER" />
+    <result column="UserAccount" property="userAccount" jdbcType="VARCHAR" />
+    <result column="UserName" property="userName" jdbcType="VARCHAR" />
+    <result column="UserPassword" property="userPassword" jdbcType="VARCHAR" />
+    <result column="UserIcon" property="userIcon" jdbcType="VARCHAR" />
+    <result column="MobilePhone" property="mobile" jdbcType="VARCHAR" />
+    <result column="Telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="IsAutoLock" property="isAutoLock" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="UserType" property="userType" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LastModifyTime" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="LockedTime" property="lockedTime" jdbcType="TIMESTAMP" />
+    <result column="LockedReason" property="lockedReason" jdbcType="VARCHAR" />
+    <result column="State" property="state" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    UserID, UserAccount, UserName, UserPassword, MobilePhone, Email, Telephone, IsAutoLock, 
+    Status, UserType, CreateTime, LastModifyTime, LockedTime, LockedReason, State, UserIcon
+  </sql>
+  
+  <select id="getUserInfoById" resultMap="UserInfoMap" parameterType="Integer" >
+    select * from SysUserInfo where UserID=#{userId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getUserInfoByAccount" resultMap="UserInfoMap" parameterType="String" >
+    select * from SysUserInfo where UserAccount=#{userAccount}
+  </select>
+  
+  <select id="getUserByAccount" resultType="HASHMAP" parameterType="String">
+    SELECT su.UserID,su.UserAccount,su.UserName,su.MobilePhone,su.UserType,su.IDCard,
+    se.EmployeeCode,so.OrganizationID,so.OrganizationName,so.OrganizationCode,sd.DeptID,sd.DeptCode,sd.DeptName 
+	FROM SysUserInfo su,SysEmployment se,SysOrganization so,SysDepartment sd
+	WHERE su.UserID=se.UserID AND se.OrganizationID=so.OrganizationID AND se.DeptID=sd.DeptID
+	AND su.UserAccount=#{userAccount}
+  </select>
+  
+  <update id="updateUserInfo" parameterType="userInfo" >
+    update SysUserInfo set UserAccount=#{userAccount}, UserName=#{userName}, UserPassword=#{userPassword}, UserIcon=#{userIcon}, MobilePhone=#{mobile}, Email=#{email}, Telephone=#{telephone},
+    IsAutoLock=#{isAutoLock}, Status=#{status}, UserType=#{userType}, CreateTime=#{createTime}, LastModifyTime=#{lastModifyTime}, LockedTime=#{lockedTime}, LockedReason=#{lockedReason}, State=#{state}
+    where UserID=#{userId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryUserInfosById" resultType="hashmap" resultMap="UserInfoMap" parameterType="Integer">
+	SELECT su.UserID, su.UserAccount, su.MobilePhone, su.Email, su.UserIcon, su.UserName, sd.DeptName, so.OrganizationName, so.OrganizationID FROM SysUserInfo su 
+		 LEFT JOIN SysEmployment se ON su.UserID = se.UserID 
+		 LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID 
+		 LEFT JOIN SysOrganization so ON sd.OrganizationID = so.OrganizationID where su.UserID=#{userId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="isProviderByUserId" resultType="hashmap" resultMap="UserInfoMap" parameterType="Integer">
+	SELECT ss.UserID, ss.UserAccount, ss.MobilePhone, ss.Email, ss.UserIcon, ss.UserName, ss.DeptName, ss.OrganizationName, ss.OrganizationID, p.ProviderId, p.ProviderName FROM
+	(SELECT su.UserID, su.UserAccount, su.MobilePhone, su.Email, su.UserIcon, su.UserName, sd.DeptName, so.OrganizationName, so.OrganizationID FROM SysUserInfo su 
+		 LEFT JOIN SysEmployment se ON su.UserID = se.UserID 
+		 LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID 
+		 LEFT JOIN SysOrganization so ON sd.OrganizationID = so.OrganizationID) ss LEFT JOIN SysProviderUser spu ON ss.UserID = spu.UserID
+		 LEFT JOIN ProviderInfo p ON p.ProviderID = spu.ProviderID WHERE spu.UserID=#{userId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="indistinctQueryUserName" resultType="hashmap" resultMap="UserInfoMap" parameterType="String">
+	select su.UserID, su.UserAccount, su.UserName, su.userIcon,sd.DeptName from SysUserInfo su
+		LEFT JOIN SysEmployment se ON su.UserID = se.UserID 
+		LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID where 1=1
+	<if test="userName != null and userName != '' " >
+        and UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")}
+     </if>
+  </select>
+  
+  <select id="getUserTotalIndistinct" resultType="Integer" parameterType="String">
+	select count(1) from
+		(SELECT su.UserID, su.UserAccount, su.UserName, sd.DeptName, so.OrganizationName, so.OrganizationID FROM SysUserInfo su 
+		 LEFT JOIN SysEmployment se ON su.UserID = se.UserID 
+		 LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID 
+		 LEFT JOIN SysOrganization so ON sd.OrganizationID = so.OrganizationID WHERE 1=1
+      <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")} 
+      </if>
+      )AS total
+  </select>
+  
+  <select id="getUserTotalByOrgaId" resultType="Integer" parameterType="String">
+	select count(1) from
+		(select su.UserID, su.UserAccount, su.UserName, su.UserIcon, sd.DeptName, so.OrganizationName, so.OrganizationID 
+		from SysUserInfo su,SysEmployment se , SysDepartment sd , SysOrganization so 
+		where su.UserID = se.UserID and se.DeptID = sd.DeptID and sd.OrganizationID = so.OrganizationID
+      <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")} 
+      </if>
+      <if test="orgaId != null and orgaId != '' " >
+        AND sd.OrganizationID=#{orgaId,jdbcType=INTEGER}
+      </if>
+      )AS total
+  </select>
+  
+  <select id="queryUsersByOrgaId" resultType="hashmap" resultMap="UserInfoMap" parameterType="String">
+	select su.UserID, su.UserAccount, su.UserName, su.UserIcon, sd.DeptName, so.OrganizationName, so.OrganizationID 
+		from SysUserInfo su,SysEmployment se , SysDepartment sd , SysOrganization so 
+		where su.UserID = se.UserID and se.DeptID = sd.DeptID and sd.OrganizationID = so.OrganizationID 
+      <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")} 
+      </if>
+      <if test="orgaId != null and orgaId != '' " >
+        AND sd.OrganizationID=#{orgaId,jdbcType=INTEGER}
+      </if>
+  </select>
+  
+  <select id="queryUsersByProvId" resultType="hashmap" resultMap="UserInfoMap" parameterType="String">
+	SELECT su.UserID, su.UserAccount, su.UserName, su.UserIcon, sd.DeptName, p.ProviderID, p.ProviderName FROM SysUserInfo su 
+		LEFT JOIN SysEmployment se ON su.UserID = se.UserID
+		LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID
+		LEFT JOIN SysProviderUser sp ON sp.UserID = se.UserID
+		LEFT JOIN ProviderInfo p ON p.ProviderID = sp.ProviderID WHERE 1=1
+       <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")} 
+      </if>
+      <if test="provId != null and provId != '' " >
+        AND p.ProviderID=#{provId,jdbcType=INTEGER}
+      </if>
+  </select>
+  
+  <select id="getUserTotalByProvId" resultType="Integer" parameterType="String">
+  	select count(1) from
+		(SELECT su.UserID, su.UserAccount, su.UserName, sd.DeptName, p.ProviderID, p.ProviderName FROM SysUserInfo su 
+		LEFT JOIN SysEmployment se ON su.UserID = se.UserID
+		LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID
+		LEFT JOIN SysProviderUser sp ON sp.UserID = se.UserID
+		LEFT JOIN ProviderInfo p ON p.ProviderID = sp.ProviderID WHERE 1=1
+      <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")} 
+      </if>
+      <if test="provId != null and provId != '' " >
+        AND p.ProviderID=#{provId,jdbcType=INTEGER}
+      </if>
+      )AS total
+  </select>
+  
+  <select id="indistinctQueryOrgaUserName" resultType="hashmap" resultMap="UserInfoMap" parameterType="page">
+  	select DISTINCT so.OrganizationID, so.OrganizationName 
+  		from SysOrganization so, SysDepartment sd , SysEmployment se, SysUserInfo su
+ 		where so.OrganizationID=sd.OrganizationID and sd.DeptID=se.DeptID and su.UserID=se.UserID 
+	  <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")}
+      </if>
+  </select>
+  
+  <select id="indistinctProvderUserName" resultType="hashmap" resultMap="UserInfoMap" parameterType="page">
+  	SELECT DISTINCT p.ProviderID, p.ProviderName FROM SysUserInfo su 
+		LEFT JOIN SysEmployment se ON su.UserID = se.UserID
+		RIGHT JOIN SysProviderUser sp ON sp.UserID = se.UserID
+		RIGHT JOIN ProviderInfo p ON p.ProviderID = sp.ProviderID WHERE 1=1
+      <if test="userName != null and userName != '' " >
+        AND su.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")}
+      </if>
+  </select>  
+  
+  <select id="queryProvderUserName" resultType="hashmap" resultMap="UserInfoMap" parameterType="page">
+    SELECT UserID, UserAccount, UserName, UserIcon 
+        FROM SysUserInfo
+        WHERE UserID IN (SELECT UserID FROM SysProviderUser WHERE ProviderID = (SELECT ProviderID FROM SysProviderUser 
+        WHERE UserID=#{userId,jdbcType=INTEGER}) AND UserID &lt;&gt; #{userId,jdbcType=INTEGER})
+      <if test="userName != null and userName != '' " >
+        and UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")}
+      </if>
+  </select>  
+  
+  <select id="getUserTotalProvider" resultType="Integer" parameterType="page">
+	 SELECT COUNT(1) FROM (
+	 	SELECT * FROM (SELECT su.UserID, su.UserAccount, su.UserName, sd.DeptName, p.ProviderID, p.ProviderName FROM SysUserInfo su 
+			LEFT JOIN SysEmployment se ON su.UserID = se.UserID
+			LEFT JOIN SysDepartment sd ON se.DeptID = sd.DeptID
+			LEFT JOIN SysProviderUser sp ON sp.UserID = se.UserID
+			LEFT JOIN ProviderInfo p ON p.ProviderID = sp.ProviderID) AS ss WHERE ss.ProviderID=
+			(SELECT ProviderID FROM SysProviderUser 
+	        WHERE UserID=#{userId,jdbcType=INTEGER})
+      <if test="userName != null and userName != '' " >
+        and ss.UserName like ${concat("'%'", "'" + userName + "'" ,"'%'")}
+      </if>
+      ) AS total
+  </select>
+  
+  <select id="queryUsers" resultType="HASHMAP">
+  	SELECT su.* FROM SysUserInfo su, SysEmployment se WHERE su.UserID=se.UserID AND su.State=0 AND se.DeptID=#{deptId}
+  </select>
+  
+</mapper>

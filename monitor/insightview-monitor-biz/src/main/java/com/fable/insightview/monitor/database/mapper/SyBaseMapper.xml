@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.insightview.monitor.database.mapper.SyBaseMapper">
+    <resultMap id="MODBMSServerResultMap" type="com.fable.insightview.monitor.database.entity.MODBMSServerBean">
+        <id column="MOID" property="moid" jdbcType="INTEGER"/>
+        <result column="MOName" property="moname" jdbcType="VARCHAR"/>
+        <result column="MOAlias" property="moalias" jdbcType="VARCHAR"/>
+        <result column="DBMSType" property="dbmstype" jdbcType="VARCHAR"/>
+        <result column="ServerVersion" property="serverversion" jdbcType="VARCHAR"/>
+        <result column="IP" property="ip" jdbcType="VARCHAR"/>
+        <result column="PORT" property="port" jdbcType="INTEGER"/>
+        <result column="UserName" property="username" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="OperStatus" property="operstatus" jdbcType="INTEGER"/>
+        <result column="AdminStatus" property="adminstatus" jdbcType="INTEGER"/>
+        <result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER"/>
+        <result column="DomainID" property="domainid" jdbcType="INTEGER"/>
+        <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="LastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP"/>
+        <result column="CreateBy" property="createby" jdbcType="INTEGER"/>
+        <result column="UpdateBy" property="updateby" jdbcType="INTEGER"/>
+        <result column="MOClassID" property="moClassId" jdbcType="INTEGER"/>
+        <result column="moDeviceId" property="moDeviceId" jdbcType="INTEGER"/>
+        <result column="formatTime" property="formatTime" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="MOMySQLDBServerResultMap" type="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+        <id column="MOID" property="moId" jdbcType="INTEGER"/>
+        <result column="StartTime" property="startTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="MOSybaseDeviceResultMap" type="com.fable.insightview.monitor.database.entity.MOSybaseDeviceBean">
+        <id column="MOID" property="moId" jdbcType="INTEGER"/>
+        <result column="DEVICENAME" property="deviceName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="MOSybaseDatabaseResultMap" type="com.fable.insightview.monitor.database.entity.MOSybaseDatabaseBean">
+        <id column="MOID" property="moId" jdbcType="INTEGER"/>
+        <result column="DATABASENAME" property="databaseName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="PerfSybaseServerResultMap" type="com.fable.insightview.monitor.database.entity.PerfSybaseServerBean">
+        <id column="MOID" property="moId" jdbcType="INTEGER"/>
+        <result column="EXTERNALTRANSACTIONNUM" property="externalTransactionNum" jdbcType="INTEGER"/>
+        <result column="TXLOG" property="txLog" jdbcType="INTEGER"/>
+        <result column="PACKRECEIVE" property="packReceive" jdbcType="INTEGER"/>
+        <result column="PACKSENT" property="packSent" jdbcType="INTEGER"/>
+        <result column="PACKETERRORS" property="packetErrors" jdbcType="INTEGER"/>
+        <result column="TOTALDISKREAD" property="totalDiskRead" jdbcType="INTEGER"/>
+        <result column="TOTALDISKWRITE" property="totalDiskWrite" jdbcType="INTEGER"/>
+        <result column="TOTALDISKERRORS" property="totalDiskErrors" jdbcType="INTEGER"/>
+        <result column="CPUBUSY" property="cpuBusy" jdbcType="INTEGER"/>
+        <result column="CPUIDLE" property="cpuIdle" jdbcType="INTEGER"/>
+        <result column="formatTime" property="formatTime" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="PerfSybaseDatabaseResultMap" type="com.fable.insightview.monitor.database.entity.PerfSybaseDatabaseBean">
+        <id column="MOID" property="moId" jdbcType="INTEGER"/>
+        <result column="DBFILESIZE" property="dBFileSize" jdbcType="INTEGER"/>
+        <result column="formatTime" property="formatTime" jdbcType="INTEGER"/>
+    </resultMap>
+    <!-- 获取实例Instance详情-->
+    <select id="getOrclInstanceDetail" resultType="MODBMSServer"
+     parameterType="hashmap">
+        SELECT p.PerfValue perfValueAvai,b.InstanceName,b.Port,b.IP,c.deviceIP,d.DBName,b.StartTime,b.TotalSize,b.FreeSize,b.Installpath,a.AlarmLevel,e.LevelIcon,e.AlarmLevelName
+        FROM MODBMSServer a LEFT JOIN MOOracleInstance b ON a.MOID=b.DBMSMOID
+        LEFT JOIN MODevice c ON  b.deviceMOID=c.moID
+        LEFT JOIN MOOracleDB d ON b.DBMOID=d.MOID
+        LEFT JOIN AlarmLevel e ON a.AlarmLevel=e.AlarmLevelValue
+        LEFT JOIN PerfSnapshotDatabase p ON p.DeviceMOID=b.MOID AND p.kpiName='DBAvailability'
+        and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+        WHERE a.MOID=#{InsMOID}
+    </select>
+    <select id="getSybaseChartAvailability" resultType="MODBMSServer"
+     parameterType="hashmap">
+        SELECT round(t1.count1/t2.Sumcount,2)*100 DeviceAvailability FROM
+        (SELECT  COUNT(b.DeviceStatus) count1 FROM  MOSybaseServer a ,PerfDeviceAvailability b
+        WHERE a.DBMSMOID=#{MOID} AND a.MOID=b.MOID AND b.DeviceStatus=1 AND b.CollectTime  BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}) t1,
+        (SELECT  COUNT(b.DeviceStatus) Sumcount FROM  MOSybaseServer a ,PerfDeviceAvailability b
+        WHERE a.DBMSMOID=#{MOID} AND a.MOID=b.MOID AND b.CollectTime BETWEEN	${toDate(timeBegin)} and ${toDate(timeEnd)}) t2
+    </select>
+    <select id="queryMOSybaseServer" resultType="hashmap" resultMap="MOMySQLDBServerResultMap" parameterType="page">
+        select t.MOID,t.DBMSMOID,ta.DBMSType,t.IP,t.Port,t.ServerName,t.StartTime,tb.MOName,ta.MOID dbmsMoId
+        from MOSybaseServer t
+        left join MODBMSServer ta on t.DBMSMOID=ta.MOID
+        left join MODevice tb on t.DeviceMOID=tb.MOID
+        where ta.DBMSType='sybase'
+        <if test="params.serverName != null and params.serverName != ''">
+            and t.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}
+        </if>
+        <if test="params.IP != null and params.IP != ''">
+            and t.IP like ${concat("'%'","'"+params.IP+"'","'%'")}
+        </if>
+        <if test="params.dbmsMoId != -1 and params.dbmsMoId != '' ">
+		    and ta.MOID=#{params.dbmsMoId} 
+		</if>
+        order by t.MOID
+    </select>
+    <select id="queryMOSybaseDevice" resultType="hashmap" resultMap="MOSybaseDeviceResultMap" parameterType="page">
+        select t.MOID,t.DeviceName,t.PhysicalName,t.DeviceDescr,t.TotalSize,t.UsedSize,t.FreeSize,tb.IP
+        from MOSybaseDevice t
+        left join MOSybaseServer ta on t.ServerMOID=ta.MOID
+        left join MODBMSServer tb on ta.DBMSMOID=tb.MOID
+        where tb.DBMSType='sybase'
+        <if test="params.deviceName != null and params.deviceName != ''">
+            and t.DeviceName like ${concat("'%'","'"+params.deviceName+"'","'%'")}
+        </if>
+        <if test="params.IP != null and params.IP != ''">
+            and tb.IP like ${concat("'%'","'"+params.IP+"'","'%'")}
+        </if>
+        <if test="params.serverMoId != null and params.serverMoId != '' and params.serverMoId != -1">
+            and t.ServerMOID = #{params.serverMoId}
+        </if>
+        order by t.MOID
+    </select>
+    <select id="queryMOSybaseDatabase" resultType="hashmap" resultMap="MOSybaseDatabaseResultMap" parameterType="page">
+        select t.MOID,tb.DBMSType,t.DatabaseName,t.DatabaseOwner,t.DatabaseOptions,t.dataSize,t.logSize,t.TotalSize,t.LogSize,t.UsedSize,t.FreeSize,tb.IP
+        from MOSybaseDatabase t
+        left join MOSybaseServer ta on t.ServerMOID=ta.MOID
+        left join MODBMSServer tb on ta.DBMSMOID=tb.MOID
+        where tb.DBMSType='sybase'
+        <if test="params.databaseName != null and params.databaseName != ''">
+            and t.DatabaseName like ${concat("'%'","'"+params.databaseName+"'","'%'")}
+        </if>
+        <if test="params.IP != null and params.IP != ''">
+            and tb.IP like ${concat("'%'","'"+params.IP+"'","'%'")}
+        </if>
+        <if test="params.serverMoId != null and params.serverMoId != '' and params.serverMoId != -1">
+            and t.ServerMOID = #{params.serverMoId}
+        </if>
+        order by t.DatabaseID
+    </select>
+    <select id="querySybaseServerPerf" resultMap="PerfSybaseServerResultMap" parameterType="hashmap">
+        select a.*,${dateFormat("a.CollectTime")} formatTime from PerfSybaseServer a
+        left join MOSybaseServer b on a.MOID=b.MOID where b.DBMSMOID=#{moID}
+        and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+        order by a.CollectTime
+    </select>
+    <select id="getPerfValue" resultMap="PerfSybaseServerResultMap" parameterType="hashmap">
+        SELECT  ROUND(a.perfValue) perfValue FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=${moID} AND   KPIName = ${concat("''","'"+kpiName+"'","''")}
+    </select>
+    <select id="getDatabasefPerfValue" resultMap="PerfSybaseDatabaseResultMap" parameterType="hashmap">
+        SELECT  ROUND(perfValue) perfValue FROM PerfSnapshotDatabase WHERE MOID=${moID} AND   KPIName = ${concat("''","'"+kpiName+"'","''")}
+    </select>
+    <select id="getDatabaseDetail" resultType="com.fable.insightview.monitor.database.entity.PerfSybaseServerBean" parameterType="hashmap">
+        select a.txLog,b.packReceive,c.packSent,d.packetErrors,e.totalDiskRead,f.totalDiskWrite,g.totalDiskErrors,h.cpuBusy,i.cpuIdle from
+        (SELECT a.perfValue txLog,a.MOID FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{TxLog}) a
+        left join
+        (SELECT a.perfValue packReceive,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{PackReceive}) b on a.MOID=b.MOID
+        left join
+        (SELECT a.perfValue packSent ,a.MOID FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{PackSent}) c on b.MOID=c.MOID
+        left join
+        (SELECT a.perfValue packetErrors,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{PacketErrors}) d on c.MOID=d.MOID
+        left join
+        (SELECT a.perfValue totalDiskRead,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{TotalDiskRead}) e on d.MOID=e.MOID
+        left join
+        (SELECT a.perfValue totalDiskWrite,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{TotalDiskWrite}) f on e.MOID=f.MOID
+        left join
+        (SELECT a.perfValue totalDiskErrors,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{TotalDiskErrors}) g on f.MOID=g.MOID
+        left join
+        (SELECT a.perfValue cpuBusy,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{CpuBusy}) h on g.MOID=h.MOID
+        left join
+        (SELECT a.perfValue cpuIdle,a.MOID  FROM PerfSnapshotDatabase a,MOSybaseServer b  WHERE a.deviceMOID=b.MOID  AND b.DBMSMOID=#{MOID} and KPIName=#{CpuIdle}) i on h.MOID=i.MOID
+        
+    </select>
+    <select id="getFirstBean" resultType="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+        select * from MOSybaseServer where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+    </select>
+    <select id="getFirstSybaseDbBean" resultType="com.fable.insightview.monitor.database.entity.MOSybaseDatabaseBean">
+        select * from MOSybaseDatabase where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+    </select>
+    <select id="getSybaseDbById" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOSybaseDatabaseBean">
+        select * from MOSybaseDatabase where 1=1 and MOID=#{moId}
+    </select>
+    <select id="getSybaseServerById" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+        select * from MOSybaseServer where 1=1 and DBMSMOID=#{moId}
+    </select>
+    
+    <select id="findSyBaseServerInfo" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+        select * from MOSybaseServer where MOID = #{moId}
+    </select>
+    
+    <select id="findSybaseDeviceInfo" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOSybaseDeviceBean">
+        select * from MOSybaseDevice where MOID = #{moId}
+    </select>
+    
+    <select id="findSybaseDatabase" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOSybaseDatabaseBean">
+        select * from MOSybaseDatabase where MOID = #{moId}
+    </select>
+    
+    <select id="getServerIDByMOID" parameterType="Integer" resultType="Integer">
+    	select t.MOID
+        from MOSybaseServer t
+        left join MODBMSServer ta on t.DBMSMOID=ta.MOID
+        where t.DBMSMOID=#{moId}
+    </select>
+    
+    <select id="getSybaseServerList" resultType="hashmap" resultMap="MOMySQLDBServerResultMap" parameterType="hashmap">
+        select t.MOID,t.DBMSMOID,ta.DBMSType,t.IP,t.Port,t.ServerName,t.StartTime,tb.MOName,ta.MOAlias as moAlias
+        from MOSybaseServer t
+        left join MODBMSServer ta on t.DBMSMOID=ta.MOID
+        left join MODevice tb on t.DeviceMOID=tb.MOID
+        where ta.DBMSType='sybase'
+        <if test="ip != null and ip != ''">
+            and t.IP like ${concat("'%'","'"+ip+"'","'%'")}
+        </if>
+        order by t.IP
+    </select>
+    
+    <select id="getDbmsIDByServer" parameterType="Integer" resultType="Integer">
+    	select ta.MOID
+        from MODBMSServer ta
+        left join MOSybaseServer t on t.DBMSMOID=ta.MOID
+        where t.MOID=#{moId}
+    </select>
+</mapper>

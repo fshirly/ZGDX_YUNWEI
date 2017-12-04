@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.traptask.mapper.SysTrapTaskMapper" >
+  <resultMap id="trapTaskMap" type="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean" >
+    <id column="TaskID" property="taskID" jdbcType="INTEGER" />
+    <result column="serverIP" property="serverIP" jdbcType="VARCHAR" />
+    <result column="filterExpression" property="filterExpression" jdbcType="VARCHAR" />
+    <result column="ProgressStatus" property="progressStatus" jdbcType="INTEGER" />
+    <result column="CollectorID" property="collectorID" jdbcType="INTEGER" />
+    <result column="Creator" property="creator" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+    <result column="LastOPResult " property="lastOPResult" jdbcType="INTEGER" />
+    <result column="ErrorInfo" property="errorInfo" jdbcType="VARCHAR" />
+    <result column="OperateStatus" property="operateStatus" jdbcType="INTEGER" />
+    <result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+    <result column="IsOffline" property="isOffline" jdbcType="VARCHAR" />
+  </resultMap>     
+  <select id="selectTrapTasks" resultType="hashmap" resultMap="trapTaskMap" parameterType="page">
+  	select task.TaskID,task.serverIP,task.filterExpression,task.ProgressStatus,task.CollectorID,
+  		task.Creator,task.CreateTime,task.LastOPResult,task.OperateStatus,task.AlarmOID,task.IsOffline,
+  		host.IPAddress as collectorName,err.ErrorMess as errorInfo
+	from SysTrapTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	where 1=1 and task.OperateStatus!=3 and task.IsOffline is null
+	
+      <if test="params.alarmOID != '' and params.alarmOID != null ">
+		and task.AlarmOID like  ${concat("'%'","'"+params.alarmOID+"'","'%'")}
+      </if>
+      <if test="params.serverIP != '' and params.serverIP != null ">
+		and task.ServerIP like  ${concat("'%'","'"+params.serverIP+"'","'%'")}
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+  </select>
+  
+  <select id="getTaskInfoByTaskID" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+  select task.TaskID,task.serverIP,task.filterExpression,task.ProgressStatus,task.CollectorID,
+  		task.Creator,task.CreateTime,task.LastOPResult,task.OperateStatus,task.AlarmOID,
+  		host.IPAddress as collectorName,u.UserName as creatorName,err.ErrorMess as errorInfo
+	from SysTrapTask task
+	left join SysUserInfo u on task.creator=u.UserID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+  where taskID = #{taskID,jdbcType=INTEGER} 
+  </select>
+  
+  <update id="updateTaskProgressStatus" parameterType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+  update SysTrapTask set ProgressStatus = #{progressStatus,jdbcType=INTEGER}
+  where taskID = #{taskID,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getByAlarmDefineID" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+  select task.* from SysTrapTask task
+  left join AlarmEventDefine a on task.AlarmOID=a.AlarmOID
+  where task.IsOffline='1' and a.AlarmDefineID=#{alarmDefineID}
+  </select>
+  
+   <select id="selectOfflineTrapTasks" resultType="hashmap" resultMap="trapTaskMap" parameterType="page">
+  	select task.TaskID,task.serverIP,task.filterExpression,task.ProgressStatus,task.CollectorID,
+  		task.Creator,task.CreateTime,task.LastOPResult,task.OperateStatus,task.AlarmOID,task.IsOffline,
+  		host.IPAddress as collectorName,err.ErrorMess as errorInfo
+	from SysTrapTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	where 1=1 and task.OperateStatus!=3 and task.IsOffline='1'
+	
+      <if test="params.alarmOID != '' and params.alarmOID != null ">
+		and task.AlarmOID like  ${concat("'%'","'"+params.alarmOID+"'","'%'")}
+      </if>
+      <if test="params.serverIP != '' and params.serverIP != null ">
+		and task.ServerIP like  ${concat("'%'","'"+params.serverIP+"'","'%'")}
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+  </select>
+  <select id="getOfflineTaskByHost" parameterType="INTEGER"  resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+  	select * from SysTrapTask where IsOffline='1' and collectorId=#{collectorId} and OperateStatus!=3
+  </select>
+</mapper>

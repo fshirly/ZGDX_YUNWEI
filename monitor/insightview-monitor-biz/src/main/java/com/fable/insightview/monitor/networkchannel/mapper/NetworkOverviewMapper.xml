@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.insightview.monitor.networkchannel.mapper.NetworkOverviewMapper">
+	<!-- 概览视图mapper -->
+	<select id="queryTop10CPUMemsage" parameterType="map" resultType="map">
+		SELECT device.ResName resName ,device.DeviceIP deviceIP ,device.MOID deviceMoid ,device.MOName deviceName 
+		,item.ConstantItemName nodeName ,net.PerfValue ${kpiAlias}
+		FROM v_networkChannelDevice device
+		JOIN PerfSnapshotNetDevice net ON device.MOID = net.DeviceMOID
+		JOIN SysConstantItemDef item ON item.ConstantItemId = device.Area 
+		JOIN SysConstantTypeDef type ON type.ConstantTypeId = item.ConstantTypeId
+		WHERE type.ConstantTypeName = 'Area'
+		<if test="kpiName != null and kpiName != ''">
+			AND net.KPIName = #{kpiName}
+		</if>
+		<if test="network != null and network != ''">
+			AND device.NetWork = #{network}
+		</if>
+		<if test="network != null and network != '' and network == 1 and applicationType != null and applicationType != ''">
+			AND device.ApplicationType = #{applicationType} 
+		</if>
+		<if test="dataExpire != null and dataExpire != ''">
+			AND net.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+		</if>
+		ORDER BY ${kpiAlias} DESC 
+		LIMIT 10
+	</select>
+	
+	<select id="queryTop10DeviceIfInfo" parameterType="map" resultType="map">
+		SELECT device.ResName resName ,netInfo.ifName ,netInfo.ifAlias,device.DeviceIP deviceIP 
+		,device.MOID moid ,device.DeviceMOID deviceMoid ,device.DeviceMOName deviceName
+		,item.ConstantItemName nodeName ,IFNULL(net.PerfValue ,0) ${kpiAlias1} 
+		,IFNULL((SELECT PerfValue FROM PerfSnapshotNetDevice WHERE MOID = device.MOID AND KPIName = #{kpiName2} 
+			AND CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR) ORDER BY CollectTime DESC LIMIT 1) ,0) ${kpiAlias2}
+		<if test="kpiName3 != null and kpiName3 != ''">
+		,IFNULL((SELECT PerfValue FROM PerfSnapshotNetDevice WHERE MOID = device.MOID AND KPIName = #{kpiName3}
+			AND CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR) ORDER BY CollectTime DESC LIMIT 1) ,0) ${kpiAlias3}
+		</if>
+		FROM v_networkChannelDeviceIF device
+		JOIN PerfSnapshotNetDevice net ON device.MOID = net.MOID
+		JOIN SysConstantItemDef item ON item.ConstantItemId = device.Area 
+		JOIN SysConstantTypeDef type ON type.ConstantTypeId = item.ConstantTypeId
+		join MONetworkIf netInfo on netInfo.MOID = device.MOID
+		WHERE net.KPIName = #{kpiNameOrder} 
+		AND type.ConstantTypeName = 'Area' 
+		<if test="network != null and network != ''">
+			AND device.NetWork = #{network}
+		</if>
+		<if test="network != null and network != '' and network == 1 and applicationType != null and applicationType != ''">
+			AND device.ApplicationType = #{applicationType} 
+		</if>
+		<if test="deviceMoid != null and deviceMoid != ''">
+			AND net.DeviceMOID = #{deviceMoid}
+		</if>
+		<if test="dataExpire != null and dataExpire != ''">
+			AND net.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+		</if>
+		ORDER BY ${kpiAlias1} DESC ,${kpiAlias2} DESC
+		LIMIT 10
+	</select>
+	
+	<select id="queryRecentlyNetworkAlarm" parameterType="map" resultType="map">
+		SELECT alarm.SourceMOID deviceMoid,alarm.alarmLevel ,l.alarmLevelName ,alarm.sourceMOName , alarm.alarmTitle, alarm.sourceMOIPAddress
+		, alarm.alarmOperateStatus, DATE_FORMAT(alarm.startTime,'%Y-%m-%d %T') startTime, statDef.statusName operStatusName, device.ResName resName 
+		FROM v_networkChannelDevice device
+		JOIN AlarmActiveDetail alarm ON device.MOID = alarm.SourceMOID
+		JOIN AlarmStatusDef statDef ON alarm.AlarmOperateStatus = statDef.StatusID
+		JOIN AlarmLevel l ON alarm.AlarmLevel = l.AlarmLevelID
+		WHERE alarm.AlarmLevel &lt; 4
+			<if test="network != null and network != ''">
+				AND device.NetWork = #{network}
+			</if>
+			<if test="network != null and network != '' and network == 1 and applicationType != null and applicationType != ''">
+				AND device.ApplicationType = #{applicationType} 
+			</if>
+			<if test="dataExpire != null and dataExpire != ''">
+				AND alarm.StartTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+			</if>
+		ORDER BY alarm.StartTime DESC
+		LIMIT 10
+	</select>
+	
+	<!-- 此部分写死的原因是没有对应的数据表可以查出这些值，详情请看资源resCiChange_Status.jsp 和 resCiChange.jsp -->
+	<select id="queryResChangeRecord" parameterType="map" resultType="map">
+		SELECT device.ResName resName ,device.MOID deviceMoid,item.ConstantItemName nodeName ,DATE_FORMAT(ciChange.changeTime ,'%Y-%m-%d %T') changeTime
+		,ciChange.changeId ,IFNULL((CASE history.preValue WHEN 0 THEN '库存' WHEN 1 THEN '正常使用' WHEN 2 THEN '故障' WHEN 3 THEN '移除/清除' END) ,'') preValue
+		,IFNULL((CASE history.currentValue WHEN 0 THEN '库存' WHEN 1 THEN '正常使用' WHEN 2 THEN '故障' WHEN 3 THEN '移除/清除' END) ,'') currentValue
+		,history.AttributeName changeItem
+		FROM ResCiAttributeHistory history
+		JOIN ResCiChange ciChange ON history.ChangeId = ciChange.ChangeId
+		JOIN v_networkChannelDevice device ON device.CiId = history.CiId
+		JOIN SysConstantItemDef item ON item.ConstantItemId = device.Area 
+		JOIN SysConstantTypeDef type ON type.ConstantTypeId = item.ConstantTypeId
+		WHERE 
+			type.ConstantTypeName = 'Area'
+		<if test="network != null and network != ''">
+			AND device.NetWork = #{network}
+		</if>
+		<if test="network != null and network != '' and network == 1 and applicationType != null and applicationType != ''">
+			AND device.ApplicationType = #{applicationType} 
+		</if>
+		ORDER BY ciChange.ChangeTime DESC
+		LIMIT 10
+	</select>
+</mapper>

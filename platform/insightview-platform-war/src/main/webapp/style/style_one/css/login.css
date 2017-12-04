@@ -1,0 +1,33 @@
+/*~~ 自适应登陆页面 ~~*/
+a {font-size:12px; text-decoration:none; color:#0273CF;}
+a:hover {text-decoration:none; color:#03F;}
+/*~~ 主容器 ~~*/
+#main {font-size:12px; padding-top:100px; min-width:880px;}
+/*~~ 头部 ~~*/
+#header div {float:left; width:48%;}
+/*~~ logo ~~*/
+#logo {margin-left:20px;}
+/*~~ 帮助与支持 ~~*/
+#helps {text-align:right; padding-top:35px;}
+#helps img {vertical-align:-1px; margin:0 2px;}
+/*~~ 内容 ~~*/		  
+#content {background:#95cdf4 url(../images/login/login-bg.jpg) no-repeat center center; height:360px; clear:both;}		  
+#loginArea {position:relative; width:880px; margin:0 auto;}
+/*~~ 输入操作区 ~~*/
+#loginArea #inputArea{width:380px; position:absolute; right:24px; top:50px;}
+#loginArea #inputArea #welcomeHere{color:#0273CF; padding-bottom:3px; border-bottom:1px solid #e0e0e0;}
+#loginArea #inputArea #reallyHere{margin-top:8px;}
+#loginArea #inputArea #reallyHere .tips {color:red; text-align:center; min-height:16px;}
+#loginArea #inputArea #reallyHere ul{list-style:none;}
+#loginArea #inputArea #reallyHere ul li{line-height:22px; font-size:14px; color:#474747; margin-left:80px;}			  	
+#loginArea #inputArea #reallyHere .inputs{width:220px; height:24px; line-height:24px; border:none; background:url(../images/login/text.gif) no-repeat; margin-bottom:10px;}		
+/*~~ 按钮操作区 ~~*/
+#loginArea #inputArea #reallyHere .buttons{margin-top:20px;}	
+#loginArea #inputArea #reallyHere .buttons input{width:100px;height:27px;background-color:#3DB2F5;border:none;color:#FFF;font-weight:bold; margin-right:14px} 
+/*~~ 脚注 ~~*/		  													
+#footer{width:100%; color:#06F; text-align:center; margin-top:3px; border-top:6px solid #b8dcf7; padding-top:8px; font-family: arial;}			  
+		  
+			 	  
+			 
+			  
+	  

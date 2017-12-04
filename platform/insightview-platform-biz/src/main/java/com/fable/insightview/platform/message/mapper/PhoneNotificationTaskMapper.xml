@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.message.mapper.PhoneNotificationTaskMapper">
+	<resultMap id="phoneNotificationTaskMap" type="com.fable.insightview.platform.message.entity.PhoneNotificationTaskBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="PhoneNumber" property="phoneNumber" jdbcType="VARCHAR" />
+		<result column="Message" property="message" jdbcType="VARCHAR" />
+		<result column="SendedTimes" property="sendedTimes" jdbcType="INTEGER" />
+		<result column="MaxTimes" property="maxTimes" jdbcType="INTEGER" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="LastUpdateTime" property="lastUpdateTime"	jdbcType="VARCHAR" />
+		<result column="ExpectSendTime" property="expectSendTime"	jdbcType="VARCHAR" />
+		<result column="SendType" property="sendType" jdbcType="INTEGER" />
+		<result column="VoiceMessageType" property="voiceMessageType" jdbcType="INTEGER" />
+		<result column="Name" property="name"	jdbcType="VARCHAR" />
+		<result column="NotifyPriority" property="notifyPriority" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getNotificationTask" resultMap="phoneNotificationTaskMap" resultType="hashmap">
+	select t.* from 
+	(select * from PhoneNotificationTask where ${sysdate()}>=ExpectSendTime) t
+	where (t.Status = 3 and t.MaxTimes > t.SendedTimes) or t.Status=1
+	</select>
+	
+	<insert id="insertNotificationTask" parameterType="com.fable.insightview.platform.message.entity.PhoneNotificationTaskBean">
+	insert into PhoneNotificationTask (ID,PhoneNumber,Message,SendedTimes,MaxTimes,Status,LastUpdateTime,ExpectSendTime,SendType,VoiceMessageType,Name,NotifyPriority)
+	values (#{id,jdbcType=INTEGER}, #{phoneNumber,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR},#{sendedTimes,jdbcType=INTEGER},
+	  #{maxTimes,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{lastUpdateTime,jdbcType=VARCHAR},#{expectSendTime,jdbcType=VARCHAR},
+	  #{sendType,jdbcType=INTEGER}, #{voiceMessageType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{notifyPriority,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateNotificationTask" parameterType="com.fable.insightview.platform.message.entity.PhoneNotificationTaskBean">
+	update PhoneNotificationTask 
+	set SendedTimes=#{sendedTimes},Status=#{status},LastUpdateTime=#{lastUpdateTime}
+	where ID=#{id,jdbcType=INTEGER}
+	</update>
+</mapper>
+

@@ -1,0 +1,239 @@
+/*
+ * jquery sDashboard (2.0)
+ * Copyright 2012, Model N, Inc
+ * Distributed under MIT license.
+ * https://github.com/ModelN/sDashboard
+ */
+
+/*dashboard css*/
+.sDashboard {
+	list-style-type: none;
+	margin: 0;
+	height: 100%;
+	font-family : Helvetica Neue, Helvetica, Arial, sans-serif;
+	/*overflow: auto;*/
+}
+
+.sDashboard li {
+	margin: 0 0 15px 0;
+	padding: 0;
+	float: left;
+	width: 33% !important;
+	height: 260px !important;
+}
+
+.sDashboard li#dashboard-widget-myReportedEvents, .sDashboard li#dashboard-widget-todoWorkflow, .sDashboard li#dashboard-widget-toBeAllocatedEvent {
+	width: 66% !important;
+}
+
+/*dashboard widget css*/
+.sDashboardWidget {
+	margin: 0 1em 1em 0;
+	border:1px solid #b8c3cc;
+	background-color: #fff;
+}
+.sDashboardWidget:hover {
+	border: 1px solid #99b9e8;
+	-webkit-transition: border-color 0.3s;
+	-moz-transition: border-color 0.3s;
+	transition: border-color 0.3s;
+}
+
+/*dashboard widget header css*/
+.sDashboardWidgetHeader, .modulebox .layout-panel .panel-body .panel-header {
+	/* margin: 0.3em; */
+	padding: 7px 5px 7px 28px;
+	cursor: move;
+	font-size:12px;
+	background:#598cb3 url(../images/icon_dashboard.png) no-repeat -55px 7px; 
+	border: 0;
+	color:#ffffff;
+}
+
+/*dashboard widget content css*/
+.sDashboardWidgetContent {
+	height: 235px !important;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.sDashboardWidgetContentMaximized {
+	margin: 0.3em;
+	padding: 0.4em;
+	height: 90%;
+}
+
+/*for centering trick see  : http://css-tricks.com/quick-css-trick-how-to-center-an-object-exactly-in-the-center/*/
+.sDashboardWidgetContainerMaximized {
+	z-index: 9999;
+	position: fixed;
+	width: 800px;
+	height: 450px;
+	left: 50%;
+	top: 50%;
+	margin-top: -210px;
+	margin-left: -400px;
+}
+
+
+
+/*dashboard table widget css*/
+.sDashboardTableView {
+	width: 100%;
+	height: 95%;
+	overflow: auto;
+}
+
+
+.sDashboardTableView tbody tr:nth-child(odd)		{ background-color:#F5F5F5; }
+.sDashboardTableView tbody tr:nth-child(even)		{ background-color:#FFFFFF; }
+
+.sDashboardTableView tbody tr:nth-child(odd):hover,
+.sDashboardTableView tbody tr:nth-child(even):hover
+{
+	background-color: #FCEFA1;
+	cursor: pointer;
+}
+
+
+.dataTables_length, 
+.dataTables_info{
+	float:left;
+}
+
+.dataTables_filter,
+.dataTables_paginate{
+	float:right;
+}
+
+
+/*dashboard chart view css*/
+.sDashboardChart {
+	/*	width: 200px;
+	 height: 180px;*/
+	width: 100%;
+	height: 95%;
+	/*	cursor: pointer;*/
+}
+
+.sDashboardChartClickable {
+	cursor: pointer;
+}
+.sDashboardChartSelectable {
+	width: 100%;
+	height: 95%;
+	cursor: crosshair;
+}
+
+/*jquery sortable placeholder styles */
+.ui-sortable-placeholder {
+	border: 1px dotted black;
+	visibility: visible !important;
+	height: 225px !important;
+	width: 375px !important;
+}
+.ui-sortable-placeholder * {
+	visibility: hidden;
+}
+
+li.ui-sortable-placeholder {
+	background-color: #FCEFA1;
+}
+
+/*icons*/
+.sDashboard-icon {
+	float: right;
+	margin:0 5px;
+	background: url('../images/icon_dashboard.png') no-repeat;
+	width: 13px;
+	height: 13px;
+}
+
+.sDashboard-icon:hover {
+	cursor: pointer;
+}
+
+.sDashboard-icon.sDashboard-refresh-icon {
+	background-position: -20px 0;
+}
+.sDashboard-icon.sDashboard-circle-plus-icon {
+	background-position: -2px -29px;
+}
+.sDashboard-icon.sDashboard-circle-minus-icon {
+	background-position: -2px -55px;
+}
+
+.sDashboard-icon.sDashboard-circle-remove-icon {
+	background-position: -40px 0;
+}
+.sDashboard-icon.sDashboard-minus-icon {
+	background-position: -2px -109px;
+}
+.sDashboard-icon.sDashboard-remove-icon {
+	background-position: -3px -135px;
+}
+.sDashboard-icon.sDashboard-edit-icon {background-position: 0 -30px;}
+.sDashboard-icon.sDashboard-auto-icon {background-position: -20px -30px;}
+
+
+.sDashboard-icon.sDashboard-trash-icon {
+	background-position: -4px -159px;
+}
+
+.sDashboard-icon.sDashboard-maximize-icon {
+	background-position: -2px -212px;
+}
+
+.sDashboard-icon.sDashboard-minimize-icon {
+	background-position: -2px -236px;
+}
+
+/*clear fix*/
+
+.sDashboard-clearfix:before, .sDashboard-clearfix:after {
+	content: "";
+	display: table;
+}
+.sDashboard-clearfix:after {
+	clear: both;
+}
+.sDashboard-clearfix {
+	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
+
+/*overlay*/
+
+.sDashboard-overlay {
+	opacity: 0.5;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #000;
+	width: 100%;
+	z-index: 9998;/*z-index one less than window maximized css*/
+}
+/*.sDashboard-overlay {
+ width: 100%;
+ height: 100%;
+ background: rgba(0, 0, 0, 0.1);
+ background-size: 100% 100%;
+ position: fixed;
+ }*/
+ 
+.modulebox {width:100%}
+.modulebox > div {padding:0; float:left;}
+.modulebox .layout-panel {position:relative; left:0 !important; top:0 !important;}
+.modulebox .layout-panel-east,.modulebox .layout-panel-west{height:350px !important; width:50% !important; border:0 none;}
+.modulebox .layout-panel-south {height:150px !important; width:100% !important;}
+.modulebox .layout-panel > .panel-body-noheader {padding:10px;}
+.modulebox .layout-panel .panel-body .panel-header .panel-title {color:#ffffff; font-weight:normal}
+.modulebox .layout-panel .panel-body-noheader > .panel {border:1px solid #b8c3cc;}
+.layout-panel-south .panel-body {padding:10px;}
+.layout-panel-south .panel-body p {line-height:2; width:19%; display:inline-block;}
+.modulebox .layout-panel-south u {color:#175899;}
+
+@charset "utf-8";
+
+.databbar {background:url(images/data_bg.png); height:25px; line-height:24px; color:#006699; text-align:right;}
+.databbar a {color:#006699; display:inline-block; padding:0 9px 0 5px;}
+.databbar .line {background:url(images/data_line.png) right center no-repeat;}

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.harvester.mapper.HarvesterMapper">
+	<resultMap id="SysInstallMap" type="com.fable.insightview.monitor.harvester.entity.SysServerInstallService">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="ServerID" property="serverid" jdbcType="INTEGER" />
+		<result column="InstallServiceID" property="installServiceId" jdbcType="INTEGER" />
+		<result column="IPAddress" property="ipaddress" jdbcType="VARCHAR" />
+		<result column="ConstantItemName" property="constantitemname" jdbcType="VARCHAR" />
+		<result column="ServiceName" property="servicename" jdbcType="VARCHAR" />
+		<result column="InstallDir" property="installdir" jdbcType="VARCHAR" />
+		<result column="RegisterTime" property="registertime" jdbcType="VARCHAR" />
+		<result column="CurrentVersion" property="currentversion" jdbcType="VARCHAR" />
+		<result column="NewVersion" property="newversion" jdbcType="VARCHAR" />
+		<result column="ServiceStatus" property="servicestatus" jdbcType="INTEGER" />
+		<result column="LastChangeTime" property="lastchangetime" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="serverHostMap" type="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		<id column="ServerID" property="serverid" jdbcType="INTEGER" />
+		<result column="ServerName" property="servername" jdbcType="VARCHAR" />
+		<result column="IPAddress" property="ipaddress" jdbcType="VARCHAR" />
+		<result column="NatIPAddress" property="natipadress" jdbcType="VARCHAR" />
+		<result column="ServerType" property="servertype" jdbcType="INTEGER" />
+		<result column="ServerDesc" property="serverdesc" jdbcType="VARCHAR" />
+		<result column="RegisterTime" property="registertime" jdbcType="TIMESTAMP" />
+		<result column="CollectKey" property="collectkey" jdbcType="VARCHAR" />
+	</resultMap>
+	<!--   <select id="selectHarvestInfo" resultType="hashmap" resultMap="SysInstallMap">
+		SELECT ss.ID,sh.IPAddress,
+		itemdef.ConstantItemName,
+		sh.ServerID,
+		si.ServiceName,si.ProcessName,ss.InstallDir,ss.RegisterTime,ss.CurrentVersion,ss.NewVersion,ss.ServiceStatus,ss.LastChangeTime
+		FROM SysServerHostInfo sh
+		LEFT JOIN SysServerInstallService ss ON
+		sh.ServerID=ss.ServerID
+		LEFT JOIN SysServiceInfo si ON
+		ss.InstallServiceID=si.ServiceID
+		LEFT JOIN SysConstantItemDef itemdef ON
+		si.ServiceType=itemdef.ConstantItemId
+		LEFT JOIN SysConstantTypeDef
+		typedef ON
+		typedef.ConstantTypeId=itemdef.ConstantTypeId
+		WHERE sh.IsOffline is null and
+		typedef.ConstantTypeName='ServiceType' ORDER BY sh.IPAddress
+		
+  </select>   -->
+  
+  <select id="selectHarvestInfo" resultType="hashmap" resultMap="SysInstallMap">
+		SELECT ss.ID,sh.IPAddress,
+		sh.ServerID,
+		si.ServiceName,si.ProcessName,ss.InstallDir,ss.RegisterTime,ss.CurrentVersion,ss.NewVersion,ss.ServiceStatus,ss.LastChangeTime
+		FROM SysServerInstallService ss
+		LEFT JOIN SysServerHostInfo sh  ON
+		sh.ServerID=ss.ServerID
+		LEFT JOIN SysServiceInfo si ON
+		ss.InstallServiceID=si.ServiceID
+		WHERE sh.IsOffline is null 
+		  ORDER BY sh.IPAddress
+  </select>
+	<select id="selectHarvestTaskInfo" resultType="hashmap"
+		resultMap="SysInstallMap">
+			SELECT ss.ID,
+	itemdef.ConstantItemName,
+    sh.IPAddress,
+		sh.ServerID,
+		si.ServiceName,si.ProcessName,ss.InstallDir,ss.RegisterTime,ss.CurrentVersion,ss.NewVersion,ss.ServiceStatus,ss.LastChangeTime
+		FROM SysServerHostInfo sh
+		LEFT JOIN SysServerInstallService ss ON
+		sh.ServerID=ss.ServerID
+		LEFT JOIN SysServiceInfo si ON
+		ss.InstallServiceID=si.ServiceID
+		LEFT JOIN SysConstantItemDef itemdef ON
+		si.ServiceType=itemdef.ConstantItemId
+		LEFT JOIN SysConstantTypeDef
+		typedef ON
+		typedef.ConstantTypeId=itemdef.ConstantTypeId
+		WHERE sh.IsOffline is null and
+		typedef.ConstantTypeName='ServiceType' ORDER BY itemdef.ConstantItemName,sh.IPAddress
+  </select>
+	<insert id="insert" parameterType="sysServiceInfo">
+		insert into SysServiceInfo
+		(ServiceID, ServiceName, ProcessName,
+		ServiceType, UDPPort, TCPPort,
+		BinDir, BinNames, ConfDir,
+		ConfNames, LogNames, ServiceDescr
+		)
+		values
+		(#{serviceid,jdbcType=INTEGER}, #{servicename,jdbcType=VARCHAR},
+		#{processname,jdbcType=VARCHAR},
+		#{servicetype,jdbcType=INTEGER},
+		#{udpport,jdbcType=INTEGER}, #{tcpport,jdbcType=INTEGER},
+		#{bindir,jdbcType=VARCHAR}, #{binnames,jdbcType=VARCHAR},
+		#{confdir,jdbcType=VARCHAR},
+		#{confnames,jdbcType=VARCHAR},
+		#{lognames,jdbcType=VARCHAR}, #{servicedescr,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="sysServiceInfo">
+		insert into SysServiceInfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="serviceid != null">
+				ServiceID,
+      </if>
+			<if test="servicename != null">
+				ServiceName,
+      </if>
+			<if test="processname != null">
+				ProcessName,
+      </if>
+			<if test="servicetype != null">
+				ServiceType,
+      </if>
+			<if test="udpport != null">
+				UDPPort,
+      </if>
+			<if test="tcpport != null">
+				TCPPort,
+      </if>
+			<if test="bindir != null">
+				BinDir,
+      </if>
+			<if test="binnames != null">
+				BinNames,
+      </if>
+			<if test="confdir != null">
+				ConfDir,
+      </if>
+			<if test="confnames != null">
+				ConfNames,
+      </if>
+			<if test="lognames != null">
+				LogNames,
+      </if>
+			<if test="servicedescr != null">
+				ServiceDescr,
+      </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="serviceid != null">
+				#{serviceid,jdbcType=INTEGER},
+      </if>
+			<if test="servicename != null">
+				#{servicename,jdbcType=VARCHAR},
+      </if>
+			<if test="processname != null">
+				#{processname,jdbcType=VARCHAR},
+      </if>
+			<if test="servicetype != null">
+				#{servicetype,jdbcType=INTEGER},
+      </if>
+			<if test="udpport != null">
+				#{udpport,jdbcType=INTEGER},
+      </if>
+			<if test="tcpport != null">
+				#{tcpport,jdbcType=INTEGER},
+      </if>
+			<if test="bindir != null">
+				#{bindir,jdbcType=VARCHAR},
+      </if>
+			<if test="binnames != null">
+				#{binnames,jdbcType=VARCHAR},
+      </if>
+			<if test="confdir != null">
+				#{confdir,jdbcType=VARCHAR},
+      </if>
+			<if test="confnames != null">
+				#{confnames,jdbcType=VARCHAR},
+      </if>
+			<if test="lognames != null">
+				#{lognames,jdbcType=VARCHAR},
+      </if>
+			<if test="servicedescr != null">
+				#{servicedescr,jdbcType=VARCHAR},
+      </if>
+		</trim>
+	</insert>
+	
+	<select id="getServerHostLst" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select * from SysServerHostInfo where IsOffline is null order by IPAddress 
+	</select>
+	
+	<select id="getServerDomain" resultType="hashmap" resultMap="serverHostMap" parameterType="page">
+		select m.*,d.DomainName,h.ServerName,h.IPAddress
+		from ServerManagedDomain m
+		left join SysServerHostInfo h  on h.ServerID = m.ServerID
+		left join SysManagedDomain d on d.DomainID = m.DomainID
+		where 1=1 and h.IsOffline is null
+		<if test="params.ips !='' and params.ips!= null ">
+			 and h.IPAddress in (${params.ips})
+		</if>
+		<if test="params.serverid !='' and params.serverid != null and params.serverid != -1">
+			 and h.ServerID =#{params.serverid}
+		</if>
+	</select>
+	
+	<select id="getByID" parameterType="Integer" resultType="com.fable.insightview.monitor.harvester.entity.SysServerInstallService">
+	select ss.*,sh.IPAddress,si.ProcessName 
+	from SysServerInstallService ss
+	left join SysServiceInfo si on ss.InstallServiceID=si.ServiceID
+	left join SysServerHostInfo sh on sh.ServerID=ss.ServerID
+	where ss.ID=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getServerHostByIP" parameterType="String" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select count(1) as count, sh.* ,si.ServiceName
+		from SysServerHostInfo sh
+		LEFT JOIN SysServerInstallService ss ON	sh.ServerID=ss.ServerID
+		LEFT JOIN SysServiceInfo si ON	ss.InstallServiceID=si.ServiceID
+		where sh.IsOffline is null and sh.IPAddress =#{ipaddress,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="delServerInstallService" parameterType="Integer">
+		delete from SysServerInstallService where ID=#{id,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="getByServerID" parameterType="Integer" resultType="com.fable.insightview.monitor.harvester.entity.SysServerInstallService">
+		select * from SysServerInstallService where ServerID=#{serverid,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="delServerHost" parameterType="Integer">
+		delete from SysServerHostInfo where ServerID=#{serverid,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="getDomainByServer" resultType="Integer" parameterType="Integer">
+		select DomainID
+		from ServerManagedDomain 
+		where ServerID =#{serverid,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getCollectorLst" parameterType="hashmap" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select * from SysServerHostInfo 
+		where 1=1 and IsOffline is null
+      <if test="filterRuleID != '' and filterRuleID != null ">
+		and ServerID not in(select distinct CollectorID from SysSyslogTask where (OperateStatus!=3 or ProgressStatus!=5) and RuleID = #{filterRuleID} )
+      </if>
+      <if test="ipaddress != '' and ipaddress != null ">
+		and IPAddress like  ${concat("'%'","'"+ipaddress+"'","'%'")}
+      </if>
+		order by IPAddress
+	</select>
+	
+	<select id="getAllServerHost" parameterType="String" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select sh.* from SysServerHostInfo sh
+		left join SysServerInstallService ss ON	sh.ServerID=ss.ServerID
+		left join SysServiceInfo si ON	ss.InstallServiceID=si.ServiceID
+		where sh.IsOffline='1' and si.ProcessName=#{processName} 
+		order by sh.IPAddress 
+	</select>
+	
+	<select id="getOfflineCollectorList" resultType="hashmap" resultMap="SysInstallMap" parameterType="page">
+		select ss.ID,sh.IPAddress,sh.ServerID,ss.InstallServiceID,si.ServiceName,si.ProcessName,ss.InstallDir,ss.RegisterTime,
+		ss.CurrentVersion,ss.NewVersion,ss.ServiceStatus,ss.LastChangeTime
+		from SysServerInstallService ss
+		left join SysServerHostInfo sh  on sh.ServerID=ss.ServerID
+		left join SysServiceInfo si on ss.InstallServiceID=si.ServiceID
+		where sh.IsOffline='1' 
+		<if test="params.ipaddress != '' and params.ipaddress != null ">
+			and sh.IPAddress like ${concat("'%'","'"+params.ipaddress+"'","'%'")}
+		</if>
+    	<if test="params.servicename != '' and params.servicename != null ">
+			and si.ServiceName like ${concat("'%'","'"+params.servicename+"'","'%'")}
+    	</if>
+		order by sh.IPAddress
+    </select>
+    
+    <select id="isExitOfflineService" parameterType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo" resultType="Integer">
+    select count(1) from SysServerInstallService ss
+    left join SysServerHostInfo sh on sh.ServerID=ss.ServerID
+    where ss.InstallServiceID=#{installServiceId} and sh.IPAddress=#{ipaddress} and sh.IsOffline=#{isOffline}
+    <if test="id != '' and id != null  and id != -1">
+		and ss.ID !=#{id}
+  	</if>
+    </select>
+    
+    <select id="getOfflineHostByIp" parameterType="String" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+    select  ServerID,ServerName,IPAddress,NatIPAddress natipadress,ServerType,ServerDesc,CollectKey,IsOffline from SysServerHostInfo where IPAddress=#{ipaddress} and IsOffline='1'
+    </select>
+    
+    <insert id="insertHost" parameterType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		insert into SysServerHostInfo
+		( ServerID,ServerName,IPAddress,NatIPAddress,ServerType,ServerDesc,CollectKey,IsOffline,RegisterTime)
+		values
+		(#{serverid,jdbcType=INTEGER}, #{servername,jdbcType=VARCHAR},#{ipaddress,jdbcType=VARCHAR},
+		#{natipadress,jdbcType=VARCHAR},#{servertype,jdbcType=SMALLINT}, #{serverdesc,jdbcType=VARCHAR},
+		#{collectkey,jdbcType=VARCHAR}, #{isOffline,jdbcType=VARCHAR}, #{registertime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<insert id="insertInstallService" parameterType="com.fable.insightview.monitor.harvester.entity.SysServerInstallService">
+		insert into SysServerInstallService
+		( ID,ServerID,InstallServiceID,ServiceStatus,InstallDir,RegisterTime,CurrentVersion,NewVersion,LastChangeTime,LastUpdateTime)
+		values
+		(#{id,jdbcType=INTEGER}, #{serverid,jdbcType=INTEGER},#{installServiceId,jdbcType=INTEGER},
+		#{servicestatus,jdbcType=INTEGER},#{installdir,jdbcType=VARCHAR}, #{registertime,jdbcType=VARCHAR},
+		#{currentversion,jdbcType=VARCHAR}, #{newversion,jdbcType=VARCHAR},#{lastChangeDate,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<select id="getAllServiceInfo" resultType="com.fable.insightview.monitor.harvester.entity.SysServiceInfo">
+	select * from SysServiceInfo where ServiceID!=3 and ServiceID!=5 and ServiceID!=6
+	</select>
+	
+	<update id="updateOfflineCollector" parameterType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo" >
+		update SysServerHostInfo
+	    <set>
+	      <if test="natipadress != null" >
+	        NatIPAddress = #{natipadress,jdbcType=VARCHAR},
+	      </if>
+	      <if test="servername != null" >
+	        ServerName = #{servername,jdbcType=VARCHAR},
+	      </if>
+	      <if test="serverdesc != null" >
+	        ServerDesc = #{serverdesc,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where ServerID = #{serverid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getOfflineHostById" parameterType="Integer" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+    select ServerID,ServerName,IPAddress,NatIPAddress natipadress,ServerType,ServerDesc,CollectKey,IsOffline from SysServerHostInfo where ServerID=#{serverid}
+    </select>
+    
+    <update id="updateInstallService" parameterType="com.fable.insightview.monitor.harvester.entity.SysServerInstallService" >
+		update SysServerInstallService
+	    <set>
+	      <if test="serverid != null" >
+	        ServerID = #{serverid},
+	      </if>
+	      <if test="installServiceId != null" >
+	        InstallServiceID = #{installServiceId},
+	      </if>
+	      <if test="lastChangeDate != null" >
+	        LastChangeTime = #{lastChangeDate},
+	      </if>
+	      <if test="lastUpdateTime != null" >
+	        LastUpdateTime = #{lastUpdateTime},
+	      </if>
+	    </set>
+	    where ID = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getServiceCountByServerID" resultType="Integer" parameterType="Integer">
+		select count(1)
+		from SysServerInstallService a,SysServerHostInfo h
+		where h.IsOffline='1' and a.ServerID=#{serverid}
+    </select>
+    
+    <delete id="delOfflineServerHost" parameterType="Integer">
+		delete from SysServerHostInfo where IsOffline='1' and ServerID=#{serverid,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="batchDelServerInstallService" parameterType="String">
+		delete from SysServerInstallService where ID in (${ids})
+	</delete>
+	
+	<select id="getOfflineCollectorLst" parameterType="hashmap" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select * from SysServerHostInfo 
+		where 1=1 and IsOffline='1'
+      <if test="filterRuleID != '' and filterRuleID != null ">
+		and ServerID not in(select distinct CollectorID from SysSyslogTask where (OperateStatus!=3 or ProgressStatus!=5) and RuleID = #{filterRuleID} )
+      </if>
+      <if test="ipaddress != '' and ipaddress != null ">
+		and IPAddress like  ${concat("'%'","'"+ipaddress+"'","'%'")}
+      </if>
+		order by IPAddress
+	</select>
+	
+	<select id="getOfflineTrapServer" parameterType="Integer" resultType="com.fable.insightview.monitor.harvester.entity.SysServerHostInfo">
+		select sh.* from SysServerHostInfo sh
+		left join SysServerInstallService ss ON	sh.ServerID=ss.ServerID
+		left join SysServiceInfo si ON	ss.InstallServiceID=si.ServiceID
+		where sh.IsOffline='1' and si.ProcessName='TrapServer' and sh.ServerID in(SELECT DISTINCT t.CollectorID FROM SysTrapTask t,	AlarmEventDefine d WHERE d.AlarmOID=t.AlarmOID and d.AlarmDefineID=#{alarmDefineID}) 
+		order by sh.IPAddress 
+	</select>
+</mapper>

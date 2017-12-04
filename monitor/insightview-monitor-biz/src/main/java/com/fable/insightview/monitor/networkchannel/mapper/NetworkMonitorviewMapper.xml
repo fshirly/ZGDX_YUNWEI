@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.insightview.monitor.networkchannel.mapper.NetworkMonitorviewMapper">
+<!-- 设备监测视图mapper -->
+	<select id="queryDeviceAvalibilityInfo" parameterType="map" resultType="map">
+		SELECT collectTime,deviceStatus from PerfDeviceAvailability WHERE MOID = #{deviceMoid} 
+		<if test="timeBegin != null and timeBegin != ''">
+			and CollectTime &gt;= #{timeBegin}
+		</if>
+		<if test="timeEnd != null and timeEnd != ''">
+			and CollectTime &lt;= #{timeEnd}
+		</if>
+	</select>
+	
+	<select id="queryDeviceNameIp" parameterType="int" resultType="map">
+		SELECT MOName deviceMoName ,MOAlias deviceMoAlias ,DeviceIP deviceIp ,ResName resName FROM v_networkChannelDevice
+		WHERE MOID = #{deviceMoid} 
+	</select>
+	
+	<select id="queryImportantIfInfo" parameterType="map" resultType="map">
+		select netInfo.deviceMOID,netInfo.moid ,
+		netInfo.ifName,netInfo.ifDescr,IFNULL(pc.PerfValue,"0") perfValue,v_device.deviceIP
+		,pc.kpiName,netInfo.instance,netInfo.ifOperStatus,netInfo.ifSpeed ,netInfo.ifAlias
+		from ResCiComponent component
+		join ResPrefixSlotInfo info on component.ComponentId = info.CiId
+		join v_networkChannelDevice v_device on component.CiId = v_device.CiId
+		join MONetworkIf netInfo on netInfo.DeviceMOID = v_device.MOID
+		JOIN PerfSnapshotNetDevice pc on netInfo.MOID = pc.MOID and netInfo.DeviceMOID = pc.DeviceMOID
+		WHERE info.COL_instance = netInfo.Instance
+		and info.COL_IfLevel = 1
+		and netInfo.DeviceMOID = #{deviceMoid}
+		and pc.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+		ORDER BY netInfo.OperStatus DESC
+	</select>
+	
+	<select id="queryImportantIfUsage" parameterType="map" resultType="map">
+		SELECT t.* ,pc.ifUsage ,pc.collectTime FROM (select netInfo.deviceMOID,netInfo.moid ,netInfo.ifName 
+		from ResCiComponent component
+		join ResPrefixSlotInfo info on component.ComponentId = info.CiId
+		join v_networkChannelDevice v_device on component.CiId = v_device.CiId
+		join MONetworkIf netInfo on netInfo.DeviceMOID = v_device.MOID
+		WHERE info.COL_instance = netInfo.Instance
+		and info.COL_IfLevel = 1 and netInfo.DeviceMOID = #{deviceMoid}) t
+		JOIN PerfNetworkIf pc on t.MOID = pc.MOID 
+		<where>
+			<if test="timeBegin != null and timeBegin != ''">
+				pc.CollectTime &gt;= #{timeBegin}
+			</if>
+			<if test="timeEnd != null and timeEnd != ''">
+				and pc.CollectTime &lt;= #{timeEnd}
+			</if>
+		</where>
+		ORDER BY pc.collectTime,pc.MOID , pc.IfUsage DESC
+	</select>
+	
+	<select id="queryIfStatusList" parameterType="map" resultType="map">
+		SELECT netIf.deviceMOID,netIf.moid ,netIf.ifAlias
+		,netIf.ifName ,netIf.ifDescr, netIf.ifType,IFNULL(device.PerfValue,"0") perfValue ,device.kpiName 
+		FROM MONetworkIf netIf
+		JOIN PerfSnapshotNetDevice device ON netIf.MOID = device.MOID AND netIf.DeviceMOID = device.DeviceMOID
+		WHERE device.KPIName in('ifAdminStatus' ,'ifOperStatus')
+		and netIf.DeviceMOID = #{deviceMoid}
+		and device.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+		ORDER BY netIf.MOID
+	</select>
+	
+	<select id="queryDeviceIfInfo" parameterType="int" resultType="com.fable.insightview.monitor.host.entity.MODevice">
+		SELECT netIf.deviceMOID,netIf.moid ,netIf.ifAlias
+		,netIf.ifName,netIf.ifDescr, netIf.ifType ,netIf.isCollect
+		FROM MONetworkIf netIf WHERE DeviceMOID = #{deviceMoid}
+		
+	</select>
+	
+	<select id="queryIfAlarm" parameterType="page" resultType="map">
+		select l.alarmLevelName ,detail.alarmLevel ,detail.alarmTitle ,detail.moName 
+		,DATE_FORMAT(detail.startTime ,'%Y-%m-%d %T') startTime
+		,detail.alarmOperateStatus ,sdef.statusName
+		FROM AlarmActiveDetail detail
+		JOIN AlarmLevel l ON l.AlarmLevelID = detail.AlarmLevel
+		JOIN AlarmStatusDef sdef ON sdef.StatusID = detail.AlarmOperateStatus
+		WHERE SourceMOID = #{params.deviceMoid}
+		<if test="params.alarmLevel != null and params.alarmLevel != ''">
+			and detail.AlarmLevel = #{params.alarmLevel}
+		</if>
+		<if test="params.operatStatus != null and params.operatStatus != ''">
+			and detail.AlarmOperateStatus = #{params.operatStatus}
+		</if>
+		ORDER BY detail.startTime DESC
+	</select>
+	
+	<select id="queryTop10IfDiscardsAndErrors" parameterType="map" resultType="map">
+		SELECT t.resName, t.ifName ,t.ifAlias ,t.deviceIP ,t.moid ,t.deviceMOID ,(InErrors + OutErrors) errorsNum 
+		,(InDiscards + OutDiscards) discardsNum
+		FROM(SELECT deviceIf.MOID moid ,deviceIf.ResName resName ,netInfo.ifName ,netInfo.ifAlias,deviceIf.DeviceIP deviceIP 
+				,deviceIf.DeviceMOID deviceMOID ,net.CollectTime
+				,IFNULL(net.PerfValue ,0) InErrors 
+				,IFNULL((SELECT PerfValue FROM PerfSnapshotNetDevice WHERE MOID = deviceIf.MOID AND KPIName = 'OutErrors'
+				AND CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)) ,0) OutErrors
+				,IFNULL((SELECT PerfValue FROM PerfSnapshotNetDevice WHERE MOID = deviceIf.MOID AND KPIName = 'InDiscards' 
+				AND CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)),0) InDiscards
+				,IFNULL((SELECT PerfValue FROM PerfSnapshotNetDevice WHERE MOID = deviceIf.MOID AND KPIName = 'OutDiscards' 
+				AND CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)) ,0) OutDiscards
+		from v_networkChannelDeviceIF deviceIf 
+		JOIN PerfSnapshotNetDevice net ON net.MOID = deviceIf.MOID AND net.DeviceMOID = deviceIf.DeviceMOID
+		join MONetworkIf netInfo on netInfo.MOID = deviceIf.MOID
+		WHERE deviceIf.DeviceMOID = #{deviceMoid} AND net.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR) AND net.KPIName = 'InErrors') t
+		ORDER BY errorsNum DESC ,discardsNum DESC
+		limit 10
+	</select>
+	
+	<select id="queryTop10Usage24h" parameterType="map" resultType="map">
+		SELECT avg(tabl.${kpiName}) avgUsage ,net.moName FROM ${tableName} tabl
+		JOIN ${tableName1} net ON net.MOID = tabl.MOID
+		WHERE tabl.CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -1 DAY) 
+		AND net.DeviceMOID = #{deviceMoid}
+		GROUP BY net.MOID
+		ORDER BY avgUsage DESC 
+		LIMIT 10
+	</select>
+	
+	<select id="queryDeviceCurrentUsage" parameterType="map" resultType="Float">
+		SELECT perfValue from PerfSnapshotNetDevice WHERE KPIName = #{kpiName} 
+		and CollectTime &gt;= DATE_ADD(NOW(),INTERVAL -${dataExpire} HOUR)
+		and DeviceMOID = #{deviceMoid}
+	</select>
+	
+	<select id="queryDevicePhyMem" parameterType="int" resultType="long">
+		SELECT sum(memorySize) FROM MOMemories me
+		,MODevice m WHERE
+		me.DeviceMOID = m.MOID AND MemType = 'hrStorageRam'
+		AND m.MOID = #{deviceMoid}
+	</select>
+	
+	<select id="queryUsageLine" parameterType="map" resultType="map">
+		SELECT t.* ,tabl.${kpiName} ,tabl.${kpiNameOrder} ,tabl.collectTime 
+		from (select netInfo.deviceMOID,netInfo.moid ,netInfo.moName
+		FROM ${tableName1} netInfo WHERE netInfo.DeviceMOID = #{deviceMoid}) t
+		JOIN ${tableName} tabl ON tabl.MOID = t.moid
+		<where>
+			<if test="timeBegin != null and timeBegin != ''">
+				tabl.CollectTime &gt;= #{timeBegin}
+			</if>
+			<if test="timeEnd != null and timeEnd != ''">
+				and tabl.CollectTime &lt;= #{timeEnd}
+			</if>
+		</where>
+		order by tabl.collectTime ,tabl.MOID , tabl.${kpiNameOrder} desc 
+	</select>
+	
+</mapper>

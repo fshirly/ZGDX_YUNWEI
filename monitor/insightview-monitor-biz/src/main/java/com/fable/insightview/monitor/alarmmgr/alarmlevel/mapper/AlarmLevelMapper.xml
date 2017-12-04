@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmlevel.mapper.AlarmLevelMapper">
+	<resultMap 	 id="AlarmLevelMap" type="levelInfo">
+		<id column="AlarmLevelID" property="alarmLevelID"  jdbcType="INTEGER" />
+		<result column="AlarmLevelValue" property="alarmLevelValue" jdbcType="INTEGER"/>
+		<result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR"/>
+		<result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR"/>
+		<result column="LevelColor" property="levelColor" jdbcType="VARCHAR"/>
+		<result column="LevelColorName" property="levelColorName" jdbcType="VARCHAR"/>
+		<result column="IsSystem" property="isSystem" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<!--  -->
+	
+	<select id="queryInfoList"  resultType="hashmap" resultMap="AlarmLevelMap" parameterType="page"  >
+  		select AlarmLevelID,AlarmLevelValue,LevelIcon,AlarmLevelName,LevelColor,LevelColorName,IsSystem
+  		from AlarmLevel 	where 1=1
+  		<if test="params.alarmLevelName != null and  params.alarmLevelName != '' " >
+  			and	 AlarmLevelName   like ${concat("'%'","'"+params.alarmLevelName+"'","'%'")}  
+  		</if>
+  	</select>
+  	
+  	<select id="checkName" resultType="Integer"    parameterType="java.lang.String">
+		select count(1)  from AlarmLevel   where AlarmLevelName = #{alarmLevelName,jdbcType=VARCHAR}	
+	</select>
+	
+	<select id="checkNameBeforeUpdate" resultType="Integer" parameterType="levelInfo">
+		select count(1)  from AlarmLevel  where 1=1 and AlarmLevelName = #{alarmLevelName,jdbcType=VARCHAR} and AlarmLevelID != #{alarmLevelID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryByID" resultMap="AlarmLevelMap"    parameterType="java.lang.Integer">
+		select AlarmLevelID,AlarmLevelValue,LevelIcon,AlarmLevelName,LevelColor,LevelColorName,IsSystem  from AlarmLevel   where AlarmLevelID = #{alarmLevelID,jdbcType=INTEGER}	
+	</select>
+	
+	<select id="queryLevelInfo" resultType="hashmap" resultMap="AlarmLevelMap" >
+  		select distinct LevelIcon  from  AlarmLevel 
+	</select>
+
+	<select id="getIsUsed"  resultType="Integer" parameterType="java.lang.Integer">
+		select  count(1) 
+		from AlarmEventDefine d
+		left join  AlarmLevel e  on  d.AlarmLevelID = e.AlarmLevelID 
+		where  e.AlarmLevelID = #{alarmLevelID} 
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+   	 delete from AlarmLevel
+   	 where AlarmLevelID = #{alarmLevelID,jdbcType=INTEGER}
+  	</delete>
+
+	 <insert id="insertSelective" parameterType="levelInfo" >
+  	  insert into AlarmLevel
+     	
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="alarmLevelID != null" >
+        AlarmLevelID,
+      </if>
+      <if test="alarmLevelValue != null" >
+        AlarmLevelValue,
+      </if>
+      <if test="levelIcon != null" >
+        LevelIcon,
+      </if>
+      <if test="alarmLevelName != null" >
+        AlarmLevelName,
+      </if>
+      <if test="levelColor != null" >
+        LevelColor,
+      </if>
+      <if test="levelColorName != null" >
+        LevelColorName,
+      </if>
+      <if test="isSystem != null" >
+        IsSystem,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="alarmLevelID != null" >
+        #{alarmLevelID,jdbcType=INTEGER},
+      </if>
+      <if test="alarmLevelValue != null" >
+        #{alarmLevelValue,jdbcType=INTEGER},
+      </if>
+      <if test="levelIcon != null" >
+         #{levelIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmLevelName != null" >
+        #{alarmLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="levelColor != null" >
+        #{levelColor,jdbcType=VARCHAR},
+      </if>
+      <if test="levelColorName != null" >
+        #{levelColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="isSystem != null" >
+        #{isSystem,jdbcType=INTEGER},
+      </if>
+    </trim>
+	  </insert>
+  
+	  <update id="updateByPrimaryKey" parameterType="levelInfo" >
+	    update AlarmLevel
+	    <set>
+	    	<if test="alarmLevelName != null">
+	    		 AlarmLevelName = #{alarmLevelName,jdbcType=VARCHAR},
+	    	</if>
+	    	<if test="levelColor != null">
+	     		 LevelColor = #{levelColor,jdbcType=VARCHAR},
+	     	</if>
+	     	<if test="levelIcon != null">
+	     	 	LevelIcon = #{levelIcon,jdbcType=VARCHAR},
+	   		</if> 
+	   		<if test="levelColorName != null">
+	     	 	LevelColorName = #{levelColorName,jdbcType=VARCHAR}
+	   		</if> 
+	    </set>
+	    where AlarmLevelID = #{alarmLevelID,jdbcType=INTEGER}
+	  </update>
+  
+ 	<select id="getAllAlarmLevel" resultType="hashmap" resultMap="AlarmLevelMap">
+		select AlarmLevelID,AlarmLevelValue,AlarmLevelName,LevelColor,LevelColorName,IsSystem
+  		from AlarmLevel
+  		where 1=1
+	</select>
+
+
+</mapper>

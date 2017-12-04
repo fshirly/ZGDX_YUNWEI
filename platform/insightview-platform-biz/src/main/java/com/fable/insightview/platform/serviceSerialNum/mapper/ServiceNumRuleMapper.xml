@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.serviceSerialNum.mapper.ServiceNumRuleMapper">
+
+	<select id="getNumRuleInfo"
+		resultType="com.fable.insightview.platform.serviceSerialNum.entity.ServiceNumRule"
+		parameterType="Integer">
+		SELECT ru.*,se.SerialPattern serialPattern,se.SerialNumRule FROM ItsmServiceNumRule ru,
+		ItsmServiceSerialNumber se WHERE ru.SerialNumId=se.Id AND ru.Id=#{numRuleId,jdbcType=INTEGER}
+	</select>
+
+	<update id="updateNumRuleInfo" parameterType="com.fable.insightview.platform.serviceSerialNum.entity.ServiceNumRule">
+		update ItsmServiceNumRule ru 
+		set ru.SerialTime = #{serialTime,jdbcType=TIMESTAMP}, 
+		    ru.SerialNum = #{serialNum,jdbcType=VARCHAR} 
+		where ru.Id = #{id,jdbcType=INTEGER}
+	</update>
+
+
+</mapper>

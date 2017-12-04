@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.notifypolicycfg.mapper.PolicyContentMapper">
+	<resultMap id="policyTypeMap" type="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="PolicyID" property="policyId" jdbcType="INTEGER" />
+		<result column="TypeID" property="typeId" jdbcType="INTEGER" />
+		<result column="Name" property="name" jdbcType="VARCHAR" />
+		<result column="Content" property="content" jdbcType="VARCHAR" />
+		<result column="VoiceID" property="voiceId" jdbcType="INTEGER" />
+		<result column="NotifyType" property="notifyType" jdbcType="INTEGER" />
+		<result column="VoiceMessageType" property="voiceMessageType" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<sql id="selectContentSql">
+		select t.ID,t.PolicyID,t.NotifyType,t.Name,t.Content,t.VoiceID,t.VoiceMessageType,v.Name voiceName
+		from NotifyPolicyContent t
+		left join PhoneVoice v on v.ID=t.VoiceID
+		where 1=1
+	</sql>
+	
+	<select id="getPolicyTypeContent" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean" parameterType="hashmap">
+		select ID,TypeID,Name,Content,VoiceID,NotifyType,VoiceMessageType from PolicyTypeContent where 1=1
+		<if test="typeId !='' and typeId != null">
+			 and TypeID =#{typeId}
+		</if>
+		order by NotifyType,ID
+	</select>
+	
+	<select id="getContentByPolicyId" parameterType="Integer" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean">
+		<include refid="selectContentSql"/>
+		and t.PolicyID = #{policyId,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="delByPolicyId" parameterType="Integer">
+		delete from NotifyPolicyContent where PolicyID = #{policyId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="delByPolicyIds" parameterType="String">
+		delete from NotifyPolicyContent where PolicyID in (${policyIds})
+	</delete>
+	
+	<insert id="insertNotifyToUsers" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean">
+		insert into NotifyPolicyContent (ID,PolicyID,Name,Content,VoiceID,NotifyType,VoiceMessageType)
+		values (#{id,jdbcType=INTEGER}, #{policyId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},
+				#{voiceId,jdbcType=INTEGER},#{notifyType,jdbcType=INTEGER},#{voiceMessageType,jdbcType=INTEGER})
+	</insert>
+	
+	<select id="getByPolicyAndName" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyContentBean">
+		select c.ID,c.PolicyID,c.NotifyType,c.Name,c.Content,c.VoiceID,c.NotifyType,c.VoiceMessageType, v.Name voiceName,v.Path voicePath
+		from NotifyPolicyContent c
+		left join PhoneVoice v on v.ID=c.VoiceID 
+		where c.PolicyID = #{policyId,jdbcType=INTEGER} and c.NotifyType =#{typeId} and c.Name =  #{name,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectNameByNotifyType" resultType="string">
+		SELECT Name FROM NotifyPolicyContent WHERE PolicyID=(
+			SELECT MAX(PolicyID) FROM NotifyPolicyCfg WHERE PolicyType=2 and MFlag=1) AND NotifyType=#{notifyType}
+	</select>
+</mapper>

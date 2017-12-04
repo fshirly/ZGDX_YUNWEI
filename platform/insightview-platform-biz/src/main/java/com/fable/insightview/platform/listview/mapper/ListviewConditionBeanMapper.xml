@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.listview.mapper.ListviewConditionBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.listview.entity.ListviewConditionBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="LISTVIEW_ID" property="listviewId" jdbcType="VARCHAR" />
+        <result column="CONTROL_TYPE" property="controlType" jdbcType="VARCHAR" />
+        <result column="LEFT_BRACKET" property="leftBracket" jdbcType="VARCHAR" />
+        <result column="PROPERTY_NAME" property="propertyName" jdbcType="VARCHAR" />
+        <result column="DISPLAY_TITLE" property="displayTitle" jdbcType="VARCHAR" />
+        <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+        <result column="RIGHT_BRACKET" property="rightBracket" jdbcType="VARCHAR" />
+        <result column="LOGIC_SYMBOL" property="logicSymbol" jdbcType="VARCHAR" />
+        <result column="SOURCE_TYPE" property="sourceType" jdbcType="DECIMAL" />
+        <result column="LIST_SOURCE" property="listSource" jdbcType="VARCHAR" />
+        <result column="DEFAULT_VALUE" property="defaultValue" jdbcType="VARCHAR" />
+        <result column="SORT_ORDER" property="sortOrder" jdbcType="DECIMAL" />
+        <result column="ADVANCED" property="advanced" jdbcType="CHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, LISTVIEW_ID, CONTROL_TYPE, LEFT_BRACKET, PROPERTY_NAME, DISPLAY_TITLE, 
+        OPERATOR, RIGHT_BRACKET, LOGIC_SYMBOL, SOURCE_TYPE, LIST_SOURCE, DEFAULT_VALUE, SORT_ORDER, 
+        ADVANCED, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_LISTVIEW_CONDITION
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectConditionByListviewId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_LISTVIEW_CONDITION
+        where LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR}
+        order by SORT_ORDER
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_LISTVIEW_CONDITION
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteAllByListviewId" parameterType="java.lang.String" >
+        delete from FBS_LISTVIEW_CONDITION
+        where LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.listview.entity.ListviewConditionBean" >
+        insert into FBS_LISTVIEW_CONDITION (ID, SYS_ID, LISTVIEW_ID, 
+            CONTROL_TYPE, LEFT_BRACKET, PROPERTY_NAME, 
+            DISPLAY_TITLE, OPERATOR, RIGHT_BRACKET, 
+            LOGIC_SYMBOL, SOURCE_TYPE, LIST_SOURCE, 
+            DEFAULT_VALUE, SORT_ORDER, ADVANCED, 
+            NOTE, CREATOR_ID, CREATOR_NAME, 
+            CREATED_TIME)
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{listviewId,jdbcType=VARCHAR}, 
+            #{controlType,jdbcType=VARCHAR}, #{leftBracket,jdbcType=VARCHAR}, #{propertyName,jdbcType=VARCHAR}, 
+            #{displayTitle,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, #{rightBracket,jdbcType=VARCHAR}, 
+            #{logicSymbol,jdbcType=VARCHAR}, #{sourceType,jdbcType=DECIMAL}, #{listSource,jdbcType=VARCHAR}, 
+            #{defaultValue,jdbcType=VARCHAR}, #{sortOrder,jdbcType=DECIMAL}, #{advanced,jdbcType=CHAR}, 
+            #{note,jdbcType=VARCHAR}, #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, 
+            #{createdTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewConditionBean" >
+        insert into FBS_LISTVIEW_CONDITION
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="listviewId != null" >
+                LISTVIEW_ID,
+            </if>
+            <if test="controlType != null" >
+                CONTROL_TYPE,
+            </if>
+            <if test="leftBracket != null" >
+                LEFT_BRACKET,
+            </if>
+            <if test="propertyName != null" >
+                PROPERTY_NAME,
+            </if>
+            <if test="displayTitle != null" >
+                DISPLAY_TITLE,
+            </if>
+            <if test="operator != null" >
+                OPERATOR,
+            </if>
+            <if test="rightBracket != null" >
+                RIGHT_BRACKET,
+            </if>
+            <if test="logicSymbol != null" >
+                LOGIC_SYMBOL,
+            </if>
+            <if test="sourceType != null" >
+                SOURCE_TYPE,
+            </if>
+            <if test="listSource != null" >
+                LIST_SOURCE,
+            </if>
+            <if test="defaultValue != null" >
+                DEFAULT_VALUE,
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER,
+            </if>
+            <if test="advanced != null" >
+                ADVANCED,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="listviewId != null" >
+                #{listviewId,jdbcType=VARCHAR},
+            </if>
+            <if test="controlType != null" >
+                #{controlType,jdbcType=VARCHAR},
+            </if>
+            <if test="leftBracket != null" >
+                #{leftBracket,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyName != null" >
+                #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="displayTitle != null" >
+                #{displayTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="operator != null" >
+                #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="rightBracket != null" >
+                #{rightBracket,jdbcType=VARCHAR},
+            </if>
+            <if test="logicSymbol != null" >
+                #{logicSymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null" >
+                #{sourceType,jdbcType=DECIMAL},
+            </if>
+            <if test="listSource != null" >
+                #{listSource,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultValue != null" >
+                #{defaultValue,jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null" >
+                #{sortOrder,jdbcType=DECIMAL},
+            </if>
+            <if test="advanced != null" >
+                #{advanced,jdbcType=CHAR},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewConditionBean" >
+        update FBS_LISTVIEW_CONDITION
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="listviewId != null" >
+                LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR},
+            </if>
+            <if test="controlType != null" >
+                CONTROL_TYPE = #{controlType,jdbcType=VARCHAR},
+            </if>
+            <if test="leftBracket != null" >
+                LEFT_BRACKET = #{leftBracket,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyName != null" >
+                PROPERTY_NAME = #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="displayTitle != null" >
+                DISPLAY_TITLE = #{displayTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="operator != null" >
+                OPERATOR = #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="rightBracket != null" >
+                RIGHT_BRACKET = #{rightBracket,jdbcType=VARCHAR},
+            </if>
+            <if test="logicSymbol != null" >
+                LOGIC_SYMBOL = #{logicSymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null" >
+                SOURCE_TYPE = #{sourceType,jdbcType=DECIMAL},
+            </if>
+            <if test="listSource != null" >
+                LIST_SOURCE = #{listSource,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultValue != null" >
+                DEFAULT_VALUE = #{defaultValue,jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER = #{sortOrder,jdbcType=DECIMAL},
+            </if>
+            <if test="advanced != null" >
+                ADVANCED = #{advanced,jdbcType=CHAR},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.listview.entity.ListviewConditionBean" >
+        update FBS_LISTVIEW_CONDITION
+        set SYS_ID = #{sysId,jdbcType=VARCHAR},
+            LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR},
+            CONTROL_TYPE = #{controlType,jdbcType=VARCHAR},
+            LEFT_BRACKET = #{leftBracket,jdbcType=VARCHAR},
+            PROPERTY_NAME = #{propertyName,jdbcType=VARCHAR},
+            DISPLAY_TITLE = #{displayTitle,jdbcType=VARCHAR},
+            OPERATOR = #{operator,jdbcType=VARCHAR},
+            RIGHT_BRACKET = #{rightBracket,jdbcType=VARCHAR},
+            LOGIC_SYMBOL = #{logicSymbol,jdbcType=VARCHAR},
+            SOURCE_TYPE = #{sourceType,jdbcType=DECIMAL},
+            LIST_SOURCE = #{listSource,jdbcType=VARCHAR},
+            DEFAULT_VALUE = #{defaultValue,jdbcType=VARCHAR},
+            SORT_ORDER = #{sortOrder,jdbcType=DECIMAL},
+            ADVANCED = #{advanced,jdbcType=CHAR},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertList" parameterType="java.util.List" >
+        insert into FBS_LISTVIEW_CONDITION (ID, SYS_ID, LISTVIEW_ID, 
+            CONTROL_TYPE, LEFT_BRACKET, PROPERTY_NAME, 
+            DISPLAY_TITLE, OPERATOR, RIGHT_BRACKET, 
+            LOGIC_SYMBOL, SOURCE_TYPE, LIST_SOURCE, 
+            DEFAULT_VALUE, SORT_ORDER, ADVANCED, 
+            NOTE, CREATOR_ID, CREATOR_NAME, 
+            CREATED_TIME)
+        <foreach collection="list" item="item" index="index" open="VALUES" separator="," close=";">  
+        	(#{item.id,jdbcType=VARCHAR}, #{item.sysId,jdbcType=VARCHAR}, #{item.listviewId,jdbcType=VARCHAR}, 
+            #{item.controlType,jdbcType=VARCHAR}, #{item.leftBracket,jdbcType=VARCHAR}, #{item.propertyName,jdbcType=VARCHAR}, 
+            #{item.displayTitle,jdbcType=VARCHAR}, #{item.operator,jdbcType=VARCHAR}, #{item.rightBracket,jdbcType=VARCHAR}, 
+            #{item.logicSymbol,jdbcType=VARCHAR}, #{item.sourceType,jdbcType=DECIMAL}, #{item.listSource,jdbcType=VARCHAR}, 
+            #{item.defaultValue,jdbcType=VARCHAR}, #{item.sortOrder,jdbcType=DECIMAL}, #{item.advanced,jdbcType=CHAR}, 
+            #{item.note,jdbcType=VARCHAR}, #{item.creatorId,jdbcType=VARCHAR}, #{item.creatorName,jdbcType=VARCHAR}, 
+            #{item.createdTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+</mapper>

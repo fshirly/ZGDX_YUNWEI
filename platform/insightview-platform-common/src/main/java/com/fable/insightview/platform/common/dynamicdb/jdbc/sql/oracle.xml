@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlmap>
+	<!-- 建表 -->
+	<create>
+		<![CDATA[
+			CREATE TABLE ? (
+			  #{primaryKey} Number(11) NOT NULL,
+			  PRIMARY KEY (#{primaryKey})
+			)
+		]]>
+	</create>
+	<!-- 删表 -->
+	<drop>
+		<![CDATA[
+			DROP TABLE ?
+		]]>
+	</drop>
+	<!-- 新增字段 -->
+	<add>
+		<![CDATA[
+			ALTER TABLE ?0 ADD ?1 ?2
+		]]>
+	</add>
+	<!-- 删除字段 -->
+	<remove>
+		<![CDATA[
+			ALTER TABLE ?0 DROP column ?1
+		]]>
+	</remove>
+	<!-- 新增数据 -->
+	<insert>
+		<![CDATA[
+			INSERT INTO ?tableName (?columnNames) VALUES (?columnValues)
+		]]>
+	</insert>
+	<!-- 删除数据 -->
+	<delete>
+		<![CDATA[
+			DELETE FROM ?tableName WHERE CiId = '?conditions'
+		]]>
+	</delete>
+	<!-- 更新数据 -->
+	<update>
+		<![CDATA[
+			UPDATE ?tableName SET ?columnNameAndValues WHERE CiId = '?condition'
+		]]>
+	</update>
+	<!-- 查询数据 -->
+	<select>
+		<![CDATA[
+			select #{select} 
+			from #{from} 
+			where #{where} 
+		]]>
+	</select>
+	<!-- 查询表的字段 -->
+	<listcolumn>
+		<![CDATA[
+			SELECT a.columnname,a.attributeName,w.datatype,c.Tablename,a.isTableDisplay
+			FROM ResAttributes a,ResCiTypeAttribute c,ResWidgetType w
+			WHERE a.attributeid = c.AttributeId
+						and a.widgetId = w.widgetId
+						and c.Tablename in (?)
+		]]>
+	</listcolumn>
+	<!-- 列表分页查询 -->
+	<list>
+		<![CDATA[
+			 SELECT *
+			  FROM (SELECT a.*, ROWNUM rn
+			          FROM (select #{select},
+			          				(select count(ID) from ResCiUserAttentionRelation where UserID = #{userId} and ResCiID = ResCi.CiId) attention_count,
+			          				(SELECT u.userName FROM SysUserInfo u WHERE u.UserID = ResCi.userId) AS user_name,
+			          				(SELECT u.userName FROM SysUserInfo u WHERE u.UserID = ResCi.MaintainerId) AS maintainer_name,
+			          				(SELECT d.DeptName FROM SysDepartment d WHERE d.DeptID = ResCi.DepartmentId) AS department_name  
+							from ResCi ResCi
+							#{left-join}
+							where ResCi.CiId in (select rc.CiId from 
+								(select CiId from ResCi rc where 1=1 #{curTypeId} #{condition}) rc)) a
+			         WHERE ROWNUM <= (#{start} + #{pageSize}))
+			 WHERE rn > #{start}
+		]]>
+	</list>
+	<!-- 分页查询总条数 -->
+	<listtotal>
+		<![CDATA[
+			select count(CiId) as total from ResCi rc where 1=1 #{curTypeId} #{condition}
+		]]>
+	</listtotal>
+	<!-- 查询主键 -->
+	<queryPrimaryId>
+		<![CDATA[
+			SELECT nextval('ResCiSeq') CiId
+		]]>
+	</queryPrimaryId>
+	<!-- 批量查询组件信息 -->
+	<listComp>
+		<![CDATA[
+			select *
+			from #{from}
+			where CiId in (#{condition})
+		]]>
+	</listComp>
+</sqlmap>

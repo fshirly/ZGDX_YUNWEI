@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.modulelog.mapper.LogConfigBeanMapper" >
+    <resultMap id="logConfigResultMap" type="com.fable.insightview.platform.modulelog.entity.LogConfigBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="TYPE" property="type" jdbcType="CHAR" />
+        <result column="IS_START" property="isStart" jdbcType="CHAR" />
+        <result column="TIME_CFG" property="timeCfg" jdbcType="VARCHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_ID" property="updateId" jdbcType="VARCHAR" />
+        <result column="UPDATE_NAME" property="updateName" jdbcType="VARCHAR" />
+        <result column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <!-- 查询系统日志配置 -->
+    <select id="queryLogConfigs" resultMap="logConfigResultMap">
+    	SELECT id,type,is_start,time_cfg,note FROM FBS_LOG
+    </select>
+    
+    <!-- 查询启动状态的系统日志配置 -->
+    <!-- <select id="queryStartedLogConfigs" resultMap="logConfigResultMap">
+    	SELECT id,type,is_start,time_cfg,note FROM fbs_log WHERE is_start=1
+    </select> -->
+    
+	<!-- 插入日志配置 -->
+    <insert id="insertLogConfigs" parameterType="com.fable.insightview.platform.modulelog.entity.LogConfigBean">
+    	INSERT INTO FBS_LOG(id,sys_id,type,is_start,time_cfg,note,creator_id,creator_name,created_time) 
+	    	<foreach collection="list" item= "logConfig" open="VALUES" separator="," close=";">
+			  	(#{logConfig.id,jdbcType=VARCHAR},#{logConfig.sysId,jdbcType=VARCHAR},#{logConfig.type,jdbcType=CHAR},
+				#{logConfig.isStart,jdbcType=CHAR},#{logConfig.timeCfg,jdbcType=VARCHAR},#{logConfig.note,jdbcType=VARCHAR},
+				#{logConfig.creatorId,jdbcType=VARCHAR},#{logConfig.creatorName,jdbcType=VARCHAR},now())
+		    </foreach >
+    </insert>
+    
+    <!-- 更新日志配置 -->
+    <insert id="updateLogConfigs" parameterType="com.fable.insightview.platform.modulelog.entity.LogConfigBean">
+    	<foreach collection="list" item="logConfig">
+	    	UPDATE FBS_LOG SET is_start=#{logConfig.isStart,jdbcType=CHAR},time_cfg=#{logConfig.timeCfg,jdbcType=VARCHAR},note=#{logConfig.note,jdbcType=VARCHAR},
+	    		update_id=#{logConfig.updateId,jdbcType=VARCHAR},update_name=#{logConfig.updateName,jdbcType=VARCHAR},updated_time=now() 
+	    	WHERE id=#{logConfig.id,jdbcType=VARCHAR};
+	    </foreach >
+    </insert>
+    
+    
+    <update id="updateLogConfig" parameterType="com.fable.insightview.platform.modulelog.entity.LogConfigBean">
+	    	UPDATE FBS_LOG SET is_start=#{isStart,jdbcType=CHAR},time_cfg=#{timeCfg,jdbcType=VARCHAR},note=#{note,jdbcType=VARCHAR},
+	    		update_id=#{updateId,jdbcType=VARCHAR},update_name=#{updateName,jdbcType=VARCHAR},updated_time=now() 
+	    	WHERE id=#{id,jdbcType=VARCHAR}
+    </update>
+    
+</mapper>

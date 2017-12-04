@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.datadumpconfig.mapper.SysDumpMapper">
+	<resultMap id="dumpMap"	type="com.fable.insightview.platform.datadumpconfig.entity.SysDumpBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="TableName" property="tableName" jdbcType="VARCHAR" />
+		<result column="TimeColumnName" property="timeColumnName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectDump" resultType="hashmap" resultMap="dumpMap"
+		parameterType="page">
+		select ID,TableName,TimeColumnName
+		from SysDump
+		where 1 =1
+		<!--
+			<if test="params.startIp !='' and params.startIp != null "> and
+			inet_aton(a.IPAddress) &gt;= inet_aton(#{params.startIp}) </if> <if
+			test="params.endIp !='' and params.endIp != null "> and
+			inet_aton(a.IPAddress) &lt;= inet_aton(#{params.endIp}) </if> <if
+			test="params.subNetId !='' and params.subNetId != null and
+			params.subNetId !='-1'"> and a.SubNetID =#{params.subNetId} </if>
+		-->
+		order by ID
+	</select>
+
+	<select id="getByCondition" parameterType="sysdump" resultType="sysdump">
+		select ID,TableName,TimeColumnName
+		from SysDump
+		where 1=1
+		<if test="id != null and id != '' and id != -1">
+			and ID != #{id,jdbcType=INTEGER} 
+      </if>
+		<if test="tableName != null and tableName != ''">
+			and TableName = #{tableName,jdbcType=VARCHAR}
+      </if>
+		<if test="timeColumnName != null and timeColumnName != ''">
+			and TimeColumnName = #{timeColumnName,jdbcType=VARCHAR}
+      </if>
+	</select>
+
+	<select id="getByID" parameterType="java.lang.Integer"
+		resultType="sysdump">
+		select ID,TableName,TimeColumnName
+		from SysDump
+		where ID=#{id}
+	</select>
+
+	<insert id="insertDump" parameterType="sysdump">
+		insert into SysDump (ID,TableName,TimeColumnName)
+		values
+		(#{id,jdbcType=INTEGER},#{tableName,jdbcType=VARCHAR},#{timeColumnName,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateDumpByID" parameterType="sysdump">
+		update SysDump set TableName=#{tableName},TimeColumnName=#{timeColumnName}
+		where ID=#{id}
+	</update>
+
+	<delete id="delById" parameterType="java.lang.Integer">
+		delete from SysDump where ID =#{id}
+	</delete>
+
+	<delete id="delByIds" parameterType="String">
+		delete from SysDump where ID in (${ids})
+  </delete>
+</mapper>
+

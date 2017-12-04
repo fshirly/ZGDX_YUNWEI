@@ -1,0 +1,38 @@
+@charset "utf-8";
+/*--- css reset ---*/
+body,div,a,img,ul,li,form,label,table,tbody,tr,td,input{margin:0; padding:0;}
+body {background:#0b94da url(../images/login2/loginbg.png) repeat-x top;}
+body,input{font-size:12px; font-family:aria, Tahoma, sans-serif; color:#333333;}
+table {border-collapse:collapse; border-spacing:0;}
+ul {list-style: none;}
+a {text-decoration:none; cursor:pointer;}
+a:focus,a:active, input:active,input:focus {outline:0; blr:expression(this.onFocus=this.blur());}
+img {vertical-align:middle; border:0;}
+input[type="checkbox"] {vertical-align:-2px;}
+select {}
+
+#main {width:100%; top:20%; left:0; position:absolute;}
+#content {background:#ffffff url(../images/login2/login_bg.png) repeat-x; width:880px; margin:0 auto; vertical-align:top; height:400px; -moz-box-shadow:0 0 5px #333; -webkit-box-shadow:0 0 5px #333; box-shadow:0 0 5px #333; position:relative; z-index:1;}
+/*--- LOGO ---*/
+#logo {padding:25px 0 0 60px; height:55px;}
+/*--- Login ---*/
+#loginbar {margin:0 auto; padding:0 50px;}
+.picarea {background:url(../images/login2/login_pic.jpg) no-repeat; width:420px; height:270px; float:left; margin-right:18px;}
+#loginArea {float:left; width:342px; background:#cee9f8; height:270px;}
+#loginArea .tips {min-height:13px; margin:8px 0 5px 30px; color:#ff3300;}
+#loginArea .top {height:40px; line-height:40px; background:#97d5f5; font-weight:bold; color:#006699;}
+#loginArea .top .login_user {width:16px; height:16px; display:inline-block; background-position:0 -30px; margin:0 0 -5px 10px;}
+#loginForm ul {margin-left:40px;}
+#loginForm ul li {margin-bottom:16px;}
+#loginForm ul li span {display:inline-block; text-align:right; width:60px; color:#336699;}
+#loginForm ul li input[type="text"],#loginArea ul li input[type="password"] {background:#ffffff; border:1px solid; border-color:#7ca3bf #b8d0e0 #b8d0e0 #7ca3bf; height:28px; line-height:28px; width:170px; padding:0 5px;}
+#loginForm ul li#cc input {width:90px;}
+.buttons input {background:#7aa621; border:1px solid; border-color:#83b324 #59800d #59800d #83b324; width:80px; text-align:center; height:30px; margin-right:18px; color:#ffffff;}
+.buttons input:hover {background:#36a3d9; border:1px solid; border-color:#5cb8e6 #297ca6 #297ca6 #5cb8e6;} 
+li.buttons {padding-left:60px; padding-top:10px;}
+div.buttons {text-align:center;}
+.certificate {margin-top:60px;}
+.certificate p {padding-bottom:10px;}
+.ieShadow {width:880px; margin:0 auto; vertical-align:top; height:360px; filter:progid:DXImageTransform.Microsoft.Blur(pixelradius=5); background:#333333; position:absolute; left:-5px; top:-5px; right:5px; bottom:5px;}
+
+#footer{color:#1d7cbf; text-align:right; padding:5px 50px 0 0; clear:both;}	

@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* CSS Document */
+html,body {padding: 0px; margin: 0px; font-size:12px;}
+img{vertical-align: middle;}
+select {border: 1px solid #a7aab9; height: 20px; line-height: 20px;	margin: 0 2px; padding: 0; color: #274a5b;}
+.tab_top{margin: 0px; padding: 0px;	float: left;}
+
+.tab_top_b img{padding-top: 5px;}
+.main canvas{
+  /*  background: none repeat scroll 0% 0% rgb(255, 255, 250)*/
+}
+#emergency,#severity,#ordinary,#prompt,#clear,#uncertain{ left: 0 !important; position: relative !important; min-width:40px; display:inline-block} 
+#look{background: transparent url(../images/alarm/search.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+#confirm{background: transparent url(../images/alarm/ok.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+#cConfirm{background: transparent url(../images/alarm/no.png) no-repeat left top;	border: none; padding-left: 18px; font-size:12px;}
+#distributed{background: transparent url(../images/alarm/icon-hand.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+#bClear{background: transparent url(../images/alarm/broom.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+#delete{background: transparent url(../images/alarm/delete.png) no-repeat left top; border: none;	padding-left: 18px;	font-size:12px;}
+#addView{background: transparent url(../images/alarm/edit_table.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+#cView{background: transparent url(../images/alarm/edit_table.png) no-repeat left top; border: none; padding-left: 18px; font-size:12px;}
+.main {margin: 0px; padding: 0px; position: absolute; top: 0px;	bottom: 0px; left: 0px;	right: 0px;}
+.maim div  {border:ipx solid #ccc; background:#E1F2FA}
+

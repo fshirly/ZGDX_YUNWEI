@@ -1,0 +1,15 @@
+{
+	"recordsTotal": 57, 
+	"recordsFiltered": 57,
+	"data":[
+		{"id":"1","name":"告警列表","pid":"0","icon":"fa fa-list","url":"html/alarmList.html"},
+		{"id":"2","name":"平台侧视图","pid":"0","icon":"fa fa-list","url":""},
+		{"id":"2-1","name":"主机监控","pid":"2","icon":"","url":"html/hostMonitor.html"},
+		{"id":"2-2","name":"应用监控","pid":"2","icon":"","url":"html/appMonitor.html"},
+		{"id":"2-3","name":"存储监控","pid":"2","icon":"","url":"html/storeMonitr.html"},
+		{"id":"2-4","name":"接口监控","pid":"2","icon":"","url":"html/portMonitor.html"},
+		{"id":"3","name":"医院侧视图","pid":"0","icon":"fa fa-list","url":""},
+		{"id":"3-1","name":"上海仁济医院","pid":"3","icon":"","url":"html/hospital.html"},
+		{"id":"3-2","name":"编解码器","pid":"3","icon":"","url":"html/code.html"}
+	]
+}

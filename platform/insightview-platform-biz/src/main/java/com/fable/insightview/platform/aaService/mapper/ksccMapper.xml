@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.aaService.mapper.KsccMapper">
+	<delete id="deleteRole">
+    DELETE FROM sysrolemenus WHERE MenuID IN (SELECT MenuID FROM sysmenumodule WHERE ParentMenuID=10034);
+	</delete>
+	<delete id="deleteMenu">
+		DELETE FROM sysmenumodule WHERE ParentMenuID=10034;
+	</delete>
+	<insert id="insertMenuOfHospital" parameterType="hashmap">
+		INSERT INTO sysmenumodule
+		(MenuID,MenuName, MenuLevel, ParentMenuID,
+		MenuClass, ShowOrder, LinkURL,Descr)
+		VALUES (#{menuId},#{menuName},3,10034,1,#{showOrder},'/monitorCenter/hospital',#{hospitalId});
+	</insert>
+	<insert id="insertRoleMenu" parameterType="hashmap">
+		INSERT INTO sysrolemenus VALUES (#{id},#{roleId},#{menuId});
+	</insert>
+</mapper>
+

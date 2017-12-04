@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.mapper.AlarmEventRedefineMapper">
+	<resultMap id="EventRedefineMap" type="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+		<id column="RuleID" property="ruleId" jdbcType="INTEGER" />
+		<result column="RuleName" property="ruleName" jdbcType="VARCHAR" />
+		<result column="isEnable" property="isEnable" jdbcType="INTEGER" />
+		<result column="RuleDesc" property="ruleDesc" jdbcType="VARCHAR" />
+		<result column="IsSame" property="isSame" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="base_column">
+	RuleID,RuleName,IsEnable,RuleDesc,IsSame,CreateTime
+	</sql>
+	
+	<select id="listAlarmEventRedefine" resultType="hashmap" resultMap="EventRedefineMap" parameterType="page">
+		select 
+		<include refid="base_column"/>
+		from AlarmEventRedefine
+		where 1=1
+		<if test="params.ruleName !='' and params.ruleName != null ">
+			and RuleName like ${concat("'%'","'"+params.ruleName+"'","'%'")}
+		</if>
+		<if test="params.ruleDesc !='' and params.ruleDesc != null ">
+			and RuleDesc like ${concat("'%'","'"+params.ruleDesc+"'","'%'")}
+		</if>
+		<if test="params.isEnable !='' and params.isEnable != null and params.isEnable != -1">
+			and IsEnable=#{params.isEnable}
+		</if>
+		order by CreateTime desc
+	</select>
+	
+	<delete id="delRuleByIDs" parameterType="String">
+	delete from AlarmEventRedefine where RuleID in (${ruleIds})
+	</delete>
+	
+	<delete id="delRuleOfEventByRuleIds" parameterType="String">
+	delete from AlarmRuleOfEvent where RuleID in (${ruleIds})
+	</delete>
+	
+	<delete id="delRuleOfMOClassByRuleIds" parameterType="String">
+	delete from AlarmRuleOfMOClass where RuleID in (${ruleIds})
+	</delete>
+	
+	<delete id="delRuleOfResourceByRuleIds" parameterType="String">
+	delete from AlarmRuleOfResource where RuleOfMOClassID in (
+	SELECT ID FROM AlarmRuleOfMOClass WHERE RuleID IN (${ruleIds})
+	)
+	</delete>
+	
+	<insert id="insertAlarmEventRedefine" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+	insert into AlarmEventRedefine (RuleID,RuleName,IsEnable,RuleDesc,IsSame,CreateTime)
+	values (#{ruleId,jdbcType=INTEGER},#{ruleName,jdbcType=VARCHAR},#{isEnable,jdbcType=INTEGER},
+			#{ruleDesc,jdbcType=VARCHAR},#{isSame,jdbcType=INTEGER},${sysdate()})
+    </insert>
+    
+    <insert id="insertRuleOfEvent" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmRuleOfEventBean">
+	insert into AlarmRuleOfEvent (ID,RuleID,AlarmDefineID,AlarmLevelID)
+	values (#{id,jdbcType=INTEGER},#{ruleId,jdbcType=INTEGER},#{alarmDefineId,jdbcType=INTEGER},#{alarmLevelId,jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertRuleOfMOClass" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmRuleOfMOClassBean">
+	insert into AlarmRuleOfMOClass (ID,RuleID,MOClassID)
+	values (#{id,jdbcType=INTEGER},#{ruleId,jdbcType=INTEGER},#{moClassId,jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertRuleOfResource" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmRuleOfResourceBean">
+	insert into AlarmRuleOfResource (ID,RuleOfMOClassID,MOID)
+	values (#{id,jdbcType=INTEGER},#{ruleOfMOClassId,jdbcType=INTEGER},#{moId,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="updateEventRedefineByID" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean" >
+    update AlarmEventRedefine
+    <set>
+      <if test="ruleName != null" >
+        RuleName = #{ruleName,jdbcType=VARCHAR},
+      </if>
+       <if test="isEnable != null" >
+        IsEnable = #{isEnable,jdbcType=INTEGER},
+      </if>
+      <if test="ruleDesc != null" >
+        RuleDesc = #{ruleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isSame != null" >
+        IsSame = #{isSame,jdbcType=INTEGER},
+      </if>
+    </set>
+    where RuleID = #{ruleId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getRuleAndRelation" parameterType="hashmap" resultType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+	select DISTINCT r.RuleID,r.RuleName,ror.MOID,v.MOName,v.DeviceIP
+	from AlarmEventRedefine r 
+	left join AlarmRuleOfEvent rfe on r.RuleID = rfe.RuleID
+	left join AlarmRuleOfMOClass roc on r.RuleID= roc.RuleID
+	left join AlarmRuleOfResource ror on ror.RuleOfMOClassID= roc.ID
+	left join v_DeviceResource v on v.MOID= ror.MOID
+	where 1=1 
+	<if test="ruleId != null and ruleId != '' and ruleId != -1" >
+        and r.RuleID != #{ruleId,jdbcType=INTEGER}
+    </if>
+    <if test="choosedMoIds != null and choosedMoIds != ''" >
+        and ror.MOID in (${choosedMoIds}) 
+    </if>
+    order by ror.MOID
+  </select>
+  
+  <select id="getDefinedMoId" parameterType="hashmap" resultType="Integer">
+	select distinct ror.MOID
+	from AlarmEventRedefine r 
+	left join AlarmRuleOfEvent rfe on r.RuleID = rfe.RuleID
+	left join AlarmRuleOfMOClass roc on r.RuleID= roc.RuleID
+	left join AlarmRuleOfResource ror on ror.RuleOfMOClassID= roc.ID
+	where 1=1 
+	<if test="ruleId != null and ruleId != '' and ruleId != -1" >
+        and r.RuleID != #{ruleId,jdbcType=INTEGER}
+    </if>
+    <if test="choosedMoIds != null and choosedMoIds != ''" >
+        and ror.MOID in (${choosedMoIds})
+    </if>
+  </select>
+  
+  <select id="getEventRule" parameterType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean" resultType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+  	select 
+	<include refid="base_column"/>
+	from AlarmEventRedefine
+	where 1=1
+	<if test="ruleName != null and ruleName != '' ">
+		and RuleName =#{ruleName} 
+   	</if>	
+   	<if test="ruleId != null and ruleId != '' and ruleId != -1">
+		and RuleID  != #{ruleId}
+	</if>
+  </select>
+  
+  <select id="getRuleByID" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+  	select 
+	<include refid="base_column"/>
+	from AlarmEventRedefine where RuleID=#{ruleId}
+  </select>
+  
+  <select id="getRuleOfClassByRuleID" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmRuleOfMOClassBean">
+  	select r.ID,r.RuleID,r.MOClassID,d.ClassLable
+  	from AlarmRuleOfMOClass r
+    left join MObjectDef d on r.MOClassID = d.ClassID
+  	where RuleID=#{ruleId}
+  </select>
+  
+  <select id="getEventListByRuleId" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.entity.AlarmEventDefineBean">
+	select ruleOfEvent.ID,ruleOfEvent.AlarmDefineID,ruleOfEvent.AlarmLevelID,def.AlarmName,def.AlarmTitle,def.AlarmTypeID,type.AlarmTypeName alarmTypeName,
+			l.AlarmLevelName alarmLevelName,l.LevelColor levelColor,l.LevelColorName levelColorName
+	from AlarmRuleOfEvent ruleOfEvent
+	left join AlarmEventDefine def on ruleOfEvent.AlarmDefineID = def.AlarmDefineID
+	left join AlarmEventRedefine redefine on redefine.RuleID = ruleOfEvent.RuleID
+	left join AlarmType type on def.AlarmTypeID = type.AlarmTypeID
+	left join AlarmLevel l on ruleOfEvent.AlarmLevelID = l.AlarmLevelID
+	where redefine.RuleID=#{ruleId}
+	order by ruleOfEvent.AlarmDefineID
+  </select>
+  
+  <delete id="delRuleOfResourceByMoIds" parameterType="String">
+	delete from AlarmRuleOfResource where MOID in (${moIds})
+  </delete>
+  
+  <select id="getRuleByMOID" parameterType="Integer" resultType="com.fable.insightview.monitor.alarmmgr.alarmeventredefine.entity.AlarmEventRedefineBean">
+  	select distinct d.*,t.resCount 
+  	from AlarmEventRedefine d 
+	left join AlarmRuleOfMOClass roc  on d.RuleID = roc.RuleID 
+	left join AlarmRuleOfResource rom on rom.RuleOfMOClassID=roc.ID 
+	left join (SELECT COUNT(m.ID) resCount,de.RuleID
+	           FROM AlarmRuleOfResource m 
+	           LEFT JOIN AlarmRuleOfMOClass c ON c.ID = m.RuleOfMOClassID 
+	           LEFT JOIN AlarmEventRedefine de ON de.RuleID=c.RuleID
+	           GROUP BY de.RuleID
+	           )t ON t.RuleID=d.RuleID
+	where rom.MOID =#{moId}
+  </select>
+</mapper>
+

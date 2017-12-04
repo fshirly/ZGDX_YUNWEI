@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="com.fable.insightview:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="insightview.war">
+      <element id="artifact" artifact-name="com.fable.insightview:war exploded" />
+    </root>
+  </artifact>
+</component>

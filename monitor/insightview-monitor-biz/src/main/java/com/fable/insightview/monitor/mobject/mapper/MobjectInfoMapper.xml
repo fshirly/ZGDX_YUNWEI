@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.mobject.mapper.MobjectInfoMapper">
+	<resultMap id="mobjectMap" type="mobjectBean">
+		<id column="ClassID" property="classId" jdbcType="INTEGER" />
+		<result column="ClassName" property="className" jdbcType="VARCHAR" />
+		<result column="ClassLable" property="classLable" jdbcType="VARCHAR" />
+		<result column="Descr" property="descr" jdbcType="VARCHAR" />
+		<result column="AttributeTableName" property="attributeTableName"
+			jdbcType="VARCHAR" />
+		<result column="ParentClassID" property="parentClassId"
+			jdbcType="INTEGER" />
+		<result column="ShowOrder" property="showOrder" jdbcType="INTEGER" />
+	</resultMap>
+	
+	 <resultMap id="MObjectRelation" type="com.fable.insightview.monitor.mobject.entity.MObjectRelationBean" > 
+    <result column="RelationID" property="relationID" jdbcType="INTEGER" /> 
+    <result column="ClassID" property="classID" jdbcType="INTEGER" />
+     <result column="ParentClassID" property="parentClassID" jdbcType="INTEGER" /> 
+    <result column="RelationType" property="relationType" jdbcType="INTEGER" />
+     <result column="RelationPath" property="relationPath" jdbcType="VARCHAR" />
+  </resultMap>
+	
+	<select id="getMObjectForEdit" resultType="hashmap" resultMap="mobjectMap">
+		select * from MObjectDef
+    </select>    
+	<select id="getAllMObject" resultType="hashmap" resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID and
+		mr.RelationType=1 order by md.ShowOrder
+    </select>
+	<select id="getAllMObject2" resultType="hashmap" resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md,MObjectRelation mr
+		where md.ClassID=mr.ClassID and mr.RelationType=2 and mr.ParentClassID
+		in (select ClassID from MObjectDef)
+  </select>
+	<select id="queryMObjectRelation" resultType="hashmap"
+		resultMap="mobjectMap">
+		select md.*,mr.ParentClassID,mr.RelationType from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID 
+  </select>
+  <select id="queryMObjectRelation2" resultType="hashmap"
+		resultMap="mobjectMap">
+		select mo.RelationID,mo.ClassID,mo.ParentClassID,mo.RelationType,mo.RelationPath,mo.ClassName,
+		mo.ClassLable,${nvl("mo.newParentID","0")}  newParentID
+ 		from 
+		(	
+		select t.*,ta.ClassName,ta.ClassLable,ta.ShowOrder,
+		(select r.RelationID from MObjectRelation r 
+		where r.RelationPath=reverse(substr(reverse(t.RelationPath),INSTR(reverse(t.RelationPath),'/')+1))  ) newParentID from MObjectRelation t
+		left join MObjectDef ta on t.ClassID=ta.ClassID
+		order by ta.ShowOrder
+		) mo where mo.ClassID &lt;&gt; 51
+  </select>
+  
+    <select id="queryMObjectBySecondLevel" resultType="hashmap" parameterType="java.lang.String"
+		resultMap="mobjectMap">
+		select mo.RelationID,mo.ClassID,mo.ParentClassID,mo.RelationType,mo.RelationPath,mo.ClassName,
+		mo.ClassLable,${nvl("mo.newParentID","0")}  newParentID,mo.ShowOrder
+ 		from 
+		(	
+		select t.*,ta.ClassName,ta.ClassLable,ta.ShowOrder,
+		(select r.RelationID from MObjectRelation r 
+		where r.RelationPath=reverse(substr(reverse(t.RelationPath),INSTR(reverse(t.RelationPath),'/')+1))  ) newParentID from MObjectRelation t
+		left join MObjectDef ta on t.ClassID=ta.ClassID
+		order by t.ParentClassID
+		) mo where mo.ClassID in (${ClassId}) order by mo.ShowOrder
+  </select>
+  
+	<select id="getMessageByTreeName" parameterType="hashmap"
+		resultType="hashmap" resultMap="mobjectMap">
+		select md.*,mr.ParentClassID,mr.RelationType from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID
+		where md.ClassLable like ${concat("'%'","'"+classLable+"'","'%'")}
+  </select>
+  <select id="getMessageByTreeName2" parameterType="hashmap"
+		resultType="hashmap" resultMap="mobjectMap">
+		select mo.RelationID,mo.ClassID,mo.ParentClassID,mo.RelationType,mo.RelationPath,mo.ClassName,
+		mo.ClassLable,${nvl("mo.newParentID","0")}  newParentID
+ 		from 
+		(	
+		select t.*,ta.ClassName,ta.ClassLable,
+		(select r.RelationID from MObjectRelation r 
+		where r.RelationPath=reverse(substr(reverse(t.RelationPath),INSTR(reverse(t.RelationPath),'/')+1))  ) newParentID from MObjectRelation t
+		left join MObjectDef ta on t.ClassID=ta.ClassID
+		order by t.ParentClassID
+		) mo
+		where mo.ClassLable like ${concat("'%'","'"+classLable+"'","'%'")}
+  </select>
+	<select id="selectMobject" resultType="hashmap" resultMap="mobjectMap"
+		parameterType="page">
+		select
+		ClassID,ClassName,ClassLable,Descr,AttributeTableName
+		from
+		MObjectDef
+		where 1=1 and ClassID!=1
+		<if test="params.className !='' and params.className != null ">
+			and ClassName like
+			${concat("'%'","'"+params.className+"'","'%'")}
+		</if>
+	</select>
+
+	<select id="getMobjectById" parameterType="Integer" resultType="mobjectBean">
+		select
+		ClassID,ClassName,ClassLable,Descr,AttributeTableName
+		from
+		MObjectDef
+		where 1=1 and ClassID = #{classId}
+	</select>
+	<select id="getMObject" resultType="hashmap" resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID
+	  </select>
+	<select id="getTreeIdByTreeName" parameterType="String"
+		resultType="hashmap" resultMap="mobjectMap">
+		select * from MObjectDef where ClassLable like
+		${concat("'%'","'"+_parameter+"'","'%'")}
+  </select>
+
+	<select id="isLeaf" parameterType="Integer" resultType="Integer">
+		select count(1) from MObjectRelation where ParentClassID =
+		#{classId,jdbcType=VARCHAR} and RelationType=1
+  </select>
+
+	<select id="getByParentID" parameterType="Integer" resultType="hashmap"
+		resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID
+		where mr.ClassID=#{sourceClassId} or mr.ParentClassID =#{sourceClassId}
+	</select>
+	<select id="getresNameByParentID" parameterType="hashmap"
+		resultType="hashmap" resultMap="mobjectMap">
+		SELECT a.ClassID,a.ClassLable
+		FROM MObjectRelation b
+		left join MObjectDef a on b.ClassID=a.ClassID
+		WHERE b.RelationPath like	${concat("'%'","'"+relationPath+"/'","'%'")} and b.ParentClassID=#{moClassID} 
+		and a.ClassID != 89
+		
+  </select>
+  
+  <select id="getChildIdByParentIDs"  parameterType="java.lang.String" resultType="Integer">
+	select  ClassID from MObjectRelation
+	where ParentClassID in (${parentIDs})
+  </select>
+  
+  <select id="getByParentIDs" parameterType="java.lang.String" resultType="hashmap"
+		resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID
+		where mr.ParentClassID in (${parentIDs}) or mr.ClassID=#{sourceClassId}
+	</select>
+	
+	<select id="getByParentClassIDs" parameterType="java.lang.String" resultType="hashmap"
+		resultMap="mobjectMap">
+		select md.*,mr.ParentClassID from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID
+		where mr.ParentClassID in (${parentIDs}) AND  mr.ClassID=#{sourceClassId}
+	</select>
+	
+	<select id="getByClassName" parameterType="String"
+		resultType="hashmap" resultMap="mobjectMap">
+		select * from MObjectDef where ClassName =#{className}
+  	</select>
+  	
+  	<select id="getMObject2" resultType="hashmap" resultMap="mobjectMap">
+		select mo.RelationID,mo.ClassID,mo.ParentClassID,mo.RelationType,mo.RelationPath,mo.ClassName,
+		mo.ClassLable,${nvl("mo.newParentID","0")}  newParentID
+ 		from 
+		(	
+		select t.*,ta.ClassName,ta.ClassLable,ta.ShowOrder,
+		(select r.RelationID from MObjectRelation r 
+		where r.RelationPath=reverse(substr(reverse(t.RelationPath),INSTR(reverse(t.RelationPath),'/')+1))  ) newParentID from MObjectRelation t
+		left join MObjectDef ta on t.ClassID=ta.ClassID
+		order by ta.ShowOrder
+		) mo 
+	  </select>
+	  <select id="getMObjectByEdit" resultType="hashmap" resultMap="mobjectMap">
+		SELECT * from MObjectDef WHERE ClassID in(5,6,7,8,9,59,60)
+    </select> 
+    
+    
+    <select id="queryParentClassID" parameterType="java.lang.String" resultType="hashmap" resultMap="MObjectRelation">
+   		select RelationID,ClassID,ParentClassID,RelationType,RelationPath from  MObjectRelation where ParentClassID =#{parentClassId}
+  </select>
+  
+  <select id="getByClassIDLst" parameterType="hashmap" resultMap="mobjectMap">
+  	select mo.RelationID,mo.ClassID,mo.ParentClassID,mo.RelationType,mo.RelationPath,mo.ClassName,
+		mo.ClassLable,${nvl("mo.newParentID","0")}  newParentID
+ 		from 
+		(	
+		select t.*,ta.ClassName,ta.ClassLable,ta.ShowOrder,
+		(select r.RelationID from MObjectRelation r 
+		where r.RelationPath=reverse(substr(reverse(t.RelationPath),INSTR(reverse(t.RelationPath),'/')+1))  ) newParentID from MObjectRelation t
+		left join MObjectDef ta on t.ClassID=ta.ClassID
+		order by ta.ShowOrder
+		) mo where mo.ClassID in
+		<foreach collection="list" item="classIDs"  open="(" separator="," close=")">
+	     #{classIDs}
+	    </foreach> 
+  </select>
+  
+  <select id="getParentIDByChildIds"  parameterType="java.lang.String" resultType="Integer">
+	select distinct ParentClassID from MObjectRelation
+	where ClassID in (${classIDs})
+  </select>
+  
+  <select id="getAllResMObject" resultType="hashmap" resultMap="mobjectMap">
+		select md.*,mr.ParentClassID,(SELECT count(p.RelationID) from MObjectRelation p where p.ParentClassID=md.ClassID and p.RelationType=1)as childCount from MObjectDef md
+		left join MObjectRelation mr on md.ClassID=mr.ClassID and
+		mr.RelationType=1 order by md.ShowOrder
+  </select>
+</mapper>
+

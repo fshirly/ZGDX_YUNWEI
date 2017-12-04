@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.duty.mapper.OrdersDutyMapper">
+
+	<select id="query" resultType="HASHMAP">
+		SELECT ID,DutyId,Title,BeginPoint,EndPoint FROM 
+		PfOrdersOfDuty 
+		<if test="list.size() > 0"> 
+			WHERE DutyId IN 
+			<foreach collection="list" item="dutyId" open="( " separator="," close=" )">
+			#{dutyId}
+			</foreach>
+		</if>
+		ORDER BY BeginPoint ASC
+	</select>
+	
+	<insert id="insert" parameterType="com.fable.insightview.platform.dutymanager.duty.entity.PfOrdersDuty">
+		INSERT INTO PfOrdersOfDuty (ID,DutyId,Title,BeginPoint,EndPoint,OrderId,IntervalDays,ExchangeStart,ExchangeEnd,ForceTime,ExchangeStatus)
+		VALUES 
+		(#{id,jdbcType=INTEGER},#{dutyId,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},
+		#{beginPoint,jdbcType=VARCHAR},#{endPoint,jdbcType=VARCHAR},#{orderId,jdbcType=INTEGER},#{intervalDays,jdbcType=INTEGER},
+		#{exchangeStart,jdbcType=TIMESTAMP},#{exchangeEnd,jdbcType=TIMESTAMP},#{forceTime,jdbcType=TIMESTAMP},#{exchangeStatus,jdbcType=INTEGER})
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM PfOrdersOfDuty WHERE DutyId=#{dutyId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteSingle">
+		DELETE FROM PfOrdersOfDuty WHERE ID=#{orderIdOfDuty,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteMulti">
+		DELETE FROM PfOrdersOfDuty WHERE ID IN (${orderIds})
+	</delete>
+	
+	<select id="querySingle" resultType="HASHMAP">
+		SELECT ID,DutyId,Title,BeginPoint,EndPoint,OrderId,IntervalDays FROM 
+		PfOrdersOfDuty WHERE DutyId=#{dutyId}
+	</select>
+	
+	<update id="updateStatus">
+		UPDATE PfOrdersOfDuty SET ExchangeStatus=#{status} WHERE ID=#{orderId}
+	</update>
+	
+	<select id="queryOrder" resultType="HASHMAP">
+		SELECT pfo.ID,pfo.DutyId,pfo.Title,pfo.BeginPoint,pfo.EndPoint,
+		pfo.IntervalDays,pfo.ExchangeStart,pfo.ExchangeEnd,pfo.ForceTime,pfo.ExchangeStatus,pf.DutyDate 
+		FROM PfOrdersOfDuty pfo,PfDuty pf 
+		WHERE pfo.DutyId=pf.ID AND pfo.ID=#{orderId}
+	</select>
+</mapper>

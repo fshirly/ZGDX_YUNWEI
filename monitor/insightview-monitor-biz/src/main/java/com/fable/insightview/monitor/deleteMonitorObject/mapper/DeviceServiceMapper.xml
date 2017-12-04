@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.DeviceServiceMapper">
+ 
+<select id="queryServices" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select dbms.MOName as MOName,dbms.MOID,dbms.MOClassID,dbms.DBMSType as type ,dbms.IP as Ip ,'数据库' as serviceName from  MODBMSServer dbms where dbms.IP in (${deviceIP})
+union all 
+select middelWare.ServerName as MOName,middelWare.MOID,middelWare.MOClassID , middelWare.JmxType as type,middelWare.IP as Ip,'中间件' as serviceName from  MOMiddleWareJMX middelWare  where middelWare.IP in (${deviceIP})
+</select>
+<select id="queryVmServices" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select device.MOName as MOName,device.MOID,device.MOClassID,def.ClassLable as type,device.DeviceIP as IP,def.ClassLable as serviceName from MOVMInfo info,MODevice device,MObjectDef def
+where info.MOID = device.MOID and device.MOClassID =def.ClassID  and  info.PhyMOID in (${moid})
+</select>
+
+<select id="queryVhostServices" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select device.MOName as MOName,device.MOID,device.MOClassID,def.ClassLable as type,device.DeviceIP as IP,def.ClassLable as serviceName 
+from MODevice device,MObjectDef def where device.MOClassID = def.ClassID and MOID in (${vmoid})
+</select>
+
+
+<select id="queryVMIP" resultType="java.lang.String" parameterType="hashmap">
+select device.DeviceIP  from MOVMInfo info,MODevice device  where info.MOID = device.MOID and  info.PhyMOID in (${moid})
+</select>
+
+<select id="queryVMID" resultType="java.lang.Integer" parameterType="hashmap">
+select  MOID from MOPhysicsHostInfo  where  vCenterIP in (${vcentIP})
+</select>
+
+<select id="querydeviceIP" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select  MOID,DeviceIP as ip from MODevice  where  MOID in (${moid})
+</select>
+
+<select id="queryZoneMagerServie" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select moread.MOID,moread.MOClassID, def.ClassLable as type ,moread.IPAddress as Ip , def.ClassLable as serviceName 
+from  MOReader moread,MObjectDef def
+ where  moread.MOClassID = def.ClassID  and moread.ParentMOID in (${MOID});
+</select>
+</mapper>

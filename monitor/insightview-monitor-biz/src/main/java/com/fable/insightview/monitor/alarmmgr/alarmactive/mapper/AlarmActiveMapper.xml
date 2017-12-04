@@ -1,0 +1,1148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmactive.mapper.AlarmActiveMapper" >
+<resultMap id="AlarmActiveMap" type="com.fable.insightview.monitor.entity.AlarmNode" >
+    <id column="AlarmID" property="alarmID" jdbcType="INTEGER" />
+    <result column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+    <result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+    <result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moclassID" jdbcType="INTEGER" />
+    <result column="SourceMOClassID" property="sourceMOClassID" jdbcType="INTEGER" />
+    <result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER" />
+    <result column="SourceMOName" property="sourceMOName" jdbcType="VARCHAR" />
+    <result column="SourceMOIPAddress" property="sourceMOIPAddress" jdbcType="VARCHAR" />
+    <result column="Confirmer" property="confirmer" jdbcType="VARCHAR" />
+    <result column="ConfirmInfo" property="confirmInfo" jdbcType="VARCHAR" />
+    <result column="Cleaner" property="cleaner" jdbcType="VARCHAR" />
+    <result column="CleanInfo" property="cleanInfo" jdbcType="VARCHAR" />
+    <result column="DispatchUser" property="dispatchUser" jdbcType="VARCHAR" />
+    <result column="WorkOrderId" property="dispatchID" jdbcType="VARCHAR" />
+    <result column="DispatchInfo" property="dispatchInfo" jdbcType="VARCHAR" />
+    <result column="AlarmContent" property="alarmContent" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="AlarmType" property="alarmType" jdbcType="INTEGER" />
+    <result column="RepeatCount" property="repeatCount" jdbcType="INTEGER" />
+    <result column="UpgradeCount" property="upgradeCount" jdbcType="INTEGER" />
+    <result column="AlarmStatus" property="alarmStatus" jdbcType="INTEGER" />
+    <result column="AlarmOperateStatus" property="alarmOperateStatus" jdbcType="INTEGER" />
+    <result column="StatusName" property="operateStatusName" jdbcType="VARCHAR" />
+    <result column="StartTime" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="LastTime" property="lastTime" jdbcType="TIMESTAMP" /> 
+    <result column="ConfirmTime" property="confirmTime" jdbcType="TIMESTAMP" />
+    <result column="CleanTime" property="cleanTime" jdbcType="TIMESTAMP" />
+    <result column="DispatchTime" property="dispatchTime" jdbcType="TIMESTAMP" /> 
+</resultMap>
+
+<resultMap id="AlarmActiveMapFor3D" type="com.fable.insightview.monitor.entity.AlarmNode" >
+    <id column="AlarmID" property="alarmID" jdbcType="INTEGER" /> 
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="ResID" property="moid" jdbcType="INTEGER" />
+	<result column="LastTime" property="lastTime" jdbcType="TIMESTAMP" />
+	<result column="StartTime" property="startTime" jdbcType="TIMESTAMP" />
+	<result column="AlarmStatus" property="alarmStatus" jdbcType="INTEGER" />
+    <result column="AlarmOperateStatus" property="alarmOperateStatus" jdbcType="INTEGER" />
+</resultMap>
+
+<resultMap id="AlarmActiveMapForTopo" type="com.fable.insightview.monitor.entity.AlarmNode" >
+    <id column="AlarmID" property="alarmID" jdbcType="INTEGER" /> 
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER" />
+	<result column="LastTime" property="lastTime" jdbcType="TIMESTAMP" /> 
+	<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+	<result column="MOID" property="moid" jdbcType="INTEGER" />
+	<result column="AlarmOperateStatus" property="alarmOperateStatus" jdbcType="INTEGER" />
+	<result column="LastTime" property="lastTime" jdbcType="TIMESTAMP" />
+</resultMap>
+
+ <resultMap id="AlarmLevelMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmLevelInfo" > 
+    <id column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+    <result column="AlarmLevelValue" property="alarmLevelValue" jdbcType="INTEGER" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="LevelColor" property="levelColor" jdbcType="VARCHAR" />
+    <result column="LevelColorName" property="levelColorName" jdbcType="VARCHAR"/>
+    <result column="totalNum" property="totalNum" jdbcType="INTEGER" />
+</resultMap>
+ <resultMap id="AlarmTypeMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmTypeInfo" > 
+    <id column="AlarmTypeID" property="alarmTypeID" jdbcType="INTEGER" />
+    <result column="AlarmTypeName" property="alarmTypeName" jdbcType="VARCHAR" />
+</resultMap>
+ <resultMap id="AlarmStatusMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmStatusInfo" > 
+    <id column="StatusID" property="statusID" jdbcType="INTEGER" />
+    <result column="StatusName" property="statusName" jdbcType="VARCHAR" />
+</resultMap>
+<resultMap id="AlarmGroupByLevel" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmLevelInfo" > 
+    <id column="AlarmLevel" property="alarmLevelID" jdbcType="INTEGER" />
+    <result column="alarmcount" property="totalNum" jdbcType="INTEGER" />
+</resultMap>
+<resultMap id="MOActiveAlarmStMap" type="com.fable.insightview.monitor.alarmmgr.entity.MOActiveAlarmStInfo" > 
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moclassid" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainid" jdbcType="INTEGER" />
+    <result column="L1Count" property="l1count" jdbcType="INTEGER" />
+    <result column="L2Count" property="l2count" jdbcType="INTEGER" />
+    <result column="L3Count" property="l3count" jdbcType="INTEGER" />
+    <result column="L4Count" property="l4count" jdbcType="INTEGER" />
+    <result column="L5Count" property="l5count" jdbcType="INTEGER" />
+</resultMap>
+
+<resultMap id="CurrentPerformanceMap" type="com.fable.insightview.monitor.topo.entity.TopoCurrentPerBean" > 
+    <result column="DEVICEMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+     <result column="KPINAME" property="kpiName" jdbcType="VARCHAR" />
+    <result column="PERFVALUE" property="perfValue" jdbcType="VARCHAR" />
+    <result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+</resultMap>
+
+<select id="queryList" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+		from AlarmActiveDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		<if test="params.neManufacturerID != null and params.neManufacturerID != ''">
+		  left join MODevice td  on t.SourceMOID=td.MOID			
+    	</if>
+  		where 1=1 
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.sourceMOIPAddress != null and params.sourceMOIPAddress != '' ">
+			and t.SourceMOIPAddress like ${concat("'%'","'"+params.sourceMOIPAddress+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>
+    	<if test="params.moclassID != null and params.moclassID != '' and params.moclassID != 9 and params.moclassID != 8">
+			${params.alarmSourceSubSql}
+			and t.AlarmLevel&lt;=4 AND t.AlarmLevel&gt;=1
+    	</if>
+    	<if test="params.moclassID ==9 ">
+			and t.SourceMOClassID=9 OR (t.SourceMOClassID=8 AND t.MOClassID=9) 
+			and t.AlarmLevel&lt;=4 AND t.AlarmLevel&gt;=1
+    	</if>
+    	<if test="params.moclassID ==8 ">
+			and  t.SourceMOClassID=8 AND t.MOClassID!=9 
+			and t.AlarmLevel&lt;=4 AND t.AlarmLevel&gt;=1
+    	</if>
+    	<if test="params.neManufacturerID != null and params.neManufacturerID != ''">
+			   and  td.neManufacturerID = #{params.neManufacturerID}			
+    	</if> 	
+    	<if test="params.moId != null and params.moId != ''">
+			and t.MOID in(${params.moId})
+    	</if>
+  		order by t.AlarmLevel,t.LastTime desc	
+</select> 
+
+
+<select id="queryAlarmList" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+		from AlarmActiveDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		<if test="params.neManufacturerID != null and params.neManufacturerID != ''">
+		  left join MODevice td  on t.SourceMOID=td.MOID			
+    	</if>
+  		where 1=1 
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>
+    	<if test="params.moclassID != null and params.moclassID != ''">
+			and	t.SourceMOID in(select MOID from MODevice where ${params.alarmSourceSubSql})
+    	</if>
+    	<if test="params.neManufacturerID != null and params.neManufacturerID != ''">
+			   and  td.neManufacturerID = #{params.neManufacturerID}			
+    	</if> 	
+    	<if test="params.moId != null and params.moId != ''">
+			and t.MOID in(${params.moId})
+    	</if>
+  		order by t.AlarmLevel,t.LastTime desc	
+</select>
+
+<select id="queryAlarmListWithDevice" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+  			   ,t.AlarmContent,t.SourceMOID
+		from AlarmActiveDetail t	
+  		join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		where t.AlarmLevel &lt; 4
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>
+    	<if test="params.sourceMoName != null and params.sourceMoName != '' ">
+			and t.SourceMOName like ${concat("'%'","'"+params.sourceMoName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != null and params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmOperateStatus != null and params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmType != null and params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>
+    	<if test="params.deviceMoids != null and params.deviceMoids != ''">
+			and	t.SourceMOID in(${params.deviceMoids})
+    	</if>
+    	<if test="params.neManufacturerID != null and params.neManufacturerID != ''">
+			   and  td.neManufacturerID = #{params.neManufacturerID}			
+    	</if> 	
+    	<if test="params.moId != null and params.moId != ''">
+			and t.MOID in(${params.moId})
+    	</if>
+    	<if test="params.sourceMOIPAddress != null and params.sourceMOIPAddress != ''">
+			and t.sourceMOIPAddress like ${concat("'%'","'"+params.sourceMOIPAddress+"'","'%'")}		
+    	</if>
+    	<if test="params.sortParam == null or params.sortParam == ''">
+    		order by t.StartTime desc	
+    	</if>
+    	<if test="params.sortParam != null and params.sortParam != ''">
+    		order by ${params.sortParam}
+    	</if>
+  		
+</select>
+
+
+<select id="queryTZAlarmList" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+		from AlarmActiveDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		where 1=1 
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>
+    	<if test="params.moclassID != null and params.moclassID != '' and params.moclassID != 14 and params.moclassID != 17 and params.moclassID != 90   ">
+			and	t.SourceMOID in(select MOID from MODevice where ${params.alarmSourceSubSql})
+    	</if>
+    	<if test="params.moclassID == 17">
+    	 and t.SourceMOID  in (SELECT MOID from MOMiddleWareJMX WHERE ${params.alarmSourceSubSql})
+    	</if>
+    	<if test="params.moclassID == 14">
+    	 and t.SourceMOClassID  in ${params.alarmSourceSubSql}
+    	</if>
+    	<if test=" params.moclassID == 90">
+    	 and t.SourceMOClassID  in ${params.alarmSourceSubSql}
+    	</if>
+    	<if test="params.moId != null and params.moId != ''">
+			and t.MOID in(${params.moId})
+    	</if>
+  		order by t.AlarmLevel,t.LastTime desc	
+</select>
+
+
+
+<select id="queryListBy3dRoom" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+		           t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,
+		           t.dispatchUser,t.dispatchTime,t.dispatchID,t.alarmLevel
+		from AlarmActiveDetail t
+		left join MODevice mo  on mo.MOID=t.SourceMOID   	
+		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+		left join MOTag mt on mt.MOID=t.MOID
+  		WHERE ( mo.ResID in(${params.ciId}) or mt.ResID in(${params.ciId}) )
+  		<if test="params.timeBegin != null and params.timeBegin != ''">
+  			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmStatus != 0 and params.alarmStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>    
+  		order by t.AlarmLevel,t.LastTime desc
+</select> 
+
+<select id="queryListByTopo" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+		from AlarmActiveDetail t
+		left join MODevice mo  on mo.MOID=t.SourceMOID   	
+		left join MOSiteDns dns  on dns.MOID=t.SourceMOID   
+  		left join MOSiteFtp ftp  on ftp.MOID=t.SourceMOID   
+  		left join MOSiteHttp http  on http.MOID=t.SourceMOID  
+  		left join MOSitePort tcp  on tcp.MOID=t.SourceMOID
+  		left join MOMiddleWareJMX jmx  on jmx.MOID=t.SourceMOID
+  		left join MOMySQLDBServer myServer  on myServer.MOID=t.SourceMOID
+  		left join MOOracleInstance orclIns  on orclIns.MOID=t.SourceMOID
+  		left join MODB2Instance db2Ins  on db2Ins.MOID=t.SourceMOID
+  		left join MODB2Database db2DB  on db2DB.MOID=t.SourceMOID or db2DB.InstanceMOID = t.SourceMOID
+  		left join MOMsSQLServer msServer  on msServer.MOID=t.SourceMOID
+  		left join MOSybaseServer sybaseSer  on sybaseSer.MOID=t.SourceMOID
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		WHERE 1=1
+  		and (mo.MOID in(${params.moId}) or dns.MOID in(${params.moId}) 
+  			  or ftp.MOID in(${params.moId})  or http.MOID in(${params.moId}) or tcp.MOID in(${params.moId})
+  			  or jmx.MOID in(${params.moId}) or myServer.MOID in(${params.moId}) or orclIns.MOID in(${params.moId})
+  			  or db2Ins.MOID in(${params.moId}) or db2DB.MOID in(${params.moId}) or db2DB.InstanceMOID in(${params.moId})
+  			  or msServer.MOID in(${params.moId}) or sybaseSer.MOID in(${params.moId}))
+  		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmStatus != 0 and params.alarmStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}
+    	</if>    
+  		order by t.AlarmLevel,t.LastTime desc
+</select>
+
+<select id="queryStatusInfo" resultType="hashmap" resultMap="AlarmStatusMap" >
+  		select t.StatusID,t.StatusName
+  		from  AlarmStatusDef t where type =2
+		order by t.StatusID
+</select>
+
+<select id="queryLevelInfo" resultType="hashmap" resultMap="AlarmLevelMap" >
+  		select t.AlarmLevelID,t.AlarmLevelValue,t.AlarmLevelName
+  		from  AlarmLevel t
+		order by t.AlarmLevelID
+</select>
+
+<select id="queryAlarmLevelList" resultType="hashmap" resultMap="AlarmLevelMap" parameterType="page">
+  		select t.AlarmLevelID,t.AlarmLevelValue,t.AlarmLevelName,t.LevelColor,t.LevelColorName,t.LevelIcon,t.IsSystem
+  		from  AlarmLevel t
+  		where t.AlarmLevelID not in 
+  	    (SELECT FilterKeyValue from AlarmViewFilter where ViewCfgID=#{params.viewCfgID,jdbcType=INTEGER} and FilterKey='AlarmLevel')
+  	    <if test="params.alarmLevelName != null and  params.alarmLevelName != '' " >
+  			and	 t.AlarmLevelName   like ${concat("'%'","'"+params.alarmLevelName+"'","'%'")}  
+  		</if>
+		order by t.AlarmLevelID
+</select>
+
+<select id="queryTypeInfo" resultType="hashmap" resultMap="AlarmTypeMap" >
+  		select t.AlarmTypeID,t.AlarmTypeName
+  		from  AlarmType t
+  		order by t.AlarmTypeID
+</select>
+
+<select id="queryAlarmTypeList" resultType="hashmap" resultMap="AlarmTypeMap"  parameterType="page">
+  		select t.AlarmTypeID,t.AlarmTypeName
+  		from  AlarmType t
+  		where t.AlarmTypeID not in 
+  	    (SELECT FilterKeyValue from AlarmViewFilter where ViewCfgID=#{params.viewCfgID,jdbcType=INTEGER} and FilterKey='AlarmType')
+  	    <if test="params.alarmTypeName != null and params.alarmTypeName != '' ">
+			and t.AlarmTypeName like ${concat("'%'","'"+params.alarmTypeName+"'","'%'")}	
+    	</if>
+		order by t.AlarmTypeID
+</select>
+
+<select id="queryLevelNumByCondition" resultType="hashmap" resultMap="AlarmLevelMap" parameterType="com.fable.insightview.monitor.entity.AlarmNode">
+  		select ta.AlarmLevelID,ta.AlarmLevelName,ta.LevelColor,${nvl("tb.num","0")} totalNum 
+  		from AlarmLevel ta 
+  		left join (
+					select t.AlarmLevel,count(t.AlarmID) num
+					from AlarmActiveDetail t where 1=1
+					<if test="alarmStatus != 0 and alarmStatus != '' ">
+						and t.AlarmOperateStatus = #{alarmStatus}		
+    				</if>
+					<if test="timeBegin != null and timeBegin != '' ">
+						and t.StartTime &gt;= ${toDate(timeBegin)}
+					</if>
+					<if test="timeEnd != null and timeEnd != '' ">
+						and t.StartTime  &lt;= ${toDate(timeEnd)}
+					</if>					  		
+  					group by t.AlarmLevel		
+				  ) tb
+		on tb.AlarmLevel = ta.AlarmLevelID 
+		order by ta.AlarmLevelID
+</select>
+
+<select id="queryTypeNumByCondition" resultType="hashmap" resultMap="AlarmTypeMap" parameterType="com.fable.insightview.monitor.entity.AlarmNode">
+  		select ta.AlarmTypeID,ta.AlarmTypeName,${nvl("tb.num","0")} totalNum
+  		from AlarmType ta
+		left join (
+					select t.AlarmType,count(t.AlarmID) num
+					from AlarmActiveDetail t where 1=1
+					<if test="alarmStatus != 0 and alarmStatus != '' ">
+						and t.AlarmOperateStatus = #{alarmStatus}		
+    				</if>
+					<if test="timeBegin != null and timeBegin != '' ">
+						and t.StartTime &gt;= ${toDate(timeBegin)}
+					</if>
+					<if test="timeEnd != null and timeEnd != '' ">
+						and t.StartTime  &lt;= ${toDate(timeEnd)}
+					</if>
+					group by t.AlarmType
+				  ) tb
+		on  ta.AlarmTypeID =  tb.AlarmType
+		order by ta.AlarmTypeID
+</select> 
+
+<select id="getInfoById" resultMap="AlarmActiveMap"   parameterType="java.lang.Integer">
+		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tc.StatusName as operateStatusName,t.AlarmContent,t.StartTime,
+			  t.LastTime,t.ConfirmTime,t.CleanTime,t.DispatchTime,
+			   t.AlarmTitle,t.alarmDefineID,t.AlarmOID,t.MOID,t.MOName,
+			   t.MOClassID,t.SourceMOID,t.SourceMOName,t.SourceMOIPAddress,t.Confirmer,t.ConfirmInfo,
+			   t.Cleaner,t.CleanInfo,t.DispatchUser,t.DispatchID,t.DispatchInfo,t.AlarmLevel,t.AlarmType,t.AlarmOperateStatus,
+			   t.RepeatCount,t.UpgradeCount,t.AlarmStatus,t.AlarmOperateStatus,t.SourceMOClassID,
+			   t.Confirmer,t.ConfirmTime,t.ConfirmInfo,
+			   t.Cleaner,t.CleanTime,t.CleanInfo,t.DispatchUser,t.DispatchTime,dis.WorkOrderId
+		from AlarmActiveDetail t
+		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		left join AlarmDispatchDetail dis on  t.DispatchID =dis.DispatchID		
+		where t.AlarmID=#{id}
+</select>
+
+<select id="getAlarmListByAlarmIds" resultType="com.fable.insightview.monitor.entity.AlarmNode" parameterType="page">
+     select t.AlarmID,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.DispatchUser
+		from AlarmActiveDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID where 1 = 1
+     <if test="params.alarmIds.size>0 ">
+     and t.AlarmID in (
+     <foreach collection="params.alarmIds" item = "item" separator=",">
+     ${item}
+     </foreach>
+     )
+     </if>
+</select>
+
+<select id="getHisInfoById" resultType="com.fable.insightview.monitor.entity.AlarmNode"  parameterType="java.lang.Integer">
+		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tc.StatusName as operateStatusName,t.AlarmContent,t.StartTime,
+			  t.LastTime,t.ConfirmTime,t.CleanTime,t.DispatchTime,
+			   t.AlarmTitle,t.alarmDefineID,t.AlarmOID,t.MOID,t.MOName,
+			   t.MOClassID,t.SourceMOID,t.SourceMOName,t.SourceMOIPAddress,t.Confirmer,t.ConfirmInfo,
+			   t.Cleaner,t.CleanInfo,t.DispatchUser,t.DispatchID,t.DispatchInfo,t.AlarmLevel,
+			   t.AlarmType,t.RepeatCount,t.UpgradeCount,t.AlarmStatus,t.AlarmOperateStatus,t.SourceMOClassID,
+			   t.Confirmer,t.ConfirmTime,t.ConfirmInfo,
+			   t.Cleaner,t.CleanTime,t.CleanInfo,t.DispatchUser,t.DispatchTime
+		from AlarmHistoryDetail t
+		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID		
+		where t.AlarmID=#{id}
+</select>
+
+<update id="doAlarmActiveConfirm" parameterType="com.fable.insightview.monitor.entity.AlarmNode" >
+    	update AlarmActiveDetail set 
+    			Confirmer=#{confirmer},ConfirmTime=#{confirmTime},ConfirmInfo=#{confirmInfo},AlarmStatus=2
+     	where AlarmID=#{alarmID}
+</update> 
+
+<update id="cancelAlarmActiveConfirm" parameterType="java.lang.Integer" >
+    	update AlarmActiveDetail set 
+    			Confirmer=null,ConfirmTime=null,ConfirmInfo=null,AlarmStatus=1
+     	where AlarmID=#{id}
+</update>
+
+<update id="updateAlarmActiveDetail" parameterType="hashmap" >
+    	update 
+    		AlarmActiveDetail 
+    	set 
+    		AlarmOperateStatus=#{alarmOperateStatus},
+    		DispatchID=#{dispatchID},
+    		DispatchUser=#{dispatchUser},
+    		DispatchTime=#{dispatchTime}
+     	where 
+     		AlarmID in (${ids})
+</update>
+
+<select id="isExistDispatchRecord" parameterType="java.lang.Integer" resultType="com.fable.insightview.monitor.entity.AlarmNode">
+	select DispatchID from AlarmActiveDetail where AlarmID = #{alarmID}
+</select>
+
+<update id="bathAlarmActiveConfirm" parameterType="com.fable.insightview.monitor.entity.AlarmNode" >
+    	update AlarmActiveDetail set 
+    			Confirmer=#{confirmer},ConfirmTime=#{confirmTime},ConfirmInfo=#{confirmInfo},AlarmOperateStatus=22
+     	where AlarmID in ${moName}
+</update> 
+
+<update id="bathCancelActiveConfirm" parameterType="java.lang.String" >
+    	update AlarmActiveDetail set 
+    			Confirmer=null,ConfirmTime=null,ConfirmInfo=null,AlarmOperateStatus=11
+     	where AlarmID in (${id})
+</update>
+
+<update id="cancelConfirm" parameterType="java.lang.Integer" >
+    	update AlarmActiveDetail set 
+    			Confirmer=null,ConfirmTime=null,ConfirmInfo=null,AlarmStatus=7
+     	where AlarmID=#{id}
+</update>
+
+<update id="clearAlarmActive" parameterType="com.fable.insightview.monitor.entity.AlarmNode" >
+    	update AlarmActiveDetail set 
+    			Cleaner=#{cleaner},CleanTime=#{cleanTime},CleanInfo=#{cleanInfo},AlarmStatus=#{alarmStatus}
+     	where AlarmID=#{alarmID}
+</update>
+
+<delete id="deleteAlarmActive" parameterType="java.lang.Integer">
+    	delete from  AlarmActiveDetail where AlarmID in (${id})
+</delete>
+
+<select id="queryAlarmLevelByDevice" resultType="com.fable.insightview.monitor.entity.AlarmNode"  parameterType="com.fable.insightview.monitor.entity.AlarmNode">
+		select t.AlarmID,t.AlarmContent,t.StartTime,
+			  t.LastTime,t.ConfirmTime,t.CleanTime,t.DispatchTime,
+			   t.AlarmTitle,t.alarmDefineID,t.AlarmOID,t.MOID,t.MOName,
+			   t.MOClassID,t.SourceMOID,t.SourceMOName,t.SourceMOIPAddress,t.Confirmer,t.ConfirmInfo,
+			   t.Cleaner,t.CleanInfo,t.DispatchUser,t.DispatchID,t.DispatchInfo,t.AlarmLevel,t.AlarmType,
+			   t.RepeatCount,t.UpgradeCount,t.AlarmStatus,t.AlarmOperateStatus,t.SourceMOClassID,
+			   t.Confirmer,t.ConfirmTime,t.ConfirmInfo,
+			   t.Cleaner,t.CleanTime,t.CleanInfo,t.DispatchUser,t.DispatchTime
+		from AlarmActiveDetail t
+		where t.SourceMOID=#{sourceMOID,jdbcType=INTEGER} and ${rownum(1)}
+		 order by t.AlarmLevel,t.LastTime ${limit(1)}	
+</select>
+
+<select id="loadActiveAlarm" resultMap="AlarmActiveMap" parameterType="hashmap">
+	select  t.AlarmID,t.AlarmOID,t.AlarmTitle,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,
+	        tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmContent,t.AlarmDefineID,t.Cleaner,t.CleanTime,t.AlarmOperateStatus,
+	      t.CleanInfo,t.Confirmer,t.ConfirmInfo,t.ConfirmTime,t.DispatchID,t.DispatchInfo,t.DispatchTime,t.DispatchUser,t.MOClassID,t.MOID,t.SourceMOClassID,t.SourceMOID,t.UpgradeCount 
+	from (	
+	select AlarmType,AlarmOID,AlarmID,AlarmTitle,AlarmLevel,AlarmStatus,SourceMOName,MOName,
+		StartTime,RepeatCount,LastTime,SourceMOIPAddress,AlarmContent,AlarmDefineID,Cleaner,CleanInfo,
+		AlarmOperateStatus,CleanTime,Confirmer,ConfirmInfo,ConfirmTime,DispatchID,DispatchInfo,DispatchTime,
+		DispatchUser,MOClassID,MOID,SourceMOClassID,SourceMOID,UpgradeCount  
+	from AlarmActiveDetail  where 1=1
+		<if test="alarmtype != null and alarmtype == 'true' " >
+	   	and AlarmType in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+	   	on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmType')
+	   	</if>
+	   	
+	   	<if test="alarmlevel != null and alarmlevel == 'true' " >
+		and  AlarmLevel in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmLevel')
+		</if>
+		
+		<if test="alarmsource != null and alarmsource == 'true' " > 	
+		and  SourceMOID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmSourceMOID')
+		</if>
+		
+		<if test="alarmdefine != null and alarmdefine == 'true' " >
+		and  AlarmDefineID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID = ${userID} ${viewFilter} and FilterKey='AlarmDefineID')
+		</if>
+	) t
+	left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+	left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+	left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID  
+	where 1=1
+	<if test="limitedTime != null and limitedTime != '' " >
+	  and t.StartTime > ${toDate(limitedTime)}
+	</if>
+	  and ${rownum(alarmcount)}    
+ 	order by t.AlarmLevel asc,t.LastTime desc ${limit(alarmcount)} 
+</select>
+
+<select id="loadActiveAlarmCount" resultType="hashmap" resultMap="AlarmGroupByLevel"  parameterType="hashmap">
+	<!-- select  AlarmLevel,count(*) as alarmcount
+	  from(
+	  select AlarmType,AlarmOID,AlarmID,AlarmTitle,AlarmLevel,AlarmStatus,SourceMOName,MOName,StartTime,
+		RepeatCount,LastTime,SourceMOIPAddress from AlarmActiveDetail  where 1=1	 
+	   	and AlarmType in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+	   	on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewCfgID} and FilterKey='AlarmType') 
+		or  AlarmLevel in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewCfgID} and FilterKey='AlarmLevel')
+		or  SourceMOID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewCfgID} and FilterKey='AlarmSourceMOID')
+		or  AlarmDefineID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID = ${userID} ${viewCfgID} and FilterKey='AlarmDefineID')
+		
+	 <if test="limitedTime != null and limitedTime != '' " >
+	    and  StartTime > ${toDate(limitedTime)} 
+	</if> 
+	and ${rownum(alarmcount)}    
+ 	order by  AlarmLevel asc,LastTime desc ${limit(alarmcount)} 
+	) t
+
+	group by AlarmLevel
+	
+	 
+	select AlarmLevel,count(*) as alarmcount from (
+	select AlarmType,AlarmLevel,SourceMOID,AlarmDefineID from (select * from AlarmActiveDetail  where  1=1
+	<if test="limitedTime != null and limitedTime != '' " >
+		and  StartTime > ${toDate(limitedTime)} 
+	</if>  
+	order by  AlarmLevel asc,LastTime desc)t
+	where  1=1
+		<if test="alarmtype != null and alarmtype == 'true' " >
+	   	and t.AlarmType in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+	   	on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmType')
+	   	</if>
+	   	
+	   	<if test="alarmlevel != null and alarmlevel == 'true' " >
+		and  t.AlarmLevel in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmLevel')
+		</if>
+		
+		<if test="alarmsource != null and alarmsource == 'true' " > 	
+		and  t.SourceMOID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmSourceMOID')
+		</if>
+		
+		<if test="alarmdefine != null and alarmdefine == 'true' " >
+		and  t.AlarmDefineID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID = ${userID} ${viewFilter} and FilterKey='AlarmDefineID')
+		</if>
+		
+	and ${rownum(alarmcount)} order by  AlarmLevel asc,LastTime desc 
+	${limit(alarmcount)} 
+	) aa group by AlarmLevel
+	
+	 -->
+	 select AlarmLevel,count(*) as alarmcount from (
+	 	select  t.AlarmID,t.AlarmOID,t.AlarmTitle,t.AlarmLevel,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,t.AlarmOperateStatus,
+	        tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress
+	from (
+	select AlarmType,AlarmOID,AlarmID,AlarmTitle,AlarmLevel,AlarmStatus,SourceMOName,
+		MOName,StartTime,RepeatCount,LastTime,SourceMOIPAddress,AlarmOperateStatus
+	from AlarmActiveDetail  where 1=1
+		<if test="alarmtype != null and alarmtype == 'true' " >
+	   	and AlarmType in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+	   	on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmType')
+	   	</if>
+	   	
+	   	<if test="alarmlevel != null and alarmlevel == 'true' " >
+		and  AlarmLevel in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmLevel')
+		</if>
+		
+		<if test="alarmsource != null and alarmsource == 'true' " > 	
+		and  SourceMOID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID =${userID} ${viewFilter} and FilterKey='AlarmSourceMOID')
+		</if>
+		
+		<if test="alarmdefine != null and alarmdefine == 'true' " >
+		and  AlarmDefineID in(select ta.FilterKeyValue from  AlarmViewFilter ta  left join AlarmViewDef tb 
+		on ta.ViewCfgID = tb.ViewCfgID where tb.UserID = ${userID} ${viewFilter} and FilterKey='AlarmDefineID')
+		</if>
+	) t
+	left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+	left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+	left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID  
+	where 1=1
+	<if test="limitedTime != null and limitedTime != '' " >
+	  and t.StartTime > ${toDate(limitedTime)}
+	</if>
+	  and ${rownum(alarmcount)}    
+ 	order by t.AlarmLevel asc,t.LastTime desc ${limit(alarmcount)}) aa group by AlarmLevel 
+</select>
+
+<select id="load3dRoomActiveAlarm" resultMap="AlarmActiveMapFor3D" parameterType="hashmap"> 
+	<!-- 
+	 select   alarm.AlarmLevel ,ResID, alarm.AlarmID,SourceMOID,LastTime  from AlarmActiveDetail alarm 
+	 left join MODevice mo  on mo.MOID=alarm.SourceMOID WHERE mo.ResID in(${resid}) order by AlarmLevel asc,AlarmID desc  
+	--> 
+ 	select   AlarmLevel ,ResID,AlarmID,AlarmStatus,AlarmOperateStatus,StartTime,LastTime from (
+		select   alarm.AlarmLevel ,ResID, alarm.AlarmID,SourceMOID,alarm.AlarmStatus,alarm.AlarmOperateStatus,alarm.StartTime,alarm.LastTime  
+		  from AlarmActiveDetail alarm 
+ 		left join MODevice mo  on mo.MOID=alarm.SourceMOID WHERE mo.ResID in(${resid}) order by AlarmLevel asc,AlarmID desc  
+	)tt group by SourceMOID
+</select>
+
+<select id="loadTopoActiveAlarm" resultMap="AlarmActiveMapForTopo" parameterType="hashmap"> 
+	select AlarmLevel,AlarmID,AlarmOID,MOID,AlarmOperateStatus,SourceMOID,AlarmStatus,StartTime,LastTime,SourceMOClassID from (
+		select AlarmLevel,AlarmID,AlarmOID,MOID,AlarmOperateStatus,SourceMOID,AlarmStatus,StartTime,LastTime,SourceMOClassID
+		from AlarmActiveDetail WHERE SourceMOID in(${moIds}) 
+		order by AlarmLevel asc,AlarmID desc  
+	)tt group by SourceMOID
+</select>  
+
+<select id="loadTopoActiveLinkAlarm" resultMap="AlarmActiveMapForTopo" parameterType="hashmap"> 
+	 select AlarmLevel,AlarmID,AlarmOID,MOID,AlarmOperateStatus,SourceMOID,AlarmStatus,StartTime,LastTime from (
+		select AlarmLevel,AlarmID,AlarmOID,MOID,AlarmOperateStatus,SourceMOID,AlarmStatus,StartTime,LastTime 
+		from AlarmActiveDetail WHERE SourceMOID in(${moIds}) and MOID in(select MOID from MONetworkIf where DeviceMOID in(${moIds}))
+		order by AlarmLevel asc,LastTime desc  
+	)tt group by SourceMOID
+</select>  
+
+<select id="load3dRoomTagActiveAlarm" resultMap="AlarmActiveMapFor3D" parameterType="hashmap"> 
+ <!--select   alarm.AlarmLevel ,ResID, alarm.AlarmID,SourceMOID,LastTime  from AlarmActiveDetail alarm 
+ left join MOTag mo  on mo.MOID=alarm.MOID WHERE mo.ResID in(${resid}) order by AlarmLevel asc,AlarmID desc 
+ 	-->
+	select   AlarmLevel,ResID,AlarmID,StartTime,AlarmStatus,AlarmOperateStatus,LastTime,MOID from(
+		select alarm.AlarmLevel,ResID,mo.MOID,alarm.AlarmID,SourceMOID,alarm.AlarmStatus,alarm.AlarmOperateStatus,alarm.StartTime,alarm.LastTime  
+		  from AlarmActiveDetail alarm 
+		left join MOTag mo on mo.MOID=alarm.MOID WHERE mo.ResID in(${resid}) order by AlarmLevel asc,LastTime desc  
+	)tt group by MOID 
+</select>
+
+<select id="load3dRoomLastActiveAlarm"  resultType="com.fable.insightview.monitor.entity.AlarmNode" parameterType="hashmap"> 
+	 	select t.AlarmID,t.AlarmContent,t.StartTime,t.LastTime,t.ConfirmTime,t.CleanTime,
+	 		   t.DispatchTime,t.AlarmTitle,t.alarmDefineID,t.AlarmOID,t.MOID,t.MOName,
+			   t.MOClassID,t.SourceMOID,t.SourceMOName,t.SourceMOIPAddress,t.Confirmer,t.ConfirmInfo,
+			   t.Cleaner,t.CleanInfo,t.DispatchUser,t.DispatchID,t.DispatchInfo,t.AlarmLevel,t.AlarmType,
+			   t.RepeatCount,t.UpgradeCount,t.AlarmStatus,t.AlarmOperateStatus,t.SourceMOClassID,ta.AlarmTypeName
+		from AlarmActiveDetail t	   	
+ 	 	left join MODevice mo  on mo.MOID=t.SourceMOID 
+ 	 	left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+ 	 	left join MOTag mt on mt.MOID=t.MOID
+  		WHERE ( mo.ResID in(${resId})  or mt.ResID in(${resId}) ) 	 	
+ 	 	and ${rownum(1)}
+ 	 	order by t.AlarmLevel,t.LastTime desc ${limit(1)}
+</select>
+     
+<select id="getByAlarmDefineID" resultType="java.lang.Integer">
+   select count(*) from AlarmActiveDetail where AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER} 
+</select>
+
+<insert id="insertMOActiveAlarmSt" parameterType="com.fable.insightview.monitor.alarmmgr.entity.MOActiveAlarmStInfo" >
+    	insert into MOActiveAlarmStatistics
+    		(MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count)
+    	values
+    		(
+    		#{moid,jdbcType=INTEGER},#{moclassid,jdbcType=INTEGER},    		
+    		#{domainid,jdbcType=INTEGER},#{l1count,jdbcType=INTEGER},#{l2count,jdbcType=INTEGER},
+    		#{l3count,jdbcType=INTEGER},#{l4count,jdbcType=INTEGER},#{l5count,jdbcType=INTEGER}
+      	 	)
+</insert>
+
+<update id="addMOActiveAlarmSt" parameterType="java.lang.Integer"  >
+    	update MOActiveAlarmStatistics set 
+    		<if test="level==1">
+				L1Count=L1Count+1
+    		</if>
+    		<if test="level==2">
+				L2Count=L2Count+1
+    		</if>
+    		<if test="level==3">
+				L3Count=l3count+1
+    		</if>
+    		<if test="level==4">
+				L4Count=l4count+1
+    		</if>
+    		<if test="level==5">
+				L5Count=l5count+1
+    		</if>
+     	where MOID=${moId}
+</update>
+
+<update id="minusMOActiveAlarmSt" parameterType="java.lang.Integer"  >
+    	update MOActiveAlarmStatistics set
+    		<if test="level==1">
+				L1Count=L1Count-1
+    		</if>
+    		<if test="level==2">
+				L2Count=L2Count-1
+    		</if>
+    		<if test="level==3">
+				L3Count=l3count-1
+    		</if>
+    		<if test="level==4">
+				L4Count=l4count-1
+    		</if>
+    		<if test="level==5">
+				L5Count=l5count-1
+    		</if>
+     	where MOID=${moId}  and 
+     		<if test="level==1">
+				L1Count>0
+    		</if>
+    		<if test="level==2">
+				L2Count>0
+    		</if>
+    		<if test="level==3">
+				L3Count>0
+    		</if>
+    		<if test="level==4">
+				L4Count>0
+    		</if>
+    		<if test="level==5">
+				L5Count>0
+    		</if>     	
+</update>
+
+<select id="getMOActiveAlarmStObj" parameterType="java.lang.Integer" 
+			 resultType="com.fable.insightview.monitor.alarmmgr.entity.MOActiveAlarmStInfo">
+   		select MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count
+   		from MOActiveAlarmStatistics
+   		where MOID=${moid}    		
+</select>
+
+<select id="queryMOActiveAlarmStObj" parameterType="java.lang.String" resultType="hashmap" resultMap="MOActiveAlarmStMap">
+   		select MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count
+   		from MOActiveAlarmStatistics where MOID in
+		(
+			select 	MOID from MODevice where ResID in (${resId}) 
+		)
+		or MOID in 
+		(
+		   select MOID from MOTag where ResID in (${resId})
+		)
+</select>
+
+<select id="queryMOActiveAlarmStObjByResId" parameterType="java.lang.String"
+			 resultType="com.fable.insightview.monitor.alarmmgr.entity.MOActiveAlarmStInfo">
+   		select sum(L1Count) L1Count,sum(L2Count) L2Count,sum(L3Count) L3Count,sum(L4Count) L4Count,sum(L5Count) L5Count
+   		from MOActiveAlarmStatistics
+   		where MOID in
+		(
+			select 	MOID from MODevice where ResID in (${resId})
+		)
+		or MOID in 
+		(
+		   select MOID from MOTag where ResID in (${resId})
+		) 		
+</select>
+
+<update id="clearMOActiveAlarmStInfo" >
+    	delete from  MOActiveAlarmStatistics
+</update>
+
+<select id="alarmDeviceStatisBySourceMOID" >
+	insert into MOActiveAlarmStatistics(MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count)
+	select k.* from 
+	(
+	select t.SourceMOID,t.MOClassID,0 DomainID,
+	COUNT(CASE WHEN AlarmLevel=1 THEN 1 
+	END) AS L1Count,
+	
+	COUNT(CASE WHEN AlarmLevel=2 THEN 1 
+	END) AS L2Count,
+	
+	COUNT(CASE WHEN AlarmLevel=3 THEN 1 
+	END) AS L3Count,
+	
+	COUNT(CASE WHEN AlarmLevel=4 THEN 1 
+	END) AS L4Count,
+	
+	COUNT(CASE WHEN AlarmLevel=5 THEN 1 
+	END) AS L5Count
+	  from 
+		 (select SourceMOID,MOClassID,AlarmLevel,sourceMOClassID from AlarmActiveDetail where MOClassID not in (44,45,46,47,48,49,50,51,52)) t 
+	group by t.SourceMOID
+	) k
+</select>
+
+<select id="alarmZoomStatisByMOID" >
+	insert into MOActiveAlarmStatistics(MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count)
+	select k.* from 
+	(
+	select t.SourceMOID,t.MOClassID,0 DomainID,
+	COUNT(CASE WHEN AlarmLevel=1 THEN 1 
+	END) AS L1Count,
+	
+	COUNT(CASE WHEN AlarmLevel=2 THEN 1 
+	END) AS L2Count,
+	
+	COUNT(CASE WHEN AlarmLevel=3 THEN 1 
+	END) AS L3Count,
+	
+	COUNT(CASE WHEN AlarmLevel=4 THEN 1 
+	END) AS L4Count,
+	
+	COUNT(CASE WHEN AlarmLevel=5 THEN 1 
+	END) AS L5Count
+	  from 
+		 (select MOID SourceMOID,MOClassID,AlarmLevel,sourceMOClassID from AlarmActiveDetail where MOClassID  in (44,45,46,47,48,49,50,51,52)) t 
+	group by t.SourceMOID
+	) k
+</select>
+
+<select id="distinctSourceMoid" resultType="hashmap" resultMap="AlarmActiveMap" > 
+	 	<!-- 
+	 	select t.SourceMOID,t.AlarmLevel,t.MOClassID  from 
+	 		(select *  from AlarmActiveDetail order by AlarmLevel,LastTime) t 
+	 	group by SourceMOID order by t.AlarmLevel,t.LastTime
+	 	-->
+	 	select tf.* from (
+			 select t.SourceMOID,t.AlarmLevel,t.MOClassID,t.sourceMOClassID  from 
+	 			(select SourceMOID,AlarmLevel,MOClassID,LastTime,sourceMOClassID  from AlarmActiveDetail where MOClassID not in (44,45,46,47,48,49,50,51,52) order by AlarmLevel,LastTime) t 
+			group by t.SourceMOID
+		  union all
+		select t.SourceMOID,t.AlarmLevel,t.MOClassID,t.sourceMOClassID
+		from (
+		select MOID SourceMOID,AlarmLevel,MOClassID,LastTime,sourceMOClassID from AlarmActiveDetail where MOClassID in (44,45,46,47,48,49,50,51,52) order by AlarmLevel,LastTime
+		)
+ 		t group by SourceMOID			
+		) tf	 	
+		order by tf.AlarmLevel	 	
+</select>
+
+<select id="queryLevelNumBySourceMOID" resultType="hashmap" resultMap="AlarmLevelMap" parameterType="java.lang.String">
+		select ta.AlarmLevelID,ta.AlarmLevelName,ta.LevelColor,${nvl("tb.num","0")} totalNum 
+  		from AlarmLevel ta 
+  		left join (
+					select t.AlarmLevel,count(t.AlarmID) num
+					from AlarmActiveDetail t 
+					where MOClassID not in (44,45,46,47,48,49,50,51,52)	
+					and t.SourceMOID = ${SourceMOID}
+  					group by t.AlarmLevel		
+				  ) tb
+		on tb.AlarmLevel = ta.AlarmLevelID 	
+		order by ta.AlarmLevelID					
+</select>
+
+<select id="queryLevelNumByMOID" resultType="hashmap" resultMap="AlarmLevelMap" parameterType="java.lang.String">
+		select ta.AlarmLevelID,ta.AlarmLevelName,ta.LevelColor,${nvl("tb.num","0")} totalNum 
+  		from AlarmLevel ta 
+  		left join (
+					select t.AlarmLevel,count(t.AlarmID) num
+					from AlarmActiveDetail t
+					where MOClassID in (44,45,46,47,48,49,50,51,52)	 
+					and t.MOID = ${MOID}
+  					group by t.AlarmLevel	
+				  ) tb
+		on tb.AlarmLevel = ta.AlarmLevelID 	
+		order by ta.AlarmLevelID					
+</select>
+
+<select id="queryAlarmNumsByMODevice" parameterType="java.lang.String" resultType="hashmap" resultMap="MOActiveAlarmStMap">
+   		select MOID,MOClassID,DomainID,L1Count,L2Count,L3Count,L4Count,L5Count
+   		from MOActiveAlarmStatistics where MOID in
+		(${moIds})
+</select>
+
+<select id="queryListByAlarmStatis" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+	select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID,t.DispatchID,t.DispatchTime,t.dispatchUser,t.alarmLevel
+		from AlarmActiveDetail t
+		left join MODevice mo  on mo.MOID=t.SourceMOID   	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		left join MOTag mt on mt.MOID=t.MOID
+  		WHERE 1=1 
+  		<if test="params.ciId != null and params.ciId != '' and params.ciId != -1">
+			and ( mo.ResID in(${params.ciId}) or mt.ResID in(${params.ciId}) )
+		</if>
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmStatus != 0 and params.alarmStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>    
+  		order by t.AlarmLevel,t.LastTime desc
+</select> 
+
+<select id="queryLinkAlarm"   resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+   		select t.AlarmID,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,t.AlarmType,t.SourceMOID,t.AlarmLevel,
+   		t.StartTime,t.RepeatCount,t.LastTime,t.SourceMOIPAddress,t.AlarmTitle,t.MOID,t.MOClassID,t.SourceMOClassID
+		from AlarmActiveDetail t where 1=1
+		<if test="params.deviceMOID != null and params.deviceMOID != ''">
+			and  t.SourceMOID = ${params.deviceMOID}
+		</if>
+		<if test="params.ifMOID != null and params.ifMOID != '' ">
+			and t.MOID= ${params.ifMOID}
+		</if>
+		<if test="params.alarmStatus!= null and params.alarmStatus!= '' ">
+			and t.AlarmOperateStatus= ${params.alarmStatus}
+		</if>
+		<if test="params.alarmLevel != null and params.alarmLevel != '' ">
+			and t.AlarmLevel = ${params.alarmLevel}	
+    	</if>
+</select>
+
+<select id="queryCurrentPerformance"   resultType="hashmap" resultMap="CurrentPerformanceMap" >
+   		 select DISTINCT(KPIName) kpiName,p.DeviceMOID,p.MOID,p.PerfValue,p.CollectTime from PerfSnapshotNetDevice p
+   		  where DeviceMOID=${deviceMOID} and MOID =${ifMOID} order by  collecttime desc
+</select>
+
+<select id="queryAlarmLevelName"  resultType="hashmap" resultMap="AlarmLevelMap" >
+   		 select AlarmLevelValue,AlarmLevelName from AlarmLevel
+</select>
+
+<select id="queryAlarmStatusName"   resultType="hashmap" resultMap="AlarmStatusMap" >
+   		 select StatusID,StatusName from AlarmStatusDef 
+</select>
+
+<select id="queryAlarmTypeName"   resultType="hashmap" resultMap="AlarmTypeMap" >
+   		 select AlarmTypeID,AlarmTypeName from AlarmType 
+</select>
+
+<delete id="deleteAlarminfos" parameterType="hashmap">
+    	delete from  AlarmActiveDetail where  ${dispatchID}
+</delete>
+
+<select id="queryAlarmIdsByIds"   parameterType="java.lang.String" resultType="java.lang.String" >
+   		select ${groupConcat("AlarmID")} ids from AlarmActiveDetail where AlarmID in (${alarmIds})
+</select>
+
+<select id="getAlarmStatusById" parameterType="List" resultType="java.lang.Integer">
+       select AlarmOperateStatus from AlarmActiveDetail where AlarmID in(
+       <foreach collection="list" item="item" separator=",">
+       ${item}
+       </foreach>
+       )
+</select>
+
+	<select id="getTopAlarm" resultType="hashmap"  parameterType="hashmap">
+		select t.AlarmID alarmID,t.AlarmTitle alarmTitle,t.AlarmLevel alarmLevel,tb.LevelIcon levelIcon,
+		t.SourceMOClassID sourceMOClassID,m.ClassIcon classIcon,t.SourceMOName sourceMOName,t.SourceMOID sourceMOID,
+		t.SourceMOIPAddress sourceMOIPAddress,${dateFormat("t.LastTime")} lastTime,t.AlarmContent alarmContent
+		from AlarmActiveDetail t	
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+		left join MObjectDef m on m.ClassID= t.SourceMOClassID	
+		order by 
+		<if test="orderView == 1 or orderView == '1'">
+			t.AlarmLevel ${orderType},t.LastTime desc
+		</if>
+		<if test="orderView == 2 or orderView == '2'">
+			t.LastTime ${orderType},t.AlarmLevel asc
+		</if>
+		 ${limit(alarmNum)}
+	</select>
+	
+	<select id="queryListByDutyDesk" resultType="hashmap" resultMap="AlarmActiveMap" parameterType="page">
+  		select t.AlarmID alarmID,t.AlarmLevel alarmLevel,ta.AlarmTypeName alarmTypeName,tb.AlarmLevelName alarmLevelName,
+  		tb.LevelColor levelColor,tc.StatusName statusName,t.AlarmStatus alarmStatus,t.SourceMOName sourceMOName,t.MOName moName,
+  		t.AlarmOperateStatus alarmOperateStatus,t.StartTime startTime,t.RepeatCount repeatCount,t.LastTime lastTime,
+  		t.SourceMOIPAddress sourceMOIPAddress,t.AlarmTitle alarmTitle,t.MOID moid,t.MOClassID moclassID,t.SourceMOClassID sourceMOClassID,
+  		t.DispatchID dispatchID,t.DispatchTime dispatchTime,t.DispatchUser dispatchUser
+		from AlarmActiveDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		where 1=1 
+    	<if test="params.area != null and params.area != '' and params.resAlarmLevel != null and params.resAlarmLevel != '' and params.resAlarmLevel != -1">
+			and t.SourceMOID in(SELECT r.MOID FROM v_ResDevice r LEFT JOIN AlarmActiveDetail a ON a.SourceMOID=r.MOID WHERE r.Area=#{params.area})
+			and t.AlarmLevel &lt;=#{params.resAlarmLevel} 
+    		<!--and t.MOID in(SELECT r.MOID FROM test_hanl r LEFT JOIN AlarmActiveDetail a ON a.SourceMOID=r.MOID WHERE a.AlarmLevel &lt;=#{params.resAlarmLevel} and r.Area=#{params.area})-->
+    	</if>
+    	<if test="params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' and params.alarmOperateStatus != null">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmLevel != 0 and params.alarmLevel != '' and params.alarmLevel != null ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+    	</if>
+    	<if test="params.sourceMOIPAddress != null and params.sourceMOIPAddress != '' ">
+			and t.SourceMOIPAddress like ${concat("'%'","'"+params.sourceMOIPAddress+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' and params.alarmType != null ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>
+    	<if test="params.both != '' and params.both != null ">
+			and (t.SourceMOIPAddress like ${concat("'%'","'"+params.both+"'","'%'")} or t.AlarmTitle like ${concat("'%'","'"+params.both+"'","'%'")} )
+    	</if>
+  		order by t.AlarmLevel,t.LastTime desc	
+	</select> 
+	
+	<select id="getDutyDeskAlarmDetail" resultType="hashmap"  parameterType="java.lang.Integer">
+		select t.AlarmID alarmID,ta.AlarmTypeName alarmTypeName,tb.AlarmLevelName alarmLevelName,${dateFormat("t.StartTime")} startTime,
+		${dateFormat("t.LastTime")} lastTime,t.AlarmTitle alarmTitle,t.alarmDefineID alarmDefineID,t.AlarmOID alarmOID,t.MOID moid,t.MOName moName,
+		t.MOClassID moclassID,t.SourceMOID sourceMOID,t.SourceMOName sourceMOName,t.SourceMOIPAddress sourceMOIPAddress,t.SourceMOClassID sourceMOClassID
+		from AlarmActiveDetail t
+		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID		
+		where t.AlarmID=#{alarmId}
+</select>
+</mapper>

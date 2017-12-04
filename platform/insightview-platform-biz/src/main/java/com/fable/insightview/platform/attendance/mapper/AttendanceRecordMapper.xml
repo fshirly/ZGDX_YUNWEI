@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper  namespace="com.fable.insightview.platform.attendance.mapper.AttendanceRecordMapper">
+
+<resultMap id="AttendanceRecordMapper" type="com.fable.insightview.platform.attendance.entity.AttendanceRecordInfo" >
+<id column="AttRecordId" property="attRecordId" jdbcType="INTEGER" />
+<result column="AttPeopleId" property="attPeopleId" jdbcType="INTEGER"/>
+<result column="AttTime" property="attTime" jdbcType="TIMESTAMP" />
+<result column="AttPlanId" property="attPlanId" jdbcType="INTEGER"/>
+<result column="StartTime" property="startTime" jdbcType="INTEGER"/>
+<result column="EndTime" property="endTime" jdbcType="INTEGER"/>
+<result column="AttSignDate" property="attSignDate" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap id="AttendancePlanConfVOMapper" type="com.fable.insightview.platform.attendance.entity.AttendancePlanConfVO" >
+<result column="AttendanceId" property="attendanceId" jdbcType="INTEGER" />
+<result column="PlanName" property="planName" jdbcType="VARCHAR" />
+<result column="AttStartTime" property="attStartTime" jdbcType="DATE"/>
+<result column="AttEndTime" property="attEndTime" jdbcType="DATE"/>
+</resultMap>
+
+<resultMap type="com.fable.insightview.platform.attendance.entity.AttRecInfoStatisVO" id="AttRecInfoStatisVOMap">
+ <result column="attDate" property="attDate" jdbcType="DATE"/>
+ <result column="attTime" property="attTime" jdbcType="DATE"/>
+ <result column="startTime" property="startTime" jdbcType="VARCHAR"/>
+ <result column="endTime" property="endTime" jdbcType="VARCHAR"/>
+ <result column="uncheckInCount" property="uncheckInCount" jdbcType="INTEGER"/>
+ <result column="sumCount" property="sumCount" jdbcType="INTEGER"/>
+ <result column="userId" property="userId" jdbcType="INTEGER"/>
+ <result column="userName" property="userName" jdbcType="VARCHAR"/>
+</resultMap>
+
+<select id="qryCurrAttRecordInfoList" resultMap="AttendanceRecordMapper" resultType="hashmap" parameterType="page">
+select perConf.AttPeriodId,a.attPlanId,perConf.StartTime,perConf.EndTime,
+a.AttTime,a.AttPeopleId,a.AttRecordId 
+ from (
+  select pepConf.UserId,planConf.AttendanceId attPlanId,planConf.AttendanceId,recInfo.AttSignDate AttDate,
+  recInfo.AttTime,pepConf.Id AttPeopleId,recInfo.AttRecordId,recInfo.AttPeriodId from AttendanceRecordInfo recInfo 
+  inner join (AttendancePeopleConf pepConf inner join AttendancePlanConf planConf on (pepConf.AttendanceId = planConf.AttendanceId)  
+  ) 
+  on (recInfo.AttPeopleId = pepConf.Id)
+  where 1=1 
+  and pepConf.UserId = #{params.userId}  
+  and pepConf.AttendanceId = #{params.attPlanId} 
+  and planConf.AttStartTime &lt;= date_format(sysdate(), '%Y-%m-%d') 
+  and planConf.AttEndTime &gt;= date_format(sysdate(), '%Y-%m-%d')
+  and planConf.`Status` = 2 
+) a inner join AttendancePeriodConf perConf on (a.AttendanceId = perConf.AttendanceId  and a.AttPeriodId = perConf.AttPeriodId)  
+where 1=1
+and perConf.AttendanceId = #{params.attPlanId}
+and a.UserId=#{params.userId} 
+and a.AttDate = date_format(sysdate(), '%Y-%m-%d') 
+order by perConf.AttPeriodId asc
+</select>
+
+<select id="qryHisAttRecordInfoList" resultMap="AttendanceRecordMapper" parameterType="page">
+select a.AttDate,a.AttTime,perConf.StartTime,perConf.EndTime from 
+(
+  select pepConf.UserId,planConf.AttendanceId attPlanId,planConf.AttendanceId, planConf.AttStartTime,planConf.AttEndTime,
+  recInfo.AttTime,recInfo.AttPeopleId,recInfo.AttRecordId,recInfo.AttPeriodId,recInfo.AttSignDate AttDate
+ from AttendanceRecordInfo recInfo 
+  inner join (AttendancePeopleConf pepConf inner join AttendancePlanConf planConf on (pepConf.AttendanceId = planConf.AttendanceId)  
+  ) 
+  on (recInfo.AttPeopleId = pepConf.Id)
+  where 1=1 
+  and pepConf.UserId = #{params.userId}   
+  and pepConf.AttendanceId = #{params.attPlanId} 
+) a inner join AttendancePeriodConf perConf on (a.AttendanceId = perConf.AttendanceId and a.AttPeriodId = perConf.AttPeriodId) 
+where 1=1 
+and perConf.AttendanceId = #{params.attPlanId} 
+and a.UserId=#{params.userId} 
+and date_format(a.AttDate,'%Y-%m-%d')&gt;=date_format(#{params.planStartTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(#{params.planEndTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(sysdate(),'%Y-%m-%d') 
+order by a.AttDate asc,a.AttPeriodId asc 
+
+</select>
+
+<select id="qryCurrAttPlanConfList" resultMap="AttendancePlanConfVOMapper" parameterType="java.lang.Long">
+SELECT a.AttendanceId,b.Title planName,b.AttStartTime,b.AttEndTime from AttendancePeopleConf a 
+LEFT JOIN AttendancePlanConf b ON a.AttendanceId = b.AttendanceId
+WHERE 1=1 and b.`Status` = 2  
+<if test="currUserId!=null and currUserId!=-1">
+and a.UserId = #{currUserId, jdbcType=INTEGER}
+</if>
+</select>
+
+<select id="qryAllAttPlanConfList" resultMap="AttendancePlanConfVOMapper">
+select a.AttendanceId,a.Title planName,a.AttStartTime,a.AttEndTime from AttendancePlanConf a  where a.`Status` = 2
+</select>
+
+<select id="qryCurrUncheckedAttRecordCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+select count(1) from (
+  select pepConf.UserId,planConf.AttendanceId attPlanId,planConf.AttendanceId,
+  recInfo.AttTime,pepConf.Id AttPeopleId,recInfo.AttRecordId,recInfo.AttSignDate from AttendanceRecordInfo recInfo 
+  inner join (AttendancePeopleConf pepConf inner join AttendancePlanConf planConf on (pepConf.AttendanceId = planConf.AttendanceId)  
+  ) 
+  on (recInfo.AttPeopleId = pepConf.Id)
+  where 1=1 
+  and pepConf.UserId = #{params.curUserId}  
+  and pepConf.AttendanceId = #{params.attPlanId} 
+  and planConf.AttStartTime &lt;= sysdate() 
+  and planConf.AttEndTime &gt;= sysdate() 
+  and planConf.`Status` = 2
+) a  
+WHERE 1=1 
+and a.AttTime is null 
+and a.AttSignDate=DATE_FORMAT(sysdate(),'%Y-%m-%d') 
+and a.UserId = #{params.curUserId} 
+and a.AttendanceId = #{params.attPlanId} 
+</select>
+
+<select id="qryHisAttRecordInfoCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+select count(1) from AttendancePeriodConf perConf 
+inner join AttendancePlanConf planConf  on planConf.AttendanceId = perConf.AttendanceId
+where 1=1
+<if test="params.attPlanId!=null and params.attPlanId!='' ">
+and planConf.AttendanceId = #{params.attPlanId} 
+</if>
+</select>
+
+<select id="qryAttRecInfoStatisVOs" parameterType="page" resultMap="AttRecInfoStatisVOMap">
+select a.AttDate,a.AttTime,perConf.StartTime,perConf.EndTime,a.UserId from 
+(
+  select pepConf.UserId,planConf.AttendanceId attPlanId,planConf.AttendanceId, planConf.AttStartTime,planConf.AttEndTime,
+  recInfo.AttTime,recInfo.AttPeopleId,recInfo.AttRecordId,recInfo.AttPeriodId,recInfo.AttSignDate AttDate
+ from AttendanceRecordInfo recInfo 
+  inner join (AttendancePeopleConf pepConf inner join AttendancePlanConf planConf on (pepConf.AttendanceId = planConf.AttendanceId)  
+  ) 
+  on (recInfo.AttPeopleId = pepConf.Id)
+  where 1=1 
+  and pepConf.AttendanceId = #{params.attPlanId}
+) a inner join AttendancePeriodConf perConf on (a.AttendanceId = perConf.AttendanceId and a.AttPeriodId = perConf.AttPeriodId) 
+where 1=1 
+and perConf.AttendanceId = #{params.attPlanId}
+and date_format(a.AttDate,'%Y-%m-%d')&gt;=date_format(#{params.planStartTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(#{params.planEndTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(sysdate(),'%Y-%m-%d') 
+<if test="params.userId!=null and params.userId!='' and params.userId!='-1' ">
+and a.UserId = #{params.userId}
+</if>
+
+<if test="params.hasUncheckedIn!=null and params.hasUncheckedIn!='' and params.hasUncheckedIn==1 ">
+and a.AttTime is null
+</if> 
+order by a.UserId asc,a.AttDate asc,a.AttPeriodId asc  
+</select>
+ 
+<select id="qryAttRecInfoStatisCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+select count(1) from 
+(
+  select pepConf.UserId,planConf.AttendanceId attPlanId,planConf.AttendanceId, planConf.AttStartTime,planConf.AttEndTime,
+  recInfo.AttTime,recInfo.AttPeopleId,recInfo.AttRecordId,recInfo.AttPeriodId,recInfo.AttSignDate AttDate
+ from AttendanceRecordInfo recInfo 
+  inner join (AttendancePeopleConf pepConf inner join AttendancePlanConf planConf on (pepConf.AttendanceId = planConf.AttendanceId)  
+  ) 
+  on (recInfo.AttPeopleId = pepConf.Id)
+  where 1=1 
+  and pepConf.AttendanceId = #{params.attPlanId}
+) a inner join AttendancePeriodConf perConf on (a.AttendanceId = perConf.AttendanceId and a.AttPeriodId = perConf.AttPeriodId) 
+where 1=1 
+and perConf.AttendanceId = #{params.attPlanId}
+and date_format(a.AttDate,'%Y-%m-%d')&gt;=date_format(#{params.checkInStartTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(#{params.checkInEndTime,jdbcType=DATE},'%Y-%m-%d')
+and date_format(a.AttDate,'%Y-%m-%d')&lt;=date_format(sysdate(),'%Y-%m-%d') 
+<if test="params.userId!=null and params.userId!='' and params.userId!='-1' ">
+and a.UserId = #{params.userId}
+</if>
+<if test="params.hasUncheckedIn!=null and params.hasUncheckedIn!='' and params.hasUncheckedIn==1 ">
+and a.AttTime is null
+</if> 
+order by a.UserId asc,a.AttDate asc,a.AttPeriodId asc  
+
+</select>
+
+<select id="getAttRecInfoByAttendanceId" resultMap="AttendanceRecordMapper" parameterType="java.lang.Integer">
+select a.* from AttendancePlanConf a where a.AttendanceId = #{attendacneId}
+</select>
+
+<select id="getAttRecordInfo" resultType="java.lang.Integer" parameterType="java.util.Map">
+select recInfo.AttRecordId from AttendanceRecordInfo recInfo
+where recInfo.AttPeriodId = #{params.attPeriodId,jdbcType=INTEGER} 
+and recInfo.AttPeopleId =  #{params.attPeopleId,jdbcType=INTEGER}
+and recInfo.AttSignDate = #{params.attSignDate,jdbcType=VARCHAR}
+</select>
+
+<select id="qryAttPeopleConfListByPlanConfId" resultType="com.fable.insightview.platform.attendanceconf.entity.AttendancePeopleConf" parameterType="java.lang.Integer">
+select a.Id,a.AttendanceId,a.UserId from AttendancePeopleConf a where a.AttendanceId = #{attendanceId,jdbcType=INTEGER}
+</select>
+
+<select id="qryAttPeriodConfListByPlanConfId" resultType="com.fable.insightview.platform.attendanceconf.entity.AttendancePeriodConf" parameterType="java.lang.Integer">
+select a.AttendanceId,a.AttPeriodId,a.StartTime,a.EndTime from AttendancePeriodConf a where a.AttendanceId = #{attendanceId,jdbcType=INTEGER}
+</select>
+
+<select id="qryPlanPeopleListByPlanId" resultType="com.fable.insightview.platform.entity.SysUserInfoBean">
+select u.UserID,u.UserAccount,u.UserName from SysUserInfo u 
+inner join AttendancePeopleConf pepConf 
+on pepConf.UserId=u.UserID
+ where 1=1 and State=0 
+and pepConf.AttendanceId = #{attPlanId}
+</select>
+
+<insert id="insertAttendanceRecordInfo" parameterType="com.fable.insightview.platform.attendance.entity.AttendanceRecordInfo">
+INSERT INTO AttendanceRecordInfo(AttRecordId,AttPeopleId,AttPeriodId,AttSignDate)
+VALUES(
+     #{attRecordId,jdbcType=INTEGER},
+     #{attPeopleId,jdbcType=INTEGER},
+     #{attPeriodId,jdbcType=INTEGER},
+     #{attSignDate,jdbcType=VARCHAR}
+)
+</insert>
+
+<insert id="batchInsertAttRecInfo" useGeneratedKeys="true" parameterType="java.util.List">
+<selectKey resultType="long" keyProperty="attRecordId" order="AFTER">  
+select last_insert_id()   
+</selectKey> 
+
+insert into AttendanceRecordInfo(AttPeopleId,AttPeriodId,AttSignDate) 
+values
+<foreach collection="list" item="item" separator=",">
+(#{item.attPeopleId,jdbcType=INTEGER},#{item.attPeriodId,jdbcType=INTEGER},#{item.attSignDate,jdbcType=VARCHAR})
+</foreach>
+</insert>
+
+
+<update id="updateAttTime" parameterType="java.lang.Integer">
+update AttendanceRecordInfo set AttTime = sysdate() where attRecordId = #{attRecordId,jdbcType=INTEGER}
+</update>
+
+<delete id="batchDelAttRecInfo" parameterType="java.util.Map">
+delete from AttendanceRecordInfo where AttPeopleId in 
+<foreach collection="params.attPepConfIds" item="item1" open="(" close=")" separator=",">
+#{item1,jdbcType=INTEGER}
+</foreach>
+ and AttPeriodId in 
+<foreach collection="params.attPerConfIds" item="item2" open="(" close=")" separator=",">
+#{item2,jdbcType=INTEGER}
+</foreach> 
+ and AttSignDate in 
+<foreach collection="params.attDates" item="item3" index="idx" open="(" close=")" separator=",">
+#{item3,jdbcType=VARCHAR}
+</foreach>
+</delete>
+
+</mapper>
+

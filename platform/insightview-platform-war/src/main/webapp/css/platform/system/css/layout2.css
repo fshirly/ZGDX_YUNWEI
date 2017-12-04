@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+/*--- 头部 ---*/
+.header {width:100%; height:auto; min-width:1000px; height:102px;}
+.banner {height:74px; width:100%; background:url(../images/topbg.png) repeat;}
+.logo {background:url(../images/logos2.png) left top; float:left; height:73px; width:233px;}
+.picright {background: url(../images/picright.png); float:right; height:73px; width:730px;}
+
+/*--- 个人信息 ---*/
+.userMsg{width:100%; line-height:27px; height:27px; background:#edf5fa; border-bottom:1px solid #a3bbcc; position:relative;}
+.userMsg .msg {color:#666666; margin-left:10px;}
+.userMsg .msg .num {color:#0066ee; display:inline-block; background:url(../images/imgtop.png) no-repeat -450px 7px; margin-left:5px; padding-left:10px;}
+.userMsg .tools {position:absolute; right:0; bottom:0;} 
+.userMsg .tools a {display:inline-block; padding-left:15px; margin-right:12px;}
+.userMsg .tools .set {background:url(../images/imgtop.png) no-repeat -540px 7px;}
+.userMsg .tools .exit {background:url(../images/imgtop.png) no-repeat -600px 7px;}
+	
+/*--- 主区域 ---*/
+.main{width:100%; min-width:1000px; background:#ffffff; position:absolute; top:102px; left:0; right:0; bottom:25px;;z-index:50;}
+
+/*--- 左侧导航一级菜单 ---*/
+.sidebar {width:190px; background:#f2fbff; position:absolute; top:0; left:0; bottom:5px;}	 
+
+/*--- 折叠区域 ---*/
+.picBox {position:absolute; left:191px; bottom:5px; top:0;width:9px;background:#e1effa url(../images/right.png) no-repeat center left;cursor:pointer;display:inline;}
+
+/*--- 内容 ---*/
+.content{position:absolute; top:0; bottom:5px; left:200px; right:0;border-left:1px solid #ffffff;background:#ffffff;}
+
+/*--- 脚注 ---*/			
+.footer{z-index:50;width:100%; min-width:1000px; height:29px;line-height:29px;background:#178fe6;color:#bfdfff;text-align:center;border-top:1px solid #0f6b99; position:absolute; bottom:0; left:0; right:0;}

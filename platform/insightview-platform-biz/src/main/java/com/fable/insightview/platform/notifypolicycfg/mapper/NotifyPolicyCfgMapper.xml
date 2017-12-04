@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.notifypolicycfg.mapper.NotifyPolicyCfgMapper">
+	<resultMap id="notifyCfgMap" type="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean">
+		<id column="PolicyID" property="policyId" jdbcType="INTEGER" />
+		<result column="PolicyName" property="policyName" jdbcType="VARCHAR" />
+		<result column="PolicyType" property="policyType" jdbcType="INTEGER" />
+		<result column="MaxTimes" property="maxTimes" jdbcType="INTEGER" />
+		<result column="IsSms" property="isSms" jdbcType="INTEGER" />
+		<result column="IsEmail" property="isEmail" jdbcType="INTEGER" />
+		<result column="IsPhone" property="isPhone" jdbcType="INTEGER" />
+		<result column="Descr" property="descr"	jdbcType="VARCHAR" />
+		<result column="MFlag" property="mFlag"	jdbcType="INTEGER" />
+	</resultMap>
+	
+	<sql id="selectSql">
+		select c.PolicyID,c.PolicyName,c.PolicyType,c.MaxTimes,c.IsSms,c.IsEmail,c.IsPhone,c.Descr,c.MFlag,t.TypeName
+		from NotifyPolicyCfg c
+		left join PolicyType t on t.TypeID = c.PolicyType
+		where 1=1 and c.MFlag = 1
+	</sql>
+	
+	<select id="selectNotifyPolicyCfg" resultType="hashmap" resultMap="notifyCfgMap" parameterType="page">
+		<include refid="selectSql"/>
+		<if test="params.policyName !='' and params.policyName != null ">
+			and c.PolicyName like ${concat("'%'","'"+params.policyName+"'","'%'")}
+		</if>
+	</select>
+	
+	<delete id="delNotifyCfgByID" parameterType="Integer">
+		delete from NotifyPolicyCfg where PolicyID = #{policyId}
+	</delete>
+	
+	<delete id="delNotifyCfgByIDs" parameterType="String">
+		delete from NotifyPolicyCfg where PolicyID in (${policyIds})
+	</delete>
+
+	<select id="getNotifyCfgByID" parameterType="Integer" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean"	>
+		<include refid="selectSql"/>
+		and c.PolicyID=#{policyId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByNameAndID" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean" resultType="Integer">
+		select count(1) from NotifyPolicyCfg
+		where MFlag=1 and PolicyName = #{policyName,jdbcType=VARCHAR}
+		<if test="policyId !='' and policyId != null and policyId !='-1'">
+			 and PolicyID !=#{policyId}
+		</if>
+	</select>
+
+	<insert id="insertAlarmNotifyCfg" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean">
+		insert into NotifyPolicyCfg (PolicyID,PolicyName,PolicyType,MaxTimes,IsSms,IsEmail,IsPhone,Descr,MFlag)
+		values (#{policyId,jdbcType=INTEGER}, #{policyName,jdbcType=VARCHAR},#{policyType,jdbcType=INTEGER},#{maxTimes,jdbcType=INTEGER},
+				#{isSms,jdbcType=INTEGER},#{isEmail,jdbcType=INTEGER},#{isPhone,jdbcType=INTEGER}, #{descr,jdbcType=VARCHAR} ,#{mFlag,jdbcType=INTEGER}
+	      )
+	</insert>
+	
+	<update id="updateNotifyCfgByID" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean">
+		update NotifyPolicyCfg 
+		set PolicyName=#{policyName},MaxTimes=#{maxTimes},PolicyType=#{policyType},IsSms=#{isSms},
+			IsEmail=#{isEmail},IsPhone=#{isPhone},Descr=#{descr}
+		where PolicyID=#{policyId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateMFalgByID" parameterType="Integer">
+		update NotifyPolicyCfg 
+		set MFlag=0
+		where PolicyID=#{policyId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateMFalgByIDs" parameterType="Integer">
+		update NotifyPolicyCfg 
+		set MFlag=0
+		where PolicyID in (${policyIds})
+	</update>
+	
+	<select id="getAllNotifyPolicyCfg" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyPolicyCfgBean">
+		<include refid="selectSql"/>
+	</select>
+	
+	<select id="selectPolicyIdForDuty" resultType="integer">
+		SELECT MAX(PolicyID) FROM NotifyPolicyCfg WHERE PolicyType=2 AND MFlag=1
+	</select>
+</mapper>
+

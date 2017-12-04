@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.process.mapper.ProcessInfoMapper" >
+  <resultMap id="processInfoMapper" type="com.fable.insightview.monitor.process.entity.MoProcessBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="ProcessName" property="processName" jdbcType="VARCHAR" />
+    <result column="ProcessID" property="processID" jdbcType="INTEGER" />
+    <result column="ProcessType" property="processType" jdbcType="INTEGER" />
+    <result column="DeviceIP" property="deviceIp" jdbcType="VARCHAR" />
+    <result column="deviceName" property="deviceName" jdbcType="VARCHAR" />
+    <result column="ProcessState" property="processState" jdbcType="INTEGER" />
+    <result column="ProcessCpu" property="processCpu" jdbcType="INTEGER" />
+    <result column="ProcessMem" property="processMem" jdbcType="DOUBLE" />
+  </resultMap>
+  
+  <select id="getMoProcessInfos" parameterType="page" resultType="hashmap" resultMap="processInfoMapper">
+	select a.*,b.DeviceIP,b.MOName deviceName from ProcessInfo a 
+	left join MODevice b on a.DeviceMOID=b.MOID where 1=1 
+	<if test="params.deviceIp != '' and params.deviceIp != null">
+		and b.DeviceIP like ${concat("'%'", "'"+params.deviceIp+"'" ,"'%'")} 
+	</if>
+	<if test="params.processName != '' and params.processName != null">
+		and a.ProcessName like ${concat("'%'", "'"+params.processName+"'" ,"'%'")} 
+	</if>
+	order by a.ProcessCpu and a.ProcessMem desc 
+  </select>
+  
+</mapper>
+

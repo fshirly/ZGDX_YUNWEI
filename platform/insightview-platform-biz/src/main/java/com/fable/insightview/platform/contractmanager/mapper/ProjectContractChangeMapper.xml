@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.contractmanager.mapper.ProjectContractChangeMapper">
+  <resultMap  id="projectContractChangeMapper"  type="com.fable.insightview.platform.contractmanager.entity.ProjectContractChange">
+     <id column="Id" property="id" jdbcType="INTEGER"/>
+     <result column="ContractId" property="contractId" jdbcType="INTEGER"/>
+     <result column="Title" property="title" jdbcType="VARCHAR"/>
+     <result column="ChangeTime" property="changeTime" jdbcType="TIMESTAMP"/>
+     <result column="Description" property="description" jdbcType="VARCHAR"/>
+     <result column="ConfirmManName" property="confirmManName" jdbcType="VARCHAR"/>
+     <result column="Url" property="url" jdbcType="VARCHAR"/>
+  </resultMap>
+    <select id="queryProjectContractChangeList" parameterType="page" resultType="hashmap" resultMap="projectContractChangeMapper">
+      select * from ProjectContractChange where 1=1 
+      <if test="params.contractID!=null and params.contractID!=''">
+         and ContractId=#{params.contractID,jdbcType=INTEGER}
+      </if>
+    </select>
+    <insert id="insertProjectContractChangeInfo" parameterType="com.fable.insightview.platform.contractmanager.mapper.ProjectContractChangeMapper">
+      insert into ProjectContractChange(Id,ContractId,Title,ChangeTime,Description,ConfirmManName,Url)VALUES(
+      #{id,jdbcType=INTEGER},
+      #{contractId,jdbcType=INTEGER},
+      #{title,jdbcType=VARCHAR},
+      #{changeTime,jdbcType=TIMESTAMP},
+      #{description,jdbcType=VARCHAR},
+      #{confirmManName,jdbcType=VARCHAR},
+      #{url,jdbcType=VARCHAR}
+      )
+    </insert>
+    <update id="updateProjectContractChangeInfo"  parameterType="com.fable.insightview.platform.contractmanager.mapper.ProjectContractChangeMapper">
+    update ProjectContractChange set
+      Title=#{title,jdbcType=VARCHAR},
+      ChangeTime=#{changeTime,jdbcType=TIMESTAMP},
+      Description= #{description,jdbcType=VARCHAR},
+      ConfirmManName=#{confirmManName,jdbcType=VARCHAR},
+      Url=#{url,jdbcType=VARCHAR} where Id= #{id,jdbcType=INTEGER}
+    </update>
+    <select id="queryProjectContractChangeInfo" parameterType="Integer" resultType="hashmap" resultMap="projectContractChangeMapper">
+        select * from ProjectContractChange where Id=#{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteProjectContractChangeInfo" parameterType="Integer">
+        delete from ProjectContractChange where Id=#{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>组织机构树</title>
+<meta http-equiv='Content-Type' content='text/html; charset=gb2312'>
+<link rel='stylesheet' href='css.css' type='text/css'>
+<script src='MzTreeView1.2.js'></script>  
+    <style type='text/css'>
+    body, td{
+      font-family: 宋体;
+      font-size: 12px;
+    }
+    A:LINK, A:VISITED, A:ACTIVE, A:HOVER{
+      color: #800080;
+      font-size: 13px;
+      padding-left: 3px;
+      TEXT-DECORATION: NONE;
+    }
+    </style>
+<body bgcolor='#FFFFFF' leftmargin='0' topmargin='0' onload='try{parent._ssjTSel.setNameField();}catch(e){;}'>
+<div id=org_tree></div>
+<SCRIPT LANGUAGE='JavaScript'>
+function $(id){return document.getElementById(id);}
+Array.prototype.indexOf = function(obj){
+	for(var i=0;i<this.length;i++)
+		if(this[i]==obj)
+			return i;
+	return -1;
+}
+        var id;
+        var itemId;
+        var itemText;
+        var tree = new MzTreeView('tree',false);
+        tree.setIconPath('ssjImg/');
+tree.nodes['-1_0']='text:根;vcNumber:011201;flag:1;type:5';
+tree.nodes['0_1']='text:节点1;vcNumber:01120113;flag:2;type:6';
+tree.nodes['0_2']='text:节点2;vcNumber:0112010504;flag:2;type:7';
+tree.nodes['0_3']='text:节点3;vcNumber:0112011126;flag:2;type:7';
+tree.nodes['0_4']='text:节点4;vcNumber:0112010908;flag:2;type:7';
+tree.nodes['0_5']='text:节点5;vcNumber:0112010321;flag:2;type:7';
+tree.nodes['1_13']='text:节点13;vcNumber:0112011003;flag:2;type:7';
+tree.nodes['1_15']='text:节点15;vcNumber:0112011501;flag:2;type:7';
+tree.nodes['1_12']='text:节点12;vcNumber:0112010911;flag:2;type:7';
+tree.nodes['3_35']='text:节点35;vcNumber:01120106;flag:2;type:6';
+tree.nodes['3_39']='text:节点39;vcNumber:0112011022;flag:2;type:7';
+tree.wordLine=false;document.getElementById('org_tree').innerHTML = tree.toString();tree.nodeClick = function(id,itemId){
+	if(!doFilter(itemId))
+		return;
+	if(!false){
+		parent._ssjTSel.hideTree();
+	}
+}
+function doFilter(itemId){
+	return true;
+}
+var selChild = true;
+tree.nodeCheck = function(id,itemId){
+	if(tree.isItemCheck(itemId) && !doFilter(itemId))
+		tree.setCheck(itemId,false);
+	return selChild;
+}
+
+function getUserDatas(ids,attr){
+	if(ids==null || ids.length==0)return '';
+	var ary = ids.split(',');
+	var names = [];
+	for(var i=0;i<ary.length;i++){
+		names[names.length] = tree.getUserData(ary[i],attr);
+	}
+	return names.toString();
+}
+
+function getIdByUserDatas(datas,attr){
+	if(datas==null || datas.length==0)return '';
+	var ary = datas.split(',');
+	var ids = [];
+	for(var i=0;i<ary.length;i++){
+		ids[ids.length] = tree.getAllFilterIds(attr,ary[i]).toString();
+	}
+	return names.toString();
+}
+
+//实现下拉树接口方法，在树显示的时候选中原始页面中ID字段的值所标示的节点。
+function setSelectedNode(id){
+	tree.closeAllNode();
+	if(id=='')return;
+ 		try{tree.focus(id);}catch(e){}
+}
+function getItemTextById(id){
+	if(false)
+		return getUserDatas(getIdByUserDatas(id,'vcNumber'),'text');
+	else
+  		return getUserDatas(id,'text');
+}
+function isLoad(){return true;} 
+function getSelText(){
+	return getUserDatas(getSelValue(),'text');
+}
+function getSelValue(){
+	var id = getSelIds();
+	if(false){
+		return getUserDatas(id,'vcNumber');
+	}else{
+ 		return id;
+ 	}
+}
+function getSelIds(){
+ 	var id = '';
+	if(false){
+		id = tree.getAllCheckedIds().toString();
+	}else{
+ 		id = tree.getSelectedItem();
+ 	}
+ 	return id;
+}
+</SCRIPT>
+</body>
+</html>

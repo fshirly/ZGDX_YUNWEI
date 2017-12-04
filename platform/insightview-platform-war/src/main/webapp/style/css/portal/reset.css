@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+/*css reset*/
+div,a,img,ul,li,ol,dl,form,label,table,tbody,tr,td,input,h1,h2,h3,h4,h5,h6,p,textarea,span{margin:0; padding:0;}
+html,body,iframe {height:100%; width:100%; margin:0; padding:0;}  
+body,input,textarea {font-size:12px; font-family:aria,Tahoma,sans-serif;; color:#333333; vertical-align:middle;}
+table {border-collapse:collapse; border-spacing:0;}
+ul {list-style: none;}
+a {text-decoration:none; color:#175899; cursor:pointer;}
+a:hover {color:#0033ff;}
+:focus {outline:0;}
+img {border:none; vertical-align:middle;}
+h1,h2,h3 {font-size:12px; overflow:hidden;}
+input[type="button"] {cursor:pointer;}
+input[disabled="disabled"], input[disabled="disabled"] {border:1px solid #cccccc; background:#e5e5e5;}
+.tip, .tips, dfn{color:red; font-style:normal;}
+.winbox {border:1px solid #b1c1cc;}
+h2 span {margin-left:10px; border-bottom:1px solid #175899; cursor:pointer; color:#175899;}
+h2 a {float:right; font-weight:normal; margin-right:10px;}
+/*~~ 清除a标签点击后的虚线边框 ~~*/
+body a,body input {outline:none;blr:expression(this.onFocus=this.blur());}
+
+ /* 查询条件区域 */
+.conditions {min-height:36px; background:#f5f5f5; min-width:810px; padding:5px 0; border:solid #ffffff; border-width:1px 0;}
+.conditions table td {padding:5px 0 5px 10px;}
+.conditions table td > b {display:inline-block; min-width:68px; text-align:right; font-weight:normal}
+.conditions table .btntd {text-align:right;}
+.conditions .combo {width:135px !important;}
+.conditions .combo .combo-text  {width:113px !important;}
+.conditions .combo .combo-p {max-width:135px;}
+.treetabler .conditions {min-width:99%;}
+.conditions input[type="radio"], .conditions input[type="checkbox"] {border:0 none; width:13px;}
+
+.inputtext, .conditions input {border:1px solid; border-color:#7ca3bf #b8d0e0 #b8d0e0 #7ca3bf; background:#ffffff; width:130px; padding:0 2px 0 3px; height:22px; line-height:22px;}
+.inputtext, .conditions input {border:1px solid; border-color:#7ca3bf #b8d0e0 #b8d0e0 #7ca3bf; background:#ffffff; width:130px; padding:0 2px 0 3px; height:22px; line-height:22px;}
+.btn, .btntd a, .messager-button a, input.btn {display:inline-block; text-align:center; color:#ffffff; border:1px solid; border-color:#5cb8e6 #297ca6 #297ca6 #5cb8e6; background:#36a3d9; width:62px; height:24px; line-height:22px;}
+.btn {margin-right:6x;}
+.btntd a, .messager-button a {margin-left:6px;}
+.btn:hover, .btntd a:hover, .messager-button a:hover {background:#005580; color:#ffffff;}
+.tdpad td {padding:5px}
+.staHide{display:none;}
+.window{position:fixed;}
+body{-webkit-user-select:none;-ms-user-select:none;-moz-user-select:none;};

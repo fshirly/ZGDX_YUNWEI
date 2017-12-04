@@ -1,0 +1,87 @@
+#container {
+	margin: 0 auto;
+	text-align: left;
+	font-size: 13px;
+	font: Î¢ÈíÑÅºÚ;
+	width: 1000px;
+}
+
+.smallpart {
+	background-color: rgb(200, 200, 205);
+	height: 180px;
+	width: 860px;
+}
+
+.smallpart tr {
+	line-height: 22px;
+	background-color: #fff;
+}
+
+.smallpartSpec {
+	background-color: #595D5E;
+	height: 180px;
+	width: 460px;
+}
+
+.smallpartSpec tr {
+	line-height: 22px;
+	background-color: #fff;
+}
+
+.smallpart1 {
+	background-color: rgb(200, 200, 205);
+}
+
+.smallpart1 tr {
+	line-height: 22px;
+	background-color: #fff;
+	margin: 0;
+}
+
+.barProcessInfo {
+	background-color: #595D5E;
+	text-align: center;
+	margin-left: 0px;
+	margin-top: 6px;
+}
+
+.barProcessInfo tr {
+	background-color: #fff;
+	line-height: 22px;
+}
+
+.showbtn {
+	width: 70px;
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+.fontalign {
+	text-align: right;
+}
+
+#barMenu {
+	list-style: none;
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+#barMenu li {
+	float: left;
+	text-align: center;
+	vertical-align: center;
+	margin-right: 4px;
+	padding-top: 8px;
+	height: 20px;
+	width: 70px;
+	cursor: pointer;
+	background-color: #6EE1FD;
+}
+
+.bardiv {
+	width: 930px;
+	height: 380px;
+	border: 1px solid rgb(200, 200, 205);
+	padding: 10px 6px;
+}

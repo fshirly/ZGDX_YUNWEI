@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.database.mapper.OracleMapper" >
+  <resultMap id="MODBMSServerResultMap" type="com.fable.insightview.monitor.database.entity.MODBMSServerBean" >
+    <id column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="MOName" property="moname" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+    <result column="DBMSType" property="dbmstype" jdbcType="VARCHAR" />
+    <result column="ServerVersion" property="serverversion" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="PORT" property="port" jdbcType="INTEGER" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operstatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminstatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="LastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP" />
+    <result column="CreateBy" property="createby" jdbcType="INTEGER" />
+    <result column="UpdateBy" property="updateby" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="moDeviceId" property="moDeviceId" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="DataFileResultMap" type="com.fable.insightview.monitor.database.entity.MOOracleDataFileBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DBMOID" property="dbMoId" jdbcType="INTEGER" />
+    <result column="TBSMOID" property="tbsMoId" jdbcType="INTEGER" />
+    <result column="TBSName" property="tbsName" jdbcType="VARCHAR" />
+    <result column="DataFileName" property="dataFileName" jdbcType="VARCHAR" />
+    <result column="DataFileID" property="dataFileId" jdbcType="INTEGER" />
+    <result column="DataFileBytes" property="dataFileBytes" jdbcType="DECIMAL" />
+    <result column="DataFileBlocks" property="dataFileBlocks" jdbcType="DECIMAL" />
+    <result column="DataFileStatus" property="dataFileStatus" jdbcType="VARCHAR" />
+    <result column="RelativeID" property="relativeID" jdbcType="INTEGER" />
+    <result column="AutoExtensible" property="autoExtensible" jdbcType="VARCHAR" />
+    <result column="MaxSize" property="maxSize" jdbcType="DECIMAL" />
+    <result column="MaxBlocks" property="maxBlocks" jdbcType="DECIMAL" />
+    <result column="IncreamentBlocks" property="increamentBlocks" jdbcType="INTEGER" />
+    <result column="UserBytes" property="userBytes" jdbcType="DECIMAL" />
+    <result column="UserBlocks" property="userBlocks" jdbcType="DECIMAL" />
+    <result column="DBName" property="dbName" jdbcType="VARCHAR" />
+    <result column="RelativeFileName" property="relativeFileName" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="PerfOrclDataFileResultMap" type="com.fable.insightview.monitor.database.entity.PerfOrclDataFileBean" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="MOID" property="moId" jdbcType="DECIMAL" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="PhyReads" property="phyReads" jdbcType="DECIMAL" />
+    <result column="PhyWrites" property="phyWrites" jdbcType="DECIMAL" />
+    <result column="BlockRead" property="blockRead" jdbcType="DECIMAL" />
+    <result column="BlockWrite" property="blockWrite" jdbcType="DECIMAL" />
+    <result column="ReadTime" property="readTime" jdbcType="DECIMAL" />
+    <result column="WriteTime" property="writeTime" jdbcType="DECIMAL" />
+    <result column="FileStatus" property="fileStatus" jdbcType="VARCHAR" />
+    <result column="CreateSize" property="createSize" jdbcType="DECIMAL" />
+    <result column="CurrSize" property="currSize" jdbcType="DECIMAL" />
+  </resultMap>
+    <resultMap id="TbsResultMap" type="com.fable.insightview.monitor.database.entity.MOOracleTBSBean" >
+    <id column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="DBMOID" property="dbmoid" jdbcType="INTEGER" />
+    <result column="TBSName" property="tbsname" jdbcType="VARCHAR" />
+    <result column="InitialExtent" property="initialextent" jdbcType="INTEGER" />
+    <result column="NextExtent" property="nextextent" jdbcType="INTEGER" />
+    <result column="MinExtents" property="minextents" jdbcType="INTEGER" />
+    <result column="MaxExtents" property="maxextents" jdbcType="INTEGER" />
+    <result column="PCTExtents" property="pctextents" jdbcType="INTEGER" />
+    <result column="MinExtLen" property="minextlen" jdbcType="INTEGER" />
+    <result column="TBSStatus" property="tbsstatus" jdbcType="VARCHAR" />
+    <result column="TBSType" property="tbstype" jdbcType="VARCHAR" />
+    <result column="LogAttr" property="logattr" jdbcType="VARCHAR" />
+    <result column="AllocType" property="alloctype" jdbcType="VARCHAR" />
+    <result column="DBName" property="dbName" jdbcType="VARCHAR" />
+  </resultMap>
+    <resultMap id="perfTbsResultMap" type="PerfOrclTbsBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collecttime" jdbcType="TIMESTAMP" />
+    <result column="TotalSize" property="totalsize" jdbcType="INTEGER" />
+    <result column="FreeSize" property="freesize" jdbcType="INTEGER" />
+    <result column="TBUsage" property="tbusage" jdbcType="INTEGER" />
+    <result column="TBStatus" property="tbstatus" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 	<!-- oracle数据库信息列表 -->
+ 	<resultMap id="oracleDbInfoResultMap" type="com.fable.insightview.monitor.database.entity.OracleDbInfoBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DBName" property="dbName" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="OpenMode" property="openMode" jdbcType="VARCHAR" />
+    <result column="LogMode" property="logMode" jdbcType="VARCHAR" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 	
+  <sql id="Base_Column_List" >
+    MOID, MOName, MOAlias, DBMSType, ServerVersion, IP, PORT, UserName, PASSWORD, OperStatus, 
+    AdminStatus, AlarmLevel, DomainID, CreateTime, LastUpdateTime, CreateBy, UpdateBy
+  </sql>
+ <!-- 获取实例Instance详情-->
+	<select id="getOrclInstanceDetail" resultType="MODBMSServer"
+		parameterType="hashmap">
+		SELECT p.PerfValue perfValueAvai,a.MOAlias,b.InstanceName,b.Port,b.IP,c.deviceIP,d.DBName,b.StartTime,b.TotalSize,b.FreeSize,b.Installpath,a.AlarmLevel,e.LevelIcon,e.AlarmLevelName,a.UpdateAlarmTime
+		,p.CollectTime,e1.DoIntervals ,f.DoIntervals defDoIntervals	
+			FROM MODBMSServer a LEFT JOIN MOOracleInstance b ON a.MOID=b.DBMSMOID
+			LEFT JOIN MODevice c ON  b.deviceMOID=c.moID
+			LEFT JOIN MOOracleDB d ON b.DBMOID=d.MOID
+			LEFT JOIN AlarmLevel e ON a.AlarmLevel=e.AlarmLevelValue
+			LEFT JOIN PerfSnapshotDatabase p ON p.DeviceMOID=b.MOID AND p.kpiName='DBAvailability'
+			LEFT JOIN SysPerfPollTask d1 on b.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		   LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{orclMID} 
+		  LEFT JOIN (select MOOracleInstance.*,SysMOList.DoIntervals from MOOracleInstance,SysMOList where MID=#{orclMID}) f on b.MOID=f.MOID
+			WHERE a.MOID=#{InsMOID} 
+	</select>
+		<!-- 获取表空间列表  FOR 表空间个数 -->
+	<select id="getTbsCount" resultType="MODBMSServer"
+		parameterType="hashmap">
+		SELECT c.MOID FROM MODBMSServer a,MOOracleDB b,MOOracleTBS c
+		WHERE a.MOID=b.DBMSMOID AND b.MOID=c.DBMOID AND a.MOID=#{MOID}
+	</select>
+<!-- 获取表空间列表 -->
+	<select id="getOrclTbsInfo" resultType="hashmap" resultMap="MODBMSServerResultMap"
+		parameterType="hashmap">
+			SELECT c.TBSName,c.moid,d.*
+			FROM MODBMSServer a LEFT JOIN MOOracleDB b ON a.MOID=b.DBMSMOID
+			LEFT JOIN MOOracleTBS c ON  b.MOID=c.DBMOID		
+			LEFT JOIN  PerfSnapshotDatabase  d ON b.MOID=d.DeviceMOID AND d.MOID=c.MOID 
+			WHERE  d.MOID=#{COMMID} AND a.MOID=#{MOID} order by d.KPIName
+	</select>
+	<!-- 获取表空间详情 -->
+	<select id="getTbsDetailByMoId" parameterType="Integer" resultType="moOracleTbs">
+  		select  *  from MOOracleTBS where MOID=#{moId}
+  </select>
+	<!-- 获取表空间告警 -->
+		<select id="getTbsAlarmInfo"
+		resultType="com.fable.insightview.monitor.host.entity.AlarmActiveDetail"
+		parameterType="hashmap">
+		SELECT ad.AlarmID
+		,ad.AlarmLevel,l.LevelIcon,ad.SourceMOName,ad.SourceMOIPAddress,ad.AlarmTitle,s.StatusName,
+		StartTime,ad.RepeatCount,ad.UpgradeCount,l.AlarmLevelName FROM
+		AlarmActiveDetail ad,AlarmLevel l
+		,AlarmStatusDef s
+		WHERE
+		ad.AlarmLevel=l.AlarmLevelValue AND
+		s.StatusID=ad.AlarmStatus AND ad.SourceMOID=#{MOID} ORDER
+		BY ad.StartTime
+		desc
+	</select>
+	<!-- 数据库实例可用率仪表盘 -->
+	<select id="getOrclChartAvailability" resultType="MODBMSServer"
+		parameterType="hashmap">
+				SELECT round(t1.count1/t2.Sumcount,2)*100 DeviceAvailability FROM  
+		(SELECT  COUNT(c.DeviceStatus) count1 FROM MODBMSServer a LEFT JOIN MOOracleInstance b ON a.MOID=b.DBMSMOID
+		LEFT JOIN PerfDeviceAvailability c ON b.MOID=c.MOID 
+		WHERE a.MOID=#{MOID} AND c.DeviceStatus=1 AND c.CollectTime  BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}) t1,		
+		(SELECT COUNT(c.DeviceStatus) Sumcount FROM MODBMSServer a LEFT JOIN MOOracleInstance b ON a.MOID=b.DBMSMOID
+		LEFT JOIN PerfDeviceAvailability c ON b.MOID=c.MOID 
+		WHERE a.MOID=#{MOID} AND c.CollectTime BETWEEN	${toDate(timeBegin)} and ${toDate(timeEnd)}) t2
+	</select>
+	  <!-- 获取所有表空间名称 -->
+  <select id="queryAllOrclTbs" resultType="hashmap" resultMap="TbsResultMap">
+   	select modFile.*,moDb.DBName from MOOracleTBS modFile 
+	left join MOOracleDB moDb on modFile.DBMOID = moDb.MOID 
+	left join MODBMSServer dbmsServer on moDb.DBMSMOID = dbmsServer.MOID 
+	where dbmsServer.MOID=#{MOID}
+  </select>
+   <!-- 获取所有表空间曲线数据 -->
+   <select id="queryOrclTbsPerf" parameterType="hashmap" resultType="hashmap" resultMap="perfTbsResultMap">
+ select ${dateFormat("collectTime")}
+		formatTime,TBUsage
+		from PerfOrclTableSpace
+		where MOID=${seltItem}
+		and
+		CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+	  <!-- 获取所有数据文件 -->
+  <select id="getAllDataFiles" resultType="hashmap" resultMap="DataFileResultMap" parameterType="Integer">
+   	select modFile.*,moDb.DBName,dbmsServer.IP from MOOracleDataFile modFile 
+	left join MOOracleDB moDb on modFile.DBMOID = moDb.MOID 
+	left join MODBMSServer dbmsServer on moDb.DBMSMOID = dbmsServer.MOID 
+	where dbmsServer.MOID=#{moId}
+  </select>
+  <select id="getDataDetailByMoId" parameterType="Integer" resultType="moOracleDataFile">
+	select  modFile.*,
+	(select a.DataFileName from MOOracleDataFile a where a.MOID=#{moId} and a.RelativeID=
+	(select RelativeID from MOOracleDataFile where MOID=#{moId})) as RelativeFileName 
+	from MOOracleDataFile modFile where modFile.MOID=#{moId}
+  </select>
+  
+   <select id="queryList" resultType="hashmap" resultMap="MODBMSServerResultMap" parameterType="page">
+	 	SELECT t.* from (SELECT ${nvl("p.PerfValue","0")}  OperStatus,ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus,ta.MOClassID,ta.UpdateAlarmTime,p.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals	 			 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    left join MOOracleInstance td ON ta.MOID=td.dbmsmoid
+	    LEFT JOIN PerfSnapshotDatabase p ON p.MOID=td.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on ta.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobOracleAvailable}
+		LEFT JOIN (select MOOracleInstance.*,SysMOList.DoIntervals from MOOracleInstance,SysMOList where MID=#{params.jobOracleAvailable}) f on td.MOID=f.MOID
+	    where 1=1	 
+         and ta.DBMSType = 'oracle'
+      <if test="params.ip != null and params.ip != '' " >
+         and ta.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+          <if test="params.dbName != null and params.dbName != '' " >
+         and ta.MOName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+      </if> 
+           UNION ALL 
+           	SELECT p.PerfValue OperStatus,ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus,ta.MOClassID,ta.UpdateAlarmTime,p.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals	 			 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    left join MOMySQLDBServer td ON ta.MOID=td.dbmsmoid
+	    LEFT JOIN PerfSnapshotDatabase p ON p.MOID=td.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on ta.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobMysqlAvailable}
+		LEFT JOIN (select MOMySQLDBServer.*,SysMOList.DoIntervals from MOMySQLDBServer,SysMOList where MID=#{params.jobMysqlAvailable}) f on td.MOID=f.MOID
+	    where 1=1	 
+         and ta.DBMSType = 'mysql'
+      <if test="params.ip != null and params.ip != '' " >
+         and ta.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+          <if test="params.dbName != null and params.dbName != '' " >
+         and ta.MOName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+      </if> 
+      UNION ALL 
+           	SELECT p.PerfValue OperStatus,ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus,ta.MOClassID,ta.UpdateAlarmTime,p.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals	 			 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    left join MODB2Instance td ON ta.MOID=td.dbmsmoid
+	    LEFT JOIN PerfSnapshotDatabase p ON p.MOID=td.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on ta.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobDB2Available}
+		LEFT JOIN (select MODB2Instance.*,SysMOList.DoIntervals from MODB2Instance,SysMOList where MID=#{params.jobDB2Available}) f on td.MOID=f.MOID
+	    where 1=1	 
+         and ta.DBMSType = 'db2'
+      <if test="params.ip != null and params.ip != '' " >
+         and ta.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+          <if test="params.dbName != null and params.dbName != '' " >
+         and ta.MOName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+      </if> 
+       UNION ALL 
+           	SELECT p.PerfValue OperStatus,ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus,ta.MOClassID,ta.UpdateAlarmTime,p.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals	 			 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    left join MOMsSQLServer td ON ta.MOID=td.dbmsmoid
+	    LEFT JOIN PerfSnapshotDatabase p ON p.MOID=td.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on ta.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobMssqlAvailable}
+		LEFT JOIN (select MOMsSQLServer.*,SysMOList.DoIntervals from MOMsSQLServer,SysMOList where MID=#{params.jobMssqlAvailable}) f on td.MOID=f.MOID
+	    where 1=1	
+	     
+         and ta.DBMSType = 'mssql'
+      <if test="params.ip != null and params.ip != '' " >
+         and ta.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+          <if test="params.dbName != null and params.dbName != '' " >
+         and ta.MOName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+      </if> 
+           UNION ALL 
+           	SELECT p.PerfValue OperStatus,ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus,ta.MOClassID,ta.UpdateAlarmTime,p.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals	 			 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    left join MOSybaseServer td ON ta.MOID=td.dbmsmoid
+	    LEFT JOIN PerfSnapshotDatabase p ON p.MOID=td.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on ta.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSybaseAvailable}
+		LEFT JOIN (select MOSybaseServer.*,SysMOList.DoIntervals from MOSybaseServer,SysMOList where MID=#{params.jobSybaseAvailable}) f on td.MOID=f.MOID
+	    where 1=1	 
+         and ta.DBMSType = 'sybase'
+      <if test="params.ip != null and params.ip != '' " >
+         and ta.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+          <if test="params.dbName != null and params.dbName != '' " >
+         and ta.MOName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+      </if> 
+      )t where  1=1 
+        <if test="params.dbmstype != null and params.dbmstype != '' " >
+         and t.DBMSType ='${params.dbmstype}'
+      </if>  
+          ORDER BY  (case when t.AlarmLevel =0 then 6 end), t.AlarmLevel,t.MOID
+  </select>
+  
+  <select id="queryOrclDataFilePerf" parameterType="hashmap" resultType="hashmap" resultMap="PerfOrclDataFileResultMap">
+  select ${dateFormat("CollectTime")}
+		formatTime,PhyReads,PhyWrites
+		from PerfOrclDataFile
+		where MOID=#{seltItem}
+		and
+		CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+  
+  <select id="selectMoDbmsByPrimaryKey" parameterType="Integer" resultType="MODBMSServer" >
+  select * from MODBMSServer where MOID=#{moid}
+  </select>
+  
+  <select id="getDBMSServerList" resultType="hashmap" resultMap="MODBMSServerResultMap" parameterType="page">
+  select dbms.*,domain.DomainName
+  from MODBMSServer dbms
+  left join SysManagedDomain domain on dbms.DomainID=domain.DomainID 
+  where 1=1
+  <if test="params.ip !='' and params.ip != null ">
+ 	and dbms.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+  </if>
+  <if test="params.moClassId != -1 and params.moClassId != '' ">
+    and dbms.MOClassID=#{params.moClassId} 
+  </if>
+  </select>
+  
+  <select id="getDBMSServerInfo" parameterType="Integer" resultType="MODBMSServer">
+  select dbms.MOID,dbms.IP,dbms.DomainID,com.Port,manage.DomainName,com.DBName as dbname,com.DBMSType as dbmstype,com.UserName as username,com.Password as password
+  from MODBMSServer dbms
+  left join SysManagedDomain manage on dbms.DomainID=manage.DomainID
+  left join SysDBMSCommunity com on com.IP=dbms.IP and com.DBMSType=dbms.DBMSType and com.PORT=dbms.Port
+  where dbms.MOID=#{moId}
+  </select>
+  <select id="getDBMSServerByIp"  resultType="Integer" parameterType="MODBMSServer">
+  select count(1) from MODBMSServer where IP=#{ip} and MOClassID=#{moClassId} and Port=#{port}
+  </select>
+  
+  <select id="getDBMSServerByIpAndType"  resultType="MODBMSServer" parameterType="MODBMSServer">
+  select * from MODBMSServer where IP=#{ip} and MOClassID=#{moClassId} and Port=#{port}
+  </select>
+  <select id="getDBMSServerByIpAndTypeAlias"  resultType="MODBMSServer" parameterType="MODBMSServer">
+  select * from MODBMSServer where IP=#{ip} and MOClassID=#{moClassId} and Port=#{port} and MOID!=#{moid} 
+  </select>
+  <!-- 获取ORACLE数据库信息列表 -->
+  <select id="getOracleDB" parameterType="page" resultType="hashmap" resultMap="oracleDbInfoResultMap">
+  	select a.MOID,a.DBMSMOID,a.DBName,${dateFormat("a.CreateTime")}
+	formatTime,a.OpenMode,a.LogMode,b.IP from MOOracleDB a left join MODBMSServer b on a.DBMSMOID=b.MOID where 1=1 
+  	  <if test="params.dbName != null and params.dbName != '' " >
+         and a.DBName like ${concat("'%'","'"+params.dbName+"'","'%'")} 
+      </if> 
+      <if test="params.ip != null and params.ip != '' " >
+         and b.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+  </select>
+  
+  <!-- 获取所有oracle数据文件 -->
+  <select id="getAllOracleDataFiles" resultType="hashmap" resultMap="DataFileResultMap" parameterType="page">
+  	select modFile.*,moDb.DBName,dbmsServer.IP from MOOracleDataFile modFile 
+	left join MOOracleDB moDb on modFile.DBMOID = moDb.MOID 
+	LEFT JOIN MOOracleInstance ins ON ins.DBMOID=moDb.MOID
+	left join MODBMSServer dbmsServer on moDb.DBMSMOID = dbmsServer.MOID where 1=1 
+	<if test="params.dbName != null and params.dbName != '' " >
+         and moDb.DBName like ${concat("'%'","'"+params.dbName+"'","'%'")} 
+    </if> 
+    <if test="params.ip != null and params.ip != '' " >
+         and dbmsServer.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+    </if>  
+    <if test="params.dataFileName != null and params.dataFileName != '' " >
+         and modFile.DataFileName like ${concat("'%'","'"+params.dataFileName+"'","'%'")}
+    </if>  
+    <if test="params.instanceMOID != -1 and params.instanceMOID != '' ">
+	    and ins.MOID=#{params.instanceMOID} 
+	</if>
+  </select>
+  	<!-- 获取Oracle表空间个数 -->
+	<select id="getOracleTbsCount" resultType="MODBMSServer" >
+		SELECT c.MOID FROM MODBMSServer a,MOOracleDB b,MOOracleTBS c
+		WHERE a.MOID=b.DBMSMOID AND b.MOID=c.DBMOID 
+	</select>
+	<!-- 获取表空间列表详情 -->
+	<select id="getAllOrclTbsInfo" resultType="hashmap" resultMap="TbsResultMap"
+		parameterType="page">
+			SELECT a.*,c.IP,b.DBName
+			from MOOracleTBS a 
+			LEFT JOIN MOOracleDB b ON a.DBMOID=b.MOID
+			LEFT JOIN MODBMSServer c ON  b.DBMSMOID=c.MOID	
+			LEFT JOIN MOOracleInstance ins ON ins.DBMOID=b.MOID
+			where 1=1 
+		<if test="params.dbName != null and params.dbName != '' " >
+         and b.DBName like ${concat("'%'","'"+params.dbName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and c.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.tbsName != null and params.tbsName != '' " >
+	         and a.TBSName like ${concat("'%'","'"+params.tbsName+"'","'%'")}
+	    </if> 
+	    <if test="params.instanceMOID != -1 and params.instanceMOID != '' ">
+		    and ins.MOID=#{params.instanceMOID} 
+		</if>
+	    
+	</select>
+	
+	<!-- 获取实例InstanceList-->
+	<select id="getOrclInstanceList" resultType="hashmap" resultMap="MODBMSServerResultMap"
+		parameterType="page">
+		SELECT b.MOID,b.InstanceName,b.Port,a.IP,c.deviceIP,d.DBName,${dateFormat("b.StartTime")}
+		formatTime,ROUND(b.TotalSize/1024/1024,2) TotalSize,ROUND(b.FreeSize/1024/1024,2) FreeSize,
+		b.Installpath,a.AlarmLevel,a.OperStatus,c.MOClassID,c.MOID as moDeviceId
+			from MOOracleInstance b LEFT JOIN MODBMSServer a ON a.MOID=b.DBMSMOID
+			LEFT JOIN MODevice c ON  b.deviceMOID=c.moID
+			LEFT JOIN MOOracleDB d ON b.DBMOID=d.MOID where 1=1 
+		<if test="params.instanceName != null and params.instanceName != '' " >
+         and b.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and a.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.dbmsMoId != -1 and params.dbmsMoId != '' ">
+		    and a.MOID=#{params.dbmsMoId} 
+		</if>
+	</select>
+	
+	 <select id="getDataFileByMoId" parameterType="Integer" resultType="moOracleDataFile">
+	select  modFile.*
+	from MOOracleDataFile modFile 
+	where modFile.MOID=#{moId}
+  	</select>
+  	
+  	<select id="getFirstDbInfo" parameterType="String" resultType="com.fable.insightview.monitor.database.entity.MODBMSServerBean">
+  		 SELECT ta.MOID,ta.MOName,ta.MOAlias,ta.DBMSType,ta.ServerVersion,ta.IP,ta.PORT,tb.DomainName,
+	 	ta.OperStatus,ta.AlarmLevel,tc.AlarmLevelName,tc.LevelColor,tc.LevelIcon,ta.AdminStatus	 	
+	    from MODBMSServer ta
+	    left join SysManagedDomain tb on tb.DomainID=ta.DomainID 
+	    left join AlarmLevel tc on ta.AlarmLevel = tc.AlarmLevelID
+	    where 1=1  and ta.DBMSType=#{dbmstype} 
+	    and ${rownum(1)} order by ta.MOID ${limit(1)}
+  	</select>
+  
+  <select id="getOracleDbByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.OracleDbInfoBean">
+  select * from MOOracleDB where MOID =#{moId}
+  </select>
+  
+  <select id="getOrclInstanceByMoid" resultType="MODBMSServer"
+		parameterType="java.lang.Integer">
+		SELECT b.InstanceName,b.Port,b.IP,c.deviceIP,d.DBName,b.StartTime,ROUND(b.TotalSize/1024/1024,2) TotalSize,ROUND(b.FreeSize/1024/1024,2) FreeSize,b.Installpath,a.AlarmLevel,a.OperStatus ,e.LevelIcon,e.AlarmLevelName
+			FROM MODBMSServer a 
+			LEFT JOIN MOOracleInstance b ON a.MOID=b.DBMSMOID
+			LEFT JOIN MODevice c ON  b.deviceMOID=c.moID
+			LEFT JOIN MOOracleDB d ON b.DBMOID=d.MOID
+			LEFT JOIN AlarmLevel e ON a.AlarmLevel=e.AlarmLevelValue
+			WHERE b.MOID=#{moId} 
+	</select>
+	 <update id="updateDBMSServerMOClassID" parameterType="MODBMSServer">
+   update MODBMSServer set MOClassID= #{moClassId,jdbcType=INTEGER},PORT= #{port,jdbcType=INTEGER},DBMSType= #{dbmstype,jdbcType=INTEGER} ,MOAlias= #{moalias,jdbcType=VARCHAR} where MOID = #{moid,jdbcType=INTEGER}
+   </update>
+   
+   <!-- 根据ID获取 子对象ID-->
+	<select id="getInsIdBymoId" resultType="Integer"
+		parameterType="Integer">
+			SELECT b.MOID FROM MODBMSServer a ,MOOracleInstance	b WHERE		a.MOID=b.DBMSMOID AND a.MOID=#{MOID}
+  </select>
+   <select id="queryAll" resultType="hashmap" resultMap="MODBMSServerResultMap">
+   SELECT * FROM MODBMSServer
+   </select>
+   	<select id="getCurrentDate" resultType="Date">
+		${currentTimeSql()}
+	</select>
+	
+	<select id="getInstanceIDsByMoID" resultType="Integer" parameterType="Integer">
+	select ins.MOID
+	from MOOracleInstance ins
+	left join MODBMSServer s on s.MOID = ins.DBMSMOID
+	where s.MOID=#{moId}
+	</select>
+	
+	<select id="getOrclInsList" resultType="hashmap" resultMap="MODBMSServerResultMap" parameterType="hashmap">
+		select b.MOID,b.InstanceName,b.Port,a.IP,c.deviceIP,d.DBName,${dateFormat("b.StartTime")}
+		formatTime,ROUND(b.TotalSize/1024/1024,2) TotalSize,ROUND(b.FreeSize/1024/1024,2) FreeSize,
+		b.Installpath,a.AlarmLevel,a.OperStatus,c.MOClassID,c.MOID as moDeviceId,b.DBMSMOID,a.MOAlias as moAlias
+		from MOOracleInstance b 
+		left join MODBMSServer a on a.MOID=b.DBMSMOID
+		left join MODevice c on  b.deviceMOID=c.moID
+		left join MOOracleDB d on b.DBMOID=d.MOID 
+		where 1=1 
+	    <if test="ip != null and ip != '' " >
+	         and a.IP like ${concat("'%'","'"+ip+"'","'%'")}
+	    </if>  
+	</select>
+	
+	<select id="getDbmsMoIdByOrclIns" parameterType="Integer" resultType="Integer">
+		select ta.MOID 
+		from MODBMSServer ta 
+		left join MOOracleInstance t on t.DBMSMOID=ta.MOID
+		where t.MOID=#{moId}
+	</select>
+	
+	<select id="getOrclAlarmSourceId" parameterType="Integer" resultType="Integer">
+	select ins.MOID from MOOracleInstance ins where ins.DBMSMOID = #{dbmsMoId}
+	union 
+	select d.MOID from MOOracleDB d where d.DBMSMOID = #{dbmsMoId}
+	</select>
+  </mapper>

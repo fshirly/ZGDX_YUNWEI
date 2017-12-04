@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.molist.mapper.SysMoInfoMapper" >
+  <resultMap id="SysMonitorsTypeMapper" type="com.fable.insightview.monitor.molist.entity.SysMonitorsTypeBean" >
+    <id column="MonitorTypeID" property="monitorTypeID" jdbcType="INTEGER" />
+    <result column="MonitorTypeName" property="monitorTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="SysMoInfoMapper" type="com.fable.insightview.monitor.molist.entity.SysMoInfoBean" >
+    <id column="MID" property="mid" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOClass" property="moClass" jdbcType="VARCHAR" />
+    <result column="DoIntervals" property="doIntervals" jdbcType="INTEGER" />
+    <result column="MODescr" property="moDescr" jdbcType="VARCHAR" />
+    <result column="MonitorTypeID" property="monitorTypeID" jdbcType="INTEGER" />
+    <result column="MonitorTypeName" property="monitorTypeName" jdbcType="VARCHAR" />
+    <result column="MonitorProperty" property="monitorProperty" jdbcType="INTEGER" />
+    <result column="ResManufacturerName" property="resManufacturerName" jdbcType="VARCHAR" />
+    <result column="ResCategoryName" property="resCategoryName" jdbcType="VARCHAR" />
+    <result column="ClassName" property="moClassName" jdbcType="VARCHAR" />
+    <result column="ClassLable" property="moClassLable" jdbcType="VARCHAR" />
+    <result column="ClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="TimeUnit" property="timeUnit" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="ManufacturerMapper" type="com.fable.insightview.monitor.molist.entity.ManufacturerInfoBean" >
+    <id column="ResManufacturerID" property="resManufacturerID" jdbcType="INTEGER" />
+    <result column="ResManufacturerName" property="resManufacturerName" jdbcType="VARCHAR" />
+    <result column="ResManufacturerAlias" property="resManufacturerAlias" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="ResCategoryMapper" type="com.fable.insightview.monitor.molist.entity.ResCategoryDefineBean" >
+    <id column="ResCategoryID" property="resCategoryID" jdbcType="INTEGER" />
+    <result column="ResCategoryName" property="resCategoryName" jdbcType="VARCHAR" />
+    <result column="ResCategoryAlias" property="resCategoryAlias" jdbcType="VARCHAR" />
+    <result column="ResCategoryDescr" property="resCategoryDescr" jdbcType="VARCHAR" />
+    <result column="ResManufacturerID" property="resManufacturerID" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="SysMOManuResDefMapper" type="com.fable.insightview.monitor.molist.entity.SysMOManufacturerResDefBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="ResManufacturerId" property="resManufacturerId" jdbcType="INTEGER" />
+    <result column="ResCategoryId" property="resCategoryId" jdbcType="INTEGER" />
+    <result column="MID" property="mid" jdbcType="INTEGER" />
+    <result column="ResManufacturerName" property="resManufacturerName" jdbcType="VARCHAR" />
+    <result column="ResCategoryName" property="resCategoryName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="MonitorsOfMOClassMap" type="com.fable.insightview.monitor.perf.entity.SysMonitorsOfMOClassBean">
+		<id column="ID" property="id"  jdbcType="INTEGER" />
+		<result column="MOClassID" property="moClassId" jdbcType="INTEGER"/>
+		<result column="MID" property="mid" jdbcType="INTEGER"/>
+  </resultMap>
+  
+   <resultMap id="SysMoTemplateClassMap" type="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateBean">
+		<id column="TemplateID" property="templateID"  jdbcType="INTEGER" />
+		<result column="TemplateName" property="templateName" jdbcType="VARCHAR"/>
+		<result column="MoClassID" property="moClassID" jdbcType="INTEGER"/>
+		<result column="Descr" property="descr" jdbcType="VARCHAR"/>
+		<result column="ClassLable" property="moClassLable" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="SysMoTemplateIntervalMap" type="com.fable.insightview.monitor.molist.entity.SysMoTemplateIntervalBean">
+		<id column="ID" property="id"  jdbcType="INTEGER" />
+		<result column="TemplateID" property="templateID" jdbcType="INTEGER"/>
+		<result column="MonitorTypeID" property="monitorTypeID" jdbcType="INTEGER"/>
+		<result column="TimeInterval" property="timeInterval" jdbcType="INTEGER"/>
+		<result column="MOName" property="moName" jdbcType="VARCHAR"/>
+		<result column="TimeUnit" property="timeUnit" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="SysMoTypeOfMoClassMap" type="com.fable.insightview.monitor.molist.entity.SysMoTypeOfMoClassBean">
+		<id column="ID" property="id"  jdbcType="INTEGER" />
+		<result column="MOClassID" property="moClassID" jdbcType="INTEGER"/>
+		<result column="MonitorTypeID" property="monitorTypeID" jdbcType="INTEGER"/>
+		<result column="MonitorTypeName" property="monitorTypeName" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="SysMonitorsTemplateUsedMap" type="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateUsedBean">
+		<id column="ID" property="id"  jdbcType="INTEGER" />
+		<result column="TemplateID" property="templateID" jdbcType="INTEGER"/>
+		<result column="MOClassID" property="moClassID" jdbcType="INTEGER"/>
+		<result column="MOID" property="moID" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  <select id="queryMonitorTypes" resultType="hashmap" resultMap="SysMonitorsTypeMapper" parameterType="page">
+  	select * from SysMonitorsType where 1=1 
+  	<if test="params.monitorTypeName != '' and params.monitorTypeName != null ">
+  	and MonitorTypeName like ${concat("'%'", "'"+params.monitorTypeName+"'" ,"'%'")} 
+  	</if>
+  	 <if test="params.moClassID != '' and params.moClassID != null ">
+  		and MonitorTypeID not in (select MonitorTypeID from SysMonitorsTypeOfMOClass where MOClassID=${params.moClassID})
+  	</if> 
+  	order by MonitorTypeID desc
+  </select>
+  
+  <insert id="insertMonitorType" parameterType="com.fable.insightview.monitor.molist.entity.SysMonitorsTypeBean" >
+    insert into SysMonitorsType (MonitorTypeID, MonitorTypeName)
+    	values (#{monitorTypeID,jdbcType=INTEGER}, #{monitorTypeName,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateMonitorType" parameterType="com.fable.insightview.monitor.molist.entity.SysMonitorsTypeBean">
+  	update SysMonitorsType set MonitorTypeName=#{monitorTypeName,jdbcType=VARCHAR} 
+  		where MonitorTypeID=#{monitorTypeID,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getMonitorTypeByName" resultType="com.fable.insightview.monitor.molist.entity.SysMonitorsTypeBean"  parameterType="String">
+  	select * from SysMonitorsType where MonitorTypeName = #{monitorTypeName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getMonitorTypeById" resultType="com.fable.insightview.monitor.molist.entity.SysMonitorsTypeBean"  parameterType="Integer">
+  	select * from SysMonitorsType where MonitorTypeID = #{monitorTypeID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delMoClassByMonitorTypeId"  parameterType="Integer" >
+  	delete from SysMonitorsTypeOfMOClass where MonitorTypeID = #{monitorTypeID,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="getMonitorsByMonitorTypeId" resultType="Integer"  parameterType="Integer">
+  	select count(1) from SysMOList where MonitorTypeID = #{monitorTypeID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delByMonitorTypeId" parameterType="Integer">
+  	delete from SysMonitorsType where MonitorTypeID = #{monitorTypeID,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="getAllMonitorTypes" resultType="hashmap" resultMap="SysMonitorsTypeMapper">
+  	select * from SysMonitorsType where 1=1 
+  </select>
+  
+  <select id="queryMoInfos" resultType="hashmap" resultMap="SysMoInfoMapper" parameterType="page">
+  	select a.*,b.ResManufacturerName,b.ResCategoryName,c.ClassLable from 
+	(select molist.*,motype.MonitorTypeName from SysMOList molist 
+		left join SysMonitorsType motype on  molist.MonitorTypeID=motype.MonitorTypeID) a 
+	left join 	
+	(select molist.*,m.ResManufacturerName,r.ResCategoryName from SysMOList molist 
+		left join SysMOManufacturerResDef mores on  molist.MID=mores.MID 
+		left join ManufacturerInfo m on mores.ResManufacturerID=m.ResManufacturerID
+		left join ResCategoryDefine r on mores.ResCategoryID=r.ResCategoryID) b 
+	on a.MID=b.MID left join 
+	(select molist.*,mo.ClassLable from SysMOList molist 
+		left join SysMonitorsOfMOClass moclass on  molist.MID=moclass.MID 
+		left join MObjectDef mo on moclass.MOClassID=mo.ClassID) c
+	on b.MID=c.MID where 1=1
+  	<if test="params.monitorTypeName != '' and params.monitorTypeName != null ">
+  	and a.MonitorTypeName like ${concat("'%'", "'"+params.monitorTypeName+"'" ,"'%'")}
+  	</if>
+  	<if test="params.moName != '' and params.moName != null ">
+  	and a.MOName like ${concat("'%'", "'"+params.moName+"'" ,"'%'")}
+  	</if>
+  	<if test="params.monitorProperty != '' and params.monitorProperty != null and params.monitorProperty != -1">
+  	and a.MonitorProperty = ${params.monitorProperty}
+  	</if>
+  	<if test="params.resManufacturerName != '' and params.resManufacturerName != null ">
+  	and b.ResManufacturerName like ${concat("'%'", "'"+params.resManufacturerName+"'" ,"'%'")}
+  	</if>
+  	<if test="params.resCategoryName != '' and params.resCategoryName != null ">
+  	and b.ResCategoryName like ${concat("'%'", "'"+params.resCategoryName+"'" ,"'%'")}
+  	</if>
+  	<if test="params.moClassLable != '' and params.moClassLable != null ">
+  	and c.ClassLable like ${concat("'%'", "'"+params.moClassLable+"'" ,"'%'")}
+  	</if>
+  	 order by a.MID desc
+  </select>
+  
+  <select id="queryAllManufacturer" resultType="hashmap" resultMap="ManufacturerMapper">
+  	select * from ManufacturerInfo where 1=1
+  </select>
+  
+  <select id="queryResCategoryByManuId" resultType="hashmap" resultMap="ResCategoryMapper" parameterType="Integer">
+ 	select * from ResCategoryDefine where 1=1 
+  		and ResManufacturerID=#{resManufacturerID}
+  </select>
+  
+  <select id="queryAllResCategory" resultType="hashmap" resultMap="ResCategoryMapper" >
+ 	select * from ResCategoryDefine where 1=1 
+  </select>
+  
+  <insert id="insertMoInfo" parameterType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	insert into SysMOList (MID,MOName,MOClass,DoIntervals,MODescr,MonitorTypeID,MonitorProperty,TimeUnit) values 
+  		(#{mid,jdbcType=INTEGER},#{moName,jdbcType=VARCHAR},#{moClass,jdbcType=VARCHAR},
+  		#{doIntervals,jdbcType=INTEGER},#{moDescr,jdbcType=VARCHAR},#{monitorTypeID,jdbcType=INTEGER},
+  		#{monitorProperty,jdbcType=INTEGER},#{timeUnit,jdbcType=INTEGER})
+  </insert>
+  
+  <select id="getMoManuCateByMid" parameterType="Integer" resultType="hashmap" resultMap="SysMOManuResDefMapper">
+  	select a.*,b.ResManufacturerName,c.ResCategoryName from SysMOManufacturerResDef a
+		left join ManufacturerInfo b on a.ResManufacturerID=b.ResManufacturerID
+		left join ResCategoryDefine c on a.ResCategoryID=c.ResCategoryID 
+		where 1=1 and a.MID=#{mid,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertMoManuCateRelation" parameterType="com.fable.insightview.monitor.molist.entity.SysMOManufacturerResDefBean">
+  	insert into SysMOManufacturerResDef (ID,ResManufacturerID,ResCategoryID,MID) values 
+  	(#{id},#{resManufacturerId},#{resCategoryId},#{mid}) 
+  </insert>
+  
+  <insert id="insertMoClassRelation" parameterType="com.fable.insightview.monitor.perf.entity.SysMonitorsOfMOClassBean">
+	insert into SysMonitorsOfMOClass (ID,MOClassID,MID) values (#{id},#{moClassId},#{mid})
+  </insert>
+  
+  <delete id="delManuCateById" parameterType="Integer">
+  	delete from SysMOManufacturerResDef where ID=#{id}
+  </delete>
+  
+  <select id="getMoInfoByMid" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	select a.*,b.MonitorTypeName from SysMOList a left join SysMonitorsType b 
+  		on a.MonitorTypeID=b.MonitorTypeID where a.MID=#{mid}
+  </select>
+  
+  <update id="updateMoInfo" parameterType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	update SysMOList set MOName=#{moName,jdbcType=VARCHAR},MOClass=#{moClass,jdbcType=VARCHAR},
+  		DoIntervals=#{doIntervals,jdbcType=INTEGER},MODescr=#{moDescr,jdbcType=VARCHAR},
+  		MonitorTypeID=#{monitorTypeID,jdbcType=INTEGER},MonitorProperty=#{monitorProperty,jdbcType=INTEGER},
+  		TimeUnit=#{timeUnit,jdbcType=INTEGER}
+  		where MID=#{mid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getMoClassRelationInfoByMid" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	select a.MID,b.ClassLable moClassLable,b.ClassID moClassId from SysMonitorsOfMOClass a left join MObjectDef b
+		on a.MOClassID=b.ClassID where a.MID=#{mid,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateMoClassRelation" parameterType="com.fable.insightview.monitor.perf.entity.SysMonitorsOfMOClassBean">
+	update SysMonitorsOfMOClass set MOClassID=#{moClassId} where MID=#{mid}
+  </update>
+  
+  <select id="queryMoTemplates" parameterType="page" resultType="hashmap" resultMap="SysMoTemplateClassMap">
+  	select a.*,b.ClassLable moClassLable from SysMonitorsTemplate a left join MObjectDef b
+ 		on a.MOClassID=b.ClassID where 1=1 
+ 	<if test="params.templateName != '' and params.templateName != null ">
+  	and TemplateName like ${concat("'%'", "'"+params.templateName+"'" ,"'%'")}
+  	</if>
+  	order by a.TemplateID desc
+  </select>
+  
+  <insert id="insertMoTemplateInfo" parameterType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateBean">
+  	insert into SysMonitorsTemplate (TemplateID,TemplateName,MOClassID,Descr) values 
+  		(#{templateID},#{templateName},#{moClassID},#{descr})
+  </insert>
+  
+  <insert id="insertMoTempInterval" parameterType="com.fable.insightview.monitor.molist.entity.SysMoTemplateIntervalBean">
+  	insert into SysMonitorsTemplateInterval (ID,TemplateID,MonitorTypeID,TimeInterval,TimeUnit) values 
+  		(#{id},#{templateID},#{monitorTypeID},#{timeInterval},#{timeUnit})
+  </insert>
+  
+  <select id="getMoList" parameterType="Integer" resultType="String">
+  	 select ${concat("b.MonitorTypeID", "','" ,"b.MonitorTypeName")} as mo  from SysMonitorsTypeOfMOClass a 
+        left join SysMonitorsType b on a.MonitorTypeID=b.MonitorTypeID where a.MOClassID=#{moClassID}
+  </select>
+  
+  <select id="getMoListByTemplateId" parameterType="Integer" resultType="String">
+  	select ${concat("MonitorTypeID", "','" ,"TimeInterval", "','" ,"TimeUnit")} from SysMonitorsTemplateInterval
+   		where TemplateID=#{templateID}
+  </select>
+  
+  <select id="getTemplateByID" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateBean">
+  	select a.*,b.ClassLable moClassLable,b.ClassID moClassID from SysMonitorsTemplate a left join MObjectDef b
+ 		on a.MOClassID=b.ClassID where a.TemplateID=#{templateID}
+  </select>
+  
+  <update id="updateMoTemplateInfo" parameterType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateBean">
+  	update SysMonitorsTemplate set TemplateName=#{templateName},MOClassID=#{moClassID},Descr=#{descr}
+  		 where TemplateID=#{templateID}
+  </update>
+  
+  <delete id="delIntervalByTemplateID" parameterType="Integer">
+  	delete from SysMonitorsTemplateInterval where TemplateID=#{templateID}
+  </delete>
+  
+  <delete id="delTemplateByID" parameterType="Integer">
+  	delete from SysMonitorsTemplate where TemplateID=#{templateID}
+  </delete>
+  
+  <select id="queryTypeOfClassByMoClassID" parameterType="page" resultType="hashmap" resultMap="SysMoTypeOfMoClassMap">
+  	select a.*,b.MonitorTypeName monitorTypeName from SysMonitorsTypeOfMOClass a left join SysMonitorsType b
+  		on a.MonitorTypeID=b.MonitorTypeID where a.MOClassID=${params.moClassID} 
+  		order by a.ID desc
+  </select>
+  
+  <select id="queryTypesByMoClassID" parameterType="Integer" resultType="Integer">
+  	select count(1) from SysMonitorsTypeOfMOClass where MOClassID=#{moClassID}
+  </select>
+  
+  <insert id="insertMoTypeOfMoClass" parameterType="com.fable.insightview.monitor.molist.entity.SysMoTypeOfMoClassBean">
+  	insert into SysMonitorsTypeOfMOClass (ID,MOClassID,MonitorTypeID) values (#{id},#{moClassID},#{monitorTypeID})
+  </insert>
+  
+  <delete id="delMoTypeOfMoClass" parameterType="Integer">
+  	delete from SysMonitorsTypeOfMOClass where ID=#{id}
+  </delete>
+  
+  <delete id="delMoInfoByMid" parameterType="Integer">
+  	delete from SysMOList where MID=#{mid}
+  </delete>
+  
+  <delete id="delMoOfManuCateByMid" parameterType="Integer">
+  	delete from SysMOManufacturerResDef where MID=#{mid}
+  </delete>
+  
+  <delete id="delMoOfClassByMid" parameterType="Integer">
+  	delete from SysMonitorsOfMOClass where MID=#{mid}
+  </delete>
+  
+  <delete id="delMoOfTemplateByMid" parameterType="Integer">
+  	delete from SysMonitorsTemplateInterval where MID=#{mid}
+  </delete>
+  
+  <select id="queryMoOfPerfTask" parameterType="Integer" resultType="Integer">
+  	select count(1) from SysPerfPollMonitors where MID=#{mid}
+  </select>
+  
+  <select id="queryMoTemplatesByClassID" parameterType="Integer" resultType="hashmap" resultMap="SysMoTemplateClassMap">
+  	select * from SysMonitorsTemplate where MOClassID = #{moClassID}
+  </select>
+ 
+  <select id="getMoTypeListByTemplateId" parameterType="Integer" resultType="String">
+  	select ${concat("a.MonitorTypeID", "','" ,"b.MonitorTypeName","','" ,"a.TimeInterval", "','" ,"a.TimeUnit")} from SysMonitorsTemplateInterval a
+ 		left join SysMonitorsType b on a.MonitorTypeID=b.MonitorTypeID
+   		where a.TemplateID=#{templateID}
+  </select>
+  
+  <insert id="insertMoTemplateOfMoDevice" parameterType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateUsedBean">
+  	insert into SysMonitorsTemplateUsed (ID,TemplateID,MOClassID,MOID) values 
+  		(#{id},#{templateID},#{moClassID},#{moID})
+  </insert>
+  
+  <select id="isExistTemplate" parameterType="Integer" resultType="Integer">
+  	select count(1) from SysMonitorsTemplate where MOClassID = #{moClassID}
+  </select>
+  
+  <delete id="delMoTemplateOfMoDevice" parameterType="Integer">
+  	delete from SysMonitorsTemplateUsed where MOID=#{moID}
+  </delete>
+  
+  <select id="getUsedTemplateByMoID" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateUsedBean">
+  	select * from SysMonitorsTemplateUsed where MOID=#{moID}
+  </select>
+  
+  <select id="queryUsedTemplateByTempId" parameterType="Integer" resultType="Integer">
+  	select count(1) from SysMonitorsTemplateUsed where TemplateID=#{templateID}
+  </select>
+  
+  <select id="getUsedTemplateByTypeId" parameterType="Integer" resultType="Integer">
+  	select count(1) from SysMonitorsTemplateUsed 
+		where TemplateID in (select TemplateID from SysMonitorsTemplateInterval where MonitorTypeID=#{monitorTypeID})
+  </select>
+  
+  <select id="getTemplateByMoIDAndMOClassID" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMonitorsTemplateUsedBean">
+  	select u.*,t.TemplateName from SysMonitorsTemplateUsed u
+  	left join SysMonitorsTemplate t on t.TemplateID = u.TemplateID
+  	where u.MOID=#{moID} and u.MOClassID = #{moClassID}
+  </select>
+  
+  <select id="getMoByManuAndCategory" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	select *  from SysMOList where MID in 
+	(
+	select MID from SysMOManufacturerResDef where ResManufacturerID=
+	(select NeManufacturerID from MODevice where MOID=#{moId})
+	 and ResCategoryID=
+ 	(select NeCategoryID from MODevice where MOID=#{moId})
+ 	)
+  </select>
+  
+  <select id="getMoByManuAndCategoryForRoom"  parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	select *  from SysMOList where MID in 
+	(
+		select MID from SysMOManufacturerResDef where ResManufacturerID=#{ResManufacturerID}
+ 	)
+  
+  </select>
+  <select id="getMoByManufacturer" parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+  	select *  from SysMOList where MID in 
+	(
+	select MID from SysMOManufacturerResDef where ResManufacturerID=
+	(select NeManufacturerID from MODevice where MOID=#{moId})
+ 	)
+  </select>
+  
+  <select id="getMoByMoClassId"  parameterType="Integer" resultType="com.fable.insightview.monitor.molist.entity.SysMoInfoBean">
+	  select m.* from SysMOList m
+	  left join SysMonitorsOfMOClass c on c.MID = m.MID
+	  where c.MOClassID = #{moClassId}
+  </select>
+  
+  <select id="getCountByMoClass" parameterType="String" resultType="Integer">
+  	select count(1) from SysMOList where MOClass=#{moClass}
+  </select>
+  
+  <select id="getCountByTemplateName" parameterType="String" resultType="Integer">
+  	select count(1) from SysMonitorsTemplate where TemplateName=#{templateName}
+  </select>
+  
+  <delete id="delTempIntervalByID" parameterType="Integer">
+  	delete from SysMonitorsTemplateInterval where TemplateID=#{templateID}
+  </delete>
+  
+  <select id="queryIntervalByTypeId" parameterType="Integer" resultType="hashmap" resultMap="SysMoTemplateIntervalMap">
+  	select ID,TemplateID,MonitorTypeID,TimeInterval,TimeUnit from SysMonitorsTemplateInterval 
+  		where MonitorTypeID=#{monitorTypeID}
+  </select>
+  
+  <delete id="delMoClassRelation" parameterType="com.fable.insightview.monitor.perf.entity.SysMonitorsOfMOClassBean">
+  	delete from SysMonitorsOfMOClass where MID=#{mid}
+  </delete>
+  
+  <select id="isUsedByTemplate" parameterType="hashmap" resultType="Integer">
+  select count(1) from SysMonitorsTemplateInterval where TemplateID in 
+  	(select TemplateID from SysMonitorsTemplate where MOClassID = #{moClassID}) 
+	and MonitorTypeID in (#{monitorTypeIDs})
+  </select>
+  
+  <select id="getUsedDevice" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj" parameterType="page">
+ select t.moid ,t.moname,t.deviceip,t.MOClassID,b.ClassLable classLable
+  from(
+  	(SELECT MOID,MOName,DeviceIP,MOClassID FROM MODevice)
+  	union all 
+  	(SELECT MOID,MOName,IP deviceip,MOClassID FROM MODBMSServer)
+  	union all 
+  	(SELECT MOID,ServerName moname,IP deviceip,MOClassID FROM MOMiddleWareJMX)
+  	union all 
+  	(SELECT MOID,null moname,IPAddress deviceip,MOClassID FROM MOZoneManager)
+  	union all 
+  	(SELECT p.MOID,p.SiteName moname,p.IPAddr deviceip,w.MOClassID FROM MOSitePort p LEFT JOIN MOWebSite w ON p.ParentMOID = w.MOID)
+  	union all 
+  	(SELECT d.MOID,d.SiteName moname,d.IPAddr deviceip,w.MOClassID FROM MOSiteDns d LEFT JOIN MOWebSite w ON d.ParentMOID = w.MOID)
+  	union all 
+  	(SELECT f.MOID,f.SiteName moname,f.IPAddr deviceip,w.MOClassID FROM MOSiteFtp f LEFT JOIN MOWebSite w ON f.ParentMOID = w.MOID)
+  	union all 
+  	(SELECT h.MOID,h.SiteName moname,h.HttpUrl deviceip,w.MOClassID FROM MOSiteHttp h LEFT JOIN MOWebSite w ON h.ParentMOID = w.MOID)
+  )t
+  left join MObjectDef b on b.ClassID=t.MOClassID
+  where t.moid in(SELECT MOID FROM SysMonitorsTemplateUsed WHERE 1=1
+	<if test="params.templateID != '' and params.templateID != null and params.templateID != -1 ">
+		and TemplateID = #{params.templateID}
+	</if> 
+  )
+  order by t.MOClassID, t.moid
+  </select>
+</mapper>
+

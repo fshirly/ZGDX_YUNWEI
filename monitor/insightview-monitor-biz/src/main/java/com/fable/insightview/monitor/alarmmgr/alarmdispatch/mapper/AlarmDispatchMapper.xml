@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmdispatch.mapper.AlarmDispatchMapper"> 
+	<resultMap id="AlarmDispatchMap" type="alarmDispatchDetail">
+		<id column="DispatchID" property="dispatchID" jdbcType="INTEGER" />
+		<result column="AlarmID" property="alarmID" jdbcType="INTEGER" />
+		<result column="AlarmStatus" property="alarmStatus" jdbcType="INTEGER" />
+		<result column="DispatchType" property="dispatchType" jdbcType="INTEGER" />
+		<result column="DispatchTime" property="dispatchTime" jdbcType="TIMESTAMP" />
+		<result column="DispatchStatus" property="dispatchStatus" jdbcType="INTEGER" />
+		<result column="ResultDescr" property="resultDescr" jdbcType="VARCHAR" />
+		<result column="ResendTime" property="resendTime" jdbcType="TIMESTAMP" />
+		<result column="SendCount" property="sendCount" jdbcType="INTEGER" />
+		<result column="DispatchJson" property="dispatchJson" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<!-- 发送失败的,重新指发送 -->
+	<select id="batchSendFailed" resultType="hashmap" resultMap="AlarmDispatchMap" parameterType="alarmDispatchDetail">
+		select *
+		from AlarmDispatchDetail
+		where DispatchStatus = 2 and SendCount &lt;= 3
+	</select>
+  
+	<select id="isExistDispatchRecord" parameterType="alarmDispatchDetail" resultType="Integer">
+		select SendCount
+		from AlarmDispatchDetail
+		where DispatchID = #{dispatchID,jdbcType=INTEGER}
+	</select> 
+
+	<insert id="insertAlarmDispatchRecord"	parameterType="alarmDispatchDetail">
+		insert into AlarmDispatchDetail
+		(DispatchID,AlarmID,AlarmStatus,DispatchTime,DispatchType, DispatchStatus,ResultDescr,ResendTime, SendCount,DispatchJson,WorkOrderId)
+		values
+		(#{dispatchID,jdbcType=INTEGER},#{alarmID,jdbcType=INTEGER}, #{alarmStatus,jdbcType=INTEGER}, #{dispatchTime,jdbcType=TIMESTAMP},
+		 #{dispatchType,jdbcType=INTEGER},
+		 #{dispatchStatus,jdbcType=INTEGER}, #{resultDescr,jdbcType=VARCHAR}, #{resendTime,jdbcType=TIMESTAMP}, 
+		 #{sendCount,jdbcType=INTEGER}, #{dispatchJson,jdbcType=VARCHAR},#{workOrderId,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateAlarmDispatchRecord"	parameterType="alarmDispatchDetail">
+		update AlarmDispatchDetail
+		<set>
+			<if test="sendCount != null">
+				SendCount = #{sendCount,jdbcType=INTEGER},
+      		</if>
+			<if test="dispatchStatus !=null">
+				DispatchStatus = #{dispatchStatus,jdbcType=INTEGER},
+     		</if>
+     		<if test="resultDescr !=null">
+				ResultDescr = #{resultDescr,jdbcType=VARCHAR},
+     		</if>
+			<if test="resendTime !=null">
+				ResendTime = #{resendTime,jdbcType=TIMESTAMP},
+   			</if>
+		</set>
+		where DispatchID = #{dispatchID,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateAlarmDispatchRecordByCMDB"	parameterType="alarmDispatchDetail">
+		update AlarmDispatchDetail
+		<set>
+			<if test="sendCount != null">
+				SendCount = #{sendCount,jdbcType=INTEGER},
+      		</if>
+			<if test="dispatchStatus !=null">
+				DispatchStatus = #{dispatchStatus,jdbcType=INTEGER},
+     		</if>
+     		<if test="resultDescr !=null">
+				ResultDescr = #{resultDescr,jdbcType=VARCHAR},
+     		</if>
+     		<if test="workOrderId !=null">
+				WorkOrderId = #{workOrderId,jdbcType=INTEGER},
+     		</if>
+		</set>
+		where DispatchID = #{dispatchID,jdbcType=INTEGER}
+	</update>
+</mapper>

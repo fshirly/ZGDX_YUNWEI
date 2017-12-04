@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.discover.mapper.SafeDeviceMapper">
+	<resultMap id="SafeDeviceProInfoList"
+		type="com.fable.insightview.monitor.discover.entity.SafeDeviceObj">
+		<result column="MOID" property="moid" jdbcType="INTEGER" />
+		<result column="UpdateAlarmTime" property="updateAlarmTime"
+			jdbcType="VARCHAR" />
+		<result column="AlarmLevelValue" property="alarmlevel"
+			jdbcType="INTEGER" />
+		<result column="AlarmLevelName" property="alarmlevelInfo"
+			jdbcType="VARCHAR" />
+		<result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+		<result column="MOName" property="moname" jdbcType="VARCHAR" />
+		<result column="CreateTime" property="createtime" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+		<result column="ResManufacturerID" property="nemanufacturerid"
+			jdbcType="INTEGER" />
+		<result column="ResManufacturerName" property="nemanufacturername"
+			jdbcType="VARCHAR" />
+		<result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+		<result column="ClassLable" property="necategoryname" jdbcType="VARCHAR" />
+		<result column="IsManage" property="ismanage" jdbcType="INTEGER" />
+		<result column="NeCollectorID" property="necollectorid"
+			jdbcType="INTEGER" />
+		<result column="IPAddress" property="iPAddress" jdbcType="VARCHAR" />
+		<result column="DomainID" property="domainid" jdbcType="INTEGER" />
+		<result column="DomainName" property="domainName" jdbcType="VARCHAR" />
+		<result column="DoIntervals" property="doIntervals" jdbcType="INTEGER" />
+		<result column="deDoIntervals" property="defDoIntervals"
+			jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="querySafeDeviceList" resultType="hashmap"
+		resultMap="SafeDeviceProInfoList" parameterType="page">
+		select t.* from (select ${nvl("pi.PerfValue","0")}  OperStatus,m.alarmlevel as orderAlarmLevel,m.MOID, m.UpdateAlarmTime,a.AlarmLevelValue,a.AlarmLevelName,
+		m.DeviceIP,m.MOName,m.CreateTime,m.MOAlias,mi.ResManufacturerID,mi.ResManufacturerName,m.MOClassID,md.ClassLable,
+		m.IsManage,m.NeCollectorID,sshi.IPAddress,m.DomainID,smd.DomainName,f.DoIntervals,spm.DoIntervals
+		as deDoIntervals,pi.CollectTime
+		from MODevice m
+		LEFT JOIN AlarmLevel a on
+		m.AlarmLevel=a.AlarmLevelID
+		LEFT JOIN ManufacturerInfo mi on
+		m.NeManufacturerID=mi.ResManufacturerID
+		LEFT JOIN MObjectDef md on
+		m.MOClassID=md.ClassID
+		LEFT JOIN SysManagedDomain smd on
+		m.DomainID=smd.DomainID
+		LEFT JOIN SysServerHostInfo sshi on
+		m.NeCollectorID = sshi.ServerID
+		LEFT JOIN PerfSnapshotSecurityAppliance
+		p on p.MOID=m.MOID
+		LEFT JOIN PerfSnapshotHost pi ON pi.deviceMOID=m.MOID AND	pi.KPIName='DeviceAvailability'
+		LEFT JOIN SysPerfPollTask d1 ON m.MOID = d1.MOID AND d1.Status!=-1
+		LEFT JOIN SysPerfPollMonitors spm on spm.ID=(select max(ss.ID) from
+		SysPerfPollMonitors ss where d1.TaskID=spm.TaskID)
+		LEFT JOIN (
+		SELECT
+		MODevice.*, SysMOList.DoIntervals
+		FROM
+		MODevice,
+		SysMOList
+		WHERE
+		MID=#{params.MID}
+		) f
+		ON m.MOID = f.MOID
+		where 1=1
+		<if test="params.classID != null and params.classID != ''">
+			and m.MOClassID in ${params.classID}
+		</if>
+		<if test="params.deviceip != null and params.deviceip != '' ">
+			and m.DeviceIP like
+			${concat("'%'","'"+params.deviceip+"'","'%'")}
+		</if>
+		<if test="params.moname != null and params.moname != '' ">
+			and m.MOName like
+			${concat("'%'","'"+params.moname+"'","'%'")}
+		</if>
+		<if test="params.ismanage != null and params.ismanage != -1 ">
+			and m.IsManage=#{params.ismanage}
+		</if>
+		<if test="params.domainName != null and params.domainName != '' ">
+			and smd.DomainName like
+			${concat("'%'","'"+params.domainName+"'","'%'")}
+		</if>
+		<if
+			test="params.nemanufacturername != null and params.nemanufacturername != '' and params.nemanufacturername != '-1' ">
+			and mi.ResManufacturerID=#{params.nemanufacturername}
+		</if>
+		 ) t WHERE 1=1
+		<if test="params.operStatus ==1 || params.operStatus ==2 ">
+			and t.OperStatus like
+			${concat("'%'","'"+params.operStatus+"'","'%'")}
+		</if>
+		<if test="params.operStatus ==3 ">
+			and t.OperStatus not in (1,2)
+		</if>
+		ORDER BY  (case when t.orderAlarmLevel =0 then 6 end), t.orderAlarmLevel,t.MOID
+	</select>
+
+	<select id="getSafeDeviceDetail"
+		resultType="com.fable.insightview.monitor.host.entity.MOSafeDevice"
+		parameterType="java.lang.Integer">
+		select m1.*,m2.* from
+		(select
+		m.MOID,m.MOName mOName,m.DeviceIP deviceIP,msa.HardwareVer hardwareVer,
+		msa.SoftwareVer softwareVer,count(cpu.MOID)	cpucount,
+		msa.MemorySize memorySize,msa.vMemorySize vMemorySize,msa.DiskSize diskSize,m.LastUpdateTime lastUpdateTime,
+		pa.SupportMaxConnections connLower
+		from MODevice m
+		LEFT JOIN MOSecurityApplianceInfo msa on
+		m.MOID=msa.DeviceID
+		LEFT JOIN MOCPUs cpu on cpu.DeviceMOID=m.MOID
+		LEFT JOIN PerfSnapshotSecurityAppliance pa on pa.MOID=m.MOID
+		where
+		m.MOID=#{MOID}) m1,
+		(select count(w.MOID) ifcount from MONetworkIf w
+		where  w.DeviceMOID=#{MOID}) m2
+	</select>
+
+	<select id="getSafeDeviceConnNum"
+		resultType="com.fable.insightview.monitor.host.entity.MOSafeDevice"
+		parameterType="hashmap">
+		select Id id,MOID mOID,ConnTopNum conntopNum,ConnTopIP,connTopIP,ConnTopIndex connTopIndex  from PerfFirewallTop where MOID=#{MOID} and Type=#{Type} and
+		CreateTime=(select max(CreateTime) from PerfFirewallTop where
+		MOID=#{MOID} and Type=#{Type})
+	</select>
+
+</mapper>  

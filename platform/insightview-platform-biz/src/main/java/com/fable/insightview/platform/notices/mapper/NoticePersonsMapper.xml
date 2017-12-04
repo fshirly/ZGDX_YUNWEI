@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.notices.mapper.NoticePersonsMapper">
+
+	<resultMap type="com.fable.insightview.platform.notices.entity.NoticePersonsBean" id="personMaps">
+		<id column="Id" property="id" jdbcType="INTEGER" javaType="INTEGER" />
+		<result column="ConfirmTime" property="confirmTime" jdbcType="TIMESTAMP" javaType="DATE" />
+		<result column="Status" property="status" jdbcType="TINYINT" javaType="INTEGER" />
+		<association property="notifications" javaType="com.fable.insightview.platform.notices.entity.NotificationsBean">
+			<id column="NoticeId" property="id" jdbcType="INTEGER" javaType="INTEGER" />
+			<result column="Title" property="title" jdbcType="VARCHAR" javaType="STRING" />
+			<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" javaType="DATE" />
+			<result column="Creator" property="creator" jdbcType="INTEGER" javaType="INTEGER" />
+			<result column="UserName" property="userName" jdbcType="VARCHAR" javaType="STRING" />
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.fable.insightview.platform.notices.entity.NoticePersonsBean">
+		INSERT INTO PfNoticePersons(Id,NoticeId,UserId,Status,ConfirmTime,ConfirmDes,File,IsNote)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{noticeId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},
+		#{status,jdbcType=TINYINT},#{confirmTime,jdbcType=TIMESTAMP},#{confirmDes,jdbcType=VARCHAR},#{file,jdbcType=VARCHAR},#{isNote,jdbcType=TINYINT})
+	</insert>
+
+	<select id="list" parameterType="page" resultMap="personMaps">
+		select pp.Id,pp.NoticeId,pp.ConfirmTime,pp.Status,pn.Title,pn.CreateTime,pn.Creator,su.UserName
+		from PfNoticePersons pp LEFT JOIN PfNotifications pn ON
+		pp.NoticeId=pn.Id LEFT
+		JOIN SysUserInfo su ON
+		pn.Creator=su.UserID WHERE 1=1 AND pp.UserId=#{params.currentUserId}
+		<if test="params.title != null and params.title != ''">
+			AND pn.Title LIKE ${concat("'%'","'" + params.title + "'","'%'")}
+		</if>
+		<if test="params.createBegin != null and params.createBegin != ''">
+			<![CDATA[AND pn.CreateTime>=${toDate(params.createBegin, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.createEnd != null and params.createEnd != ''">
+			<![CDATA[AND pn.CreateTime<=${toDate(params.createEnd, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.status != null and params.status != -1">
+			AND pp.Status=#{params.status}
+		</if>
+		<if test="params.confirmBegin != null and params.confirmBegin != ''">
+			<![CDATA[AND pp.ConfirmTime>=${toDate(params.confirmBegin, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.confirmEnd != null and params.confirmEnd != ''">
+			<![CDATA[AND pp.ConfirmTime<=${toDate(params.confirmEnd, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.creator != null and params.creator != -1">
+			AND pn.Creator=#{params.creator}
+		</if>
+		ORDER BY pn.CreateTime DESC
+	</select>
+
+	<select id="queryMulti" resultType="com.fable.insightview.platform.notices.entity.NoticePersonsBean">
+		SELECT pp.Id,pp.NoticeId,pp.UserId,pp.Status,pp.ConfirmTime,pp.ConfirmDes,pp.File,pp.IsNote,su.UserName
+		FROM PfNoticePersons pp LEFT JOIN SysUserInfo su ON
+		pp.UserId=su.UserID WHERE NoticeId in (${noticeIds})
+	</select>
+	
+	<select id="queryMultis" resultType="com.fable.insightview.platform.notices.entity.NoticePersonsBean" parameterType="page">
+		select pp.Id,pp.NoticeId,pp.UserId,pp.Status,pp.ConfirmTime,pp.ConfirmDes,pp.File,pp.IsNote,su.UserName
+		from PfNoticePersons pp LEFT JOIN SysUserInfo su ON
+		pp.UserId=su.UserID WHERE NoticeId=#{params.noticeId}
+	</select>
+
+	<delete id="deleteMulti">
+		DELETE FROM PfNoticePersons WHERE NoticeId=#{noticeId}
+		<if test="userIds != null and UserIds != ''">
+			AND UserId IN (${userIds})
+		</if>
+	</delete>
+
+	<delete id="deleteMultiPersons">
+		DELETE FROM PfNoticePersons WHERE NoticeId in (${noticeIds})
+	</delete>
+
+	<update id="update" parameterType="com.fable.insightview.platform.notices.entity.NoticePersonsBean">
+		UPDATE PfNoticePersons SET Status=#{status},ConfirmTime=#{confirmTime},ConfirmDes=#{confirmDes,jdbcType=VARCHAR},
+		File=#{file,jdbcType=VARCHAR},IsNote=#{isNote} WHERE Id=#{id}
+	</update>
+
+	<select id="querySingle" resultType="HASHMAP">
+		SELECT pp.Id,pf.Title,pf.NoticeContent,pf.CreateTime,pf.File,pp.IsNote,pf.Creator,su.UserName CreateName,pp.ConfirmDes,pp.ConfirmTime,pp.IsNote personNote,pp.File personFile,pp.UserId
+		FROM PfNotifications pf LEFT JOIN SysUserInfo su
+		ON pf.Creator=su.UserID LEFT JOIN PfNoticePersons pp ON pf.Id=pp.NoticeId
+		WHERE pp.Id=#{id}
+	</select>
+	
+</mapper>

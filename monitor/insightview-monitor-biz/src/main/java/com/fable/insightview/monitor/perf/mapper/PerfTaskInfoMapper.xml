@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.perf.mapper.PerfTaskInfoMapper" >
+  <resultMap id="PerfTaskInfoMap" type="taskInfo" >
+    <id column="TaskID" property="taskId" jdbcType="INTEGER" />
+    <result column="ID" property="snmpId" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DeviceIP" property="deviceIp" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainId" jdbcType="INTEGER" />
+    <result column="DomainName" property="domainName" jdbcType="VARCHAR" />
+    <result column="ResCategoryName" property="deviceType" jdbcType="VARCHAR" />
+    <result column="ResManufacturerName" property="deviceManufacture" jdbcType="VARCHAR" />
+    <result column="SnmpVersion" property="snmpVersion" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="SnmpPort" property="snmpPort" jdbcType="INTEGER" />
+    <result column="ReadCommunity" property="readCommunity" jdbcType="VARCHAR" />
+    <result column="EncryptionKey" property="encryptionKey" jdbcType="VARCHAR" />
+    <result column="USMUser" property="usmUser" jdbcType="VARCHAR" />
+    <result column="SecurityLevel" property="securityLevel" jdbcType="VARCHAR" />
+    <result column="AuthAlogrithm" property="authAlogrithm" jdbcType="VARCHAR" />
+    <result column="AuthKey" property="authKey" jdbcType="VARCHAR" />
+    <result column="EncryptionAlogrithm" property="encryptionAlogrithm" jdbcType="VARCHAR" />
+    <result column="ContexName" property="contexName" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap type="com.fable.insightview.platform.snmpcommunity.entity.SysVMIfCommunityBean" id="vmware">
+  	<id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="AuthType" property="authType" jdbcType="VARCHAR" />
+    <result column="DeviceIP" property="deviceIp" jdbcType="VARCHAR" />
+    <result column="DomainID" property="domainID" jdbcType="INTEGER" />
+    <result column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="UserName" property="UserName" jdbcType="VARCHAR" />
+    <result column="Password" property="password" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getDeviceById" resultType="taskInfo"  parameterType="taskInfo">
+  	select snmp.ID as snmpId,device.MOID,device.DeviceIP,device.DomainID,device.MOName,device.MOClassID,manage.DomainName,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,
+	snmp.SnmpVersion,snmp.SnmpPort,snmp.ReadCommunity,snmp.writeCommunity,snmp.EncryptionKey,snmp.USMUser,
+	snmp.SecurityLevel,snmp.AuthAlogrithm,snmp.AuthKey,snmp.EncryptionAlogrithm,snmp.ContexName,device.NeManufacturerID as manufacturerID 
+	from MODevice device
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join SysManagedDomain manage on device.DomainID=manage.DomainID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SNMPCommunityCache snmp on device.MOID=snmp.MOID 
+	where device.MOID=#{moId,jdbcType=INTEGER}
+	order by device.MOID
+  </select>
+  
+  <select id="getDeviceByTaskId" resultType="taskInfo"  parameterType="taskInfo">
+  	select task.Status,task.CollectorID,snmp.ID as snmpId,device.MOID,device.DeviceIP,device.DomainID,device.MOName,manage.DomainName,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,
+	snmp.SnmpVersion,snmp.SnmpPort,snmp.ReadCommunity,snmp.EncryptionKey,snmp.USMUser,
+	snmp.SecurityLevel,snmp.AuthAlogrithm,snmp.AuthKey,snmp.EncryptionAlogrithm,snmp.ContexName,snmp.WriteCommunity,host.IPAddress as collectorName,device.NeManufacturerID as manufacturerID
+	from MODevice device 
+	left join SysPerfPollTask task on task.MOID=device.MOID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join SysManagedDomain manage on device.DomainID=manage.DomainID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SNMPCommunityCache snmp on device.MOID=snmp.MOID
+	where task.TaskID=#{taskId} 
+	order by device.MOID
+  </select>
+    
+     <update id="updateTask" parameterType="taskInfo" >
+    update SysPerfPollTask set MOID=#{moId},Status=#{status},Creator=#{creator},CreateTime=${sysdate()}
+    ,OperateStatus=#{operateStatus},ProgressStatus=#{progressStatus},LastStatusTime=${sysdate()},MOClassID=#{moClassId}
+     where TaskID=#{taskId}
+  </update>
+  
+   <update id="updateTask2" parameterType="taskInfo" >
+    update SysPerfPollTask set MOID=#{moId},Status=#{status},Creator=#{creator},CreateTime=${sysdate()}
+    ,OperateStatus=#{operateStatus},ProgressStatus=#{progressStatus},LastStatusTime=${sysdate()},MOClassID=#{moClassId},CollectorID=#{collectorId}
+     where TaskID=#{taskId}
+  </update>
+  
+  <update id="updateTaskStatusByZookeeper" parameterType="taskInfo" >
+    update SysPerfPollTask
+    <set >
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="progressStatus != null" >
+        ProgressStatus = #{progressStatus,jdbcType=INTEGER},
+      </if>      
+      <if test="lastOPResult != null" >
+        LastOPResult = #{lastOPResult,jdbcType=INTEGER},
+      </if> 
+      <if test="errorInfo != null" >
+        ErrorInfo = #{errorInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TaskID = #{taskId,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteMoList" parameterType="java.lang.Integer"  >
+    delete from  SysPerfPollMonitors where TaskID=#{taskId}
+  </delete>
+  
+  <update id="updateSnmpInfo" parameterType="taskInfo" >
+    update SNMPCommunity set SnmpPort=#{snmpPort},SnmpVersion=#{snmpVersion},ReadCommunity=#{readCommunity},
+    USMUser=#{usmUser},SecurityLevel=#{securityLevel},AuthAlogrithm=#{authAlogrithm},AuthKey=#{authKey},
+    EncryptionAlogrithm=#{encryptionAlogrithm},EncryptionKey=#{encryptionKey},ContexName=#{contexName},WriteCommunity=#{writeCommunity} 
+    where DeviceIP=#{deviceIp} 
+  </update>
+  
+  <select id="isExsitSnmp" resultType="INTEGER"  parameterType="taskInfo">
+  	select count(1) as count from SNMPCommunity where DeviceIP=#{deviceIp} 
+
+  </select>
+  
+  <select id="isExsitTask" resultType="INTEGER"  parameterType="taskInfo">
+  	select count(1) from SysPerfPollTask where MOID=#{moId} and IsOffline is NULL and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  <select id="exsitTaskId" resultType="INTEGER"  parameterType="taskInfo">
+  	select TaskID from SysPerfPollTask where MOID=#{moId} and IsOffline is NULL and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+  <update id="updateTaskStatus" parameterType="perfTask" >
+    update SysPerfPollTask set OperateStatus=#{operateStatus}, Status = #{status},ProgressStatus=#{progressStatus} where TaskID=#{taskId}
+  </update>
+  
+   <delete id="delTask" parameterType="perfTask" >
+    delete from SysPerfPollTask where TaskID=#{taskId}
+  </delete>
+  
+  <select id="getTaskInfoByMoId" parameterType="Integer" resultType="taskInfo">
+  	select * from SysPerfPollTask where MOID=#{moId} and IsOffline is NULL
+  </select>
+  
+  <update id="updateVMIfCommunity" parameterType="com.fable.insightview.platform.snmpcommunity.entity.SysVMIfCommunityBean">
+    update SysVMIfCommunity set AuthType=#{authType},DomainID =#{domainID},MOID =#{moID},
+    UserName =#{userName},Password =#{password},Port=#{port}
+    where DeviceIP =#{deviceIP}    
+  </update>
+  
+  <select id="getTaskInfoByTaskId" parameterType="Integer" resultType="taskInfo">
+  	select p.*,m.ClassLable as moClassName ,m.ClassName
+  	from SysPerfPollTask p
+  	left join MObjectDef m on p.MOClassID=m.ClassID
+  	where p.TaskID = #{taskId,jdbcType=INTEGER}
+  </select>
+  
+    <select id="getPerTaskInfoByTaskId" resultType="taskInfo"  parameterType="taskInfo">
+  	select task.Status,task.CollectorID,device.MOID,device.DeviceIP,device.DomainID,device.MOName,manage.DomainName,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,host.IPAddress as collectorName
+	from MODevice device 
+	left join SysPerfPollTask task on task.MOID=device.MOID
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join SysManagedDomain manage on device.DomainID=manage.DomainID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	where task.TaskID=#{taskId} 
+	order by device.MOID
+  </select>
+  
+  <select id="getVmIfCommunityInfo" resultType="com.fable.insightview.platform.snmpcommunity.entity.SysVMIfCommunityBean" parameterType="java.lang.Integer" >
+  	select vm.*  from SysVMIfCommunity vm
+  	left join MODevice device on device.DeviceIP=vm.DeviceIP
+  	left join SysPerfPollTask task on task.MOID=device.MOID
+  	where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getByTaskIdAndMOID" resultType="taskInfo" parameterType="Integer">
+  select dbms.MOID,dbms.IP as deviceIp,dbms.DomainID,manage.DomainName as domainName,task.Status,task.MOClassID,task.DBName,task.CollectorID,host.IPAddress as collectorName
+  from MODBMSServer dbms
+  left join SysManagedDomain manage on dbms.DomainID=manage.DomainID
+  left join SysPerfPollTask task on task.MOID=dbms.MOID
+  left join SysServerHostInfo host on task.CollectorID=host.ServerID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getMiddleWareTask"  resultType="taskInfo" parameterType="Integer">
+  select middle.MOID,middle.IP as deviceIP,com.DomainID,manage.DomainName as domainName,task.Status,task.CollectorID,task.MOClassID,host.IPAddress as collectorName
+  from MOMiddleWareJMX middle
+  left join SysMiddleWareCommunity com on com.IPAddress=middle.IP and com.MiddleWareType=middle.JmxType and com.Port=middle.Port
+  left join SysManagedDomain manage on com.DomainID=manage.DomainID
+  left join SysPerfPollTask task on task.MOID=middle.MOID
+  left join SysServerHostInfo host on task.CollectorID=host.ServerID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+   <select id="getVmwareDeviceInfo" resultType="taskInfo"  parameterType="Integer">
+  	select device.MOID,device.DeviceIP,device.DomainID,device.MOName,device.MOClassID,manage.DomainName,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,
+	vmware.Port,vmware.UserName,vmware.Password,vmware.ID as vmId
+	from MODevice device
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join SysManagedDomain manage on device.DomainID=manage.DomainID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SysVMIfCommunity vmware on device.DeviceIP=vmware.DeviceIP
+	where device.MOID=#{moId,jdbcType=INTEGER}
+	order by device.MOID
+  </select>
+  
+  <update id="updateTaskProgressStatus" parameterType="perfTask" >
+    update SysPerfPollTask 
+    <set>
+      <if test="progressStatus != null" >
+        ProgressStatus = #{progressStatus,jdbcType=INTEGER},
+      </if>
+       <if test="operateStatus != null and operateStatus != 0" >
+        OperateStatus = #{operateStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where TaskID=#{taskId}
+  </update>
+  
+   <update id="updateSnmpCommunity" parameterType="com.fable.insightview.platform.snmpcommunity.entity.SNMPCommunityBean" >
+    update SNMPCommunity set SnmpPort=#{snmpPort},SnmpVersion=#{snmpVersion},WriteCommunity=#{writeCommunity},ReadCommunity=#{readCommunity},
+    USMUser=#{usmUser},SecurityLevel=#{securityLevel},AuthAlogrithm=#{authAlogrithm},AuthKey=#{authKey},
+    EncryptionAlogrithm=#{encryptionAlogrithm},EncryptionKey=#{encryptionKey},ContexName=#{contexName} 
+    where DeviceIP=#{deviceIP} 
+  </update>
+  
+  <select id="getTaskByDBServer" parameterType="com.fable.insightview.monitor.database.entity.MODBMSServerBean">
+  select p.TaskID from SysPerfPollTask  p
+  left join MODBMSServer m on m.MOID=p.MOID and m.MOClassID=p.MOClassID
+  where p.IsOffline is NULL and m.MOID= #{moid,jdbcType=INTEGER} and m.MOClassID=#{moClassId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getTaskByMOIDAndClass" resultType="taskInfo">
+  select * from SysPerfPollTask 
+  where MOID= #{moid} and IsOffline is NULL and MOClassID=#{moClassId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+  <select id="getTaskByTaskId" parameterType="Integer" resultType="taskInfo">
+   select * from SysPerfPollTask where TaskID=#{taskId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getVmIfCommunityByIP" resultType="com.fable.insightview.platform.snmpcommunity.entity.SysVMIfCommunityBean" parameterType="java.lang.String" >
+  	select vm.*  from SysVMIfCommunity vm
+  	where vm.DeviceIP=#{deviceIP} 
+  </select>
+  
+  <select id="getRoomTask"  resultType="taskInfo" parameterType="Integer">
+  select z.MOID,z.Port,z.IPAddress as deviceIP,com.DomainID,manage.DomainName as domainName,task.Status,task.MOClassID,task.TaskID,task.CollectorID,host.IPAddress as collectorName
+  from MOZoneManager z
+  left join SysRoomCommunity com on com.IPAddress=z.IPAddress and com.Port=z.Port
+  left join SysManagedDomain manage on com.DomainID=manage.DomainID
+  left join SysPerfPollTask task on task.MOID=z.MOID
+  left join SysServerHostInfo host on task.CollectorID=host.ServerID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="isExsitTask2" resultType="INTEGER"  parameterType="taskInfo">
+  	select count(1) from SysPerfPollTask where MOID=#{moId} and IsOffline is NULL and MOClassID=#{moClassId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+   <select id="getTaskInfoByMoId2" parameterType="Integer" resultType="taskInfo">
+  select * from SysPerfPollTask 
+  where MOID= #{moid} and IsOffline is NULL and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+  <select id="getTaskByMOIDAndClassAndDBName" resultType="taskInfo">
+  select * from SysPerfPollTask 
+  where MOID= #{moid} and IsOffline is NULL and MOClassID=#{moClassId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+    <if test="dbName != '' and dbName != null ">
+	  and DBName = #{dbName}
+    </if>
+  </select>
+  
+  <update id="updateTask3" parameterType="taskInfo" >
+    update SysPerfPollTask set OperateStatus=#{operateStatus},ProgressStatus=#{progressStatus},CollectorID=#{collectorId},OldCollectorID=#{oldCollectorId}
+     where TaskID=#{taskId}
+  </update>
+  
+  <select id="getByCollector" resultType="INTEGER"  parameterType="taskInfo">
+  	select count(1) from SysPerfPollTask where IsOffline is NULL and collectorId=#{collectorId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+  <select id="getDNSTask"  resultType="taskInfo" parameterType="Integer">
+  select task.*,dns.SiteName as deviceIp,dns.DomainName as ipAddr
+  from SysPerfPollTask task
+  left join MOSiteDns dns on task.MOID=dns.MOID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getFtpTask"  resultType="taskInfo" parameterType="Integer">
+  select task.*,dns.SiteName as deviceIp,dns.IPAddr as ipAddr,dns.IsAuth as isAuth,dns.Port
+  from SysPerfPollTask task
+  left join MOSiteFtp dns on task.MOID=dns.MOID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getHttpTask"  resultType="taskInfo" parameterType="Integer">
+  select task.*,dns.SiteName as deviceIp,dns.HttpUrl as ipAddr
+  from SysPerfPollTask task
+  left join MOSiteHttp dns on task.MOID=dns.MOID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getTcpTask"  resultType="taskInfo" parameterType="Integer">
+  select task.*,tcp.SiteName as deviceIp,tcp.IPAddr as ipAddr
+  from SysPerfPollTask task
+  left join MOSitePort tcp on task.MOID=tcp.MOID
+  where task.TaskID=#{taskId} 
+  </select>
+  
+   <select id="getDeviceById2" resultType="taskInfo"  parameterType="taskInfo">
+  	select device.MOID,device.DeviceIP,device.DomainID,device.MOName,device.MOClassID,manage.DomainName,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture
+	from MODevice device
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join SysManagedDomain manage on device.DomainID=manage.DomainID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	where device.MOID=#{moId,jdbcType=INTEGER}
+	order by device.MOID
+  </select>
+  
+  <select id="getTaskByMOIDAndDBName" resultType="taskInfo">
+  select * from SysPerfPollTask 
+  where IsOffline is NULL and MOID= #{moid} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+    <if test="dbName != '' and dbName != null ">
+	  and DBName = #{dbName}
+    </if>
+  </select>
+  
+  <select id="isExsitTask3" resultType="Integer"  parameterType="taskInfo">
+  	select count(1) from SysPerfPollTask where MOID=#{moId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  	<if test="isOffline != '' and isOffline != null and isOffline != 'null' ">
+	  and IsOffline = #{isOffline}
+    </if>
+    <if test="isOffline == '' or isOffline == null or isOffline == 'null'">
+	  and IsOffline is NULL
+    </if>
+  </select>
+  
+  <select id="getTaskByMOIDAndDBName2" resultType="taskInfo" parameterType="taskInfo">
+  select * from SysPerfPollTask 
+  where MOID= #{moId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+    <if test="dbName != '' and dbName != null ">
+	  and DBName = #{dbName}
+    </if>
+    <if test="isOffline != '' and isOffline != null and isOffline != 'null' ">
+	  and IsOffline = #{isOffline}
+    </if>
+    <if test="isOffline == '' or isOffline == null or isOffline == 'null' ">
+	  and IsOffline is NULL
+    </if>
+  </select>
+  
+  <select id="isExistOfflineTask" resultType="INTEGER"  parameterType="taskInfo">
+  	select count(1) from SysPerfPollTask where MOID=#{moId} and IsOffline='1' and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  <select id="existOfflineTaskId" resultType="INTEGER"  parameterType="taskInfo">
+  	select TaskID from SysPerfPollTask where MOID=#{moId} and IsOffline='1' and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+  
+  <select id="getOfflineTaskByHost" parameterType="INTEGER"  resultType="taskInfo">
+  select * from SysPerfPollTask where IsOffline='1' and collectorId=#{collectorId} and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.perf.mapper.PerfKPIDefMapper" >
+  <resultMap id="PerfKPIDefMap" type="perfKPIDef" >
+    <id column="KPIID" property="kpiID" jdbcType="INTEGER" />
+    <result column="KPICategory" property="kpiCategory" jdbcType="VARCHAR" />
+    <result column="ClassID" property="classID" jdbcType="INTEGER" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="EnName" property="enName" jdbcType="VARCHAR" />
+    <result column="Quantifier" property="quantifier" jdbcType="VARCHAR" />
+    <result column="ValueType" property="valueType" jdbcType="INTEGER" />
+    <result column="AmountType" property="amountType" jdbcType="INTEGER" />
+    <result column="ProcessFlag" property="processFlag" jdbcType="INTEGER" />
+    <result column="ValueRange" property="valueRange" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <select id="selectPerfKPIDefs" resultType="hashmap" resultMap="PerfKPIDefMap" parameterType="page">
+  	select 
+  	KPIID,KPICategory,ClassID,Name,EnName,Quantifier,ValueType,AmountType,ProcessFlag,ValueRange,Note
+  	from PerfKPIDef
+  	where 1=1 and ProcessFlag=1 and KPIID in(
+  	select distinct KPIID from SysKPIOfMOClass where IsSupport=1
+	  <if test="params.classID != null and params.classID != '' and params.classID != '-1' ">
+		 and MOClassID = #{params.classID} and IsSupport = 1
+      </if>
+  	)
+      <if test="params.name != '' and params.name != null ">
+		and Name like ${concat("'%'","'"+params.name+"'","'%'")}
+      </if>
+       <if test="params.kpiCategory != '' and params.kpiCategory != null ">
+		and KPICategory  = #{params.kpiCategory}
+      </if>
+      <!--<if test="params.isSupport != '' and params.isSupport != null ">
+		and IsSupport = #{params.isSupport}
+      </if>
+  --></select>
+  
+  <select id="getPerfKPIDefList" resultType="hashmap" resultMap="PerfKPIDefMap" parameterType="page">
+  	select perf.*,m.ClassLable as className
+  	from PerfKPIDef perf
+  	left join MObjectDef m on perf.ClassID = m.ClassID
+  	where 1=1 and perf.ProcessFlag=1
+      <if test="params.name != '' and params.name != null ">
+		and perf.Name like ${concat("'%'","'"+params.name+"'","'%'")}
+      </if>
+      <if test="params.enName != '' and params.enName != null ">
+		and perf.EnName like ${concat("'%'","'"+params.enName+"'","'%'")}
+      </if>
+      <if test="params.kpiCategory != '' and params.kpiCategory != null ">
+		and perf.KPICategory  = #{params.kpiCategory}
+      </if>
+      <if test="params.className != '' and params.className != null ">
+		and m.ClassLable like ${concat("'%'","'"+params.className+"'","'%'")}
+      </if><!--
+       <if test="params.isSupport != '' and params.isSupport != null and params.isSupport != -1">
+		and perf.IsSupport = #{params.isSupport}
+      </if>
+  --></select>
+  
+  <select id="getPerfKPIDefById" parameterType="Integer" resultType="perfKPIDef">
+  	select 
+  	perf.KPIID,perf.KPICategory,perf.ClassID,perf.Name,perf.EnName,perf.Quantifier,
+  	perf.ValueType,perf.AmountType,perf.ProcessFlag,perf.ValueRange,perf.Note,m.ClassLable as className
+  	from PerfKPIDef perf
+  	left join MObjectDef m on perf.ClassID = m.ClassID
+  	where 1=1 and perf.KPIID = #{kpiID}
+  </select>
+  
+  <delete id="delPerKPIDef" parameterType="hashmap">
+	delete from PerfKPIDef where KPIID in 
+	<foreach collection="list" item="kpiIDs"  open="(" separator="," close=")">
+     #{kpiIDs}
+    </foreach> 
+  </delete>
+  
+  <select id="getKPIExprByKPIID" parameterType="Integer" resultType="Integer">
+	select count(1) from PerfKPIExpr
+	where 1=1 and KPIID = #{kpiID,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getThresholdByKPIID" parameterType="Integer" resultType="Integer">
+	select count(1) from MOKPIThreshold
+	where 1=1 and KPIID = #{kpiID,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getMObjectKPIDefByKPIID" parameterType="Integer" resultType="Integer">
+	select count(1) from MObjectPerfKPIDef
+	where 1=1 and KPIID = #{kpiID,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getKPIByName" parameterType="perfKPIDef" resultType="Integer">
+	select count(1) from PerfKPIDef
+	where 1=1 and Name = #{name,jdbcType=VARCHAR} and KPICategory=#{kpiCategory,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getKPIByNameAndID" parameterType="perfKPIDef" resultType="Integer">
+	select count(1) from PerfKPIDef
+	where 1=1 and KPICategory=#{kpiCategory,jdbcType=VARCHAR} and Name = #{name,jdbcType=VARCHAR} and KPIID != #{kpiID,jdbcType=INTEGER}
+  </select>
+  
+   <select id="getKPIByEnName" parameterType="perfKPIDef" resultType="Integer">
+	select count(1) from PerfKPIDef
+	where 1=1 and EnName=#{enName,jdbcType=VARCHAR} and KPICategory=#{kpiCategory,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getKPIByEnNameAndID" parameterType="perfKPIDef" resultType="Integer">
+	select count(1) from PerfKPIDef
+	where 1=1 and KPICategory=#{kpiCategory,jdbcType=VARCHAR} and EnName=#{enName,jdbcType=VARCHAR} and KPIID != #{kpiID,jdbcType=INTEGER} 
+  </select>
+  
+  <insert id="insertPerfKPIDef" parameterType="perfKPIDef">
+ 	 insert into PerfKPIDef (KPIID,KPICategory,ClassID,Name,EnName,Quantifier,ValueType,AmountType,ProcessFlag,ValueRange,Note)
+	  values (#{kpiID,jdbcType=INTEGER}, #{kpiCategory,jdbcType=VARCHAR}, #{classID,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR},
+      #{quantifier,jdbcType=VARCHAR},#{valueType,jdbcType=INTEGER}, #{amountType,jdbcType=INTEGER},
+       #{processFlag,jdbcType=INTEGER},#{valueRange,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updatePerfKPIDef" parameterType="perfKPIDef">
+  update PerfKPIDef set KPICategory=#{kpiCategory,jdbcType=VARCHAR},ClassID=#{classID,jdbcType=INTEGER},
+  Name= #{name,jdbcType=VARCHAR},EnName=#{enName,jdbcType=VARCHAR},Quantifier=#{quantifier,jdbcType=VARCHAR},
+  ValueType=#{valueType,jdbcType=INTEGER},AmountType=#{amountType,jdbcType=INTEGER},ProcessFlag= #{processFlag,jdbcType=INTEGER},
+  ValueRange=#{valueRange,jdbcType=VARCHAR},Note= #{note,jdbcType=VARCHAR}
+  where KPIID = #{kpiID,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getAllCategory" resultType="perfKPIDef" >
+  	select distinct KPICategory from PerfKPIDef
+  </select>
+  
+  <select id="getKPIObject" parameterType="Integer" resultType="mobjectBean">
+    select distinct mo.* from MObjectDef mo
+	left join MObjectRelation r on mo.ClassID = r.ClassID 
+	where mo.ClassID in (select distinct MOClassID from SysKPIOfMOClass where KPIID = ${kpiID} and IsSupport = 1)
+  </select>
+  
+</mapper>
+

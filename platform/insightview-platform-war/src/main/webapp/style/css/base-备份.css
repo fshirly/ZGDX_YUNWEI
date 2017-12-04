@@ -1,0 +1,277 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+/*~~ 通用样式 ~~*/
+@import url("../../plugin/easyui/themes/default/easyui.css");
+@import url("../../plugin/easyui/themes/icon.css");
+
+/* 通用 */
+select {width:137px; padding:2px 0;}
+.tdleft {text-align:left !important;}
+.tdright {text-align:right !important;}
+.clearfloat {clear:both;height:0;font-size: 1px;line-height: 0px;}
+
+/* 面包屑区域 */
+.rightContent {width:100%;}
+.location {height:28px; line-height:28px; padding-left:20px; background:url(../images/location.png) no-repeat 5px 9px; border-bottom:1px solid #c3d7e6; color:#666666;}
+.location span {color:#175899;} 
+
+
+/* 表格树 */
+.treetable {position:absolute; top:30px; left:0; bottom:0; width:17%; min-height:388px; overflow:auto; background:#e4edf2;}
+.treetable .dtree {padding:0 5px;}
+.treetabler {position:absolute; top:29px; left:17%; bottom:0; width:83%;}
+.treetabler .conditions, .treetabler .panel {border-left:1px solid #ffffff;}
+.treetable input[type="button"] {text-align:right; width:48px; margin:5px 0 5px 10px; background-color:#c2e2f2; background-image:url(../images/icon_tree.png); background-repeat:no-repeat; border:1px solid; border-color:#c2e2f2 #8fb8cc #8fb8cc #c2e2f2; line-height:18px;}
+.treetable input[type="text"] {border:1px solid; margin:3px 0 8px 10px; border-color:#7ca3bf #b8d0e0 #b8d0e0 #7ca3bf; background:#ffffff; width:68%; padding:0 2px 0 3px; height:20px; line-height:20px;}
+.treetable input.iconopen {background-position:5px 6px;}
+.treetable input.iconclose {background-position:-45px 6px;}
+.treetable input.iconbtn {background-position:-102px 3px; width:25px; margin:0 0 5px 0; color:#c2e2f2; background-color:#e4edf2; border:0 none;}
+.treetable input + .dtree {border-top:1px solid #f2f7fa; padding:5px;}
+
+.newFrameLayout {width:960px;}
+
+.full{width:100%;height:100%;margin:0;padding:0;}
+
+.processPicture {border-top:1px solid #a1a1a1; width:100%; height:350px;}
+#imageContainer {position:relative;}
+
+/*dtree*/
+
+.dtree {
+	font-size: 12px;
+	color: #666;
+}
+.dtree img {
+	border: 0px;
+	vertical-align: middle;
+}
+.dtree a {
+	color: #333;
+	text-decoration: none;
+	white-space:nowrap; 
+}
+.dtree a.node, .dtree a.nodeSel {
+	padding: 1px 2px 1px 2px;
+}
+.dtree a.node:hover, .dtree a.nodeSel:hover {
+	color: #333;
+	text-decoration: underline;
+}
+.dtree a.nodeSel {
+	background-color: #c0d2ec;
+}
+.dtree .clip {
+
+}
+
+.dtree .dTreeNode {
+	white-space:nowrap; 
+}
+.dtreecob {color:#666; display:none; border:1px solid #7ca3bf; position:absolute; z-index:9999; background:white; width:180px;}
+
+.dBottom {
+	background-color: #F0F0F0;
+	margin-bottom: 0px;
+	text-align: right;
+	height: 23px;
+	line-height: 23px;
+}
+
+.dBottom a {
+	margin-right: 5px;
+	color: black;
+	text-decoration: none;
+}
+
+.ac_results {
+	padding: 0px;
+	border: 1px solid black;
+	background-color: white;
+	overflow: hidden;
+	z-index: 99999;
+}
+
+.ac_results ul {
+	width: 100%;
+	list-style-position: outside;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.ac_results li {
+	margin: 0px;
+	padding: 2px 5px;
+	cursor: default;
+	display: block;
+	/* 
+	if width will be 100% horizontal scrollbar will apear 
+	when scroll mode will be used
+	*/
+	/*width: 100%;*/
+	font: menu;
+	font-size: 12px;
+	/* 
+	it is very important, if line-height not setted or setted 
+	in relative units scroll will be broken in firefox
+	*/
+	line-height: 16px;
+	overflow: hidden;
+}
+
+.ac_loading {
+	background: white url('indicator.gif') right center no-repeat;
+}
+
+.ac_odd {
+	background-color: #eee;
+}
+
+.ac_over {
+	background-color: #0A246A;
+	color: white;
+}
+
+/*main*/
+#main {}
+
+	
+
+/*~~ 个人信息弹出层 ~~*/		
+.personal{width:236px;height:219px;background:url(../images/main/tip_bg.gif) no-repeat;position:absolute;font-family:'宋体';font-size:12px;z-index:100;}
+		  .tip_head{width:95%;height:24px;line-height:24px;margin:0px auto;}
+		  .tip_head span{color:#003978;font-weigth:bold;}
+		  .tip_head a{diplay:block;width:11px;height:11px;margin-top:5px;}
+		  .tip_content{margin:0px auto;width:95%;margin-top:10px;}
+		  .tip_content .line{margin:0px auto;color:#000000;width:95%;height:25px;line-height:25px;border-bottom:1px solid #CCC;}
+		  .tip_content span{color:#5c5c5c;}		  
+		  .tip_content .infoInputs{width:170px;height:20px;line-height:20px;border:1px solid #CCC;}
+		  .tip_content .no_line{margin:0px auto;color:#000000;width:95%;height:25px;line-height:25px;}
+		  .tip_content a{display:block;width:76px;height:25px;line-height:25px;text-align:center;background-color:#66BDFF;color:#FFF;margin-top:10px;
+		  				border:1px solid #3f98dc;}
+		  .tip_content a:link {text-decoration: none; color:#FFF;}
+		  .tip_content a:visited{text-decoration: none;color:#FFF;}
+		  .tip_content a:hover{text-decoration: none;color:#FFF;background-color:#0CF;}
+     
+#eventNextForm, #resoluteForm, #resoluteForm, #resoluteForm {padding-top:6px;}
+.nextTable {margin:0 auto; font-size:12px; border:1px solid #95B8E7; border-collapse:collapse; text-align:left;}
+.nextTable td, .nextTable th {padding:5px;}
+.nextTable th {background-color: #E0ECFF;}
+.nextTable textarea {font-size:12px; width:450px; padding:3px;}
+.nextTable input[type="radio"], .nextTable input[type="checkbox"]{vertical-align:-2px;}
+.nextTable label {margin:0 10px 0 3px;}
+.borderbox {border:1px solid #86a3bf; border-collapse:collapse; width:500px;}
+.borderbox td {padding:5px;}
+.borderbox #selectCondition {border-bottom:1px solid #86a3bf;}
+.borderbox .divbox {width:225px;; height:180px; overflow:auto; border:1px solid #ccc; padding:5px;}
+#departmentMan li{line-height:22px;}
+
+
+
+
+/*~~ 知识检索弹出层 ~~*/	
+	.resultstable {width:100%; border-collapse:collapse; font-size:12px; padding:0;}
+	#errorText {text-align:center; color:red;  min-height:16px;}
+	.resultstdL {background:#e0f2ff; width:26%; padding:0 8px;}	
+	.resultstdL table{width:100%; border-collapse:collapse;}	
+	.resultstdL td.title {background:#c8e5fa; font-weight:bold; padding:6px;}
+	.resultstdL #title {margin:5px 0; height:20px; line-height:20px; width:155px}
+	.resultstdL #searchBtn {margin:5px 0; height:26px; width:62px;}
+	.resultstdL .dtree {background:#ffffff; height:400px; padding:6px 5px; border:1px solid #bcd3eb;}
+	.resultstdR {padding:0;}
+	.resultstdR .easyui-panel {padding:8px 10px; width:auto !important; border:solid #bcd3eb; border-width:1px 1px 0 1px; min-height:450px;}
+	.resultstdR .easyui-panel ol {list-style:none; overflow:hidden;}
+	.resultstdR .easyui-panel li {font-size:12px; padding-left:8px;}
+	.resultstdR .easyui-panel li.titleLi {color:#0066cc; font-weight:bold; background:url(../images/main/arrow-li.gif) no-repeat 0 4px;}
+	.resultstdR .easyui-pagination{background:#f4f4f4; border:1px solid #d5d5d5;}
+	
+/*~~ rapidCreateEvent页面 ~~*/	
+.rapidCreatTab, .announceTab, .knowledgeTab, .butTd{width:86%; margin:0 auto; font-size:12px;}
+.rapidCreatTab .title {text-align:right; vertical-align:top; line-height:24px; width:65px;}
+.rapidCreatTab #requesterName, .rapidCreatTab #title, .rapidCreatTab #serialNo, .knowledgeTab #title{width:100%; height:20px; margin-bottom:8px;}
+.rapidCreatTab textarea {width:100%; font-size:12px; height:85px; margin-bottom:8px;}
+.rapidCreatTab .combo {width:176px !important; margin-bottom:8px;}
+.rapidCreatTab .combo input {width:154px !important;}
+
+/*~~ announcement页面 ~~*/	
+.announceTab th {text-align:left; padding-top:10px; border-bottom:1px dotted #cccccc;}
+.announceTab .thwidth {width:116px; text-align:center;}
+.announceTab td {line-height:22px; border-bottom:1px dotted #cccccc; padding-top:5px;}
+.announceTab .butTd {text-align:right; padding-top:10px;}
+.announceTab a {text-decoration:none; color:#003399;}
+.butTd,.butdiv {text-align:right; margin-top:10px;}
+.butdiv {margin-right:10px;}
+
+/*~~ knowledgeSearch页面 ~~*/	
+.knowledgeTab td{padding:5px 20px;}
+
+/*~~ myReportedEvents页面 ~~*/	
+.myReportedTabT, .myReportedTabM{width:99%; margin:0 0 0 auto; font-size:12px;}
+.myReportedTabT {overflow:hidden;}
+.myReportedTabT div {display:inline-block; width:20%; margin:12px 0; min-width:140px;}
+.myReportedTabT input {width:130px; height:20px;}
+.myReportedTabT .combo {width:132px !important;}
+.myReportedTabT .combo input {width:110px !important;}
+.myReportedTabT .butTd {width:17%; margin-left:5px;}
+.myReportedTabM {}
+
+.datas.topdashboard {position:relative; top:0; }
+
+/*~~ 公用 ~~*/
+.buttonB {background:url(../images/main/btn.gif) no-repeat; color:#FFFFFF; height:24px; line-height:24px; text-align:center; width:62px; border:0 none; display:inline-block;cursor:pointer;}
+.w80 {width:80px;}
+.searchTable td {padding-right:10px; font-size:12px; }
+.searchTable td>span {display:inline-block; width:65px; text-align:right;} 
+.searchTable td.conditionsBtn {padding-right:0;}
+.searchTable td .inputs, .searchTable td select, .searchTable td .combo{height:22px; line-height:22px; width:150px;}
+.openTable td {height:30px;}
+	
+
+
+		 /*~~ 查询条件区域 ~~*/
+		
+
+		 
+		 .formBtn{float:right;height:40px;line-height:40px;margin:0px auto;text-align: right}
+		 .formBtn a{display:block;width:62px;height:24px;line-height:24px;text-align:center;background:url(../images/main/btn.gif) no-repeat;margin-top:6px;
+		 						  font-family:'宋体';font-size:12px;color:#FFF;}
+		 .formBtn a:link {text-decoration: none; color:#FFF;}
+		 .formBtn a:visited{text-decoration: none;color:#FFF;}
+		 .formBtn a:hover{text-decoration: none;color:#FFF;background:url(../images/main/btn_onmouse.gif) no-repeat;}
+		 
+		 /* 表单设计器按钮使用formBtn1样式 */
+		 .formBtn1{float:left;height:40px;line-height:40px;margin:0px auto;text-align: right}
+		 .formBtn1 a{display:block;width:62px;height:24px;line-height:24px;text-align:center;background:url(../images/main/btn.gif) no-repeat;margin-top:6px;
+		 						  font-family:'宋体';font-size:12px;color:#FFF;}
+		 .formBtn1 a:link {text-decoration: none; color:#FFF;}
+		 .formBtn1 a:visited{text-decoration: none;color:#FFF;}
+		 .formBtn1 a:hover{text-decoration: none;color:#FFF;background:url(../images/main/btn_onmouse.gif) no-repeat;}	
+		 	
+
+/* 搜索栏 */
+.searchbar input, .searchbar .select2-container {width:130px; height:20px !important;}	 
+.searchbar select {height:22px; width:130px; }
+.searchbar .select2-choice {text-align:left; padding-left:5px;}
+.btnShow{background:#EBEFF2;}
+.btnShow td{width:60px;height:24px;text-align:center;background:#5CB8E6;cursor:pointer;font-family:'宋体';font-size:12px;color:#FFF; border: thick solid #EBEFF2}
+.btnShow td:hover{width:60px;height:24px;text-align:center;background:#297CA6;cursor:pointer;font-family:'宋体';font-size:12px;color:#FFF; border: thick solid #EBEFF2}
+
+/*--- 首页任务 ---*/
+.taskl, .taskr{position:absolute; top:30px; bottom:0;}
+.taskl {background:#e4edf2; left:0; width:280px;}
+.taskl h2 {margin:2px 0; background:#7498b3; padding:10px; color:#ffffff;}
+.taskl .formtable1 {margin:0; width:280px;}
+.taskl .formtable1 .title {min-width:70px;}
+.taskl textarea {padding: 0 2px;  width: 175px;}
+.taskl .btn {float:right; margin-right:20px;}
+.taskr {left:281px; right:0;}
+.taskr .datas {position:relative;top:0}
+
+
+/*---视图部件样式 ---*/
+.lossdata {background:url(/fable/style/images/webclient/digitalBG.gif) 0px 10px no-repeat;
+					width:131px; height:84px; text-align:center; margin:0 auto 0 auto; padding-top:10px;}
+.lossdata img {margin-top:20px}
+
+.eventRequestDesc{max-width:530px;max-height:100px;float:left;overflow:auto;word-wrap: break-word;}

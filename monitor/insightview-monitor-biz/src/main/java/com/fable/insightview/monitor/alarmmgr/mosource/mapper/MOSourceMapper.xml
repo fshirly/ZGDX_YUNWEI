@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.mosource.mapper.MOSourceMapper">
+	<resultMap id="MOScourceMap" type="moScource">
+		<id column="MOID" property="moID" jdbcType="INTEGER" />
+		<result column="MOName" property="moName" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+		<result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+		<result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+		<result column="DeviceIP" property="deviceIP" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectMOScource" resultType="hashmap"
+		resultMap="MOScourceMap" parameterType="page">
+		select
+		m.MOID,m.MOName,m.AlarmLevel,m.MOClassID,m.DomainID,
+		m.DeviceIP,le.AlarmLevelName as alarmLevelName, organization.OrganizationName as domainName ,b.ClassLable className
+		from MOSource m
+		left join AlarmLevel le on m.AlarmLevel = le.AlarmLevelID
+		left join SysOrganization organization on m.DomainID = organization.OrganizationID 
+		left join MObjectDef b on b.ClassID = m.MOClassID 
+		where 1=1
+		<if test="params.moName !='' and params.moName != null ">
+			and m.moName like CONCAT('%',#{params.moName},'%' )
+		</if>
+		order by m.MOClassID,m.DeviceIP	
+	</select>
+	
+	<select id="getMOSourceById"  parameterType="Integer" resultType="moScource">
+		select 
+		m.MOID,m.MOName,m.AlarmLevel,m.DomainID,m.MOClassID,m.DeviceIP,
+		le.AlarmLevelName as alarmLevelName, organization.OrganizationName as domainName ,b.ClassLable className
+		from MOSource m
+		left join AlarmLevel le on m.AlarmLevel = le.AlarmLevelID
+		left join SysOrganization organization on m.DomainID = organization.OrganizationID 
+		left join MObjectDef b on b.ClassID = m.MOClassID
+		where 1=1 and 
+		m.MOID = #{moID,jdbcType=INTEGER}
+		order by m.MOClassID,m.DeviceIP	 
+	</select>
+	
+	<select id="getAllMOSource" resultType="hashmap" resultMap="MOScourceMap">
+		select 
+		MOID,MOName,AlarmLevel,MOClassID,DomainID,
+		DeviceIP
+		from MOSource
+		where 1=1
+	</select>
+</mapper>
+

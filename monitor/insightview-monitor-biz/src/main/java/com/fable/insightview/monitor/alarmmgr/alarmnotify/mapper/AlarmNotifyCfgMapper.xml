@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmnotify.mapper.AlarmNotifyCfgMapper">
+	<resultMap id="AlarmNotifyCfgMap" type="alarmNotifyCfg">
+		<id column="PolicyID" property="policyID" jdbcType="INTEGER" />
+		<result column="PolicyName" property="policyName" jdbcType="VARCHAR" />
+		<result column="AlarmOnCount" property="alarmOnCount" jdbcType="INTEGER" />
+		<result column="IsSms" property="isSms" jdbcType="INTEGER" />
+		<result column="SmsAlarmContent" property="smsAlarmContent" jdbcType="VARCHAR" />
+		<result column="SmsClearAlarmContent" property="smsClearAlarmContent" jdbcType="VARCHAR" />
+		<result column="SmsDeleteAlarmContent" property="smsDeleteAlarmContent" jdbcType="VARCHAR" />
+		<result column="IsEmail" property="isEmail" jdbcType="INTEGER" />
+		<result column="EmailAlarmContent" property="emailAlarmContent" jdbcType="VARCHAR" />
+		<result column="EmailClearAlarmContent" property="emailClearAlarmContent" jdbcType="VARCHAR" />
+		<result column="EmailDeleteAlarmContent" property="emailDeleteAlarmContent" jdbcType="VARCHAR" />
+		<result column="IsPhone" property="isPhone" jdbcType="INTEGER" />
+		<result column="VoiceMessageType" property="voiceMessageType" jdbcType="INTEGER" />
+		<result column="PhoneAlarmContent" property="phoneAlarmContent" jdbcType="VARCHAR" />
+		<result column="PhoneClearAlarmContent" property="phoneClearAlarmContent" jdbcType="VARCHAR" />
+		<result column="PhoneDeleteAlarmContent" property="phoneDeleteAlarmContent" jdbcType="VARCHAR" />
+		<result column="AlarmVoiceID" property="alarmVoiceID" jdbcType="INTEGER" />
+		<result column="DeleteAlarmVoiceID" property="deleteAlarmVoiceID" jdbcType="INTEGER" />
+		<result column="ClearAlarmVoiceID" property="clearAlarmVoiceID" jdbcType="INTEGER" />
+		<result column="MaxTimes" property="maxTimes" jdbcType="INTEGER" />
+		<result column="MFlag" property="mFlag" jdbcType="INTEGER" />
+		<result column="Descr" property="descr"	jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectAlarmNotifyCfg" resultType="hashmap"
+		resultMap="AlarmNotifyCfgMap" parameterType="page">
+		select PolicyID,PolicyName,IsSms,SmsAlarmContent,IsEmail,EmailAlarmContent,MFlag,Descr,SmsClearAlarmContent,
+			SmsDeleteAlarmContent,EmailClearAlarmContent,EmailDeleteAlarmContent,AlarmOnCount,IsPhone,VoiceMessageType,
+			PhoneAlarmContent,PhoneClearAlarmContent,PhoneDeleteAlarmContent,AlarmVoiceID,DeleteAlarmVoiceID,ClearAlarmVoiceID,MaxTimes
+		from AlarmNotifyCfg
+		where 1=1
+		<if test="params.policyName !='' and params.policyName != null ">
+			and PolicyName like ${concat("'%'","'"+params.policyName+"'","'%'")}
+		</if>
+	</select>
+	
+	<delete id="delAlarmNotifyCfg" parameterType="hashmap">
+		delete from AlarmNotifyCfg where PolicyID in 
+		<foreach collection="list" item="policyIDs"  open="(" separator="," close=")">
+	     #{policyIDs}
+	    </foreach> 
+	</delete>
+
+	<select id="getAlarmNotifyCfgByID" parameterType="Integer" resultType="alarmNotifyCfg"	>
+		select n.PolicyID,n.PolicyName,n.IsSms,n.SmsAlarmContent,n.IsEmail,n.EmailAlarmContent,n.MFlag,n.Descr,n.SmsClearAlarmContent,
+		n.SmsDeleteAlarmContent,n.EmailClearAlarmContent,n.EmailDeleteAlarmContent,n.AlarmOnCount,n.IsPhone,n.VoiceMessageType,
+		n.PhoneAlarmContent,n.PhoneClearAlarmContent,n.PhoneDeleteAlarmContent,n.AlarmVoiceID,n.DeleteAlarmVoiceID,n.ClearAlarmVoiceID,n.MaxTimes
+		,p1.Name as alarmVoiceName,p2.Name as deleteAlarmVoiceName,p3.Name as clearAlarmVoiceName
+		from AlarmNotifyCfg n
+		left join(SELECT * FROM  PhoneVoice) p1 on p1.ID=n.AlarmVoiceID 
+		left join (SELECT * FROM  PhoneVoice)p2 on p2.ID=n.DeleteAlarmVoiceID 
+		left join (SELECT * FROM  PhoneVoice)p3 on p3.ID=n.ClearAlarmVoiceID
+		where n.PolicyID=#{policyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getAlarmNotifyCfgByName" parameterType="alarmNotifyCfg" resultType="Integer">
+	select count(1) from AlarmNotifyCfg
+	where 1=1 and PolicyName = #{policyName,jdbcType=VARCHAR} and PolicyID != #{policyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByName" parameterType="alarmNotifyCfg" resultType="Integer">
+	select count(1) from AlarmNotifyCfg
+	where 1=1 and PolicyName = #{policyName,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="insertAlarmNotifyCfg" parameterType="alarmNotifyCfg">
+	insert into AlarmNotifyCfg (PolicyID,PolicyName,IsSms,SmsAlarmContent,IsEmail,EmailAlarmContent,MFlag,Descr,SmsClearAlarmContent,
+	SmsDeleteAlarmContent,EmailClearAlarmContent,EmailDeleteAlarmContent,AlarmOnCount,IsPhone,VoiceMessageType,PhoneAlarmContent,
+	PhoneClearAlarmContent,PhoneDeleteAlarmContent,AlarmVoiceID,DeleteAlarmVoiceID,ClearAlarmVoiceID,MaxTimes)
+	values (#{policyID,jdbcType=INTEGER}, #{policyName,jdbcType=VARCHAR}, #{isSms,jdbcType=INTEGER},#{smsAlarmContent,jdbcType=VARCHAR}, 
+	  #{isEmail,jdbcType=INTEGER}, #{emailAlarmContent,jdbcType=VARCHAR},#{mFlag,jdbcType=INTEGER}, #{descr,jdbcType=VARCHAR},#{smsClearAlarmContent,jdbcType=VARCHAR}, 
+	  #{smsDeleteAlarmContent,jdbcType=VARCHAR}, #{emailClearAlarmContent,jdbcType=VARCHAR},#{emailDeleteAlarmContent,jdbcType=VARCHAR},#{alarmOnCount,jdbcType=INTEGER},
+	  #{isPhone,jdbcType=INTEGER},#{voiceMessageType,jdbcType=INTEGER},#{phoneAlarmContent,jdbcType=VARCHAR}, #{phoneClearAlarmContent,jdbcType=VARCHAR},
+	  #{phoneDeleteAlarmContent,jdbcType=VARCHAR},#{alarmVoiceID,jdbcType=INTEGER},#{deleteAlarmVoiceID,jdbcType=INTEGER},#{clearAlarmVoiceID,jdbcType=INTEGER},#{maxTimes,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateAlarmNotifyCfg" parameterType="alarmNotifyCfg">
+	update AlarmNotifyCfg set PolicyName=#{policyName},IsSms=#{isSms},SmsAlarmContent=#{smsAlarmContent},
+	IsEmail=#{isEmail},EmailAlarmContent=#{emailAlarmContent},MFlag=#{mFlag},Descr=#{descr},
+	SmsClearAlarmContent=#{smsClearAlarmContent,jdbcType=VARCHAR},SmsDeleteAlarmContent=#{smsDeleteAlarmContent,jdbcType=VARCHAR},
+	EmailClearAlarmContent=#{emailClearAlarmContent,jdbcType=VARCHAR},EmailDeleteAlarmContent=#{emailDeleteAlarmContent,jdbcType=VARCHAR},AlarmOnCount=#{alarmOnCount,jdbcType=INTEGER},
+	IsPhone=#{isPhone,jdbcType=INTEGER},VoiceMessageType=#{voiceMessageType,jdbcType=INTEGER},PhoneAlarmContent=#{phoneAlarmContent,jdbcType=VARCHAR},
+	PhoneClearAlarmContent=#{phoneClearAlarmContent,jdbcType=VARCHAR},PhoneDeleteAlarmContent=#{phoneDeleteAlarmContent,jdbcType=VARCHAR},AlarmVoiceID=#{alarmVoiceID,jdbcType=INTEGER},
+	DeleteAlarmVoiceID=#{deleteAlarmVoiceID,jdbcType=INTEGER},ClearAlarmVoiceID=#{clearAlarmVoiceID,jdbcType=INTEGER},MaxTimes=#{maxTimes,jdbcType=INTEGER}
+	where PolicyID=#{policyID,jdbcType=INTEGER}
+	</update>
+	<select id="getNotifyByName" resultType="hashMap" resultMap="AlarmNotifyCfgMap">
+	select PolicyID,PolicyName,IsSms,SmsAlarmContent,IsEmail,EmailAlarmContent,MFlag,Descr,SmsClearAlarmContent,
+	SmsDeleteAlarmContent,EmailClearAlarmContent,EmailDeleteAlarmContent,AlarmOnCount,IsPhone,VoiceMessageType,
+	PhoneAlarmContent,PhoneClearAlarmContent,PhoneDeleteAlarmContent,AlarmVoiceID,DeleteAlarmVoiceID,ClearAlarmVoiceID,MaxTimes
+	from AlarmNotifyCfg
+	 where PolicyName ="";
+	</select>
+	
+	<select id="getAllAlarmNotifyCfg" resultType="alarmNotifyCfg">
+		select n.PolicyID,n.PolicyName,n.IsSms,n.SmsAlarmContent,n.IsEmail,n.EmailAlarmContent,n.MFlag,n.Descr,n.SmsClearAlarmContent,
+		n.SmsDeleteAlarmContent,n.EmailClearAlarmContent,n.EmailDeleteAlarmContent,n.AlarmOnCount,n.IsPhone,n.VoiceMessageType,
+		n.PhoneAlarmContent,n.PhoneClearAlarmContent,n.PhoneDeleteAlarmContent,n.AlarmVoiceID,n.DeleteAlarmVoiceID,n.ClearAlarmVoiceID,n.MaxTimes
+		,p1.Name as alarmVoiceName,p2.Name as deleteAlarmVoiceName,p3.Name as clearAlarmVoiceName,p1.Path as alarmVoicePath,p2.Path as deleteAlarmVoicePath,p3.Path as clearAlarmVoicePath
+		from AlarmNotifyCfg n
+		left join(SELECT * FROM  PhoneVoice) p1 on p1.ID=n.AlarmVoiceID 
+		left join (SELECT * FROM  PhoneVoice)p2 on p2.ID=n.DeleteAlarmVoiceID 
+		left join (SELECT * FROM  PhoneVoice)p3 on p3.ID=n.ClearAlarmVoiceID
+	</select>
+	
+</mapper>
+

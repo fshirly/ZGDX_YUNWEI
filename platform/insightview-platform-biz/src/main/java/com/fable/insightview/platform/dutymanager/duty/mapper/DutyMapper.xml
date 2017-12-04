@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.duty.mapper.DutyMapper">
+
+	<select id="queryDutyers" resultType="HASHMAP">
+		SELECT su.UserID id,su.UserName name,se.OrganizationID FROM SysUserInfo su,SysEmployment se,SysUserInGroups sug 
+		WHERE 
+		su.UserID=se.UserID AND su.UserID=sug.UserID AND sug.GroupID=10
+		AND se.OrganizationID=(SELECT OrganizationID FROM SysEmployment WHERE UserID=#{userId,jdbcType=INTEGER})
+		<if test="deptId > 0 ">
+			AND se.DeptID=#{deptId}
+		</if>
+		<if test="name != null and name != '' ">
+			AND su.UserName LIKE ${concat("'%'","'" + name + "'","'%'")}
+		</if>
+		<if test="userIds != null and userIds != '' ">
+			AND su.UserID NOT IN (${userIds})  
+		</if>
+    </select>
+    
+    <select id="list" resultType="HASHMAP" parameterType="page">
+    	select dt.ID,dt.DutyDate,su.UserName Leader 
+    	from PfDuty dt left join SysUserInfo su on dt.LeaderId=su.UserID
+    	where 1=1 
+		<if test="params.watch > 0 ">
+			and exists (SELECT ud.DutyId FROM PfUsersOfDuty ud WHERE dt.ID=ud.DutyId
+			AND ud.UserId=#{params.watch})
+		</if>
+    	<if test="params.leader > 0 ">
+			and dt.LeaderId=#{params.leader}
+		</if>
+		<if test="params.begin != null ">
+			<![CDATA[and dt.DutyDate>=${toDate(params.begin, "%Y-%m-%d")}]]>  
+		</if>
+		<if test="params.end != null ">
+			<![CDATA[and dt.DutyDate<=${toDate(params.end, "%Y-%m-%d")}]]>  
+		</if>
+		order by dt.DutyDate ${params.order}
+    </select>
+    
+    <select id="queryOrders" resultType="HASHMAP">
+    	SELECT ID,Title,BeginPoint,EndPoint,IntervalDays FROM PfDutyOrders
+    	<if test="ids != null and ids != '' ">
+    		WHERE ID NOT IN (${ids})
+    	</if>
+    	ORDER BY BeginPoint
+    </select>
+    
+    <select id="queryByDutyDate" resultType="HASHMAP">  
+		SELECT ID,LeaderId,DutyDate FROM PfDuty WHERE DutyDate=${toDate(dutyDate, "%Y-%m-%d")}
+		<if test="dutyId != null">
+			<![CDATA[AND ID <> #{dutyId}]]> 
+		</if>
+    </select>
+    
+    <insert id="insert" parameterType="com.fable.insightview.platform.dutymanager.duty.entity.PfDuty">
+    	INSERT INTO PfDuty (ID,LeaderId,DutyDate,Level) 
+    	VALUES 
+    	(#{id,jdbcType=INTEGER}, #{leaderId,jdbcType=INTEGER}, #{dutyDate,jdbcType=DATE}, #{level,jdbcType=INTEGER})
+    </insert>
+
+	<delete id="delete">
+		DELETE FROM PfDuty WHERE ID=#{dutyId,jdbcType=INTEGER}
+	</delete>
+	
+	<update id="update" parameterType="com.fable.insightview.platform.dutymanager.duty.entity.PfDuty">
+		UPDATE PfDuty SET LeaderId=#{leaderId,jdbcType=INTEGER},DutyDate=#{dutyDate,jdbcType=DATE},Level=#{level,jdbcType=INTEGER} WHERE ID=#{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="query" resultType="HASHMAP">
+		SELECT dt.ID, dt.DutyDate,dt.LeaderId,dt.Level,su.UserName Leader,su.MobilePhone
+		FROM PfDuty dt LEFT JOIN SysUserInfo su ON dt.LeaderId=su.UserID
+		WHERE dt.ID=#{dutyId,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteLogs">
+		DELETE FROM PfLogOfDuty WHERE DutyId=#{dutyId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteChanges">
+		DELETE FROM PfDutyChangeRecords WHERE DutyId=#{dutyId,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="queryMulti" resultType="HASHMAP">
+		select dt.ID,dt.DutyDate,dt.Level,su.UserName Leader,su.UserIcon,dt.LeaderId
+    	from PfDuty dt left join SysUserInfo su on dt.LeaderId=su.UserID
+    	where 1=1 
+		<if test="watch > 0 ">
+			and exists (SELECT ud.DutyId FROM PfUsersOfDuty ud WHERE dt.ID=ud.DutyId
+			AND ud.UserId=#{watch})
+		</if>
+    	<if test="leader > 0 ">
+			and dt.LeaderId=#{leader}
+		</if>
+		<if test="begin != null ">
+			<![CDATA[and dt.DutyDate>=${toDate(begin, "%Y-%m-%d")}]]>  
+		</if>
+		<if test="end != null ">
+			<![CDATA[and dt.DutyDate<=${toDate(end, "%Y-%m-%d")}]]>  
+		</if>
+		order by dt.DutyDate ASC
+	</select>
+	
+	<select id="selectOrgidByUserid" parameterType="Integer" resultType="Integer">
+		SELECT sm.OrganizationID FROM SysEmployment sm WHERE sm.UserID=#{userId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryRange" resultType="HASHMAP">
+		SELECT pfd.ID,pfd.LeaderId,pfd.DutyDate,pfo.ID orderId,pfo.Title,pfo.BeginPoint,
+		pfo.EndPoint,pfu.ID orderUserId,pfu.UserId,pfu.UserType,pfo.IntervalDays,pfd.LeaderId,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfd.LeaderId) leaderName,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfu.UserId) dutyName,
+		(SELECT UserIcon FROM SysUserInfo WHERE UserID=pfd.LeaderId) leaderIcon,
+		(SELECT UserIcon FROM SysUserInfo WHERE UserID=pfu.UserId) dutyIcon
+		FROM PfDuty pfd, PfOrdersOfDuty pfo, 
+		PfUsersOfDuty pfu WHERE 
+		pfd.ID=pfo.DutyId AND pfu.DutyId=pfd.ID 
+		AND pfo.ID=pfu.OrderIdOfDuty AND pfd.DutyDate BETWEEN #{start} AND #{end}
+		<if test="userType != 0">
+			AND pfu.UserType = #{userType}
+		</if>
+		ORDER BY pfd.DutyDate, pfo.BeginPoint
+	</select>
+	
+	<select id="selectAllDutiesAfterDate" resultType="hashmap">
+		SELECT pfd.ID,pfd.LeaderId,pfd.DutyDate,pfo.ID orderId,pfo.Title,pfo.BeginPoint,
+		pfo.EndPoint,pfu.ID orderUserId,pfu.UserId,pfu.UserType,pfo.IntervalDays,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfd.LeaderId) leaderName,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfu.UserId) dutyName,
+		(SELECT UserIcon FROM SysUserInfo WHERE UserID=pfd.LeaderId) leaderIcon,
+		(SELECT UserIcon FROM SysUserInfo WHERE UserID=pfu.UserId) dutyIcon
+		FROM PfDuty pfd, PfOrdersOfDuty pfo, PfUsersOfDuty pfu
+		WHERE pfd.ID=pfo.DutyId AND pfu.DutyId=pfd.ID AND pfo.ID=pfu.OrderIdOfDuty
+		AND pfd.DutyDate >= #{date,jdbcType=TIMESTAMP}
+		AND pfu.UserType = 1
+		ORDER BY pfd.DutyDate, pfo.BeginPoint
+	</select>
+	
+	<select id="selectOrdersOfDutyByDate" resultType="hashmap">
+		SELECT pfd.ID,pfd.LeaderId,pfd.DutyDate,pfo.ID orderId,pfo.Title,pfo.BeginPoint,
+		pfo.EndPoint,pfu.ID orderUserId,pfu.UserId,pfu.UserType,pfo.IntervalDays,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfd.LeaderId) LeaderName,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfu.UserId) DutyName
+		FROM PfDuty pfd, PfOrdersOfDuty pfo, 
+		PfUsersOfDuty pfu WHERE 
+		pfd.ID=pfo.DutyId AND pfu.DutyId=pfd.ID 
+		AND pfo.ID=pfu.OrderIdOfDuty AND pfd.DutyDate=#{date,jdbcType=TIMESTAMP} AND pfu.UserType=1
+		ORDER BY pfd.DutyDate, pfo.BeginPoint
+	</select>
+	
+	<select id="selectAllDutyersByOrderId" resultType="string">
+		SELECT (SELECT UserName FROM SysUserInfo WHERE UserID=a.UserId) DutyName 
+		FROM PfUsersOfDuty a 
+		WHERE a.OrderIdOfDuty=#{orderId}
+	</select>
+	
+	<select id="queryDutyersInfo" resultType="string">
+		SELECT a.UserId 
+		FROM PfUsersOfDuty a 
+		WHERE a.OrderIdOfDuty=#{orderId}
+	</select>
+	
+	<select id="findUrgencyAlarmCount" resultType="Integer"  parameterType="Map" >
+		select count(*) from (
+			select a.AlarmLevel from AlarmActiveDetail a where a.AlarmLevel = 1 and a.StartTime BETWEEN #{startTime}  and  #{endTime}
+			UNION ALL
+			select b.AlarmLevel from AlarmHistoryDetail b where b.AlarmLevel = 1 and b.CleanTime BETWEEN  #{startTime}  and  #{endTime}) c
+	</select>
+	
+	<select id="findUrgencyAlarmAlreadyDoneCount" resultType="Integer"  parameterType="Map" >
+		select count(*) from(
+			select a.AlarmLevel from AlarmActiveDetail a where a.AlarmID 
+				in (select b.AlarmID from ItsmAlarm b where b.workOrderId IN
+				(select c.WorkOrderId from ItsmAlarmSendOrder c where c.AlarmOrderStatus = 4 and c.SolveTime  BETWEEN  #{startTime}  and  #{endTime} )
+					) and a.AlarmLevel = 1
+		UNION ALL
+			select a.AlarmLevel from AlarmHistoryDetail a where a.AlarmLevel = 1 and a.CleanTime  BETWEEN #{startTime}  and  #{endTime}) a
+	</select>
+	
+	<select id="findAllAlarmDoneCount" resultType="Integer"  parameterType="Map" >
+		select count(*) from ItsmAlarmSendOrder c where c.AlarmOrderStatus = 4 and c.SolveTime  BETWEEN #{startTime}  and  #{endTime}
+	</select>
+	
+	<select id="findEventAlreadyDoneCount" resultType="Integer"  parameterType="Map" >
+		select count(*) from ItsmEvent a where  a.Status = 3 and  a.SolveTime BETWEEN #{startTime}  and  #{endTime}
+	</select>
+	
+	<select id="selectUsersOfOrderByUserType" resultType="hashmap">
+		SELECT a.UserId,b.LeaderId FROM PfUsersOfDuty a
+		LEFT JOIN PfDuty b ON a.DutyId=b.ID
+		WHERE a.OrderIdOfDuty=#{orderId} AND a.UserType=#{userType}
+	</select>
+	
+	<select id="selectOrdersOfDutyBeforeCurrent" resultType="hashmap">
+		SELECT pfd.ID DutyId,pfd.DutyDate,pfd.Level,pfo.ID OrderOfDutyId,pfo.Title,pfo.BeginPoint,
+		pfo.EndPoint,pfu.ID UserOfDutyId,pfu.UserId,pfu.UserType,pfo.IntervalDays,pfd.LeaderId,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfd.LeaderId) LeaderName,
+		IFNULL((SELECT UserIcon FROM SysUserInfo WHERE UserID=pfd.LeaderId),'') LeaderIcon,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfu.UserId) DutyName,
+		IFNULL((SELECT UserIcon FROM SysUserInfo WHERE UserID=pfu.UserId),'') DutyIcon,
+		pfo.ExchangeStatus,pfo.ExchangeStart,pfo.ExchangeEnd,pfo.ForceTime
+		FROM PfDuty pfd, PfOrdersOfDuty pfo,PfUsersOfDuty pfu 
+		WHERE pfd.ID=pfo.DutyId AND pfd.ID=pfu.DutyId AND pfo.ID=pfu.OrderIdOfDuty 
+		AND pfu.UserType=1 AND pfo.ExchangeStatus=1
+		ORDER BY pfd.DutyDate, pfo.BeginPoint
+	</select>
+	
+	<select id="selectLeaderNoticesByDutyId" resultType="string">
+		SELECT NoticePoints FROM PfLogOfDuty WHERE DutyId=#{dutyId}
+	</select>
+	
+	<update id="updateLeaderNoticesByDutyId">
+		UPDATE PfLogOfDuty SET NoticePoints=#{notice} WHERE DutyId=#{dutyId}
+	</update>
+	
+	<select id="selectLatestOrdersOfDuty" resultType="hashmap">
+		SELECT pfd.ID DutyId,pfd.DutyDate,pfd.Level,pfo.ID OrderOfDutyId,pfo.Title,pfo.BeginPoint,
+		pfo.EndPoint,pfu.ID UserOfDutyId,pfu.UserId,pfu.UserType,pfo.IntervalDays,pfd.LeaderId,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfd.LeaderId) LeaderName,
+		(SELECT UserName FROM SysUserInfo WHERE UserID=pfu.UserId) DutyName,
+		pfo.ExchangeStatus,dl.NoticePoints,dl.Advices NoticeInfo
+		FROM PfDuty pfd, PfOrdersOfDuty pfo,PfUsersOfDuty pfu, PfLogOfDuty dl
+		WHERE pfd.ID=pfo.DutyId AND pfd.ID=pfu.DutyId AND pfo.ID=pfu.OrderIdOfDuty AND pfo.DutyId=dl.DutyId
+		AND pfd.DutyDate &lt;= #{date,jdbcType=TIMESTAMP} AND pfu.UserType=1 AND pfo.ExchangeStatus!=1
+		ORDER BY pfd.DutyDate DESC, pfo.BeginPoint DESC
+		LIMIT 1
+	</select>
+
+	<select id="selectDutyStatisticsByOrderIdAndType" resultType="com.fable.insightview.platform.dutymanager.duty.entity.DutyStatistics">
+		SELECT * FROM DutyStatistics WHERE OrderId=#{orderId} AND Type=#{type}
+	</select>
+	
+	<select id="queryDutyersOfOder" resultType="HASHMAP">
+		SELECT pfo.ID,pfu.DutyId,pfu.UserId,pfu.UserType,su.UserAccount,su.UserName,
+		pf.LeaderId,(SELECT UserAccount FROM SysUserInfo WHERE UserID=pf.LeaderId) leadAccount
+		FROM PfDuty pf,PfOrdersOfDuty pfo,PfUsersOfDuty pfu,SysUserInfo su 
+		WHERE pf.ID=pfo.DutyId AND su.UserID=pfu.UserId AND pfo.ID=pfu.OrderIdOfDuty AND pfo.ID=#{orderId}
+	</select>
+	
+</mapper>

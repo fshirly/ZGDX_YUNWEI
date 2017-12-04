@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.discover.mapper.MODeviceMapper" >
+   <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+    <id column="MOID" property="moid" jdbcType="INTEGER" /> 
+    <result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+    <result column="OS" property="os" jdbcType="VARCHAR" />
+     <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="ClassLable" property="classLable" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="MoDeviceProInfoList" type="com.fable.insightview.monitor.discover.entity.MODeviceObj" > 
+    <result column="MOID" property="moid" jdbcType="INTEGER" /> 
+    <result column="MOName" property="moname" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="VARCHAR" /> 
+    <result column="LastUpdateTime" property="lastupdatetime" jdbcType="VARCHAR" />
+    <result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+    <result column="operstatus" property="operstatus" jdbcType="INTEGER" />
+    <result column="ismanage" property="ismanage" jdbcType="INTEGER" /> 
+    <result column="alarmLevel" property="alermlevelInfo" jdbcType="VARCHAR" />
+    <result column="hostIPAddress" property="necollectoridinfo" jdbcType="VARCHAR" />
+    <result column="DomainName" property="domainName" jdbcType="VARCHAR" /> 
+    <result column="ResManufacturerName" property="nemanufacturername" jdbcType="VARCHAR" />
+    <result column="ClassLable" property="necategoryname" jdbcType="VARCHAR" />
+    <result column="DeviceModelName" property="devicemodelname" jdbcType="VARCHAR" /> 
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="ClassName" property="devicetype" jdbcType="VARCHAR" /> 
+    <result column="ClassLable" property="devicetypeDescr" jdbcType="VARCHAR" /> 
+    <result column="vCenterIP" property="vcenterip" jdbcType="VARCHAR" />
+     <result column="ResCategoryID" property="resCategoryID" jdbcType="INTEGER" />
+     <result column="OS" property="os" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="SychronToRes" type="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+    <id column="MOID" property="moid" jdbcType="INTEGER" /> 
+    <result column="MOName" property="moname" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moalias" jdbcType="VARCHAR" />  
+    <result column="OperStatus" property="operstatus" jdbcType="INTEGER" />
+    <result column="DomainName" property="domainName" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="LastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP" />
+    <result column="CreateBy" property="createby" jdbcType="INTEGER" />
+    <result column="UpdateBy" property="updateby" jdbcType="INTEGER" />
+    <result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+    <result column="ResManufacturerName" property="nemanufacturername" jdbcType="VARCHAR" />
+    <result column="ClassLable" property="necategoryname" jdbcType="VARCHAR" />
+    <result column="DeviceModelName" property="devicemodelname" jdbcType="VARCHAR" /> 
+    <result column="NeVersion" property="neversion" jdbcType="VARCHAR" />
+    <result column="OS" property="os" jdbcType="VARCHAR" />
+    <result column="ResTypeID" property="restype" jdbcType="INTEGER" />
+    <result column="OSVersion" property="osversion" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" /> 
+    <result column="ResID" property="resid" jdbcType="INTEGER" />
+    <result column="NeCategoryID" property="necategoryid" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="Load3dRoomFilter" type="com.fable.insightview.monitor.discover.entity.MODeviceObj" > 
+    <result column="MOID" property="moid" jdbcType="INTEGER" /> 
+    <result column="ResID" property="resid" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="getMODeviceByResId"  resultType="hashmap" resultMap="Load3dRoomFilter">
+   		select MOID,ResID from MODevice where  ResID in (${resId}) order by ResID 
+  </select>
+  <select id="getMODeviceByMoId" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj" parameterType="hashmap">
+  		select * from MODevice where MOID in (${MOID})
+  </select>
+  <update id="updateResId" parameterType="hashmap" >
+	update MODevice set ResID = ${resid}  where MOID = ${moid}
+  </update> 
+ 
+    <select id="synchronMoDeviceToRes" resultMap="SychronToRes" parameterType="page">  
+  		SELECT DISTINCT m.DeviceIP,m.MOID,m.OSVersion,m.ResID,m.NeCategoryID,m.MOName,m.MOAlias,m.Createtime,m.LastUpdateTime,m.OperStatus,
+			class.ClassName,class.ClassLable,domain.DomainName,n.ResManufacturerName,model.DeviceModelName,m.os, m.MOClassID 
+		from MODevice m
+		left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID 
+		left join SNMPDeviceSysObjectID model  on m.NeCategoryID = model.ResCategoryID
+		left join MObjectDef class on m.MOClassID = class.ClassID
+		left join SysManagedDomain domain on domain.DomainID=m.DomainID
+		where 1=1
+		<if test="params.mobectType != null" >
+          and m.MOClassID = ${params.mobectType} 
+        </if>
+        <if test="params.moIDs != null" >
+          and m.MOID in (${params.moIDs})
+        </if>
+   </select>
+   
+    <select id="getSNMPDeviceCount"  resultType="hashmap" resultMap="MoDeviceProInfoList">
+   		select * from SNMPDeviceSysObjectID
+  </select>
+     
+  <select id="MoDeviceProInfoList2" resultType="hashmap" resultMap="MoDeviceProInfoList" parameterType="page"> 
+	 	SELECT distinct m.MOID,m.MOName,m.MOAlias,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.MOClassID,n.ResManufacturerName,
+	    	class.ClassName,class.ClassLable,host.IPAddress as hostIPAddress,domain.DomainName,m.NeCategoryID,
+	    	a.alarmlevelname as alermlevelInfo, 
+	    OperStatus  as operstatus,rcd.ResCategoryName as devicemodelname,
+	    IsManage   as ismanage
+	    from MODevice m 
+	    left join MObjectDef class on m.MOClassID = class.ClassID
+	    left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+	    left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID  
+	    left join SysServerHostInfo host on  m.NeCollectorID=host.ServerID
+	    left join ResCategoryDefine rcd on rcd.ResCategoryID=m.NeCategoryID
+	    left join SysManagedDomain domain on domain.DomainID=m.DomainID where 1=1
+	    
+	  <if test="params.deviceip != null and params.deviceip != '' " >
+        and m.DeviceIP like ${concat("'%'","'"+params.deviceip+"'","'%'")} 
+      </if>
+      <if test="params.deviceFactory != null and params.deviceFactory != '' " >
+        and m.NeManufacturerID  = #{params.deviceFactory,jdbcType=INTEGER} 
+      </if>
+      <if test="params.deviceType1 != null and params.deviceType1 != '' " >
+        and m.MOClassID in ${params.deviceType1}
+      </if>
+      
+      <if test="params.devicetype != null and params.devicetype >0 " >
+        and  m.NeCategoryID  in(SELECT ResCategoryID from SNMPDeviceSysObjectID where DeviceType
+        in(select DISTINCT(DeviceType) from SNMPDeviceSysObjectID WHERE ResCategoryID=#{params.devicetype,jdbcType=INTEGER}) and ResCategoryID IS NOT NULL)
+      </if>
+      <if test="params.taskId != null" >
+         and m.TaskId = #{params.taskId,jdbcType=INTEGER} 
+      </if>
+      <if test="params.moClassId != null" >
+         and m.MOClassID = #{params.moClassId,jdbcType=INTEGER} 
+      </if>
+	  <if test="params.moname !='' and params.moname != null ">
+		 and m.MOName like CONCAT('%',#{params.moname},'%' )
+      </if>
+     
+  </select>
+   
+  <resultMap id="sysObject" type="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+   	<id column="ResCategoryID" property="rescategoryid" />
+    <result column="DeviceOID" property="deviceoid" jdbcType="VARCHAR" />
+    <result column="DeviceModelName" property="devicemodelname" jdbcType="VARCHAR" />
+    <result column="DeviceType" property="devicetype" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    MOID, MOName, MOAlias, OperStatus, AdminStatus, AlarmLevel, DomainID, CreateTime, 
+    LastUpdateTime, CreateBy, UpdateBy, DeviceIP, NeCollectorID, NeManufacturerID, NeCategoryID, 
+    NeVersion, OS, OSVersion, SnmpVersion, IsManage
+  </sql>
+  
+  <select id="getDiscoverResultByOS" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	SELECT DeviceIP,MOID,OS from MODevice  where TaskId=#{taskId} ORDER BY OS 
+  </select>
+  
+  <select id="getDiscoverResultByMOClassID" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  SELECT m.DeviceIP,m.MOID,obj.ClassLable FROM MODevice m,MObjectDef obj 
+  where m.MOClassID = obj.ClassID and TaskId =#{taskId} ORDER BY obj.ShowOrder DESC
+  </select>
+  
+  <select id="getDiscoverStoreProcess" resultType="Integer"  parameterType="java.lang.Integer" >
+  	SELECT count(1) from MODevice where TaskId=#{taskId}
+  </select>
+   
+  <select id="getDiscoverResultCount" resultMap="ResultCount" parameterType="java.lang.Integer" >
+	 select  DeviceType,COUNT(DeviceType) as Num from MODevice m INNER JOIN 
+	 (SELECT DISTINCT(ResCategoryID), DeviceType
+	 FROM SNMPDeviceSysObjectID a LEFT JOIN SNMPPEN b ON a.PEN = b.PEN) n  
+	 on m.NeCategoryID = n.ResCategoryID  GROUP BY DeviceType
+  </select>
+  
+  <resultMap id="ResultCount" type="com.fable.insightview.monitor.discover.entity.Count" >
+    <result column="DeviceType" property="deviceType" jdbcType="VARCHAR" />
+    <result column="ResCategoryIDs" property="resCategoryIDs" jdbcType="VARCHAR" />
+    <result column="NeCategoryID" property="neCategoryID" jdbcType="VARCHAR" />
+    <result column="Num" property="count" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="DeviceTypeCount" type="com.fable.insightview.monitor.discover.entity.Count" >
+    <result column="ClassLable" property="deviceType" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+    <result column="Num" property="count" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="getCategoryByDeviceType" resultMap="ResultCount" >
+	 select DeviceType,${groupConcat("DISTINCT(ResCategoryID)")} AS ResCategoryIDs  from SNMPDeviceSysObjectID GROUP BY DeviceType
+  </select>
+  
+  <select id="getCountByMOClassID" resultMap="DeviceTypeCount" >
+	 select ClassLable,MOClassID,COUNT(MOClassID) as Num from MODevice left join MObjectDef on 
+	  MODevice.MOClassID = MObjectDef.ClassID where TaskId= #{taskId} GROUP BY MOClassID
+  </select>
+  
+  <select id="getMoDeviceCountByNeCategoryID" resultMap="ResultCount" parameterType="java.lang.Integer" >
+	 select NeCategoryID,COUNT(NeCategoryID) as Num from MODevice where TaskId=#{taskId}
+	 GROUP BY NeCategoryID
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from MODevice
+    where MOID = #{moid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+    insert into MODevice (MOID, MOName, MOAlias, 
+      OperStatus, AdminStatus, AlarmLevel, 
+      DomainID, CreateTime, LastUpdateTime, 
+      CreateBy, UpdateBy, DeviceIP, 
+      NeCollectorID, NeManufacturerID, NeCategoryID, 
+      NeVersion, OS, OSVersion, 
+      SnmpVersion, IsManage)
+    values (#{moid,jdbcType=INTEGER}, #{moname,jdbcType=VARCHAR}, #{moalias,jdbcType=VARCHAR}, 
+      #{operstatus,jdbcType=INTEGER}, #{adminstatus,jdbcType=INTEGER}, #{alarmlevel,jdbcType=INTEGER}, 
+      #{domainid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{lastupdatetime,jdbcType=TIMESTAMP}, 
+      #{createby,jdbcType=INTEGER}, #{updateby,jdbcType=INTEGER}, #{deviceip,jdbcType=VARCHAR}, 
+      #{necollectorid,jdbcType=INTEGER}, #{nemanufacturerid,jdbcType=INTEGER}, #{necategoryid,jdbcType=INTEGER}, 
+      #{neversion,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{osversion,jdbcType=VARCHAR}, 
+      #{snmpversion,jdbcType=INTEGER}, #{ismanage,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+    insert into MODevice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="moid != null" >
+        MOID,
+      </if>
+      <if test="moname != null" >
+        MOName,
+      </if>
+      <if test="moalias != null" >
+        MOAlias,
+      </if>
+      <if test="operstatus != null" >
+        OperStatus,
+      </if>
+      <if test="adminstatus != null" >
+        AdminStatus,
+      </if>
+      <if test="alarmlevel != null" >
+        AlarmLevel,
+      </if>
+      <if test="domainid != null" >
+        DomainID,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="lastupdatetime != null" >
+        LastUpdateTime,
+      </if>
+      <if test="createby != null" >
+        CreateBy,
+      </if>
+      <if test="updateby != null" >
+        UpdateBy,
+      </if>
+      <if test="deviceip != null" >
+        DeviceIP,
+      </if>
+      <if test="necollectorid != null" >
+        NeCollectorID,
+      </if>
+      <if test="nemanufacturerid != null" >
+        NeManufacturerID,
+      </if>
+      <if test="necategoryid != null" >
+        NeCategoryID,
+      </if>
+      <if test="neversion != null" >
+        NeVersion,
+      </if>
+      <if test="os != null" >
+        OS,
+      </if>
+      <if test="osversion != null" >
+        OSVersion,
+      </if>
+      <if test="snmpversion != null" >
+        SnmpVersion,
+      </if>
+      <if test="ismanage != null" >
+        IsManage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="moid != null" >
+        #{moid,jdbcType=INTEGER},
+      </if>
+      <if test="moname != null" >
+        #{moname,jdbcType=VARCHAR},
+      </if>
+      <if test="moalias != null" >
+        #{moalias,jdbcType=VARCHAR},
+      </if>
+      <if test="operstatus != null" >
+        #{operstatus,jdbcType=INTEGER},
+      </if>
+      <if test="adminstatus != null" >
+        #{adminstatus,jdbcType=INTEGER},
+      </if>
+      <if test="alarmlevel != null" >
+        #{alarmlevel,jdbcType=INTEGER},
+      </if>
+      <if test="domainid != null" >
+        #{domainid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdatetime != null" >
+        #{lastupdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createby != null" >
+        #{createby,jdbcType=INTEGER},
+      </if>
+      <if test="updateby != null" >
+        #{updateby,jdbcType=INTEGER},
+      </if>
+      <if test="deviceip != null" >
+        #{deviceip,jdbcType=VARCHAR},
+      </if>
+      <if test="necollectorid != null" >
+        #{necollectorid,jdbcType=INTEGER},
+      </if>
+      <if test="nemanufacturerid != null" >
+        #{nemanufacturerid,jdbcType=INTEGER},
+      </if>
+      <if test="necategoryid != null" >
+        #{necategoryid,jdbcType=INTEGER},
+      </if>
+      <if test="neversion != null" >
+        #{neversion,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null" >
+        #{os,jdbcType=VARCHAR},
+      </if>
+      <if test="osversion != null" >
+        #{osversion,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpversion != null" >
+        #{snmpversion,jdbcType=INTEGER},
+      </if>
+      <if test="ismanage != null" >
+        #{ismanage,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+    update MODevice
+    <set >
+      <if test="moname != null" >
+        MOName = #{moname,jdbcType=VARCHAR},
+      </if>
+      <if test="moalias != null" >
+        MOAlias = #{moalias,jdbcType=VARCHAR},
+      </if>
+      <if test="operstatus != null" >
+        OperStatus = #{operstatus,jdbcType=INTEGER},
+      </if>
+      <if test="adminstatus != null" >
+        AdminStatus = #{adminstatus,jdbcType=INTEGER},
+      </if>
+      <if test="alarmlevel != null" >
+        AlarmLevel = #{alarmlevel,jdbcType=INTEGER},
+      </if>
+      <if test="domainid != null" >
+        DomainID = #{domainid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdatetime != null" >
+        LastUpdateTime = #{lastupdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createby != null" >
+        CreateBy = #{createby,jdbcType=INTEGER},
+      </if>
+      <if test="updateby != null" >
+        UpdateBy = #{updateby,jdbcType=INTEGER},
+      </if>
+      <if test="deviceip != null" >
+        DeviceIP = #{deviceip,jdbcType=VARCHAR},
+      </if>
+      <if test="necollectorid != null" >
+        NeCollectorID = #{necollectorid,jdbcType=INTEGER},
+      </if>
+      <if test="nemanufacturerid != null" >
+        NeManufacturerID = #{nemanufacturerid,jdbcType=INTEGER},
+      </if>
+      <if test="necategoryid != null" >
+        NeCategoryID = #{necategoryid,jdbcType=INTEGER},
+      </if>
+      <if test="neversion != null" >
+        NeVersion = #{neversion,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null" >
+        OS = #{os,jdbcType=VARCHAR},
+      </if>
+      <if test="osversion != null" >
+        OSVersion = #{osversion,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpversion != null" >
+        SnmpVersion = #{snmpversion,jdbcType=INTEGER},
+      </if>
+      <if test="ismanage != null" >
+        IsManage = #{ismanage,jdbcType=INTEGER},
+      </if>
+    </set>
+    where MOID = #{moid,jdbcType=INTEGER}
+  </update>
+  <update id="updateStateByPrimaryKey" parameterType="java.lang.String">
+  	update MODevice set IsManage=1  where MOID in (#{moid,jdbcType=INTEGER})
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+    update MODevice
+    set MOName = #{moname,jdbcType=VARCHAR},
+      MOAlias = #{moalias,jdbcType=VARCHAR},
+      OperStatus = #{operstatus,jdbcType=INTEGER},
+      AdminStatus = #{adminstatus,jdbcType=INTEGER},
+      AlarmLevel = #{alarmlevel,jdbcType=INTEGER},
+      DomainID = #{domainid,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      LastUpdateTime = #{lastupdatetime,jdbcType=TIMESTAMP},
+      CreateBy = #{createby,jdbcType=INTEGER},
+      UpdateBy = #{updateby,jdbcType=INTEGER},
+      DeviceIP = #{deviceip,jdbcType=VARCHAR},
+      NeCollectorID = #{necollectorid,jdbcType=INTEGER},
+      NeManufacturerID = #{nemanufacturerid,jdbcType=INTEGER},
+      NeCategoryID = #{necategoryid,jdbcType=INTEGER},
+      NeVersion = #{neversion,jdbcType=VARCHAR},
+      OS = #{os,jdbcType=VARCHAR},
+      OSVersion = #{osversion,jdbcType=VARCHAR},
+      SnmpVersion = #{snmpversion,jdbcType=INTEGER},
+      IsManage = #{ismanage,jdbcType=INTEGER}
+    where MOID = #{moid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getMoClassByMoId" resultType="String" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+	 select mr.ClassName from  MODevice md 
+	left join MObjectDef mr on md.MOClassID=mr.ClassID 
+	where md.MOID=#{moid}
+  </select> 
+  
+   <select id="getClassNameByMoId" resultType="String" parameterType="INTEGER" >
+	 select mr.ClassName from  MODevice md 
+	left join MObjectDef mr on md.MOClassID=mr.ClassID 
+	where md.MOID=#{moid}
+  </select>
+ 
+  
+  <select id="getErrorMessByErrorID" resultType="String" parameterType="String" >
+  	select ErrorMess from SystemErrorInfo where ErrorID=#{errorID}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="Integer" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+	 select md.MOID,md.MOName, md.MOAlias,md.OperStatus,md.DomainID,md.DeviceIP,md.MOClassID,md.TaskId,domain.DomainName
+	 from MODevice md
+	 left join SysManagedDomain domain on domain.DomainID=md.DomainID
+	 where 1=1 and md.MOID = #{moid,jdbcType=INTEGER}
+   </select>
+   
+   <select id="getFirstMoDevice" parameterType="Integer" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+   	select * from MODevice where MOClassID = #{moClassId} and ${rownum(1)} order by MOID desc ${limit(1)}
+   </select>
+   
+   <select id="queryMoDeviceList" resultType="hashmap" resultMap="MoDeviceProInfoList" parameterType="page"> 
+   select t.* from (
+     SELECT ${nvl("p.PerfValue","0")}  OperStatus,DATE_FORMAT(p.CollectTime, '%Y-%m-%d %H:%i:%s') formatTime,m.alarmlevel as orderAlarmLevel,
+ m.MOID,m.MOName,m.MOAlias,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.DomainID,m.MOClassID,m.ResID,n.ResManufacturerName,m.NeManufacturerID,
+	    	r.ClassLable,host.IPAddress as hostIPAddress,domain.DomainName,a.alarmlevelname as AlarmLevel,a.LevelColor, 
+	    	m.IsManage,m.NeCollectorID,a.LevelIcon,m.OS,m.UpdateAlarmTime,p.CollectTime,e1.DoIntervals ,f.DoIntervals defDoIntervals
+	    from MODevice m 
+	    left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+	    left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID 
+	    left join MObjectDef r on  m.MOClassID = r.ClassID
+	    left join SysServerHostInfo host on  m.NeCollectorID=host.ServerID
+	    left join SysManagedDomain domain on domain.DomainID=m.DomainID 
+		left join PerfSnapshotHost p ON p.deviceMOID=m.MOID AND	p.KPIName='DeviceAvailability'
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{params.MID} 
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=#{params.MID}) f on m.MOID=f.MOID
+	     where 1=1 
+	   <if test="params.classID != null and params.classID != ''" >
+        and m.MOClassID in ${params.classID} 
+      </if>
+      <if test="params.deviceip != null and params.deviceip != '' " >
+        and m.DeviceIP like ${concat("'%'","'"+params.deviceip+"'","'%'")} 
+      </if>
+      <if test="params.moname != null and params.moname != '' " >
+        and m.MOName like ${concat("'%'","'"+params.moname+"'","'%'")} 
+      </if>
+       <if test="params.ismanage != null and params.ismanage != -1 ">
+        and m.IsManage=#{params.ismanage}
+      </if> 
+      <if test="params.domainName != null and params.domainName != '' " >
+         and domain.DomainName like ${concat("'%'","'"+params.domainName+"'","'%'")} 
+      </if> 
+      <if test="params.nemanufacturername != null and params.nemanufacturername != '' and params.nemanufacturername != '-1' " >
+         and n.ResManufacturerID=#{params.nemanufacturername}
+      </if> 
+ ) t WHERE 1=1  
+	<if test="params.operStatus ==1 || params.operStatus ==2 ">
+		and t.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+	</if>
+	<!-- <if test="params.operStatus ==3 ">
+		and t.OperStatus not in (1,2)
+	</if> -->
+	ORDER BY  (case when t.orderAlarmLevel =0 then 6 end), t.orderAlarmLevel,t.MOID
+  </select>
+  
+  
+	     <select id="queryPhysicsDeviceList" resultType="hashmap" resultMap="MoDeviceProInfoList" parameterType="page"> 
+	   select t.* from (
+	     SELECT ${nvl("p.PerfValue","0")}  OperStatus,DATE_FORMAT(p.CollectTime, '%Y-%m-%d %H:%i:%s') formatTime,m.alarmlevel as orderAlarmLevel,
+	 m.MOID,m.MOName,m.MOAlias,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.DomainID,m.MOClassID,m.ResID,n.ResManufacturerName,m.NeManufacturerID,
+		    	r.ClassLable,host.IPAddress as hostIPAddress,domain.DomainName,a.alarmlevelname as AlarmLevel,a.LevelColor, 
+		    	m.IsManage,m.NeCollectorID,a.LevelIcon,ph.vCenterIP,m.OS,m.UpdateAlarmTime,p.CollectTime,e1.DoIntervals ,f.DoIntervals defDoIntervals
+		    from MODevice m 
+		    left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+		    left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID 
+		    left join MObjectDef r on  m.MOClassID = r.ClassID
+		    left join SysServerHostInfo host on  m.NeCollectorID=host.ServerID
+		    left join SysManagedDomain domain on domain.DomainID=m.DomainID 
+		    LEFT JOIN MOPhysicsHostInfo ph ON m.MOID=ph.MOID
+			left join PerfSnapshotHost p ON p.deviceMOID=m.MOID AND	p.KPIName='DeviceAvailability'
+			LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{params.MID}  
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=#{params.MID} ) f on m.MOID=f.MOID
+		     where 1=1 
+	      <if test="params.classID != null and params.classID != '' " >
+	        and m.MOClassID in (${params.classID})
+	      </if>
+	      <if test="params.deviceip != null and params.deviceip != '' " >
+	        and m.DeviceIP like ${concat("'%'","'"+params.deviceip+"'","'%'")} 
+	      </if>
+	      <if test="params.moname != null and params.moname != '' " >
+	        and m.MOName like ${concat("'%'","'"+params.moname+"'","'%'")} 
+	      </if>
+	       <if test="params.ismanage != null and params.ismanage != -1 ">
+	        and m.IsManage=#{params.ismanage}
+	      </if> 
+	      <if test="params.domainName != null and params.domainName != '' " >
+	         and domain.DomainName like ${concat("'%'","'"+params.domainName+"'","'%'")} 
+	      </if> 
+	      <if test="params.nemanufacturername != null and params.nemanufacturername != '' and params.nemanufacturername != '-1' " >
+	         and n.ResManufacturerID=#{params.nemanufacturername}
+	      </if> 
+	 ) t WHERE 1=1  
+	<if test="params.operStatus ==1 || params.operStatus ==2 ">
+				and t.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+		  </if>
+			<if test="params.operStatus ==3 ">
+				and t.OperStatus not in (1,2)
+			</if>
+		ORDER BY  (case when t.orderAlarmLevel =0 then 6 end), t.orderAlarmLevel,t.MOID
+	  </select>
+    <select id="queryUnknownDeviceList" resultType="hashmap" resultMap="MoDeviceProInfoList" parameterType="page"> 
+	  SELECT m.moid,m.deviceIP,m.moClassId,p.CollectTime,m.UpdateAlarmTime,e1.DoIntervals ,f.DoIntervals defDoIntervals,${nvl("p.PerfValue","0")}  OperStatus, ${nvl("d.DomainName","'未知'")}  DomainName from MODevice m 
+	  LEFT JOIN SysManagedDomain d  ON m.DomainID=d.DomainID
+	  left join PerfSnapshotHost p ON p.deviceMOID=m.MOID AND	p.KPIName='DeviceAvailability'
+	  LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+	  LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{params.MID}  
+	  LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=#{params.MID} ) f on m.MOID=f.MOID
+		WHERE m.MOClassID=-1 
+	   <if test="params.deviceip != null and params.deviceip != '' " >
+	        and m.DeviceIP like ${concat("'%'","'"+params.deviceip+"'","'%'")} 
+	      </if>
+	      <if test="params.domainName != null and params.domainName != '' " >
+	         and d.DomainName like ${concat("'%'","'"+params.domainName+"'","'%'")} 
+	      </if>
+	      order by m.MOID
+  </select>
+  
+   <select id="getMOdeviceByAlarm"  parameterType="java.lang.Integer" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+	 select md.MOID,md.MOName, md.MOAlias,md.OperStatus,md.DomainID,md.DeviceIP,
+	 	md.MOClassID,md.TaskId,md.AlarmLevel 
+	 from MODevice md
+	 where md.MOID=${SourceMOID}
+   </select>
+   
+   <select id="getMOdeviceDB" parameterType="java.lang.String" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+	 SELECT t.MOID,t.MOName,t.MOAlias,t.DomainID,t.AlarmLevel,t.MOClassID 	
+	 from MODBMSServer t
+	 where t.MOID=
+	 (
+		select DBMSMOID from ${dbTabName} where MOID=${SourceMOID}
+	  )	
+   </select>
+   
+   <select id="getMOdeviceDB2" parameterType="java.lang.String" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+	  SELECT t.MOID,t.MOName,t.MOAlias,t.DomainID,t.AlarmLevel,t.MOClassID from MODBMSServer t where t.MOID=
+	  (select DBMSMOID from MODB2Instance where MOID=(select InstanceMOID from MODB2Database where MOID=${SourceMOID})) 	
+   </select>
+   
+   <select id="getMOdeviceMiddleWare"  parameterType="java.lang.Integer" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+	 select t.MOID,t.AlarmLevel,0 DomainID
+	 from MOMiddleWareJMX t
+	 where t.MOID=${SourceMOID}
+	 
+   </select>
+   
+  <update id="updateModeviceAlarmLevel" parameterType="java.lang.Integer">
+  	update MODevice set AlarmLevel=${currLevel}
+  	where MOID=${MOID}
+  </update>
+  
+   <update id="updateMiddleWareAlarmLevel" parameterType="java.lang.Integer">
+  	update MOMiddleWareJMX set AlarmLevel=${currLevel}  
+  	where MOID=${MOID}
+  </update>
+  
+   <update id="updateDBAlarmLevel" parameterType="java.lang.Integer">
+  	update MODBMSServer set AlarmLevel=${currLevel}  
+  	where MOID=${MOID}
+  </update>
+  
+   <update id="updateModeviceAllAlarmLevel" >
+  	update MODevice set AlarmLevel=0
+  </update>
+  
+   <update id="updateMiddleWareAllAlarmLevel" >
+  	update MOMiddleWareJMX set AlarmLevel=0
+  </update>
+  
+   <update id="updateDBAllAlarmLevel" >
+  	update MODBMSServer set AlarmLevel=0
+  </update>  
+  
+  <select id="getVmMoIds" parameterType="Integer" resultType="Integer">
+  	select MOID from MOVMInfo where PhyMOID = #{moid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getDeviceListByIP" parameterType="String" resultType="hashmap" resultMap="MoDeviceProInfoList">
+  	select m.*,n.ResManufacturerName 
+  	from MODevice m 
+  	left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID
+  	where m.DeviceIP=#{deviceip,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="queryMODeviceByResId"  resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj" 
+   				parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+   		select MOID,MOClassID,DomainID,ResID from MODevice where  ResID = ${resId} 
+   		and ${rownum(1)} ${limit(1)} 
+   </select>
+   
+    <select id="listAllMODevice"  resultType="hashmap" >
+   		select MOID,MOClassID,DomainID,ResID from MODevice 		
+   </select>
+    <select id="getInfoByIPAndClass"  parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj" >
+   		SELECT   m.MOID,m.MOName,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.MOClassID,n.ResManufacturerName,m.NeManufacturerID,
+	    	r.ClassLable ResCategoryName,host.IPAddress as hostIPAddress,domain.DomainName,a.alarmlevelname as alermlevelInfo,a.LevelColor, 
+	    	m.OperStatus,m.IsManage,m.NeCollectorID,a.LevelIcon,m.MOAlias,m.DomainID,m.DeviceIP,m.TaskId 
+	    from MODevice m 
+	    left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+	    left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID 
+	    left join MObjectDef r on  m.MOClassID = r.ClassID
+	    left join SysServerHostInfo host on  m.NeCollectorID=host.ServerID
+	    left join SysManagedDomain domain on domain.DomainID=m.DomainID where m.MOClassID=#{moClassId,jdbcType=INTEGER} and m.DeviceIP =#{deviceip,jdbcType=VARCHAR} and m.MOID!=#{moid,jdbcType=INTEGER} 
+   </select>
+   
+   <update id="updateModeviceMOClassID" parameterType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+   update MODevice set MOClassID= #{moClassId,jdbcType=INTEGER} ,MOAlias= #{moalias,jdbcType=VARCHAR} where MOID = #{moid,jdbcType=INTEGER}
+   </update>
+   
+   <select id="querySubNetDeviceList" resultType="hashmap" resultMap="BaseResultMap" parameterType="hashmap">
+		SELECT mo.MOID,
+			mo.DeviceIP,
+			mo.MOAlias,
+			mo.NeCategoryID,
+			mo.NeManufacturerID,
+			mo.MOName,
+   			mo.MOClassID,
+			dom.domainId,
+			dom.domainName,
+			mo.MOName,
+			def.ClassLable devicetype,
+			def.ClassName devicetypeDescr,
+			fac.ResManufacturerName nemanufacturername,
+			rcd.ResCategoryName Devicemodelname
+		FROM MODeviceInSubnet subNet
+		LEFT JOIN MODevice mo ON subNet.DeviceMOID = mo.MOID
+		LEFT JOIN SysManagedDomain dom ON dom.domainID = mo.domainID
+		LEFT JOIN MObjectDef def on mo.MOClassID=def.ClassID
+		LEFT JOIN ManufacturerInfo fac on fac.ResManufacturerID=mo.NeManufacturerID
+		LEFT JOIN ResCategoryDefine rcd on rcd.ResCategoryID=mo.NeCategoryID 
+		where mo.MOID is not null
+		<if test="subnetId != null and subnetId != ''" >
+        	and subNet.SubnetMOID in (${subnetId})
+      	</if> 
+      	<if test="moClassID != null and moClassID != ''" >
+        	and mo.MOClassID in (${moClassID})
+      	</if>
+		order by subNet.ID
+  </select>
+  
+	<!-- hzxiao add: query device by domain and types -->
+	<!-- data: 2014/12/26 -->
+	<select id="queryDeviceByDomainsAndTypes" resultType="hashmap" resultMap="BaseResultMap" parameterType="hashmap">
+   		SELECT DISTINCT
+			mo.MOID,
+			mo.DeviceIP,
+			mo.NeManufacturerID,
+			mo.MOName,
+   			mo.MOClassID,
+			dom.domainId,
+			dom.domainName,
+			def.ClassLable devicetype,
+			def.ClassName devicetypeDescr,
+			fac.ResManufacturerName nemanufacturername
+		FROM
+			MODevice mo
+		LEFT JOIN SysManagedDomain dom ON dom.domainID = mo.domainID
+		LEFT JOIN MObjectDef def on mo.MOClassID=def.ClassID
+		LEFT JOIN ManufacturerInfo fac on fac.ResManufacturerID=mo.NeManufacturerID
+		WHERE
+			1 = 1
+		<if test="domainID != null and domainID != ''" >
+			AND mo.DomainID in (${domainID})
+      	</if> 
+      	<if test="moClassID != null and moClassID != ''" >
+        	and mo.MOClassID in (${moClassID})
+      	</if>
+		order by mo.MOID
+	</select>
+	<select id="queryMODeviceByIds" resultType="hashmap" resultMap="BaseResultMap" parameterType="hashmap">
+   		SELECT DISTINCT
+			mo.MOID,
+			mo.DeviceIP,
+			mo.NeCategoryID,
+			mo.NeManufacturerID,
+			mo.MOName,
+   			mo.MOClassID,
+			dom.domainId,
+			dom.domainName,
+			def.ClassLable devicetype,
+			def.ClassName devicetypeDescr,
+			fac.ResManufacturerName nemanufacturername,
+			rcd.ResCategoryName Devicemodelname
+		FROM
+			MODevice mo
+		LEFT JOIN SysManagedDomain dom ON dom.domainID = mo.domainID
+		LEFT JOIN MObjectDef def on mo.MOClassID=def.ClassID
+		LEFT JOIN ManufacturerInfo fac on fac.ResManufacturerID=mo.NeManufacturerID
+		LEFT JOIN ResCategoryDefine rcd on rcd.ResCategoryID=mo.NeCategoryID
+		WHERE
+			1 = 1
+		<if test="moids != null and moids != ''" >
+			AND mo.MOID in (${moids})
+      	</if> 
+      	<if test="moClassID != null and moClassID != ''" >
+        	and mo.MOClassID in (${moClassID})
+      	</if>
+		order by mo.MOID
+	</select>
+	<!-- data: 2014/12/26 -->
+	<select id="queryDomainsByUserId" resultType="String" parameterType="hashmap">
+   		SELECT
+			dom.DomainID,
+			dom.DomainName,
+			org.OrganizationID,
+			org.OrganizationName,
+			u.userId,
+			u.UserName
+		FROM
+			SysManagedDomain dom
+		JOIN SysOrganization org ON org.OrganizationID = dom.OrganizationID
+		JOIN SysEmployment emp ON emp.OrganizationID=org.OrganizationID
+		JOIN SysUserInfo u ON u.UserID=emp.UserID
+		WHERE
+			1 = 1
+		<if test="userId != null and userId != ''" >
+        	and u.userId = ${userId}
+      	</if>
+	</select>	  
+	<select id="getVms" parameterType="Integer" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+  	select * from MODevice 
+  	where MOID in (
+  	select MOID from MOVMInfo where PhyMOID = #{moid,jdbcType=INTEGER}
+  	)
+  </select>
+  
+   <select id="listDeviceByConditions" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj"> 
+	 select m.*,n.ResManufacturerName as nemanufacturername,r.ClassLable as devicetypeDescr,rescate.ResCategoryName as necategoryname from MODevice m
+	 left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID
+	 left join ResCategoryDefine rescate on m.NeCategoryID=rescate.ResCategoryID
+	 left join MObjectDef r on  m.MOClassID = r.ClassID
+	 where 1=1
+	   <if test="taskId != null and taskId != -1 " >
+        and m.TaskId= #{taskId,jdbcType=INTEGER}
+      </if>
+      <if test="className != null and className != '' " >
+         and r.ClassName in (${className} )
+      </if>
+  </select>
+  
+  <select id="getPhs" parameterType="String" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+  	select * from MODevice 
+  	where MOID in (
+  	select MOID from MOPhysicsHostInfo where vCenterIP = #{vCenterIP,jdbcType=VARCHAR}
+  	)
+  </select>
+  
+  <select id="getMoinfoCount" resultType="Integer"  parameterType="java.lang.String" >
+  	select count(1) from MOIPInfo where DeviceIP=#{deviceIp}
+  </select>
+  
+   <select id="getDeviceByIpInfo" parameterType="String" resultType="hashmap" resultMap="MoDeviceProInfoList">
+  	select m.*,n.ResManufacturerName 
+  	from MODevice m 
+  	left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID
+  	left join MOIPInfo b on m.MOID = b.MOID
+  	where b.DeviceIP=#{deviceip,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getVCenterDevice" resultType="com.fable.insightview.monitor.discover.entity.MODeviceObj">
+    select m.* from MODevice m
+	left join  MOPhysicsHostInfo p on m.DeviceIP=p.vCenterIP
+	where p.MOID=#{moId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getMoDeviceListByAppType" resultType="hashmap" resultMap="MoDeviceProInfoList" parameterType="page"> 
+	 	select t.*,m.MOID,m.MOName,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.MOClassID,n.ResManufacturerName,
+	    	class.ClassName,class.ClassLable,host.IPAddress as hostIPAddress,domain.DomainName,m.NeCategoryID,
+	    	a.alarmlevelname as alermlevelInfo, 
+	    OperStatus  as operstatus,rcd.ResCategoryName as devicemodelname,
+	    IsManage   as ismanage
+	    from ResPrefixNetWorkDevice t left join MODevice m on t.CiId=m.ResID 
+	    left join MObjectDef class on m.MOClassID = class.ClassID
+	    left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+	    left join ManufacturerInfo n on m.NeManufacturerID = n.ResManufacturerID  
+	    left join SysServerHostInfo host on  m.NeCollectorID=host.ServerID
+	    left join ResCategoryDefine rcd on rcd.ResCategoryID=m.NeCategoryID
+	    left join SysManagedDomain domain on domain.DomainID=m.DomainID where 1=1 
+	  <if test="params.appType != null and params.appType != '' " >
+	   	and t.COL_ApplicationType in (${params.appType})
+	  </if>
+	  <if test="params.deviceip != null and params.deviceip != '' " >
+        and m.DeviceIP like ${concat("'%'","'"+params.deviceip+"'","'%'")} 
+      </if>
+      <if test="params.deviceFactory != null and params.deviceFactory != '' " >
+        and m.NeManufacturerID  = #{params.deviceFactory,jdbcType=INTEGER} 
+      </if>
+      <if test="params.deviceType1 != null and params.deviceType1 != '' " >
+        and m.MOClassID in ${params.deviceType1}
+      </if>
+      
+      <if test="params.devicetype != null and params.devicetype >0 " >
+        and  m.NeCategoryID  in(SELECT ResCategoryID from SNMPDeviceSysObjectID where DeviceType
+        in(select DISTINCT(DeviceType) from SNMPDeviceSysObjectID WHERE ResCategoryID=#{params.devicetype,jdbcType=INTEGER}) and ResCategoryID IS NOT NULL)
+      </if>
+      <if test="params.taskId != null" >
+         and m.TaskId = #{params.taskId,jdbcType=INTEGER} 
+      </if>
+      <if test="params.moClassId != null" >
+         and m.MOClassID = #{params.moClassId,jdbcType=INTEGER} 
+      </if>
+	  <if test="params.moname !='' and params.moname != null ">
+		 and m.MOName like CONCAT('%',#{params.moname},'%' )
+      </if>
+     
+  </select>
+  
+   <select id="getMoinfoByMOID" parameterType="Integer"  resultType="java.lang.String" >
+  	select DeviceIP from MOIPInfo where MOID=#{moId}
+  </select>
+  <update id="updateMoAlias" parameterType="hashmap">
+    update MONetworkIf set MOAlias=#{moAlias} where moid=#{moID}
+  </update>
+</mapper>

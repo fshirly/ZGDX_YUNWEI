@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.environmentmonitor.mapper.MOZoneManagerMapper" >
+  <resultMap id="ZoneManagerMap" type="com.fable.insightview.monitor.environmentmonitor.entity.MOZoneManagerBean" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainID" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <select id="getZoneManagerList" resultType="hashmap" resultMap="ZoneManagerMap" parameterType="page">
+      select zo.*,d.DomainName,mo.ClassLable as moClassName
+	  from MOZoneManager zo
+	  left join SysManagedDomain d on zo.DomainID=d.DomainID 
+	  left join MObjectDef mo on zo.MOClassID=mo.ClassID 
+	  where 1=1
+	  <if test="params.ip !='' and params.ip != null ">
+	 	and zo.IPAddress like ${concat("'%'","'"+params.ip+"'","'%'")}
+	  </if>
+	  <if test="params.moClassId != -1 and params.moClassId != '' ">
+	    and zo.MOClassID=#{params.moClassId} 
+	  </if>
+    </select>
+    
+    <select id="getZoneManagerInfo" resultType="zoneManager">
+      select zo.*,d.DomainName,mo.ClassLable as moClassName,com.UserName,com.Password,com.ID
+	  from MOZoneManager zo
+	  left join SysManagedDomain d on zo.DomainID=d.DomainID 
+	  left join MObjectDef mo on zo.MOClassID=mo.ClassID
+	  left join SysRoomCommunity com on zo.IPAddress=com.IPAddress and zo.Port = com.Port
+	  where zo.MOID=#{moID}
+    </select>
+    
+    <select id="getZoneManagerByIP" resultType="zoneManager" parameterType="zoneManager">
+    select * from MOZoneManager 
+    where IPAddress=#{ipAddress} and MOClassID=#{moClassId} and Port=#{port}
+    </select>
+    <update id="updateZoneManager" parameterType="zoneManager">
+    update MOZoneManager set MOClassID= #{moClassId,jdbcType=INTEGER} where MOID = #{moID,jdbcType=INTEGER}
+    </update>
+  </mapper>

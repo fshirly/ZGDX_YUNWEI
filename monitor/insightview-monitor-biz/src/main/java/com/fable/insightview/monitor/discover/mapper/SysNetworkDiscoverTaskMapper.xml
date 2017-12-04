@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.discover.mapper.SysNetworkDiscoverTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    <id column="TaskID" property="taskid" jdbcType="INTEGER" />
+    <result column="TaskType" property="tasktype" jdbcType="INTEGER" />
+    <result column="IPAddress1" property="ipaddress1" jdbcType="VARCHAR" />
+    <result column="IPAddress2" property="ipaddress2" jdbcType="VARCHAR" />
+    <result column="MOClassNames" property="moClassNames" jdbcType="VARCHAR" />
+    <result column="NetMask" property="netmask" jdbcType="VARCHAR" />
+    <result column="Hops" property="hops" jdbcType="INTEGER" />
+    <result column="UpdateInterval" property="updateinterval" jdbcType="INTEGER" />
+    <result column="Creator" property="creator" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="CollectorID" property="collectorid" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="LastDoTime" property="lastdotime" jdbcType="TIMESTAMP" />
+    <result column="LastStatusTime" property="laststatustime" jdbcType="TIMESTAMP" />
+    <result column="OperateStatus" property="operatestatus" jdbcType="INTEGER" />
+    <result column="ProgressStatus" property="progressstatus" jdbcType="INTEGER" />
+    <result column="WebIPAddress" property="webIPAddress" jdbcType="VARCHAR" />
+    <result column="LastOPResult " property="lastopresult" jdbcType="INTEGER" />
+    <result column="Port " property="port" jdbcType="INTEGER" />
+    <result column="ErrorInfo" property="errorinfo" jdbcType="VARCHAR" />
+    <result column="IsOffline" property="isOffline" jdbcType="VARCHAR" />
+  </resultMap>     
+  <sql id="Base_Column_List" >
+    TaskID, TaskType, IPAddress1, IPAddress2, NetMask, Hops, Creator, CreateTime, LastDoTime, 
+    CollectorID
+  </sql>
+  <select id="selectDiscoverTasks" resultType="hashmap" resultMap="BaseResultMap" parameterType="page">
+  	select task.TaskID,task.TaskType,task.WebIPAddress,task.IPAddress1, 
+      	 task.IPAddress2,task.NetMask,task.Hops,task.Creator,task.CreateTime,
+    	 task.CollectorID,task.OperateStatus,task.ProgressStatus,task.MOClassNames,
+    	 task.Status,task.UpdateInterval,task.LastStatusTime,task.LastOPResult,
+    	 host.IPAddress as collectorName,err.ErrorMess as errorinfo
+	from SysNetworkDiscoverTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	where 1=1 and task.OperateStatus!=3 and task.TaskType!=4 and task.IsOffline is NULL
+	
+      <if test="params.ipaddress1 != '' and params.ipaddress1 != null ">
+		and task.ipaddress1 like  ${concat("'%'","'"+params.ipaddress1+"'","'%'")}
+      </if>
+      <if test="params.ipaddress2 != '' and params.ipaddress2 != null ">
+		and task.ipaddress2 like  ${concat("'%'","'"+params.ipaddress2+"'","'%'")}
+      </if>
+      <if test="params.status != -2 ">
+		and task.Status=#{params.status} 
+      </if>
+      <if test="params.tasktype != -1 and params.tasktype != null">
+		and task.TaskType=#{params.tasktype} 
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+      order by createtime desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from SysNetworkDiscoverTask
+    where TaskID = #{taskid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from SysNetworkDiscoverTask
+    where TaskID = #{taskid,jdbcType=INTEGER}
+  </delete>  
+  <insert id="insert2" parameterType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    insert into SysNetworkDiscoverTask (TaskID, TaskType,WebIPAddress, IPAddress1, 
+      IPAddress2, NetMask, Hops, 
+      Creator, CreateTime,
+      CollectorID,OperateStatus,ProgressStatus,MOClassNames,Port,UpdateInterval,DBName,IsOffline)
+    values (#{taskid,jdbcType=INTEGER}, #{tasktype,jdbcType=INTEGER},
+    #{webipaddress,jdbcType=VARCHAR}, #{ipaddress1,jdbcType=VARCHAR}, 
+      #{ipaddress2,jdbcType=VARCHAR}, #{netmask,jdbcType=VARCHAR}, #{hops,jdbcType=INTEGER}, 
+      #{creator,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{collectorid,jdbcType=INTEGER}, #{operatestatus,jdbcType=INTEGER}, 
+      #{progressstatus,jdbcType=INTEGER}, #{moClassNames,jdbcType=VARCHAR}, 
+      #{port,jdbcType=INTEGER},#{updateinterval,jdbcType=INTEGER}, #{dbName,jdbcType=VARCHAR},#{isOffline,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    insert into SysNetworkDiscoverTask
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskid != null" >
+        TaskID,
+      </if>
+      <if test="tasktype != null" >
+        TaskType,
+      </if>
+      <if test="ipaddress1 != null" >
+        IPAddress1,
+      </if>
+      <if test="ipaddress2 != null" >
+        IPAddress2,
+      </if>
+      <if test="netmask != null" >
+        NetMask,
+      </if>
+      <if test="hops != null" >
+        Hops,
+      </if>
+      <if test="creator != null" >
+        Creator,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="collectorid != null" >
+        CollectorID,
+      </if>
+      <if test="isOffline != null" >
+        IsOffline,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskid != null" >
+        #{taskid,jdbcType=INTEGER},
+      </if>
+      <if test="tasktype != null" >
+        #{tasktype,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddress1 != null" >
+        #{ipaddress1,jdbcType=VARCHAR},
+      </if>
+      <if test="ipaddress2 != null" >
+        #{ipaddress2,jdbcType=VARCHAR},
+      </if>
+      <if test="netmask != null" >
+        #{netmask,jdbcType=VARCHAR},
+      </if>
+      <if test="hops != null" >
+        #{hops,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="collectorid != null" >
+        #{collectorid,jdbcType=INTEGER},
+      </if>
+      <if test="isOffline != null" >
+        #{isOffline,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    update SysNetworkDiscoverTask
+    <set >
+      <if test="tasktype != null" >
+        TaskType = #{tasktype,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddress1 != null" >
+        IPAddress1 = #{ipaddress1,jdbcType=VARCHAR},
+      </if>
+      <if test="ipaddress2 != null" >
+        IPAddress2 = #{ipaddress2,jdbcType=VARCHAR},
+      </if>
+      <if test="netmask != null" >
+        NetMask = #{netmask,jdbcType=VARCHAR},
+      </if>
+      <if test="hops != null" >
+        Hops = #{hops,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        Creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if> 
+      <if test="collectorid != null" >
+        CollectorID = #{collectorid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="progressstatus != null" >
+        ProgressStatus = #{progressstatus,jdbcType=INTEGER},
+      </if>      
+      <if test="lastopresult != null" >
+        LastOPResult = #{lastopresult,jdbcType=INTEGER},
+      </if> 
+      <if test="errorinfo != null" >
+        ErrorInfo = #{errorinfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TaskID = #{taskid,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    update SysNetworkDiscoverTask
+    set TaskType = #{tasktype,jdbcType=INTEGER},
+      IPAddress1 = #{ipaddress1,jdbcType=VARCHAR},
+      IPAddress2 = #{ipaddress2,jdbcType=VARCHAR},
+      NetMask = #{netmask,jdbcType=VARCHAR},
+      Hops = #{hops,jdbcType=INTEGER},
+      Creator = #{creator,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      LastDoTime = #{lastdotime,jdbcType=TIMESTAMP},
+      CollectorID = #{collectorid,jdbcType=INTEGER}
+    where TaskID = #{taskid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getTaskInfoByTaskId" parameterType="Integer" resultType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask">
+  select task.TaskID,task.TaskType,task.WebIPAddress,task.IPAddress1,task.Port,
+      	 task.IPAddress2,task.NetMask,task.Hops,task.Creator,task.CreateTime,
+    	 task.CollectorID,task.OperateStatus,task.ProgressStatus,task.MOClassNames,
+    	 task.Status,task.UpdateInterval,task.LastStatusTime,task.LastOPResult,
+    	 u.UserName as creatorName,host.IPAddress as collectorName,def.ClassLable as moClassLable,err.ErrorMess as errorinfo ,task.ErrorInfo as errorID
+  from SysNetworkDiscoverTask task
+  left join SysUserInfo u on task.creator=u.UserID
+  left join SysServerHostInfo host on task.CollectorID=host.ServerID
+  left join MObjectDef def on task.MOClassNames= def.ClassName
+  left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+  where task.TaskID=#{taskid,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateTaskProgressStatus" parameterType="com.fable.insightview.monitor.discover.entity.SysNetworkDiscoverTask" >
+    update SysNetworkDiscoverTask set ProgressStatus=#{progressstatus} where TaskID=#{taskid}
+  </update>
+  
+  <select id="getAllTask" resultType="hashmap" resultMap="BaseResultMap">
+ 	select task.*
+	from SysNetworkDiscoverTask task
+	where 1=1 and task.OperateStatus!=3 and task.TaskType=4 and task.IsOffline is NULL
+  </select>
+  
+  <select id="selectDeviceTasks" resultType="hashmap" resultMap="BaseResultMap" parameterType="page">
+  	select task.TaskID,task.TaskType,task.WebIPAddress,task.IPAddress1, 
+      	 task.IPAddress2,task.NetMask,task.Hops,task.Creator,task.CreateTime,
+    	 task.CollectorID,task.OperateStatus,task.ProgressStatus,task.MOClassNames,
+    	 task.Status,task.UpdateInterval,task.LastStatusTime,task.LastOPResult,task.Port,
+  		 host.IPAddress as collectorName,def.ClassID as classID,
+  		 def.ClassLable as moClassLable,err.ErrorMess as errorinfo,task.ErrorInfo as errorID
+	from SysNetworkDiscoverTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join MObjectDef def on task.MOClassNames= def.ClassName
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	where 1=1 and task.OperateStatus!=3 and task.TaskType=4 and task.IsOffline is NULL
+	
+      <if test="params.ipaddress1 != '' and params.ipaddress1 != null ">
+		and task.ipaddress1 like  ${concat("'%'","'"+params.ipaddress1+"'","'%'")}
+      </if>
+      <if test="params.moClassNames != '' and params.moClassNames != null ">
+		and task.MOClassNames like  ${concat("'%'","'"+params.moClassNames+"'","'%'")}
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+       <if test="params.taskid != '' and params.taskid != 0 and params.taskid != null">
+		and task.TaskID=#{params.taskid} 
+      </if>
+       order by createtime desc
+  </select>
+  
+  <select id="selectOfflineTasks" resultType="hashmap" resultMap="BaseResultMap" parameterType="page">
+  	select task.TaskID,task.TaskType,task.WebIPAddress,task.IPAddress1, 
+      	 task.IPAddress2,task.NetMask,task.Hops,task.Creator,task.CreateTime,
+    	 task.CollectorID,task.OperateStatus,task.ProgressStatus,task.MOClassNames,
+    	 task.Status,task.UpdateInterval,task.LastStatusTime,task.LastOPResult,
+    	 host.IPAddress as collectorName,err.ErrorMess as errorinfo,def.ClassLable as moClassLable,def.ClassID as classID
+	from SysNetworkDiscoverTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join MObjectDef def on task.MOClassNames= def.ClassName
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	where 1=1 and task.OperateStatus!=3 and task.IsOffline='1'
+	
+      <if test="params.ipaddress1 != '' and params.ipaddress1 != null ">
+		and task.ipaddress1 like  ${concat("'%'","'"+params.ipaddress1+"'","'%'")}
+      </if>
+      <if test="params.tasktype != -1 and params.tasktype != null">
+		and task.TaskType=#{params.tasktype} 
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+      order by task.createtime desc
+  </select>
+  
+  <select id="getOfflineTaskByHost" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+    from SysNetworkDiscoverTask
+    where OperateStatus!=3 and CollectorID = #{collectorId,jdbcType=INTEGER} and IsOffline='1'
+  </select>
+</mapper>

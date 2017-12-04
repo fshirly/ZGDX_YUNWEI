@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.DeleteReaderMapper">
+ 
+ <sql id="doLimit">
+ LIMIT 100000;
+ </sql>
+ <delete id="deleteReaderSnapshot" parameterType="hashmap">
+ delete from ${prefTableName} where DeviceMOID  in (${MOID})  <include refid="doLimit"></include>
+ </delete>
+ 
+ <delete id="deleteAlarmDetail" parameterType="hashmap">
+delete from ${alarmTableName} where SourceMOID in (${MOID}) <include refid="doLimit"></include>
+</delete>
+
+<delete id="deleteAlarmFilter" parameterType="hashmap">
+delete from ${tableName} where FilterKeyValue in (${MOID}) and FilterKey='AlarmSourceMOID' <include refid="doLimit"></include>
+</delete>
+
+<delete id="deleteTask" parameterType="hashmap">
+delete from ${tableName} where MOID in (${MOID}) 
+</delete>
+ 
+ <delete id="deleteSNMP" parameterType="hashmap">
+delete from ${snmptableName}  WHERE IPAddress in (select IPAddress  from ${tableName}  where MOID in (${MOID}));
+</delete>
+ 
+<delete id="deleteMOTag" parameterType="hashmap">
+delete  from ${tableName} WHERE ParentMOID in (${MOID});
+</delete>
+<delete id="deleteMODevice" parameterType="hashmap">
+	delete from ${tableName} where MOID in (${MOID})
+</delete>
+
+<select id="queryReaderMOID" resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from MOReader where ParentMOID in (${MOID});
+</select>
+
+<select id="queryReaderInfo" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select reader.IPAddress as ip,reader.Port,def.ClassName as MOName from MOReader reader,MObjectDef def where reader.MOClassID =  def.ClassID and MOID in(${MOID})
+</select>
+
+<delete id="deleteReaderDiscoverTask" parameterType="hashmap">
+	delete from SysNetworkDiscoverTask where TaskType=4 and  MOClassNames='${MOName}' and IPAddress1='${IP}';
+</delete>
+
+<delete id="deleteTemplate" parameterType="hashmap">
+delete from SysMonitorsTemplateUsed  where MOID in (${MOID})
+</delete>
+</mapper>

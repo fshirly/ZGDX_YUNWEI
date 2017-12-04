@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.middleware.websphere.mapper.WebsphereMapper">
+	<resultMap id="MOMiddleWareJMXResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="JMXTYPE" property="jmxType" jdbcType="VARCHAR" />
+		<result column="PORTTYPE" property="portType" jdbcType="VARCHAR" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+		<result column="USERNAME" property="userName" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="passWord" jdbcType="VARCHAR" />
+		<result column="SERVERNAME" property="serverName" jdbcType="VARCHAR" />
+		<result column="JMXVERSION" property="jmxVersion" jdbcType="VARCHAR" />
+		<result column="STARTUPTIME" property="startupTime" jdbcType="TIMESTAMP" />
+		<result column="OSNAME" property="oSName" jdbcType="VARCHAR" />
+		<result column="OSVERSION" property="oSVersion" jdbcType="VARCHAR" />
+		<result column="OPERSTATUS" property="operStatus" jdbcType="INTEGER" />
+		<result column="ADMINSTATUS" property="adminStatus" jdbcType="INTEGER" />
+		<result column="DEVICEMOID" property="deviceMOID" jdbcType="INTEGER" />
+		<result column="ALARMLEVEL" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="CREATETIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="LASTUPDATETIME" property="lastUpdateTime"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="WebSphereOperSituationResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.WebSphereOperSituationBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="useStatus" property="useStatus" jdbcType="INTEGER" />
+		<result column="DeviceStatus" property="deviceStatus" jdbcType="VARCHAR" />
+		<result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="MoMiddleWareJ2eeAppResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.MoMiddleWareJ2eeAppBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMoId" jdbcType="INTEGER" />
+		<result column="URI" property="uri" jdbcType="INTEGER" />
+		<result column="AppName" property="appName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="WebMoudleInfosResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.WebMoudleInfosBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="WarName" property="warName" jdbcType="VARCHAR" />
+		<result column="ServletName" property="servletName" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="TotalRequests" property="totalRequests"
+			jdbcType="INTEGER" />
+		<result column="ConcurrentRequests" property="concurrentRequests"
+			jdbcType="INTEGER" />
+		<result column="NumErrors" property="numErrors" jdbcType="INTEGER" />
+		<result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+		<result column="URI" property="uri" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="formatTime" property="formatTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<resultMap id="WebEjbMoudleInfoResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.WebEjbMoudleInfoBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="EJBName " property="ejbName" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="URI" property="uri" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="PerfWASJVMHeapResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.PerfWASJVMHeapBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="HEAPSIZE" property="heapSize" jdbcType="DECIMAL" />
+		<result column="HEAPFREE" property="heapFree" jdbcType="DECIMAL" />
+		<result column="HEAPUSAGE" property="heapUsage" jdbcType="DECIMAL" />
+		<result column="PROCESSCPUUSAGE" property="processCpuUsage"
+			jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfDeviceAvailabilityResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.PerfDeviceAvailabilityBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="PACKETLOSS" property="packetLoss" jdbcType="DECIMAL" />
+		<result column="RESPONSETIME" property="responseTime" jdbcType="DECIMAL" />
+		<result column="DEVICESTATUS" property="deviceStatus" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWASThreadPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.PerfWASThreadPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="CREATETHREADS" property="createThreads"
+			jdbcType="DECIMAL" />
+		<result column="ACTIVETHREADS" property="activeThreads"
+			jdbcType="DECIMAL" />
+		<result column="DESTROYTHREADS" property="destroyThreads"
+			jdbcType="DECIMAL" />
+		<result column="POOLSIZE" property="poolSize" jdbcType="DECIMAL" />
+		<result column="PERCENTMAXED" property="percentMaxed" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWASJDBCPoolBeanResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.PerfWASJDBCPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="POOLUSAGE" property="poolUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="MoMidWareJdbcPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.MoMidWareJdbcPoolBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="DSName" property="dsName" jdbcType="VARCHAR" />
+		<result column="JdbcDriver" property="jdbcDriver" jdbcType="VARCHAR" />
+		<result column="PoolUrl" property="poolUrl" jdbcType="VARCHAR" />
+		<result column="DriverName" property="driverName" jdbcType="VARCHAR" />
+		<result column="MinConns" property="minConns" jdbcType="INTEGER" />
+		<result column="MaxConns" property="maxConns" jdbcType="INTEGER" />
+		<result column="CurConns" property="curConns" jdbcType="INTEGER" />
+		<result column="ConnTimeOut" property="connTimeOut" jdbcType="INTEGER" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="MoMidWareJdbcDsResultMap"
+		type="com.fable.insightview.monitor.middleware.websphere.entity.MoMidWareJdbcDsBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="DSName" property="dsName" jdbcType="VARCHAR" />
+		<result column="JdbcDriver" property="jdbcDriver" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="UserName" property="userName" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="passWord" jdbcType="VARCHAR" />
+		<result column="DBUrl" property="dbUrl" jdbcType="VARCHAR" />
+		<result column="InitialSize" property="initialSize" jdbcType="INTEGER" />
+		<result column="MaxActive" property="maxActive" jdbcType="INTEGER" />
+		<result column="MinIdle" property="minIdle" jdbcType="INTEGER" />
+		<result column="MaxIdle" property="maxIdle" jdbcType="INTEGER" />
+		<result column="MaxWait" property="maxWait" jdbcType="INTEGER" />
+	</resultMap>
+	<!--
+		获取监测对象信息列表-->
+	<select id="getWasInfo" resultType="hashmap" resultMap="MOMiddleWareJMXResultMap"
+		parameterType="java.lang.Integer">
+		SELECT
+		a.ServerName,a.MoAlias,a.StartupTime,a.JmxVersion,a.OSName,a.OSVersion,a.JmxType,a.CreateTime,a.PortType,a.LastUpdateTime,b.moName,b.MOID,b.DeviceIP,c.Name
+		JtaName,a.IP, c.Status JtaStatus,a.Port,a.userName,a.passWord,d.`NAME`
+		jmsName
+		FROM MOMiddleWareJMX a
+		LEFT JOIN
+		MODevice b ON
+		a.DeviceMOID=b.MOID LEFT JOIN
+		MOMiddleWareJTA c
+		ON
+		a.MOID=c.ParentMOID
+		LEFT JOIN
+		MOMiddleWareJMS d
+		ON
+		a.MOID=d.ParentMOID
+		WHERE
+		a.MOID=#{MOID}
+	</select>
+	<!-- 获取响应趋势曲线数据 -->
+	<select id="queryWasResponsePerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfDeviceAvailabilityResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,ResponseTime FROM
+		PerfDeviceAvailability 
+		where
+		MOID=${seltItem}
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)}
+		and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+	<!-- 获取内存堆曲线数据 -->
+	<select id="queryWasMemoryPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWASJVMHeapResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,heapUsage,processCpuUsage FROM
+		MOMiddleWareJMX a LEFT JOIN
+		MOMiddleWareJVM b
+		ON a.MOID=b.ParentMOID
+		LEFT JOIN
+		PerfWASJVMHeap c ON
+		b.MOID=c.MOID
+		where a.MOID=${seltItem}
+		and
+		CollectTime BETWEEN
+		${toDate(timeBegin)}
+		and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+	<!-- 获取线程曲线 -->
+	<select id="queryWasThreadPoolPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWASThreadPoolResultMap">
+		SELECT
+		${dateFormat("CollectTime")}
+		formatTime,ActiveThreads,DestroyThreads,PercentMaxed
+		FROM
+		PerfWASThreadPool
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<!-- 获取线程信息 -->
+	<select id="getWasThreadPoolInfo" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWASThreadPoolResultMap">
+		select d.*,e.ActiveThreads,f.DestroyThreads,g.PoolSize,h.PercentMaxed from 
+		(SELECT c.MOID,b.ThreadName,b.MaxConns,b.MinConns,b.InactivityTimeOut,b.Growable,c.PerfValue CreateThreads
+		FROM MOMiddleWareJMX a LEFT JOIN MOMiddleWareThreadPool b ON
+		a.MOID=b.ParentMOID
+		LEFT JOIN PerfSnapshotMiddleware c ON b.MOID=c.MOID
+		WHERE a.MOID=#{moId} and c.KPIName=#{KPIcreateThreads}) d 
+		left join 
+		(SELECT c.MOID,b.ThreadName,b.MaxConns,b.MinConns,b.InactivityTimeOut,b.Growable,c.PerfValue ActiveThreads
+		FROM MOMiddleWareJMX a LEFT JOIN MOMiddleWareThreadPool b ON
+		a.MOID=b.ParentMOID
+		LEFT JOIN PerfSnapshotMiddleware c ON b.MOID=c.MOID
+		WHERE a.MOID=#{moId} and c.KPIName=#{KPIactiveThreads}) e on d.MOID=e.MOID
+		left join 
+		(SELECT c.MOID,b.ThreadName,b.MaxConns,b.MinConns,b.InactivityTimeOut,b.Growable,c.PerfValue DestroyThreads
+		FROM MOMiddleWareJMX a LEFT JOIN MOMiddleWareThreadPool b ON
+		a.MOID=b.ParentMOID
+		LEFT JOIN PerfSnapshotMiddleware c ON b.MOID=c.MOID
+		WHERE a.MOID=#{moId} and c.KPIName=#{KPIdestroyThreads}) f on e.MOID=f.MOID
+		left join 
+		(SELECT c.MOID,b.ThreadName,b.MaxConns,b.MinConns,b.InactivityTimeOut,b.Growable,c.PerfValue PoolSize
+		FROM MOMiddleWareJMX a LEFT JOIN MOMiddleWareThreadPool b ON
+		a.MOID=b.ParentMOID
+		LEFT JOIN PerfSnapshotMiddleware c ON b.MOID=c.MOID
+		WHERE a.MOID=#{moId} and c.KPIName=#{KPIthreadPoolSize}) g on f.MOID=g.MOID
+		left join 
+		(SELECT c.MOID,b.ThreadName,b.MaxConns,b.MinConns,b.InactivityTimeOut,b.Growable,c.PerfValue PercentMaxed
+		FROM MOMiddleWareJMX a LEFT JOIN MOMiddleWareThreadPool b ON
+		a.MOID=b.ParentMOID
+		LEFT JOIN PerfSnapshotMiddleware c ON b.MOID=c.MOID
+		WHERE a.MOID=#{moId} and c.KPIName=#{KPIpercentMaxed}) h on g.MOID=h.MOID
+	</select>
+	<!-- 获取JDBC连接池个数 -->
+	<select id="queryNumsByMoID" resultMap="MoMidWareJdbcPoolResultMap"
+		parameterType="hashmap">
+		SELECT b.MOID,b.DSName FROM MOMiddleWareJMX a,
+		MOMiddleWareJdbcPool b WHERE a.MOID=b.ParentMOID AND a.MOID=#{MOID}
+	</select>
+	<!-- 获取JDBC连接池详情 -->
+	<select id="getPerfJdbcPoolList" resultType="hashmap"
+		resultMap="PerfWASJDBCPoolBeanResultMap" parameterType="hashmap">
+		SELECT
+		${dateFormat("CollectTime")} formatTime,PoolUsage
+		from
+		PerfWASJDBCPool
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<!-- 获取webApp当前运行状态信息 -->
+	<select id="getWebSphereOperSituationInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="WebSphereOperSituationResultMap">
+		select jmx.AlarmLevel,snapMid.PerfValue	useStatus,al.LevelIcon,jmx.UpdateAlarmTime,snapMid.CollectTime,e.DoIntervals,f.DoIntervals defDoIntervals	from MOMiddleWareJMX jmx
+		left join AlarmLevel al	on	jmx.AlarmLevel=al.AlarmLevelID
+		left join PerfSnapshotMiddleware snapMid	on jmx.MOID=snapMid.MOID and snapMid.KPIName=#{KPIserviceAvailability}
+		LEFT JOIN SysPerfPollTask d1 on jmx.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{MID}
+		LEFT JOIN (select MOMiddleWareJMX.*,SysMOList.DoIntervals from MOMiddleWareJMX,SysMOList where MID=#{MID}) f on jmx.MOID=f.MOID
+		where jmx.MOID=#{moId}
+	</select>
+	<select id="getDeviceStatus" parameterType="hashmap" resultType="hashmap"
+		resultMap="WebSphereOperSituationResultMap">
+		select DeviceStatus from PerfDeviceAvailability
+		where
+		MOID=#{moId} and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+	</select>
+	<select id="getWebAppInfos" parameterType="Integer"
+		resultType="moMiddleWareJ2eeAppBean">
+		select * from MOMiddleWareJ2eeApp where ParentMOID=#{moId}
+	</select>
+	<!-- 获取web应用模块信息 -->
+	<select id="getWebMoudleInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="WebMoudleInfosResultMap">
+		select a.*,b.ConcurrentRequests,c.NumErrors,d.ResponseTime from 
+		(select servlet.MOID,servlet.ServletName,webM.WarName,webM.STATUS,app.URI,psnap.PerfValue TotalRequests from PerfSnapshotMiddleware psnap
+			LEFT JOIN MOMiddleWareServlet servlet  on psnap.MOID=servlet.MOID
+			LEFT JOIN MOMiddleWareWebModule webM on servlet.ParentMOID=webM.MOID
+			LEFT JOIN MOMiddleWareJ2eeApp app on app.moid=webM.ParentMOID
+			where app.ParentMOID=#{moId} and psnap.KPIName=#{KPItotalRequests}) a
+		left join 
+		(select servlet.MOID,servlet.ServletName,webM.WarName,webM.STATUS,app.URI,psnap.PerfValue ConcurrentRequests from PerfSnapshotMiddleware psnap
+			LEFT JOIN MOMiddleWareServlet servlet  on psnap.MOID=servlet.MOID
+			LEFT JOIN MOMiddleWareWebModule webM on servlet.ParentMOID=webM.MOID
+			LEFT JOIN MOMiddleWareJ2eeApp app on app.moid=webM.ParentMOID
+			where app.ParentMOID=#{moId} and psnap.KPIName=#{KPIconcurrentRequests}) b on a.MOID=b.MOID
+		left join 
+		(select servlet.MOID,servlet.ServletName,webM.WarName,webM.STATUS,app.URI,psnap.PerfValue NumErrors from PerfSnapshotMiddleware psnap
+			LEFT JOIN MOMiddleWareServlet servlet  on psnap.MOID=servlet.MOID
+			LEFT JOIN MOMiddleWareWebModule webM on servlet.ParentMOID=webM.MOID
+			LEFT JOIN MOMiddleWareJ2eeApp app on app.moid=webM.ParentMOID
+			where app.ParentMOID=#{moId} and psnap.KPIName=#{KPIresponseTime}) c on b.MOID=c.MOID
+		left join 
+		(select servlet.MOID,servlet.ServletName,webM.WarName,webM.STATUS,app.URI,psnap.PerfValue ResponseTime from PerfSnapshotMiddleware psnap
+			LEFT JOIN MOMiddleWareServlet servlet  on psnap.MOID=servlet.MOID
+			LEFT JOIN MOMiddleWareWebModule webM on servlet.ParentMOID=webM.MOID
+			LEFT JOIN MOMiddleWareJ2eeApp app on app.moid=webM.ParentMOID
+			where app.ParentMOID=#{moId} and psnap.KPIName=#{KPInumErrors}) d on c.MOID=d.MOID	 
+	</select>
+	<!-- 获取EJB模块信息 -->
+	<select id="getWebEjbInfos" parameterType="Integer" resultType="hashmap"
+		resultMap="WebEjbMoudleInfoResultMap">
+		select ejbM.EJBName,ejbM.STATUS,j2eeA.URI
+		from
+		MOMiddleEJBModule ejbM
+		left join MOMiddleWareJ2eeApp j2eeA
+		on
+		ejbM.ParentMOID=j2eeA.MOID
+		where 1=1 and j2eeA.ParentMOID=#{moId}
+	</select>
+	<!-- 获取wasServlet性能数据 -->
+	<select id="queryWebAppPerf" parameterType="hashmap" resultType="hashmap"
+		resultMap="WebMoudleInfosResultMap">
+		select b.ServletName,${dateFormat("a.CollectTime")}
+		formatTime,a.TotalRequests,a.ConcurrentRequests,a.ResponseTime
+		from
+		PerfWASServlet a
+		left join MOMiddleWareServlet b on a.MOID=b.MOID
+		left join MOMiddleWareWebModule c on b.ParentMOID=c.MOID
+		left join MOMiddleWareJ2eeApp d on c.ParentMOID=d.MOID
+		left join MOMiddleWareJMX e on d.ParentMOID=e.MOID
+		where e.MOID=#{moId} and 
+		a.CollectTime BETWEEN
+		${toDate(timeBegin)}
+		and
+		${toDate(timeEnd)}
+		order
+		by
+		a.CollectTime
+	</select>
+
+	<!-- 获取JDBC连接池数据 -->
+	<select id="getJdbcPoolInfos" parameterType="Integer"
+		resultType="hashmap" resultMap="MoMidWareJdbcPoolResultMap">
+		select * from MOMiddleWareJdbcPool
+		where ParentMOID = #{moId}
+	</select>
+
+	<!-- 获取JDBC数据源数据 -->
+	<select id="getJdbcDsInfos" parameterType="Integer" resultType="hashmap"
+		resultMap="MoMidWareJdbcDsResultMap">
+		select * from MOMiddleWareJdbcDS where ParentMOID = #{moId}
+	</select>
+
+	<!-- 获取一条JDBC数据源详情 -->
+	<select id="getJdbcDsDetailInfos" parameterType="Integer"
+		resultType="moMidWareJdbcDsBean">
+		select * from MOMiddleWareJdbcDS where MOID = #{moId}
+	</select>
+</mapper>

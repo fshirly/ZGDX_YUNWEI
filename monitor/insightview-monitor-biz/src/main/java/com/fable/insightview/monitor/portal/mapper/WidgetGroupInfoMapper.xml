@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.portal.mapper.WidgetGroupInfoMapper" >
+  <resultMap id="WidgetGroupInfoMap" type="widgetGroupInfo" >
+    <id column="WidgetGroupID" property="widgetGroupId" jdbcType="VARCHAR" />
+    <result column="WidgetGroupName" property="widgetGroupName" jdbcType="VARCHAR" />
+    <result column="WidgetGroupDesc" property="widgetGroupDesc" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getAllWidgetGroup" resultType="hashmap" resultMap="WidgetGroupInfoMap">
+  select *  from WidgetGroup
+  </select>
+</mapper>
+

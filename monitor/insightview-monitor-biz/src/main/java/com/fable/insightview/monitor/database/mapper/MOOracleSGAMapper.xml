@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.database.mapper.MOOracleSGAMapper" >
+  <resultMap id="OracleSGAMap" type="com.fable.insightview.monitor.database.entity.MOOracleSGABean" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="InstanceMOID" property="instanceMOID" jdbcType="INTEGER" />
+    <result column="TotalSize" property="totalSize" jdbcType="INTEGER" />
+    <result column="FixedSize" property="fixedSize" jdbcType="INTEGER" />
+    <result column="BufferSize" property="bufferSize" jdbcType="INTEGER" />
+    <result column="RedologBuf" property="redologBuf" jdbcType="INTEGER" />
+    <result column="PoolSize" property="poolSize" jdbcType="INTEGER" />
+    <result column="SharedPool" property="sharedPool" jdbcType="INTEGER" />
+    <result column="LargePool" property="largePool" jdbcType="INTEGER" />
+    <result column="JavaPool" property="javaPool" jdbcType="INTEGER" />
+    <result column="StreamPool" property="streamPool" jdbcType="INTEGER" />
+    <result column="LibraryCache" property="libraryCache" jdbcType="INTEGER" />
+    <result column="DicaCache" property="dicaCache" jdbcType="INTEGER" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="DBName" property="dbName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="PerfSGAMap" type="com.fable.insightview.monitor.database.entity.PerfOrclSGABean">
+    <id column="ID" property="id" jdbcType="NUMERIC" />
+    <result column="MOID" property="moId" jdbcType="NUMERIC" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="FullSize" property="fullSize" jdbcType="NUMERIC" />
+    <result column="BufferCache" property="bufferCache" jdbcType="NUMERIC" />
+    <result column="SharedPool" property="sharedPool" jdbcType="NUMERIC" />
+    <result column="RedoLog" property="redoLog" jdbcType="NUMERIC" />
+    <result column="LibraryCache" property="libraryCache" jdbcType="NUMERIC" />
+    <result column="DictionaryCache" property="dictionaryCache" jdbcType="NUMERIC" />
+    <result column="FixedArea" property="fixedArea" jdbcType="NUMERIC" />
+    <result column="JavaPool" property="javaPool" jdbcType="NUMERIC" />
+    <result column="LargePool" property="largePool" jdbcType="NUMERIC" />
+    <result column="VariableSize" property="variableSize" jdbcType="NUMERIC" />
+    <result column="StreamsPool" property="streamsPool" jdbcType="NUMERIC" />
+    <result column="FreeMemory" property="freeMemory" jdbcType="NUMERIC" />
+  </resultMap>
+ <!-- 获取实例SGA详情-->
+	<select id="getOrclSGADetail" resultType="moOracleSGA"
+		parameterType="java.lang.Integer">
+		SELECT sga.moID,sga.instanceMOID,sga.totalSize,sga.fixedSize,sga.bufferSize,sga.redologBuf,sga.poolSize,
+		sga.sharedPool,sga.largePool,sga.javaPool,sga.streamPool,sga.libraryCache,sga.dicaCache
+			FROM MOOracleSGA sga
+			LEFT JOIN MOOracleInstance ins ON sga.InstanceMOID=ins.MOID
+			LEFT JOIN MODBMSServer server ON  ins.DBMSMOID=server.MOID
+			WHERE server.MOID=#{MOID}
+	</select>
+	  <select id="queryOrclSGAPerf" resultMap="PerfSGAMap"  resultType="hashmap" parameterType="hashmap">
+	   select pef.ID,pef.MOID,${dateFormat("pef.CollectTime")} as time,pef.FullSize,pef.BufferCache,pef.SharedPool,pef.RedoLog,
+	   pef.LibraryCache,pef.DictionaryCache,pef.FixedArea,pef.JavaPool,pef.LargePool,pef.VariableSize,pef.StreamsPool,pef.FreeMemory
+	   from PerfOrclSGA pef
+	   LEFT JOIN MOOracleSGA sga ON pef.MOID=sga.MOID
+	   LEFT JOIN MOOracleInstance ins ON sga.InstanceMOID=ins.MOID
+	   LEFT JOIN MODBMSServer server ON  ins.DBMSMOID=server.MOID
+	   where server.MOID=#{DeviceMOID}
+	   and pef.CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by pef.CollectTime
+	   </select>
+	   <!-- 获取实例SGA LIST-->
+	<select id="getOrclSGAList" parameterType="page" resultType="hashmap" resultMap="OracleSGAMap">
+		SELECT sga.moID,sga.instanceMOID,sga.totalSize,sga.fixedSize,sga.bufferSize,sga.redologBuf,sga.poolSize,
+		sga.sharedPool,sga.largePool,sga.javaPool,sga.streamPool,
+		sga.libraryCache,sga.dicaCache,server.IP,db.DBName,ins.InstanceName
+			from MOOracleSGA sga
+			LEFT JOIN MOOracleInstance ins ON sga.InstanceMOID=ins.MOID
+			LEFT JOIN MODBMSServer server ON  ins.DBMSMOID=server.MOID
+			LEFT JOIN MOOracleDB db ON server.MOID=db.DBMSMOID
+			where 1=1
+		<if test="params.ip != null and params.ip != '' " >
+	         and server.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.instanceName != null and params.instanceName != '' " >
+	         and ins.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")}
+	    </if>
+	    <if test="params.instanceMOID != -1 and params.instanceMOID != '' ">
+		    and ins.MOID=#{params.instanceMOID} 
+		</if> 
+	</select>
+	<select id="getOrclSGAByMoID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOOracleSGABean">
+	select sga.*,ins.InstanceName
+	from MOOracleSGA sga
+	LEFT JOIN MOOracleInstance ins ON sga.InstanceMOID=ins.MOID
+	where sga.MOID=#{moID}
+	</select>
+</mapper>

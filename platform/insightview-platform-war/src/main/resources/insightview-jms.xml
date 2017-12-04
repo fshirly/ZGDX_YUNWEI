@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+        http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core-5.7.0.xsd">
+
+	<!-- 以下代码是用于消息发布 start -->
+	<!-- 配置JMS连接工厂 -->
+	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+
+		<!-- MQ地址 -->
+		<property name="brokerURL" value="${jms.broker.url}" />
+
+		<!-- 是否异步发送 -->
+		<property name="useAsyncSend" value="true" />
+	</bean>
+
+
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+
+		<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+		<property name="targetConnectionFactory" ref="connectionFactory" />
+
+	</bean>
+
+	<!--topic消息发布者 -->
+	<bean id="jmsProvider" class="com.fable.insightview.platform.core.jms.JMSProvider">
+		<property name="jmsTemplate" ref="jmsTemplate"></property>
+	</bean>
+
+	<!-- 配置JMS模板（Topic），pubSubDomain="true"表示是订阅/发布模式 -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+
+	<!--订阅/发布模式监听容器 -->
+	<jms:listener-container destination-type="durableTopic"
+		container-type="default" connection-factory="connectionFactory"
+		acknowledge="auto" client-id="insightview_user">
+		<jms:listener destination="user_topic" ref="platform.sysUserService1"
+			method="onMessage" subscription="insightview_user" />
+	</jms:listener-container>
+	
+	<jms:listener-container destination-type="durableTopic"
+		container-type="default" connection-factory="connectionFactory"
+		acknowledge="auto" client-id="insightview_organization">
+		<jms:listener destination="organization_topic" ref="platform.organizationService"
+			method="onMessage" subscription="insightview_organization" />
+	</jms:listener-container>
+
+	<jms:listener-container destination-type="durableTopic"
+		container-type="default" connection-factory="connectionFactory"
+		acknowledge="auto" client-id="insightview_department">
+		<jms:listener destination="department_topic" ref="platform.departmentService"
+			method="onMessage" subscription="insightview_department" />
+	</jms:listener-container>
+
+</beans>

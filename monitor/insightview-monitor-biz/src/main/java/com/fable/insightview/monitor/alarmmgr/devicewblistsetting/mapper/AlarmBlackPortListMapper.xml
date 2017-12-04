@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.mapper.AlarmBlackPortListMapper" >
+  <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackPortListBean" >
+    <id column="BlackPortID" property="blackPortID" jdbcType="INTEGER" />
+    <result column="BlackID" property="blackID" jdbcType="INTEGER" />
+    <result column="MOID" property="MOID" jdbcType="INTEGER" />
+    <result column="MOName" property="MOName" jdbcType="VARCHAR" />
+    <result column="Instance" property="instance" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="PortService" property="portService" jdbcType="VARCHAR" />
+    <result column="PortType" property="portType" jdbcType="VARCHAR" />
+    <result column="Type" property="type" jdbcType="CHAR" />
+    <result column="OprateStatus" property="oprateStatus" jdbcType="CHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insertIntoAlarmBlackPortList" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackPortListBean" >
+    INSERT INTO AlarmBlackPortList (BlackID, MOID, 
+      MOName, Instance, Port, 
+      PortService,GatewayIP, PortType, Type, 
+      OprateStatus, CreateTime)
+    VALUES (#{blackID,jdbcType=INTEGER}, #{MOID,jdbcType=INTEGER}, 
+      #{MOName,jdbcType=VARCHAR}, #{instance,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, 
+      #{portService,jdbcType=VARCHAR},#{gatewayIP,jdbcType=VARCHAR},#{portType,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, 
+      #{oprateStatus,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <delete id="deleteAlarmBlackPortListRow" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackPortListBean" >
+    delete from AlarmBlackPortList
+    where 1=1
+    <if test="port != null">
+    	and Port = #{port,jdbcType=INTEGER}
+    </if>
+    <if test="blackID != null">
+    	and BlackID = #{blackID,jdbcType=INTEGER}
+    </if>
+    <if test="blackPortID != null">
+    	and BlackPortID = #{blackPortID,jdbcType=INTEGER}
+    </if>
+  </delete>
+  <update id="updateIntoAlarmBlackPortList" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackPortListBean" >
+    UPDATE AlarmBlackPortList
+    <set >
+      <if test="blackID != null" >
+        BlackID = #{blackID,jdbcType=INTEGER},
+      </if>
+      <if test="MOID != null" >
+        MOID = #{MOID,jdbcType=INTEGER},
+      </if>
+      <if test="MOName != null" >
+        MOName = #{MOName,jdbcType=VARCHAR},
+      </if>
+      <if test="instance != null" >
+        Instance = #{instance,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        Port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="portService != null" >
+        PortService = #{portService,jdbcType=VARCHAR},
+      </if>
+      <if test="portType != null" >
+        PortType = #{portType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="oprateStatus != null" >
+        OprateStatus = #{oprateStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    WHERE BlackPortID = #{blackPortID,jdbcType=INTEGER}
+  </update>
+  <select id="checkBlackIDAndPort" resultMap="BaseResultMap" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackPortListBean">
+  	SELECT * FROM AlarmBlackPortList
+  	WHERE BlackID = #{blackID,jdbcType=INTEGER}
+  	AND Port = #{port,jdbcType=INTEGER}
+  </select>
+</mapper>

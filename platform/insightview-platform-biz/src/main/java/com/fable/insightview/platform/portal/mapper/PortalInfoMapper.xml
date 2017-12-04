@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.portal.mapper.PortalInfoMapper" >
+  <resultMap id="PortalInfoMap" type="portalInfo" >
+    <id column="PortalID" property="portalId" jdbcType="INTEGER" />
+    <result column="PortalName" property="portalName" jdbcType="VARCHAR" />
+    <result column="PortalContent" property="portalContent" jdbcType="VARCHAR" />
+    <result column="PortalType" property="portalType" jdbcType="INTEGER" />
+    <result column="PortalDesc" property="portalDesc" jdbcType="VARCHAR" />
+    <result column="Creator" property="creator" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="Updator" property="updator" jdbcType="INTEGER" />
+    <result column="LastUpdateTime" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="OwnerUserID" property="ownerUserId" jdbcType="INTEGER" />
+    <result column="OwnerRoleID" property="ownerRoleId" jdbcType="INTEGER" />
+  </resultMap>
+ 
+  <insert id="insertPortal" parameterType="portalInfo">
+    insert into PortalInfo (PortalID,PortalName,PortalContent,PortalType,PortalDesc,Creator,CreateTime,Updator,LastUpdateTime,OwnerUserID,OwnerRoleID)
+    values (#{portalId,jdbcType=INTEGER}, #{portalName,jdbcType=VARCHAR}, #{portalContent,jdbcType=VARCHAR}, 
+    		#{portalType,jdbcType=INTEGER}, #{portalDesc,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER},
+    		#{createTime,jdbcType=TIMESTAMP}, #{updator,jdbcType=INTEGER}, #{lastUpdateTime,jdbcType=TIMESTAMP},
+    		#{ownerUserId,jdbcType=INTEGER}, #{ownerRoleId,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <update id="updatePortal" parameterType="portalInfo">
+  	update PortalInfo set PortalContent=#{portalContent,jdbcType=VARCHAR},PortalType=#{portalType,jdbcType=INTEGER},
+  	Creator=#{creator,jdbcType=INTEGER},CreateTime=#{createTime,jdbcType=TIMESTAMP},
+  	Updator=#{updator,jdbcType=INTEGER},LastUpdateTime=#{lastUpdateTime,jdbcType=TIMESTAMP},OwnerUserID=#{ownerUserId,jdbcType=INTEGER},
+  	OwnerRoleID=#{ownerRoleId,jdbcType=INTEGER} where PortalName=#{portalName,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getPortalByName" parameterType="String" resultType="portalInfo">
+  	select * from PortalInfo where PortalName = #{portalName}
+  </select>
+  
+  <select id="getPortalByNameAndUserId" parameterType="portalInfo" resultType="portalInfo">
+  	select * from PortalInfo where PortalName = #{portalName} and OwnerUserID = #{ownerUserId}
+  </select>
+  
+  <update id="updateByPortalNameAndUserId" parameterType="portalInfo">
+  	update PortalInfo set PortalContent=#{portalContent,jdbcType=VARCHAR},PortalType=#{portalType,jdbcType=INTEGER},
+  	PortalDesc=#{portalDesc,jdbcType=VARCHAR},Creator=#{creator,jdbcType=INTEGER},CreateTime=#{createTime,jdbcType=TIMESTAMP},
+  	Updator=#{updator,jdbcType=INTEGER},LastUpdateTime=#{lastUpdateTime,jdbcType=TIMESTAMP},OwnerUserID=#{ownerUserId,jdbcType=INTEGER},
+  	OwnerRoleID=#{ownerRoleId,jdbcType=INTEGER} where PortalName=#{portalName,jdbcType=VARCHAR} and OwnerUserID=#{ownerUserId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryPortalInfos" resultType="hashmap" resultMap="PortalInfoMap">
+  	select * from PortalInfo where 1=1
+  </select>
+  
+  <update id="updatePortalTree" parameterType="portalInfo">
+  	update PortalInfo set PortalName=#{portalName,jdbcType=VARCHAR},PortalDesc=#{portalDesc,jdbcType=VARCHAR} 
+  	,Updator=#{updator,jdbcType=INTEGER},LastUpdateTime=#{lastUpdateTime,jdbcType=TIMESTAMP}
+  	where PortalID=#{portalId,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deletePortal" parameterType="portalInfo">
+  delete from PortalInfo where PortalID=#{portalId,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="queryPortalInfosByDesc" parameterType="portalInfo" resultType="hashmap" resultMap="PortalInfoMap">
+  	select * from PortalInfo where PortalDesc like ${concat("'%'", "'"+portalDesc+"'" ,"'%'")}
+  	
+  </select>
+  
+  <select id="getPortalByUserIdAndOwnerUserId" parameterType="portalInfo" resultType="portalInfo">
+  	select * from PortalInfo where Creator=#{creator} and OwnerUserID = #{ownerUserId}
+  </select>
+  
+   <select id="getPortalByUserId" parameterType="portalInfo" resultType="portalInfo">
+  	select * from PortalInfo where Creator=#{creator}
+  </select>
+  
+  <select id="getPortalByOwnerUserId" parameterType="portalInfo" resultType="portalInfo">
+  	select * from PortalInfo where OwnerUserID = #{ownerUserId} and Creator=(select UserID from SysUserInfo where UserAccount='admin') 
+  	and PortalName like ${concat("'%'", "'homepage'" ,"'%'")}
+  </select>
+  
+  <select id="queryPortalInfosByType" parameterType="portalInfo" resultType="hashmap"  resultMap="PortalInfoMap">
+  	select * from PortalInfo where PortalType = #{portalType} and Creator=#{creator}
+  </select>
+  
+   <delete id="deletePortalByName" parameterType="portalInfo">
+  	delete from PortalInfo where PortalName=#{portalName}
+  </delete>
+  
+  <select id="getPortalById" parameterType="String" resultType="portalInfo">
+  	select * from PortalInfo where PortalID = #{portalId}
+  </select>
+</mapper>
+

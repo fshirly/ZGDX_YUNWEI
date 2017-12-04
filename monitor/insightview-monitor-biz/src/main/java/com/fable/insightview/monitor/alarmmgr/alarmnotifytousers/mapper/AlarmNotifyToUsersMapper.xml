@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmnotifytousers.mapper.AlarmNotifyToUsersMapper">
+	<resultMap id="AlarmNotifyToUsersMap" type="alarmNotifyToUsers">
+		<id column="FilterID" property="filterID" jdbcType="INTEGER" />
+		<result column="PolicyID" property="policyID" jdbcType="INTEGER" />
+		<result column="UserID" property="userID" jdbcType="INTEGER" />
+		<result column="MobileCode" property="mobileCode" jdbcType="VARCHAR" />
+		<result column="Email" property="email" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getNotifyToUsersByID" parameterType="Integer" resultMap="AlarmNotifyToUsersMap">
+		select
+		n.FilterID,n.PolicyID,n.UserID,n.MobileCode,n.Email,u.UserName as userName
+		from AlarmNotifyToUsers n
+		left join SysUserInfo u on n.UserID= u.UserID  
+		where PolicyID = #{policyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectAlarmNotifyToUsers" resultType="hashmap"
+		resultMap="AlarmNotifyToUsersMap" parameterType="page">
+		select 
+		n.FilterID,n.PolicyID,n.UserID,n.MobileCode,n.Email,u.UserName as userName
+		from AlarmNotifyToUsers  n
+		left join SysUserInfo u on n.UserID= u.UserID  where 1=1 
+		<if test="params.policyID!='' and params.policyID!= null">
+		 and PolicyID = #{params.policyID}
+		</if>
+	</select>
+	<insert id="insertAlarmNotifyToUsers" parameterType="alarmNotifyToUsers">
+	insert into AlarmNotifyToUsers (FilterID,PolicyID,UserID,MobileCode,Email)
+	values (#{filterID,jdbcType=INTEGER}, #{policyID,jdbcType=INTEGER}, #{userID,jdbcType=INTEGER}, 
+      #{mobileCode,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR})
+	</insert>
+	<delete id="delAlarmNotifyToUsers" parameterType="Integer">
+		delete from AlarmNotifyToUsers where FilterID = #{filterID,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="delToUsersByPolicyID" parameterType="hashmap">
+		delete from AlarmNotifyToUsers where PolicyID in 
+		<foreach collection="list" item="policyIDs"  open="(" separator="," close=")">
+	     #{policyIDs}
+	    </foreach> 
+	</delete>
+	
+	<select id="getUserIdsByPolicyID" parameterType="Integer" resultType="hashmap">
+	select UserID from AlarmNotifyToUsers where PolicyID = #{policyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectByConditions" parameterType="alarmNotifyToUsers" resultType="Integer">
+	select count(1) from AlarmNotifyToUsers
+	where 1=1 and PolicyID = #{policyID,jdbcType=INTEGER} and MobileCode = #{mobileCode,jdbcType=VARCHAR} and Email = #{email,jdbcType=INTEGER} 
+	</select>
+	
+	<select id="selectByIdAndUserID" parameterType="alarmNotifyToUsers" resultType="Integer">
+	    select count(1) from AlarmNotifyToUsers where PolicyID = #{policyID,jdbcType=INTEGER} and UserID = #{userID,jdbcType=INTEGER} 
+	</select>
+</mapper>
+

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:drools="http://drools.org/schema/drools-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+         http://www.springframework.org/schema/tx 
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://drools.org/schema/drools-spring 
+		 http://drools.org/schema/drools-spring-1.3.0.xsd">
+	<!-- 加载jdbc.properties文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="false">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				
+				<!-- update liuliub start -->
+				<value>classpath:cas-server.properties</value>
+				<!-- update liujinb end -->
+			</list>
+		</property>
+	</bean>
+	<!-- 打开Spring的Annotation支持 -->
+	<context:annotation-config />
+	<!-- 设定Spring 去哪些包中找Annotation -->
+	<context:component-scan base-package="com.fable.insightview"
+		name-generator="com.fable.insightview.platform.core.spring.AnnotationBeanNameGenerator">
+		<!-- 使用注解加载除控制层以外的组件，这时，在加载service层时事务就会关联在服务层上，相关的事务注解的配置也就生效了 -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<context:component-scan base-package="com.fable.insightview.platform.aaServiceForKscc.util" />
+	<bean class="com.fable.insightview.platform.core.spring.InstantiationTracingBeanPostProcessor" />
+	<!-- ApplicationContext包装类，可以获取当前的ApplicationContext -->
+	<bean class="com.fable.insightview.platform.common.helper.ApplicationContextHelper"></bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 配置连接池的初始值 -->
+		<property name="initialSize" value="1" />
+		<!-- 连接池的最大值 -->
+		<!-- <property name="maxActive" value="500"/> -->
+		<!-- 最大空闲时，当经过一个高峰之后，连接池可以将一些用不到的连接释放，一直减少到maxIdle为止 -->
+		<!-- <property name="maxIdle" value="2"/> -->
+		<!-- 当最小空闲时，当连接少于minIdle时会自动去申请一些连接 -->
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="100" />
+		<property name="maxIdle" value="20" />
+		<property name="maxWait" value="1000" />
+		<property name="validationQuery" value="SELECT 1  FROM DUAL"></property>
+		<property name="testWhileIdle" value="true"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="3600000"></property>
+		<property name="minEvictableIdleTimeMillis" value="18000000"></property>
+		<property name="testOnBorrow" value="true"></property>
+
+	</bean>
+
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource"
+		  destroy-method="close">
+		<property name="driverClassName" value="${kscc.driver}" />
+		<property name="url" value="${kscc.url}" />
+		<property name="username" value="${kscc.username}" />
+		<property name="password" value="${kscc.password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${kscc.initialSize}"/>
+		<!-- 连接池最大数量 -->
+		<property name="maxActive" value="${kscc.maxActive}"/>
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="${kscc.maxIdle}"/>
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${kscc.minIdle}"/>
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${kscc.maxWait}"/>
+	</bean>
+	<bean id="multipleDataSource" class="com.fable.insightview.platform.common.util.MultipleDataSource">
+		<property name="defaultTargetDataSource" ref="dataSource"/>
+		<property name="targetDataSources">
+			<map>
+				<entry key="mySqlDataSource" value-ref="dataSource"/>
+				<entry key="mySqlDataSource2" value-ref="dataSource2"/>
+			</map>
+		</property>
+	</bean>
+	<!-- 导入Src目录下的jdbc.properties文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	<!--创建Spring的SessionFactory工厂 -->
+	<!-- 如果使用的是Annotation的方式，不能使用LocalSessionFactoryBean,而应该使用 org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<!-- 注入数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 设置Spring取那个包中查找相应的实体类 -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.fable.insightview.platform.entity</value>
+				<value>com.fable.insightview.platform.*.entity</value>
+				<value>com.fable.insightview.platform.common.entity</value>
+				<value>com.fable.insightview.*.entity</value>
+				<!-- <value>com.fable.insightview.itsm.entity</value> -->
+				<!-- <value>com.fable.insightview.resource.entity</value> -->
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<!-- <value> hibernate.dialect=org.hibernate.dialect.HSQLDialect </value> -->
+			<props>
+				<!-- 方言 -->
+				<prop key="current_session_context_class">thread</prop>
+				<prop key="hibernate.dialect">${jdbc.dialect}</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.EhCacheRegionFactory
+				</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.id.new_generator_mappings">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider
+				</prop>
+
+			</props>
+		</property>
+	</bean>
+	<!-- 开启HibernateTemplate，并且为其注入SessionFactory 使用HibernateTemplate不太方便的就是要获取session得通过getSessionFactory()方法获取 -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+	<!-- 配置Spring的事务处理 -->
+	<!-- 创建事务管理器 -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 指定事物声明的配置方式：使用注解的方式 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	<!-- 配置AOP，Spring是通过AOP来进行事务管理的 -->
+	<aop:config>
+		<!-- 设置pointCut表示哪些方法要加入事务处理 -->
+		<!-- 以下的事务是声明在DAO中，但是通常都会在Service来处理多个业务对象逻辑的关系，注入删除，更新等，此时如果在执行了一个步骤之后抛出异常 
+			就会导致数据不完整，所以事务不应该在DAO层处理，而应该在service，这也就是Spring所提供的一个非常方便的工具，声明式事务 -->
+		<aop:pointcut id="allMethods"
+			expression="execution(* com.fable.insightview..service..*.*(..))" />
+		<!-- 通过advisor来确定具体要加入事务控制的方法 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethods" />
+	</aop:config>
+
+	<!-- 配置哪些方法要加入事务控制 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<!-- 让所有的方法都加入事务管理，为了提高效率，可以把一些查询之类的方法设置为只读的事务 -->
+			<tx:method name="*" propagation="NOT_SUPPORTED" read-only="true" />
+			<!-- 以下方法都是可能设计修改的方法，就无法设置为只读 -->
+			
+			<!-- update liujinb start -->
+			<tx:method name="on*" propagation="REQUIRED" />
+			<!-- update liujinb end -->
+			
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="del*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="mod*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="save*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="handlerMapping" propagation="REQUIRED" read-only="false" />
+		</tx:attributes>
+	</tx:advice>
+
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:ehcache.xml</value>
+		</property>
+	</bean>
+
+	<bean name="beanLoader" class="com.fable.insightview.platform.core.util.BeanLoader"></bean>
+	
+	<aop:aspectj-autoproxy/>  
+		<bean id="idInter" class="com.fable.insightview.platform.interceptor.IdInterceptor"></bean>
+	<bean id="batchIdsInter" class="com.fable.insightview.platform.interceptor.BatchIdsInterceptor"></bean>
+	<aop:config>  
+	    <aop:aspect id="iter" ref="idInter">
+	    	<!--调用拦截器-->
+	    	<!--在mapper包下面所有的类的insert方法被调用之前都调用IdInterceptor中的dynamicSetId方法-->  
+	        <aop:pointcut id="mapper" expression="execution(* com.fable.insightview..*.mapper.*.insert*(..))"/>
+	        <!--配置在log包下所有的类在调用之前都会被拦截-->  
+	        <aop:before pointcut-ref="mapper" method="dynamicSetId"/>
+	    </aop:aspect>
+        <aop:aspect id="batchIter" ref="batchIdsInter">
+	        <aop:pointcut id="batchMapper" expression="execution(* com.fable.insightview..*.mapper.*.batchInsert*(..))"/>
+	        <aop:before pointcut-ref="batchMapper" method="dynamicSetIds"/>
+	    </aop:aspect>
+	</aop:config>
+
+	<bean name="enclosureBeanUtil" class="com.fable.enclosure.bussiness.util.SpringContextUtil" />
+
+	<bean id="sqlDialect" class="com.fable.insightview.platform.dialect.MysqlDialect" scope="prototype"></bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"  depends-on="beanLoader">
+		 <property name="basePackage" value="com.fable.insightview.**.mapper" />  
+	</bean>
+	
+	   	
+   	<bean class="com.fable.insightview.platform.support.XMLMapperLoader">
+   		<property name="developMode"><value>false</value></property>
+   		<property name="interval"><value>2</value></property>
+   	</bean>
+	
+	<bean id="sqlSessionFactory" class="com.fable.insightview.platform.support.SqlSessionFactoryBeanExt" depends-on="multipleDataSource">
+        <!-- 配置mybatis的XML文件路径 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+		<property name="dataSource" ref="multipleDataSource" />
+		<property name="typeAliasesPackage" value="com.fable.insightview.**.entity" />
+		<property name="mapperLocations" value="classpath:com/fable/insightview/platform/*/mapper/*.xml" />
+	</bean>
+
+</beans>

@@ -1,0 +1,130 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*--- 通用 ---*/
+.x2 {min-width:549px;}
+.s50 {max-width:102px;}
+.s25 {max-width:54px;}
+.s75 {max-width:150px;}
+.mtop5 {margin-top:5px;}
+.boxwin {border:1px solid #b1c1cc; margin:10px;}
+
+
+/*--- input输入框 ---*/
+input[type="text"], select, textarea, .btnchoose input[type="text"] {border:1px solid; border-color:#7ca3bf #b8d0e0 #b8d0e0 #7ca3bf; background:#ffffff; line-height:22px;}
+input[type="text"], textarea {text-indent:3px;}
+input[type="text"] {height:22px;}
+
+
+/*--- 按钮 ---*/
+.btn {width:65px;}
+.btn, .btnwin a, .btntd a, .btnchoose input[type="button"] {text-align:center; border:1px solid;}
+.btn, .btnwin a, .btntd a{margin-left:10px; display:inline-block; height:24px; line-height:24px;}
+.btn, .btnwin a, .btnchoose input[type="button"] {color:#ffffff; border-color:#5cb8e6 #297ca6 #297ca6 #5cb8e6; background:#36a3d9;}
+.btn:hover,.btnwin a:hover, .btnchoose input[type="button"]:hover {background:#005580; color:#ffffff;}
+.btnchoose input[type="button"]:hover {border-color:#005580;}
+.btnwin {position:absolute; bottom:0; right:1px; left:1px; background:#d8e5eb; text-align:right; padding:8px 10px}
+.btnwin a, .btndiv a.btn {width:80px;}
+.btntd a {border-color:#e6eef2; background-color:#ebf6fa; background-repeat:no-repeat; background-position:15px 4px; padding:0 20px 0 32px;}
+.btnsave {background-image:url(../images/icons/but_save.png);}
+.btnreset {background-image:url(../images/icons/but_reset.png)}
+.btntd a:hover {background-color:#daecf2;}
+
+.btnchoose {position:relative; width:220px;}
+.btnchoose input[type="text"] {width:218px;}
+.btnchoose input[type="button"] {height:22px; position:absolute; top:1px; right:0; width:45px;}
+ 
+/*--- 导航 ---*/
+.location {height:28px; line-height:28px; padding-left:20px; background:url(../images/location.png) no-repeat 5px 9px; border-bottom:1px solid #c3d7e6; color:#666666;}
+.location span {color:#175899;} 
+
+ /*--- 查询条件区域 ---*/
+.conditions {min-height:36px; background:#f5f5f5; min-width:824px; padding:3px 0 7px 0; border:solid #ffffff; border-width:1px 0;}
+.conditions div {margin-top:5px;}
+.conditions .title {display:inline-block; min-width:82px; text-align:right; font-weight:normal; vertical-align:middle;}
+.treetabler .conditions {min-width:99%;}
+.conditions + div {border-top:1px solid #ebebeb;}
+.w13 {width:14%; display:inline-block; margin-left:-160px;}
+.w12 {width:14%; display:inline-block; margin-left:-154px; min-width:145px;}
+.conditions input[type="text"],.conditions select {width:14%; margin-right:2px;}
+
+/*--- 弹窗内容 ---*/
+.wincontent {margin:10px 10px 50px 10px; border:1px solid #cccccc; overflow:auto}
+.window h2,.window h3 {background:#ebeff2; line-height:24px; padding-left:10px; margin:10px 10px 0 10px}
+.window h2 {position:relative;}
+.window h2 div {position:absolute; top:0; right:0; text-align:right;}
+.window h2 a {font-weight:normal; margin-right:10px; color:#0066cc; padding:2px 0 0 18px;}
+.window h2 a:hover {color:#0000ff;}
+.window h3 img{vertical-align: -3px;}
+.window input + label {margin-right:10px; vertical-align:middle;}
+
+/*--- 弹窗编辑页面 ---*/
+.formtable,.formtable1 {margin:10px auto 5px auto;}
+.formtable {width:660px;}
+.formtable td, .formtable1 td{padding:5px 0;}
+.formtable .title, .formtable1 .title {text-align:right; vertical-align:top; line-height:22px; padding:5px 0 0 10px;}
+.formtable .title {min-width:92px;}
+.formtable input[type="text"], .formtable1 input[type="text"],
+.formtable textarea, .formtable1 textarea {width:218px;}
+.formtable select, .formtable1 select {width:220px; height:24px; padding:0;}
+.formtable select[class], .formtable1 select[class] {width:218px}
+.formtable .btntd , .formtable1 .btntd {text-align:right; padding-right:5px;}
+
+/*--- 弹窗详情页面 ---*/
+.tableinfo {width:700px; margin:10px auto;}
+.tableinfo1 {width:450px; margin:10px auto;}
+.tableinfo, .tableinfo1 {border-spacing:30px 16px; border-collapse:separate;}
+.tableinfo td, .tableinfo1 td {border-bottom:1px dotted #cccccc; padding-bottom:3px; color:#004d99; overflow:hidden;}
+.tableinfo .title, .tableinfo1 .title {display:inline-block; text-align:right; width:110px; color:#888888; font-weight:normal; float:left;}
+.tableinfo label, .tableinfo1 label {display:block; float:left;}
+.tableinfo label {width:190px;}
+.tableinfo1 label {width:270px;}
+.tableinfo td[colspan="2"] label {width:520px;}
+
+/*--- 步骤流程 ---*/
+.stepbar {margin:10px 10px 10px 50px;}
+.stepbar li {width:130px; float:left; height:30px; line-height:30px; text-align:center;}
+.step01 {background:url(../images/step01.png)}
+.step01select {background:url(../images/step01select.png);}
+.step02 {background:url(../images/step02.png)}
+.step02select {background:url(../images/step02select.png)}
+.step02gray {background:url(../images/step02gray.png); color:#666666;}
+.step01select,.step02select {color:#ffffff; font-weight:bold}
+
+/*--- 树表格---*/
+.treetable {position:absolute; top:30px; left:0; bottom:0; width:17%; overflow:auto; background:#e4edf2;}
+.treetable .panel-body {background:#e4edf2; width:100%!important; overflow:auto;}
+.treetable .panel-body > ul {margin:0 5px 0 10px;}
+.treetabler {position:absolute; top:29px; left:17%; bottom:0; width:83%;}
+.treetabler .conditions, .treetabler .panel {border-left:1px solid #ffffff;}
+
+/*--- 树按钮 ---*/
+.btntree {margin:5px 0;}
+.btntree a {padding:0 5px 0 18px; margin:5px 0 5px 10px; background-color:#c2e2f2; background-image:url(../images/icon_tree.png); background-repeat:no-repeat; border:1px solid; border-color:#c2e2f2 #8fb8cc #8fb8cc #c2e2f2; line-height:18px; display:inline-block;}
+.btntree a:hover {background-color:#85cef2;}
+.btntree a.iconopen {background-position:0 4px;}
+.btntree a.iconclose {background-position:-50px 4px;}
+.btntree a.iconsearch {background-position:-100px 5px;}
+.btntree a.iconadd {background-position:0 -16px;}
+.btntree a.iconmodify {background-position:-50px -16px;}
+.btntree a.icondelete {background-position:-100px -16px;}
+.btntree a.iconfile {background-position:-150px -16px;}
+.btntree a.iconzip {background-position:-220px -16px;}
+
+/*--- 首页面板 ---*/
+.columnbox {padding:10px 0 0 10px}
+.columnbox > div {float:left; width:100%;}
+.columnbox > div.w50 {width:50%;}
+.column {border:1px solid #cccccc; min-height:230px; margin:0 10px 10px 0;}
+.column .title {height:27px; line-height:27px; border-top:1px solid #c3dae5; border-bottom:1px solid #b1c1cc; background:#b8ced9 url(../images/arrowcolumn.png) no-repeat 7px center; padding-left:23px; color:#333333;}
+.column.content {}
+
+/*--- 表格定位 ---*/
+.topsearch, .topsearch1, .toptable, .toptreesearch, .toptreesearch1, .toptree {right:0; bottom:0; position:absolute; width:100%;}
+.topsearch {top:101px;}
+.topsearch1 {top:77px;}
+.toptable {top:30px;}
+.toptreesearch {top:72px;}
+.toptreesearch1 {top:48px;}
+.toptree {top:0;}
+

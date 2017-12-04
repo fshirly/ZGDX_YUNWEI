@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dataobject.mapper.DataSecurityItemBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.dataobject.entity.DataSecurityItemBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="SECURITY_ID" property="securityId" jdbcType="VARCHAR" />
+        <result column="LEFT_BRACKET" property="leftBracket" jdbcType="VARCHAR" />
+        <result column="PROPERTY_NAME" property="propertyName" jdbcType="VARCHAR" />
+        <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+        <result column="VALUE" property="value" jdbcType="VARCHAR" />
+        <result column="RIGHT_BRACKET" property="rightBracket" jdbcType="VARCHAR" />
+        <result column="LOGIC_SYMBOL" property="logicSymbol" jdbcType="VARCHAR" />
+        <result column="SORTORDER" property="sortorder" jdbcType="DECIMAL" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, SECURITY_ID, LEFT_BRACKET, PROPERTY_NAME, OPERATOR, VALUE, RIGHT_BRACKET, 
+        LOGIC_SYMBOL, SORTORDER, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME
+    </sql>
+    <select id="selectItemsByDataObjectId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        select C.* 
+        from FBS_DATAOBJECT A 
+		inner join FBS_DATA_SECURITY B on A.id = B.Dataobject_Id 
+		inner join FBS_DATA_SECURITY_ITEM C on B.id = C.SECURITY_ID
+		inner join FBS_USER_ROLE D on B.ROLE_ID = D.ROLE_ID 
+		where A.id = #{dataObjectId,jdbcType=VARCHAR} and D.User_Id = #{userId,jdbcType=VARCHAR}
+		order by C.SECURITY_ID ,  C.SORTORDER
+    </select>
+    
+    <select id="queryDataSecurityItems" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        SELECT i.security_id,i.left_bracket,i.property_name,i.operator,i.value,i.right_bracket,i.logic_symbol,i.sortorder,i.note 
+        FROM FBS_DATA_SECURITY_ITEM i 
+        WHERE i.security_id IN 
+        <foreach collection="list" item="dsId" open="(" separator="," close=")">
+			#{dsId}
+		</foreach>
+    </select>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmnotifyfilter.mapper.AlarmNotifyFilterMapper">
+	<resultMap id="AlarmNotifyFilterMap" type="alarmNotifyFilter">
+		<id column="FilterID" property="filterID" jdbcType="INTEGER" />
+		<result column="PolicyID" property="policyID" jdbcType="INTEGER" />
+		<result column="FilterKey" property="filterKey" jdbcType="VARCHAR" />
+		<result column="FilterKeyValue" property="filterKeyValue" jdbcType="INTEGER" />
+	</resultMap>
+	 <resultMap id="AlarmLevelMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmLevelInfo" > 
+	    <id column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+	    <result column="AlarmLevelValue" property="alarmLevelValue" jdbcType="INTEGER" />
+	    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+	     <result column="LevelColor" property="levelColor" jdbcType="VARCHAR" />
+	     <result column="totalNum" property="totalNum" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="AlarmTypeMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmTypeInfo" > 
+	    <id column="AlarmTypeID" property="alarmTypeID" jdbcType="INTEGER" />
+	    <result column="AlarmTypeName" property="alarmTypeName" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="MOSourceMap" type="com.fable.insightview.monitor.alarmmgr.entity.MOSourceBean" > 
+	    <id column="MOID" property="moID" jdbcType="INTEGER" />
+	    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+		<result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+		<result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+		<result column="DeviceIP" property="deviceIP" jdbcType="VARCHAR" />
+	</resultMap>
+	 <resultMap id="AlarmEventMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmEventDefineBean" > 
+	    <id column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+	    <result column="AlarmName" property="alarmName" jdbcType="VARCHAR" />
+	    <result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+	    <result column="IsSystem" property="isSystem" jdbcType="INTEGER" />
+	    <result column="Description" property="description" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getAlarmNotifyFilterByID" parameterType="Integer" resultMap="AlarmNotifyFilterMap">
+		select
+		FilterID,PolicyID,FilterKey,FilterKeyValue
+		from AlarmNotifyFilter
+		where PolicyID = #{policyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectAlarmNotifyFilter" resultType="hashmap"
+		resultMap="AlarmNotifyFilterMap" parameterType="page">
+		select t.* from (
+		select ta.FilterID,ta.PolicyID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmLevelName filterValeName
+		from  AlarmNotifyFilter ta left join AlarmLevel tb on ta.FilterKeyValue=tb.AlarmLevelID where ta.PolicyID = #{params.policyID} and ta.FilterKey='AlarmLevel'
+		union all
+		select ta.FilterID,ta.PolicyID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmTypeName filterValeName
+		from  AlarmNotifyFilter ta left join AlarmType tb on ta.FilterKeyValue=tb.AlarmTypeID where ta.PolicyID = #{params.policyID}  and ta.FilterKey='AlarmType'
+		union all
+		select ta.FilterID,ta.PolicyID,ta.FilterKey,ta.FilterKeyValue,tb.MOName filterValeName
+		from  AlarmNotifyFilter ta left join MOSource tb on ta.FilterKeyValue=tb.MOID where ta.PolicyID = #{params.policyID} and ta.FilterKey='AlarmSourceMOID'
+		union all
+		select ta.FilterID,ta.PolicyID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmName filterValeName
+		from  AlarmNotifyFilter ta left join AlarmEventDefine tb on ta.FilterKeyValue=tb.AlarmDefineID where ta.PolicyID = #{params.policyID} and ta.FilterKey='AlarmDefineID'
+		)t
+	</select>
+	
+	<insert id="insertAlarmNotifyFilter" parameterType="alarmNotifyFilter">
+	insert into AlarmNotifyFilter(FilterID,PolicyID,FilterKey,FilterKeyValue)
+	values (#{filterID,jdbcType=INTEGER}, #{policyID,jdbcType=INTEGER}, #{filterKey,jdbcType=VARCHAR}, 
+      #{filterKeyValue,jdbcType=INTEGER})
+	</insert>
+	
+	<delete id="delAlarmNotifyFilter" parameterType="Integer">
+		delete from AlarmNotifyFilter where filterID = #{filterID,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="delFilterByPolicyID" parameterType="hashmap">
+		delete from AlarmNotifyFilter where PolicyID in 
+		<foreach collection="list" item="policyIDs"  open="(" separator="," close=")">
+	     #{policyIDs}
+	    </foreach> 
+	</delete>
+	
+	<select id="selectByConditions" parameterType="alarmNotifyFilter" resultType="Integer">
+	select count(1) from AlarmNotifyFilter
+	where 1=1 and PolicyID = #{policyID,jdbcType=INTEGER} and FilterKey = #{filterKey,jdbcType=VARCHAR} and FilterKeyValue = #{filterKeyValue,jdbcType=INTEGER} 
+	</select>
+	
+	<select id="queryAlarmLevelList" resultType="hashmap" resultMap="AlarmLevelMap" parameterType="page">
+  		select t.AlarmLevelID,t.AlarmLevelValue,t.AlarmLevelName,t.LevelColor,t.LevelColorName,t.LevelIcon,t.IsSystem
+  		from  AlarmLevel t
+  		where t.AlarmLevelID not in 
+  	    (SELECT FilterKeyValue from AlarmNotifyFilter where PolicyID=#{params.policyID,jdbcType=INTEGER} and FilterKey='AlarmLevel')
+  	     <if test="params.alarmLevelName != null and  params.alarmLevelName != '' " >
+  			and	 t.AlarmLevelName   like ${concat("'%'","'"+params.alarmLevelName+"'","'%'")}  
+  		</if>
+		order by t.AlarmLevelID
+	</select>
+	
+	<select id="queryAlarmTypeList" resultType="hashmap" resultMap="AlarmTypeMap"  parameterType="page">
+  		select t.AlarmTypeID,t.AlarmTypeName
+  		from  AlarmType t
+  		where t.AlarmTypeID not in 
+  	    (SELECT FilterKeyValue from AlarmNotifyFilter where PolicyID=#{params.policyID,jdbcType=INTEGER} and FilterKey='AlarmType')
+		 <if test="params.alarmTypeName != null and params.alarmTypeName != '' ">
+			and t.AlarmTypeName like ${concat("'%'","'"+params.alarmTypeName+"'","'%'")}	
+    	</if>
+		order by t.AlarmTypeID
+	</select>
+	
+	<select id="queryMOSourceList" resultType="hashmap" resultMap="MOSourceMap" parameterType="page">
+		select
+<!-- 		m.MOID,m.MOName,m.MOAlias,m.OperStatus,m.AlarmLevel,m.DomainID,m.MOClassID, -->
+		m.MOID,m.MOName,m.AlarmLevel,m.MOClassID,m.DomainID,
+		m.DeviceIP,ta.AlarmLevelName,tb.OrganizationName  domainName,b.ClassLable className
+		from MOSource m 
+		left join AlarmLevel ta on m.AlarmLevel = ta.AlarmLevelID
+		left join SysOrganization tb on m.DomainID = tb.OrganizationID
+		left join MObjectDef b on b.ClassID = m.MOClassID  
+		where m.MOID not in 
+  	    (SELECT FilterKeyValue from AlarmNotifyFilter where PolicyID=#{params.policyID,jdbcType=INTEGER} and FilterKey='AlarmSourceMOID')
+		 <if test="params.moName != null and params.moName != '' ">
+			and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+    	</if> 
+    	<if test="params.deviceIP != null and params.deviceIP != '' ">
+			and m.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")}
+    	</if> 
+		order by m.MOClassID,m.DeviceIP	
+	</select>
+	
+	<select id="queryEventList" resultType="hashmap" resultMap="AlarmEventMap" parameterType="page">
+  		select t.AlarmDefineID,t.AlarmName,t.AlarmTitle,t.IsSystem,t.Description
+  		from  AlarmEventDefine t
+  		where t.AlarmDefineID not in 
+  	    (SELECT FilterKeyValue from AlarmNotifyFilter where PolicyID=#{params.policyID,jdbcType=INTEGER} and FilterKey='AlarmDefineID')
+		<if test="params.alarmName != null and params.alarmName != '' ">
+			and t.AlarmName like ${concat("'%'","'"+params.alarmName+"'","'%'")}
+    	</if>
+		order by t.AlarmDefineID
+	</select>
+	</mapper>
+

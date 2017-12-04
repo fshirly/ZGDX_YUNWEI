@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.database.mapper.MySQLMapper">
+	<resultMap id="MOMySQLDBServerResultMap"
+		type="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="StartTime" property="startTime" jdbcType="TIMESTAMP" />
+		<result column="InstallPath" property="installPath" jdbcType="VARCHAR" />
+		<result column="DataPath" property="dataPath" jdbcType="VARCHAR" />
+		<result column="ServerCharset" property="serverCharset"
+			jdbcType="VARCHAR" />
+		<result column="DBNum" property="dbNum" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="MOMyDBResultMap"
+		type="com.fable.insightview.monitor.database.entity.MOMySQLDBBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="SERVERMOID" property="serverMoid" jdbcType="INTEGER" />
+		<result column="DBNAME" property="dbName" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 数据库连接性能表-->
+	<resultMap id="PerfMySQLConnectionResultMap"
+		type="com.fable.insightview.monitor.database.entity.PerfMySQLConnectionBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="MaxConnections" property="maxConnections"
+			jdbcType="INTEGER" />
+		<result column="Connections" property="connections" jdbcType="INTEGER" />
+		<result column="ConnUsage" property="connUsage" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 表缓存性能表-->
+	<resultMap id="PerfMySQLTableCacheResultMap"
+		type="com.fable.insightview.monitor.database.entity.PerfMySQLTableCacheBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="OpenedTables" property="openedTables" jdbcType="DECIMAL" />
+		<result column="OpenTables" property="openTables" jdbcType="DECIMAL" />
+		<result column="TableCache" property="tableCache" jdbcType="DECIMAL" />
+		<result column="TableCacheHits" property="tableCacheHits"
+			jdbcType="INTEGER" />
+		<result column="TableCacheUsage" property="tableCacheUsage"
+			jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 临时表性能表-->
+	<resultMap id="PerfMySQLTmpTableResultMap"
+		type="com.fable.insightview.monitor.database.entity.PerfMySQLTmpTableBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="TmpTables" property="tmpTables" jdbcType="DECIMAL" />
+		<result column="TmpDiskTables" property="tmpDiskTables"
+			jdbcType="DECIMAL" />
+		<result column="TmpUsage" property="tmpUsage" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 表锁性能表-->
+	<resultMap id="PerfMySQLTableLockResultMap"
+		type="com.fable.insightview.monitor.database.entity.PerfMySQLTableLockBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="TableLocksImmediate" property="tableLocksImmediate"
+			jdbcType="DECIMAL" />
+		<result column="TableLocksWaited" property="tableLocksWaited"
+			jdbcType="DECIMAL" />
+		<result column="TableLockHits" property="tableLockHits"
+			jdbcType="REAL" />
+	</resultMap>
+	<!-- 查询缓存性能表-->
+	  <resultMap id="PerfMySQLQueryCacheResultMap" type="com.fable.insightview.monitor.database.entity.PerfMySQLQueryCacheBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="CacheSize" property="cacheSize" jdbcType="DECIMAL" />
+    <result column="FreeMemory" property="freeMemory" jdbcType="DECIMAL" />
+    <result column="FreeBlocks" property="freeBlocks" jdbcType="DECIMAL" />
+    <result column="TotalBlocks" property="totalBlocks" jdbcType="DECIMAL" />
+    <result column="FragmentationRate" property="fragMentationRate" jdbcType="REAL" />
+    <result column="QcacheHits" property="qcacheHits" jdbcType="REAL" />
+    <result column="QcacheUsage" property="qcacheUsage" jdbcType="REAL" />
+  </resultMap>
+  	<!-- 查询系统变量表-->
+	  <resultMap id="MOMySQLVarsResultMap" type="com.fable.insightview.monitor.database.entity.MOMySQLVarsBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="VARNAME" property="varName" jdbcType="VARCHAR" />
+    <result column="VARVALUE" property="varValue" jdbcType="VARCHAR" />
+    <result column="VARCHNNAME" property="varChnName" jdbcType="VARCHAR" />
+    <result column="VARCLASS" property="varClass" jdbcType="VARCHAR" />
+    <result column="DYNAMICVARTYPE" property="dynamicVarType" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 查询运行对象表-->
+	  <resultMap id="MOMySQLRunObjMap" type="com.fable.insightview.monitor.database.entity.MOMySQLRunObjectsBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="ServerMOID" property="serverMOID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="DescInfo" property="descInfo" jdbcType="VARCHAR" />
+    <result column="Type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+	<!-- 获取数据库服务信息-->
+	<select id="getMyServerInfo" resultType="MOMySQLDBServer"
+		parameterType="hashmap">
+		SELECT	a.MOName,a.MOAlias,c.DeviceIP,b.IP,b.Port,b.ServerCharset,b.StartTime,b.InstallPath,b.DataPath,a.AlarmLevel
+		,e.LevelIcon,e.AlarmLevelName,a.CreateTime,b.DBNum,a.LastUpdateTime,a.UpdateBy,p.PerfValue,a.UpdateAlarmTime,p.CollectTime,e1.DoIntervals ,f.DoIntervals defDoIntervals	 
+		FROM	MOMySQLDBServer b LEFT JOIN MODBMSServer a ON a.MOID=b.DBMSMOID
+		LEFT JOIN MODevice c ON b.deviceMOID=c.moID
+		LEFT JOIN AlarmLevel e ON	a.AlarmLevel=e.AlarmLevelValue
+		LEFT JOIN  PerfSnapshotDatabase p ON p.DeviceMOID=b.MOID AND p.kpiName='DBAvailability'
+		LEFT JOIN SysPerfPollTask d1 on b.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{mysqlMID} 
+		LEFT JOIN (select MOMySQLDBServer.*,SysMOList.DoIntervals from MOMySQLDBServer,SysMOList where MID=#{mysqlMID}) f on b.MOID=f.MOID
+		WHERE a.MOID=#{MOID}  
+	</select>
+	<!-- 获取所有数据库名称-->
+	<select id="getMyDB" resultType="hashmap" resultMap="MOMyDBResultMap"
+		parameterType="Integer">
+		SELECT c.* FROM MODBMSServer a LEFT JOIN MOMySQLDBServer
+		b ON
+		a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLDB c ON b.MOID=c.ServerMOID
+		WHERE
+		a.MOID=#{MOID}
+  </select>
+	<!-- 数据库可用率仪表盘 -->
+	<select id="getMyChartAvailability" resultType="MOMySQLDBServer"
+		parameterType="hashmap">
+		SELECT round(t1.count1/t2.Sumcount,2)*100
+		DeviceAvailability FROM
+		(SELECT COUNT(c.DeviceStatus) count1 FROM
+		MODBMSServer a LEFT JOIN
+		MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT
+		JOIN PerfDeviceAvailability
+		c ON b.MOID=c.MOID
+		WHERE a.MOID=#{MOID} AND
+		c.DeviceStatus=1 AND c.CollectTime BETWEEN
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}) t1,
+		(SELECT COUNT(c.DeviceStatus) Sumcount FROM
+		MODBMSServer a LEFT JOIN
+		MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT
+		JOIN PerfDeviceAvailability
+		c ON b.MOID=c.MOID
+		WHERE a.MOID=#{MOID} AND
+		c.CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}) t2
+	</select>
+	<!-- 获取数据库连接曲线数据 -->
+	<select id="queryMyConnectionPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfMySQLConnectionResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,ConnUsage
+		from MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLRunObjects c ON b.MOID =c.serverMOID
+		LEFT JOIN PerfMySQLConnection d ON c.MOID=d.MOID
+		where a.MOID=${seltItem}
+		AND c.Type=2		
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+	<!-- 获取临时表曲线数据 -->
+	<select id="queryMyTmpPerf" parameterType="hashmap" resultType="hashmap"
+		resultMap="PerfMySQLTmpTableResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,TmpUsage
+		from MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLRunObjects c ON b.MOID =c.serverMOID
+		LEFT JOIN PerfMySQLTmpTable d ON c.MOID=d.MOID
+		where a.MOID=${seltItem}
+		AND c.Type=1
+		and
+		CollectTime BETWEEN
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+	<!-- 获取表缓存曲线数据 -->
+	<select id="queryMyTableCachePerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfMySQLTableCacheResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,TableCacheUsage,TableCacheHits
+			from MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLRunObjects c ON b.MOID =c.serverMOID
+		LEFT JOIN PerfMySQLTableCache d ON c.MOID=d.MOID
+		where a.MOID=${seltItem}
+		AND c.Type=3
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+	<!-- 获取表锁曲线数据 -->
+	<select id="queryMyTableLockPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfMySQLTableLockResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,TableLockHits
+				from MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLRunObjects c ON b.MOID =c.serverMOID
+		LEFT JOIN PerfMySQLTableLock d ON c.MOID=d.MOID
+		where a.MOID=${seltItem}
+		AND c.Type=4
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+  	<!-- 获取查询缓存曲线数据 -->
+	<select id="queryMyQueryCachePerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfMySQLQueryCacheResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,FragmentationRate,QcacheUsage
+					from MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLRunObjects c ON b.MOID =c.serverMOID
+		LEFT JOIN PerfMySQLQueryCache d ON c.MOID=d.MOID
+		where a.MOID=${seltItem}
+		AND c.Type=5
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+  </select>
+  <select id="getMyVarsInfoByLike" resultType="hashmap" resultMap="MOMySQLVarsResultMap" parameterType="page">
+  	SELECT c.*,d.VarChnName,d.DynamicVarType,d.VarClass
+		from
+		MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLVars c ON b.MOID=c.moID
+		LEFT JOIN SysMySQLVarsMap d ON	c.VarName=d.VarName
+  		where 1=1 
+		<if test="params.varName != null and params.varName != '' ">
+			and c.varName like ${concat("'%'","'"+params.varName+"'","'%'")}  
+    	</if>	
+		<if test="params.varValue != null and params.varValue != '' ">
+			and c.varValue like ${concat("'%'","'"+params.varValue+"'","'%'")} 
+    	</if>
+    	<if test="params.varChnName != null and params.varChnName != '' ">
+			and d.VarChnName like ${concat("'%'","'"+params.varChnName+"'","'%'")}		
+    	</if>
+    	<if test="params.dynamicVarType != null and params.dynamicVarType != '' "> 
+			and d.DynamicVarType like ${concat("'%'","'"+params.dynamicVarType+"'","'%'")}		
+    	</if>
+    	<if test="params.varClass != null and params.varClass != '' and params.varClass !='null' "> 
+			and d.varClass =#{params.varClass}  	
+    	</if>
+    		AND a.MOID=#{params.MOID} 
+</select> 
+    <select id="getMyVarsInfoByEq" resultType="hashmap" resultMap="MOMySQLVarsResultMap" parameterType="page">
+  	SELECT c.*,d.VarChnName,d.DynamicVarType,d.VarClass
+		from
+		MODBMSServer a LEFT JOIN MOMySQLDBServer b ON a.MOID=b.DBMSMOID
+		LEFT JOIN MOMySQLVars c ON b.MOID=c.moID
+		LEFT JOIN SysMySQLVarsMap d ON	c.VarName=d.VarName
+  		where 1=1 
+    		<if test="params.varName != null and params.varName != '' ">
+			and c.varName =#{params.varName}  
+    	</if>	
+		<if test="params.varValue != null and params.varValue != '' ">
+			and c.varValue =#{params.varValue}  
+    	</if>
+    	<if test="params.varChnName != null and params.varChnName != '' ">
+			and d.VarChnName  =#{params.varChnName} 
+    	</if>
+    	<if test="params.dynamicVarType != null and params.dynamicVarType != '' ">
+			and d.DynamicVarType =#{params.dynamicVarType}  
+    	</if>
+    	<if test="params.varClass != null and params.varClass != '' and params.varClass !='null' "> 
+			and d.varClass =#{params.varClass}  	
+    	</if>
+    		AND a.MOID=#{params.MOID} 
+</select>
+
+<select id="queryMOMySQLDBServer" resultType="hashmap" resultMap="MOMySQLDBServerResultMap" parameterType="page">
+  		select t.MOID,t.IP,t.Port,t.ServerName,t.StartTime,t.ServerCharset,t.DBNum,tb.MOName,ta.MOID dbmsMoId
+		from MOMySQLDBServer t
+		left join MODBMSServer ta on t.DBMSMOID=ta.MOID
+		left join MODevice tb on t.DeviceMOID=tb.MOID
+		where ta.DBMSType='mysql'
+  		<if test="params.serverName != null and params.serverName != ''">
+			and t.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}  
+		</if>
+		<if test="params.IP != null and params.IP != ''">
+			and t.IP like ${concat("'%'","'"+params.IP+"'","'%'")}
+		</if>
+		<if test="params.dbmsMoId != -1 and params.dbmsMoId != '' ">
+		    and ta.MOID=#{params.dbmsMoId} 
+		</if>
+  		order by t.MOID 	
+</select> 
+
+<select id="queryMOMySQLDB" resultType="hashmap" resultMap="MOMyDBResultMap" parameterType="page">
+  		select t.MOID,t.DBName,ta.ServerName,ta.IP from 
+		MOMySQLDB t
+		left join MOMySQLDBServer ta on t.ServerMOID=ta.MOID
+		left join MODBMSServer tb on ta.DBMSMOID=tb.MOID
+		where tb.DBMSType='mysql'
+  		<if test="params.serverName != null and params.serverName != ''">
+			and ta.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}  
+		</if>
+		<if test="params.dbName != null and params.dbName != ''">
+			and t.DBName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+		</if>
+		<if test="params.sqlServerMOID != -1 and params.sqlServerMOID != '' ">
+		    and ta.MOID=#{params.sqlServerMOID} 
+		</if> 
+  		order by t.MOID 	
+</select>
+
+<select id="queryMOMySQLRunObj" resultType="hashmap" resultMap="MOMySQLRunObjMap" parameterType="page">
+  		select t.MOID,t.ServerMOID,t.MOName,t.DescInfo,t.Type,ta.ServerName,ta.IP  
+		from MOMySQLRunObjects t
+		left join MOMySQLDBServer ta on t.ServerMOID=ta.MOID
+		left join MODBMSServer tb on ta.DBMSMOID=tb.MOID
+		where tb.DBMSType='mysql'
+  		<if test="params.serverName != null and params.serverName != ''">
+			and ta.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}  
+		</if>
+		<if test="params.moName != null and params.moName != ''">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+		</if>
+		<if test="params.sqlServerMOID != -1 and params.sqlServerMOID != '' ">
+		    and ta.MOID=#{params.sqlServerMOID} 
+		</if> 
+  		order by t.MOID 	
+</select>
+
+<select id="queryMOMySQLVarsByLike" resultType="hashmap" resultMap="MOMySQLVarsResultMap" parameterType="page">
+  		SELECT a.*,d.VarChnName,d.DynamicVarType,d.VarClass,b.IP
+		from
+		MOMySQLVars a
+		LEFT JOIN MOMySQLDBServer b ON b.MOID=a.moID
+		LEFT JOIN MODBMSServer c ON c.MOID=b.DBMSMOID
+		LEFT JOIN SysMySQLVarsMap d ON	a.VarName=d.VarName
+  		where c.DBMSType='mysql'
+		<if test="params.varName != null and params.varName != '' ">
+			and d.varName like ${concat("'%'","'"+params.varName+"'","'%'")}  
+    	</if>	
+		<if test="params.varValue != null and params.varValue != '' ">
+			and a.varValue like ${concat("'%'","'"+params.varValue+"'","'%'")} 
+    	</if>
+    	<if test="params.varChnName != null and params.varChnName != '' ">
+			and d.VarChnName like ${concat("'%'","'"+params.varChnName+"'","'%'")}		
+    	</if>
+    	<if test="params.dynamicVarType != null and params.dynamicVarType != '' "> 
+			and d.DynamicVarType like ${concat("'%'","'"+params.dynamicVarType+"'","'%'")}		
+    	</if>
+    	<if test="params.sqlServerMOID != -1 and params.sqlServerMOID != '' ">
+		    and b.MOID=#{params.sqlServerMOID} 
+		</if>
+    	order by c.MOID
+</select>
+ 
+<select id="queryMOMySQLVarsByEq" resultType="hashmap" resultMap="MOMySQLVarsResultMap" parameterType="page">
+  		SELECT a.*,d.VarChnName,d.DynamicVarType,d.VarClass,b.IP
+		from
+		MOMySQLVars a
+		LEFT JOIN MOMySQLDBServer b ON b.MOID=a.moID
+		LEFT JOIN MODBMSServer c ON c.MOID=b.DBMSMOID
+		LEFT JOIN SysMySQLVarsMap d ON	a.VarName=d.VarName
+  		where c.DBMSType='mysql'
+    	<if test="params.varName != null and params.varName != '' ">
+			and d.varName =#{params.varName}  
+    	</if>	
+		<if test="params.varValue != null and params.varValue != '' ">
+			and a.varValue =#{params.varValue}  
+    	</if>
+    	<if test="params.varChnName != null and params.varChnName != '' ">
+			and d.VarChnName  =#{params.varChnName} 
+    	</if>
+    	<if test="params.dynamicVarType != null and params.dynamicVarType != '' ">
+			and d.DynamicVarType =#{params.dynamicVarType}  
+    	</if>
+    	<if test="params.sqlServerMOID != -1 and params.sqlServerMOID != '' ">
+		    and b.MOID=#{params.sqlServerMOID} 
+		</if>
+    	order by c.MOID
+</select> 
+
+<select id="getMySQLRunObjByID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLRunObjectsBean">
+select * from MOMySQLRunObjects where MOID =#{moId}
+</select>
+
+<select id="getMysqlServerByID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLDBServerBean">
+select * from MOMySQLDBServer where MOID =#{moId}
+</select>
+
+<select id="getMysqlDBByID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLDBBean">
+select * from MOMySQLDB where MOID =#{moId}
+</select>
+
+<select id="getMysqlVarsByID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MOMySQLVarsBean">
+select * from MOMySQLVars where MOID =#{moId}
+</select>
+
+<!-- 根据ID获取 子对象ID-->
+	<select id="getInsIdBymoId" resultType="Integer"
+		parameterType="Integer">
+			SELECT b.MOID FROM MODBMSServer a ,MOMySQLDBServer	b WHERE		a.MOID=b.DBMSMOID AND a.MOID=#{MOID}
+  </select>
+  
+<select id="getMySQLDBServerIDByMOID" resultType="Integer" parameterType="Integer">
+	select a.MOID 
+	from MOMySQLDBServer a
+	left join MODBMSServer b on a.DBMSMOID=b.MOID
+	where b.MOID=#{moId}
+</select>
+
+<select id="getMySQLDBServer" resultType="hashmap" resultMap="MOMySQLDBServerResultMap" parameterType="hashmap">
+ 	select t.MOID,t.IP,t.Port,t.ServerName,t.StartTime,t.ServerCharset,t.DBNum,tb.MOName,ta.MOID dbmsMoId,ta.MOAlias as moAlias
+	from MOMySQLDBServer t
+	left join MODBMSServer ta on t.DBMSMOID=ta.MOID
+	left join MODevice tb on t.DeviceMOID=tb.MOID
+	where ta.DBMSType='mysql'
+	<if test="ip != null and ip != ''">
+		and t.IP like ${concat("'%'","'"+ip+"'","'%'")}
+	</if>
+ 	order by t.IP 	
+</select> 
+
+<select id="getDbmsMoIdBySqlserver" parameterType="Integer" resultType="Integer">
+select ta.MOID 
+from MODBMSServer ta 
+left join MODBMSServer t on t.DBMSMOID=ta.MOID
+where t.MOID=#{moId}
+</select>
+
+<select id="getDBChildId" parameterType="hashmap" resultType="Integer">
+	select MOID from ${tableName} where DBMSMOID=#{dbmsMoId}
+</select>
+</mapper>

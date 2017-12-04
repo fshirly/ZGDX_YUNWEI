@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.workplan.mapper.WorkPlanMapper">
+	
+	<select id="selectWorkPlans" parameterType="com.fable.insightview.platform.page.Page" resultType="com.fable.insightview.platform.workplan.entity.WorkPlan">
+		select a.* 
+		from PfWorkPlan a
+		where 1=1
+		<if test="params.creater != null">
+			AND a.Creater=#{params.creater,jdbcType=INTEGER}
+		</if>
+		<if test="params.title != null and params.title != ''">
+			AND a.Title LIKE CONCAT('%',#{params.title},'%') 
+		</if>
+		<if test="params.planStart1 != null">
+			AND a.PlanStart &gt;= #{params.planStart1,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.planStart2 != null">
+			AND a.PlanStart &lt;= #{params.planStart2,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.planType != null and params.planType > 0">
+			AND a.PlanType=#{params.planType,jdbcType=INTEGER} 
+		</if>
+		<if test="params.planEnd1 != null">
+			AND a.PlanEnd &gt;= #{params.planEnd1,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.planEnd2 != null">
+			AND a.PlanEnd &lt;= #{params.planEnd2,jdbcType=TIMESTAMP}
+		</if>
+	</select>
+	
+	<select id="selectWorkPlansByUserId" resultType="com.fable.insightview.platform.workplan.entity.WorkPlan">
+		select a.* 
+		from PfWorkPlan a
+		<where>
+			a.Creater=#{userId,jdbcType=INTEGER}
+		</where>
+	</select>
+	
+	<select id="selectWorkPlanById" resultType="com.fable.insightview.platform.workplan.entity.WorkPlan">
+		SELECT (SELECT UserName FROM SysUserInfo WHERE UserId=a.Creater) createrName,a.*
+		FROM PfWorkPlan a
+		WHERE a.Id=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteWorkPlanById">
+		DELETE FROM PfWorkPlan WHERE id=#{id,jdbcType=INTEGER}
+	</delete>
+	
+	<update id="updateWorkPlan" parameterType="com.fable.insightview.platform.workplan.entity.WorkPlan">
+		UPDATE PfWorkPlan
+		<set>
+			<if test="title != null and title != ''">
+				title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="planType != null">
+				planType=#{planType,jdbcType=INTEGER},
+			</if>
+			<if test="creater != null">
+				creater=#{creater,jdbcType=INTEGER},
+			</if>
+			<if test="relationPersons != null and relationPersons != ''">
+				relationPersons=#{relationPersons,jdbcType=VARCHAR},
+			</if>
+			<if test="planStart != null">
+				planStart=#{planStart,jdbcType=TIMESTAMP},
+			</if>
+			<if test="planEnd != null">
+				planEnd=#{planEnd,jdbcType=TIMESTAMP},
+			</if>
+			<if test="planContent != null and planContent != ''">
+				planContent=#{planContent,jdbcType=VARCHAR},
+			</if>
+			<if test="file != null and file != ''">
+				file=#{file,jdbcType=VARCHAR}
+			</if>
+		</set>
+		<where>
+			id=#{id,jdbcType=INTEGER}
+		</where>
+	</update>
+	
+	<insert id="insertWorkPlan" parameterType="com.fable.insightview.platform.workplan.entity.WorkPlan">
+		INSERT INTO PfWorkPlan
+		(id,title,planType,creater,RelationPersons,PlanStart,PlanEnd,PlanContent,File)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{planType,jdbcType=INTEGER},
+		 #{creater,jdbcType=INTEGER},#{relationPersons,jdbcType=VARCHAR},
+		 #{planStart,jdbcType=TIMESTAMP},#{planEnd,jdbcType=TIMESTAMP},
+		 #{planContent,jdbcType=VARCHAR},#{file,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertUser" parameterType="com.fable.insightview.platform.workplan.entity.YdjwUserSync">
+		INSERT INTO SysUserInfo 
+	    (userID,userAccount,userName,userPassword,mobilePhone,email,telephone,isAutoLock,status,userType,
+	     createTime,lastModifyTime,lockedTime,lockedReason,state,userIcon,idCard)
+		VALUES
+		(#{userID,jdbcType=INTEGER},#{userAccount,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},
+		 #{userPassword,jdbcType=VARCHAR},#{mobilePhone,jdbcType=VARCHAR},
+		 #{email,jdbcType=VARCHAR},#{telephone,jdbcType=VARCHAR},#{isAutoLock,jdbcType=INTEGER},
+		 #{status,jdbcType=INTEGER},#{userType,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},
+		 #{lastModifyTime,jdbcType=TIMESTAMP},#{lockedTime,jdbcType=TIMESTAMP},#{lockedReason,jdbcType=VARCHAR},
+		 #{state,jdbcType=INTEGER},#{UserIcon,jdbcType=VARCHAR},#{iDCard,jdbcType=VARCHAR})
+	</insert>
+</mapper>
+
+

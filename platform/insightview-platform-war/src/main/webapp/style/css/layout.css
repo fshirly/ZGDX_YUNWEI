@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+.container {width:100%; height:100%; margin:0 auto; min-width:1000px;}
+/* ~~ 头部 ~~ */
+.header {width:100%; height:auto; min-width:1000px; height:102px; z-index:50; background:url(../images/topbg.png) repeat-x; position:relative;}
+.logo {width:200px; height:59px; background:url(../images/logos.png) no-repeat;  background-size: 200px; margin:20px 100px 0 10px; float:left;}	
+/*~~ 头部nav ~~*/
+.headerMenu{height:62px; position:absolute; top:6px; right:10px; width:68%;}		
+.headerMenu ul li {float:right; margin-right:5px; background:url(../images/imgtop.png) no-repeat; height:62px; width:9%; overflow:hidden;}	 		 
+.headerMenu ul li a{margin-top:8px;line-height:76px;color:#d1f0ff;text-align:center;display:block;}
+.headerMenu ul li:hover {background:url(../images/imgtop.png) no-repeat -150px 0; }
+.headerMenu ul li.visited_top{background:url(../images/imgtop.png) no-repeat -300px 0;}
+/*~~ 个人信息 ~~*/
+.userMsg{width:100%; line-height:27px; height:27px; background:#edf5fa; border-bottom:1px solid #a3bbcc; position:absolute; left:0; bottom:0; right:0; clear:both; }
+.userMsg .msg {color:#666666; margin-left:10px;}
+.userMsg .msg .num {color:#0066ee; display:inline-block; background:url(../images/imgtop.png) no-repeat -450px 7px; margin-left:5px; padding-left:10px;}
+.userMsg .tools {position:absolute; right:0; bottom:0;} 
+.userMsg .tools a {display:inline-block; padding-left:15px; margin-right:12px;}
+.userMsg .tools .set {background:url(../images/imgtop.png) no-repeat -540px 7px;}
+.userMsg .tools .exit {background:url(../images/imgtop.png) no-repeat -600px 7px;}
+.userMsg .tools .resume{background:url(../images/imgtop.png) no-repeat -538px -25px;}
+.userMsg .tools .looked{background:url(../images/imgtop.png) no-repeat -600px -25px;}
+
+	
+/*~~主区域~~*/
+.main{width:100%; min-width:1000px; background:#ffffff; position:absolute; top:102px; left:0; right:0; bottom:0px;;z-index:50;}
+
+ /*~~ 左侧导航一级菜单 ~~*/
+.sidebar {width:190px; background:#f2fbff; border-right:1px solid #4795cc; position:absolute; top:0; left:0; bottom:5px;}	 
+
+/*~~ 折叠区域 ~~*/
+.picBox {position:absolute; left:192px; bottom:5px; top:0;width:9px;background:#e1effa url(../images/right.png) no-repeat center left;cursor:pointer;display:inline;}
+
+/*~~ 内容~~*/
+.content{position:absolute; top:0; bottom:5px; left:0px; right:0;border-left:1px solid #ffffff;background:#ffffff;}
+
+/*~~脚注~~*/			
+.footer{z-index:50;width:100%; min-width:1000px; height:29px;line-height:29px;background:#178fe6;color:#bfdfff;text-align:center;border-top:1px solid #0f6b99; position:absolute; bottom:0; left:0; right:0;}
+.divInputAdd{position:relative;}
+.inputAdd{background-image:url(../images/addCate.gif);position:absolute;width:16px;height:16px;top:4px;left:165px;
+          z-index:100;cursor:pointer;}

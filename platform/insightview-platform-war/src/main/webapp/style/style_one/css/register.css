@@ -1,0 +1,46 @@
+/*~~ 自适应登陆页面 ~~*/
+
+/*~~ 主容器 ~~*/
+#main{margin:0px auto;height:80%;width:100%;min-width:770px;min-height:521px;font:宋体;font-size:12px;}
+	  /*~~ 头部 ~~*/
+	  #header{width:100%;height:20%;min-width:770px;min-height:121px;background:url(../images/login/login_head_bg.gif) repeat-x;}
+	  		  /*~~ logo ~~*/
+	  		  #logo{width:358px;height:121px;position:relative;left:10%;float:left;}
+			  /*~~ 帮助与登录 ~~*/
+			  #helps{width:105px;height:25px;float:right;margin-top:1%;margin-right:15%;/*border:1px solid;*/}
+			  #helps ul{list-style:none;color:#023D7F;}
+			  #helps ul li{float:left;width:35px;height:13px;line-height:13px;text-align:center;cursor:pointer;}			  
+			  #helps ul li	a:link {color: #023D7F;text-decoration: none;}
+			  #helps ul li 	a:visited {color: #023D7F;text-decoration: none;}
+			  #helps ul li 	a:hover, a:active, a:focus {text-decoration: none;color:#06F;}
+	  /*~~ 内容 ~~*/		  
+	  #content{width:100%;height:80%;min-width:770px;min-height:369px;}		  
+			  #loginArea{width:80%;;height:100%;margin-left:10%;margin-top:2%;}
+			  /*~~ 分隔符 ~~*/
+			  #loginArea #split{margin-top:10px;width:100%;height:1px;background:url(../images/login/line_up.gif) repeat-x;}
+			  
+			  
+			  #loginArea h1{color:#707070;}
+			  /*~~ 注册区域 ~~*/
+			  #loginArea #register{margin-top:2%;width:700px;height:300px;min-width:700px;min-height:300px;}
+			  #loginArea #register .tip{text-align:right;font-family:'微软雅黑';font-size:14px;color:#2a2a2a;letter-spacing:1px;} 
+			  #loginArea #register .registerInputs{width:325px;height:25px;line-height:25px;border:1px solid #CCC;}
+			  #loginArea #register .checks{width:16px;height:16px;background:url(../images/login/box.gif) no-repeat;vertical-align:text-bottom;}
+			  #loginArea #register .agreement{font:'雅黑12号';color:#259ee4;text-decoration:none;}
+			  #loginArea #register .agreement:link {color: #259ee4;text-decoration: none;}
+			  #loginArea #register .agreement:visited {color: #259ee4;text-decoration: none;}
+			  #loginArea #register .agreement:hover, .agreement:active, .agreement:focus {text-decoration: none;color:#259ee4;background-color:#06F;}
+			  #loginArea #register .reSubmit{border:none;width:80px;height:30px;background-color:#3FB2F5;font-family:'微软雅黑';font-size:14px;color:#FFF;cursor:pointer;}
+			  #loginArea #register .reSubmit:hover{background-color:#06F;}
+			 
+			
+	  /*~~ 脚注 ~~*/		  													
+	  #footer{width:100%;height:5%;min-width:700px;min-height:31px;color:#5B5B5B;text-align:center;}
+	  		  /*~~ 分隔符 ~~*/
+	  		  #footer_1{width:80%;height:1px;background:url(../images/login/line_down.gif) repeat-x;margin-left:10%;}	
+			  /*~~ 版权申明 ~~*/	  
+			  #footer_2{width:100%;height:30px;line-height:30px;color:#06F;}				  
+			 	  
+			 
+			  
+	  

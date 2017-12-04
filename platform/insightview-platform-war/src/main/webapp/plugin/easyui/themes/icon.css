@@ -1,0 +1,403 @@
+.icon-blank{
+	background:url('icons/blank.gif') no-repeat center center;
+}
+.icon-add{
+	background:url('icons/edit_add.png') no-repeat center center;
+}
+.icon-batchassigntitodevice{
+	background:url('icons/assigntitodevice.png') no-repeat center center;
+}
+.icon-batchassigntodept{
+	background:url('icons/assigntodept.png') no-repeat center center;
+}
+.icon-batchwithdrawtodept{
+	background:url('icons/withdrawtodept.png') no-repeat center center;
+}
+.icon-batchwithdrawtosubnet{
+	background:url('icons/withdrawtosubnet.png') no-repeat center center;
+}
+.icon-execl{
+	background:url('icons/icon_execl.png') no-repeat center center;
+}
+.icon-exchange{
+	background:url('../../../style/images/icon/icon_appointcollector.png') no-repeat center center;
+}
+.icon-add-other{
+	background:url('../../../style/images/icon/icon_add.png') no-repeat center center;
+}
+
+.icon-edit{
+	background:url('icons/pencil.png') no-repeat center center;
+}
+.icon-remove{
+	background:url('icons/edit_remove.png') no-repeat center center;
+}
+
+.icon-remove-other{
+	background:url('../../../style/images/icon/icon_subtract.png') no-repeat center center;
+}
+
+.icon-batchSend{
+	background:url('../../../style/images/icon/icon_batchSend.png') no-repeat center center;
+}
+
+.icon-batchStop{
+	background:url('../../../style/images/icon/icon_batchStop.png') no-repeat center center;
+}
+
+.icon_refresh{
+	background:url('icons/icon_refresh.png') no-repeat center center;
+}
+.icon_split{
+	background:url('icons/icon_split.png') no-repeat center center;
+}
+.icon-save{
+	background:url('icons/filesave.png') no-repeat center center;
+}
+.icon-cut{
+	background:url('icons/cut.png') no-repeat center center;
+}
+.icon-ok{
+	background:url('icons/ok.png') no-repeat center center;
+}
+.icon-broom{
+	background:url('icons/broom.png') no-repeat center center;
+}
+.icon-no{
+	background:url('icons/no.png') no-repeat center center;
+}
+.icon-cancel{
+	background:url('icons/cancel.png') no-repeat center center;
+}
+.icon-reload{
+	background:url('icons/reload.png') no-repeat center center;
+}
+.icon-search{
+	background:url('icons/search.png') no-repeat center center;
+}
+.icon-print{
+	background:url('icons/print.png') no-repeat center center;
+}
+.icon-help{
+	background:url('icons/help.png') no-repeat center center;
+}
+.icon-undo{
+	background:url('icons/undo.png') no-repeat center center;
+}
+.icon-redo{
+	background:url('icons/redo.png') no-repeat center center;
+}
+.icon-back{
+	background:url('icons/back.png') no-repeat center center;
+}
+.icon-sum{
+	background:url('icons/sum.png') no-repeat center center;
+}
+.icon-tip{
+	background:url('icons/tip.png') no-repeat center center;
+}
+
+.icon-mini-add{
+	background:url('icons/mini_add.png') no-repeat center center;
+}
+.icon-mini-edit{
+	background:url('icons/mini_edit.png') no-repeat center center;
+}
+.icon-mini-refresh{
+	background:url('icons/mini_refresh.png') no-repeat center center;
+}
+
+.icon-start{
+	background:url('icons/start.png') no-repeat center center;
+}
+
+.icon-stop{
+	background:url('icons/stop.png') no-repeat center center;
+}
+
+.icon-print{
+	background: url("icons/print.png") no-repeat center center;
+}
+
+/* top menu */
+.top-menu-home {background:url('icons/nav_home.png') center 3px no-repeat;} 
+.top-menu-serviceDesk {background:url('icons/nav_serviceDesk.png') center 3px no-repeat;} 
+.top-menu-monitorConsole {background:url('icons/nav_monitorConsole.png') center 3px no-repeat;} 
+.top-menu-serviceManage {background:url('icons/nav_serviceManage.png') center 3px no-repeat;} 
+.top-menu-operationalMonitoring{background:url('icons/nav_operationalMonitoring.png') center 3px no-repeat;} 
+.top-menu-resourceManage {background:url('icons/nav_resourceManage.png') center 3px no-repeat;} 
+.top-menu-assetManage {background:url('icons/nav_assetManage.png') center 3px no-repeat;} 
+.top-menu-projectManage {background:url('icons/nav_projectManage.png') center 3px no-repeat;} 
+.top-menu-operationAssess {background:url('icons/nav_operationAssess.png') center 3px no-repeat;} 
+.top-menu-systemManage {background:url('icons/nav_systemManage.png') center 3px no-repeat;} 
+.top-menu-report {background:url('icons/nav_report.png') center 3px no-repeat;} 
+ 
+/* left menu */
+.icon-menu-question{
+	background:url('icons/question.png') no-repeat center center;
+}
+.icon-menu-arrow{
+	background:url('icons/arrow.png') no-repeat center center;
+}
+.icon-menu-software-agreemen{
+	background:url('icons/software-agreemen.png') no-repeat center center;
+}
+.icon-menu-change{
+	background:url('icons/change.png') no-repeat center center;
+}
+.icon-menu-alarm{
+	background:url('icons/alarm.png') no-repeat center center;
+}
+.icon-menu-alarm-realtime{
+	background:url('icons/alarm-realtime.png') no-repeat center center;
+}
+.icon-menu-app{
+	background:url('icons/app.png') no-repeat center center;
+}
+.icon-menu-asset{
+	background:url('icons/asset.png') no-repeat center center;
+}
+.icon-menu-asset-reports{
+	background:url('icons/asset-reports.png') no-repeat center center;
+}
+.icon-menu-autodiscover{
+	background:url('icons/autodiscover.png') no-repeat center center;
+}
+.icon-menu-bulletin{
+	background:url('icons/bulletin.png') no-repeat center center;
+}
+.icon-menu-cloud{
+	background:url('icons/cloud.png') no-repeat center center;
+}
+.icon-menu-config{
+	background:url('icons/config.png') no-repeat center center;
+}
+.icon-menu-consumable{
+	background:url('icons/consumable.png') no-repeat center center;
+}
+.icon-menu-contract{
+	background:url('icons/contract.png') no-repeat center center;
+}
+.icon-menu-databases{
+	background:url('icons/databases.png') no-repeat center center;
+}
+.icon-menu-dd{
+	background:url('icons/dd.png') no-repeat center center;
+}
+.icon-menu-default{
+	background:url('icons/default.png') no-repeat center center;
+}
+.icon-menu-event{
+	background:url('icons/event.png') no-repeat center center;
+}
+.icon-menu-harvester{
+	background:url('icons/harvester.png') no-repeat center center;
+}
+.icon-menu-host{
+	background:url('icons/host.png') no-repeat center center;
+}
+.icon-menu-knowledge{
+	background:url('icons/knowledge.png') no-repeat center center;
+}
+.icon-menu-knowledge-base{
+	background:url('icons/knowledge-base.png') no-repeat center center;
+}
+.icon-menu-license{
+	background:url('icons/license.png') no-repeat center center;
+}
+.icon-menu-manufacturer{
+	background:url('icons/manufacturer.png') no-repeat center center;
+}
+.icon-menu-middleware{
+	background:url('icons/middleware.png') no-repeat center center;
+}
+.icon-menu-network{
+	background:url('icons/network.png') no-repeat center center;
+}
+.icon-menu-performance{
+	background:url('icons/performance.png') no-repeat center center;
+}
+.icon-menu-project{
+	background:url('icons/project.png') no-repeat center center;
+}
+.icon-menu-publish{
+	background:url('icons/publish.png') no-repeat center center;
+}
+.icon-menu-purchase{
+	background:url('icons/purchase.png') no-repeat center center;
+}
+.icon-menu-resource{
+	background:url('icons/resource.png') no-repeat center center;
+}
+.icon-menu-resource-audit{
+	background:url('icons/resource-audit.png') no-repeat center center;
+}
+.icon-menu-resource-object{
+	background:url('icons/resource-object.png') no-repeat center center;
+}
+.icon-menu-resource-reports{
+	background:url('icons/resource-reports.png') no-repeat center center;
+}
+.icon-menu-run{
+	background:url('icons/run.png') no-repeat center center;
+}
+.icon-menu-safety{
+	background:url('icons/safety.png') no-repeat center center;
+}
+.icon-menu-service{
+	background:url('icons/service.png') no-repeat center center;
+}
+.icon-menu-service-room{
+	background:url('icons/service-room.png') no-repeat center center;
+}
+.icon-menu-spare{
+	background:url('icons/spare.png') no-repeat center center;
+}
+.icon-menu-supplier{
+	background:url('icons/supplier.png') no-repeat center center;
+}
+.icon-menu-task{
+	background:url('icons/task.png') no-repeat center center;
+}
+.icon-menu-topo{
+	background:url('icons/topo.png') no-repeat center center;
+}
+.icon-menu-upgrade{
+	background:url('icons/upgrade.png') no-repeat center center;
+}
+.icon-menu-virtual-environment{
+	background:url('icons/virtual-environment.png') no-repeat center center;
+}
+.icon-menu-performance-manage{
+	background:url('icons/performance-manage.png') no-repeat center center;
+}
+.icon-menu-monitor{
+	background:url('icons/monitor.png') no-repeat center center;
+}
+.icon_cmdb{
+	background:url('icons/icon_cmdb.png') no-repeat center center;
+}
+.icon_usedtemp{
+	background:url('icons/icon_usedtemp.png') no-repeat center center;
+}
+.icon-hand{
+	background:url('icons/icon-hand.png') no-repeat center center;
+}
+
+/* 新增加图标 */
+.icon-addressManage{
+	background:url('icons/iconsNew/addressManage.png') no-repeat center center;
+}
+.icon-credentialManage{
+	background:url('icons/iconsNew/credentialManage.png') no-repeat center center;
+}
+.icon-linkManage{
+	background:url('icons/iconsNew/linkManage.png') no-repeat center center;
+}
+.icon-operationPlatform{
+	background:url('icons/iconsNew/operationPlatform.png') no-repeat center center;
+}
+.icon-operationReport{
+	background:url('icons/iconsNew/operationReport.png') no-repeat center center;
+}
+.icon-organization{
+	background:url('icons/iconsNew/organization.png') no-repeat center center;
+}
+.icon-platformTool{
+	background:url('icons/iconsNew/platformTool.png') no-repeat center center;
+}
+.icon-resourceManage{
+	background:url('icons/iconsNew/resourceManage.png') no-repeat center center;
+}
+.icon-serviceManage{
+	background:url('icons/iconsNew/serviceManage.png') no-repeat center center;
+}
+.icon-statisticalManage{
+	background:url('icons/iconsNew/statisticalManage.png') no-repeat center center;
+}
+.icon-systemParameter{
+	background:url('icons/iconsNew/systemParameter.png') no-repeat center center;
+}
+.icon-taskCenter{
+	background:url('icons/iconsNew/taskCenter.png') no-repeat center center;
+}
+.icon-workReport{
+	background:url('icons/iconsNew/workReport.png') no-repeat center center;
+}
+.icon-processCenter{
+	background:url('icons/iconsNew/processCenter.png') no-repeat center center;
+}
+.icon-dutyManage{
+	background:url('icons/iconsNew/dutyManage.png') no-repeat center center;
+}
+.icon-levelManage{
+	background:url('icons/iconsNew/levelManage.png') no-repeat center center;
+}
+.icon-timeAlarm{
+	background:url('icons/iconsNew/timeAlarm.png') no-repeat center center;
+}
+.icon-topo{
+	background:url('icons/iconsNew/topo.png') no-repeat center center;
+}
+.icon-performanceView{
+	background:url('icons/iconsNew/performanceView.png') no-repeat center center;
+}
+.icon-alarmManage{
+	background:url('icons/iconsNew/alarmManage.png') no-repeat center center;
+}
+.icon-performanceManage{
+	background:url('icons/iconsNew/performanceManage.png') no-repeat center center;
+}
+.icon-resource{
+	background:url('icons/iconsNew/resource.png') no-repeat center center;
+}
+.icon-securityManage{
+	background:url('icons/iconsNew/securityManage.png') no-repeat center center;
+}
+.icon-monitoringObject{
+	background:url('icons/iconsNew/monitoringObject.png') no-repeat center center;
+}
+.icon-serviceLevel{
+	background:url('icons/iconsNew/serviceLevel.png') no-repeat center center;
+}
+.icon-syslogManage{
+	background:url('icons/iconsNew/syslogManage.png') no-repeat center center;
+}
+.icon-userInformation{
+	background:url('icons/iconsNew/userInformation.png') no-repeat center center;
+}
+
+/* left tabs */
+.icon-info {background:url('icons/tabs_icon.png') no-repeat;}
+.icon-parameter {background:url('icons/tabs_icon.png') no-repeat -80px 0;}
+.icon-set {background:url('icons/tabs_icon.png') no-repeat -160px 0;}
+.icon-apply {background:url('icons/tabs_icon.png') no-repeat 0 -60px;}
+.icon-solution {background:url('icons/tabs_icon.png') no-repeat -80px -60px;}
+.icon-processing {background:url('icons/tabs_icon.png') no-repeat -160px -60px;}
+.icon-project {background:url('icons/tabs_icon.png') no-repeat 0 -120px;}
+.icon-bidding {background:url('icons/tabs_icon.png') no-repeat -80px -120px;}
+.icon-agreement {background:url('icons/tabs_icon.png') no-repeat -160px -120px;}
+.icon-check {background:url('icons/tabs_icon.png') no-repeat 0 -180px;}
+
+.icon-setting {background:url('icons/icon_setting.png') no-repeat center center;}
+
+/*alarm level icon*/
+.icon-emergency{
+	background:url('levelIcon/1.png') no-repeat center center;
+}
+.icon-severity{
+	background:url('levelIcon/2.png') no-repeat center center;
+}
+.icon-ordinary{
+	background:url('levelIcon/3.png') no-repeat center center;
+}
+.icon-prompt{
+	background:url('levelIcon/4.png') no-repeat center center;
+}
+.icon-uncertain{
+	background:url('levelIcon/5.png') no-repeat center center;
+}
+
+.icon-batchStart{
+	background:url('icons/batchStart.png') no-repeat center center;
+}

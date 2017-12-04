@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.notices.mapper.NotificationsMapper">
+
+	<resultMap type="com.fable.insightview.platform.notices.entity.NotificationsBean" id="noticeMaps">
+		<id column="Id" property="id" jdbcType="INTEGER" javaType="INTEGER" />
+		<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" javaType="DATE" />
+		<result column="Title" property="title" jdbcType="VARCHAR" javaType="STRING" />
+		<collection property="persons" ofType="com.fable.insightview.platform.notices.entity.NoticePersonsBean">
+			<result column="UserId" property="userId" jdbcType="INTEGER" javaType="INTEGER" />
+			<result column="UserName" property="userName" jdbcType="VARCHAR" javaType="STRING" />
+			<result column="Status" property="status" jdbcType="TINYINT" javaType="INTEGER" />
+		</collection>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.fable.insightview.platform.notices.entity.NotificationsBean">
+		INSERT INTO PfNotifications(Id,Title,NoticeContent,Creator,CreateTime,File,IsNote)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{noticeContent,jdbcType=VARCHAR},
+		#{creator,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{file,jdbcType=VARCHAR},#{isNote,jdbcType=TINYINT})
+	</insert>
+
+	<select id="list" resultMap="noticeMaps" parameterType="page">
+		select pn.Id,pn.Title,pn.CreateTime
+		from PfNotifications pn WHERE 1=1
+		AND pn.Creator=#{params.currentUserId}
+		<if test="params.title != null and params.title != ''">
+			AND pn.Title LIKE ${concat("'%'","'" + params.title + "'","'%'")}
+		</if>
+		<if test="params.createBegin != null and params.createBegin != ''">
+			<![CDATA[AND pn.CreateTime>=${toDate(params.createBegin, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.createEnd != null and params.createEnd != ''">
+			<![CDATA[AND pn.CreateTime<=${toDate(params.createEnd, "%Y-%m-%d %H:%i:%s")}]]>
+		</if>
+		<if test="params.recipient != null and params.recipient != -1">
+			AND EXISTS (SELECT NoticeId FROM PfNoticePersons WHERE UserId=#{params.recipient} AND pn.Id=NoticeId)
+		</if>
+		ORDER BY pn.CreateTime DESC
+	</select>
+
+	<select id="querySingle" resultType="HASHMAP">
+		SELECT pf.Id,pf.Title,pf.NoticeContent,pf.CreateTime,pf.File,pf.IsNote,su.UserName
+		FROM PfNotifications pf LEFT JOIN SysUserInfo su ON pf.Creator=su.UserID
+		WHERE pf.Id=#{noticeId}
+	</select>
+
+	<update id="update" parameterType="com.fable.insightview.platform.notices.entity.NotificationsBean">
+		UPDATE PfNotifications SET Title=#{title,jdbcType=VARCHAR},NoticeContent=#{noticeContent,jdbcType=VARCHAR},File=#{file,jdbcType=VARCHAR},IsNote=#{isNote}
+		WHERE Id=#{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM PfNotifications WHERE Id=#{noticeId}
+	</delete>
+
+	<delete id="deleteMulti">
+		DELETE FROM PfNotifications WHERE Id IN (${noticeIds})
+	</delete>
+
+	<select id="queryColleagues" parameterType="HASHMAP" resultType="HASHMAP">
+		SELECT su.UserID id,su.UserName name,se.EmployeeCode,se.OrganizationID FROM SysUserInfo su,SysEmployment se
+		WHERE
+		su.UserID=se.UserID
+		AND se.OrganizationID=(SELECT OrganizationID FROM SysEmployment
+		WHERE UserID=#{userId})
+		<if test="deptId !=null and deptId > 0 ">
+			AND se.DeptID=#{deptId}
+		</if>
+		<if test="name != null and name != '' ">
+			AND su.UserName LIKE ${concat("'%'","'" + name + "'","'%'")}
+		</if>
+		<if test="userIds != null and userIds != '' ">
+			AND su.UserID NOT IN (${userIds})
+		</if>
+	</select>
+
+	<select id="getOrgId" resultType="INTEGER">
+		SELECT OrganizationID FROM SysEmployment WHERE UserID=#{userId}
+	</select>
+	
+	<select id="queryUserPhone" resultType="HASHMAP">
+		SELECT UserID,UserName,MobilePhone FROM SysUserInfo WHERE UserID IN (${userIds})
+	</select>
+
+</mapper>

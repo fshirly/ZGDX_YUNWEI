@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.fable.insightview</groupId>
+  <artifactId>com.fable.insightview</artifactId>
+  <version>3.2.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+    <modules>
+        <module>monitor</module>
+        <module>platform</module>
+    </modules>
+  <dependencies>
+    <dependency>
+    	<groupId>com.fable.insightview.platform</groupId>
+    	<artifactId>insightview-platform-war</artifactId>
+    	<version>${project.version}</version>
+    	<type>war</type>
+    </dependency>
+	<dependency>
+    	<groupId>com.fable.insightview.monitor</groupId>
+		<artifactId>insightview-monitor-war</artifactId>
+		<version>${project.version}</version>
+    	<type>war</type>
+    </dependency> 
+  </dependencies>
+    <build>
+        <finalName>insightview</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

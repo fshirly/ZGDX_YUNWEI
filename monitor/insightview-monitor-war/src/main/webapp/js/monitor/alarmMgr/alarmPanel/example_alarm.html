@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Custom Model</title>
+		<meta charset="gb2312">
+		<style>
+html,body {
+	padding: 0px;
+	margin: 0px;
+}
+
+.main {
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+</style>
+<script src="ht.js"></script>
+<script type="text/javascript" src="js-pushlet-client.js"></script> 
+<script>                         
+          function init(){
+			  var map = { 
+		                  10: { name: '严重', color: 'red'},
+		                  11: { name: '主要', color: '#FFA000'},
+		                  12: { name: '次要', color: '#FFFF00'},
+		                  13: { name: '提示', color: '#00FFFF'},
+		                  14: { name: '清除', color: '#C800FF'},
+		              };
+		
+			    //添加工具条               
+		              var toolbar = new ht.widget.Toolbar([
+		                  {
+		                      element: document.getElementById('emergency') //紧急
+		                  },
+					{
+		                      element: document.getElementById('main') //主要
+		                  },
+					{
+		                      element: document.getElementById('secondary') //次要
+		                  },
+					{
+		                      element: document.getElementById('prompt') //提示
+		                  },
+					{
+		                      element: document.getElementById('clear') //清除
+		                  },
+					{
+		                      element: document.getElementById('hour') //前一个小时
+		                  },
+					{
+		                      element: document.getElementById('look') //查看
+		                  },
+					{
+		                      element: document.getElementById('confirm') //确认
+		                  },
+					{
+		                      element: document.getElementById('cConfirm') //取消确认
+		                  },
+					{
+		                      element: document.getElementById('distributed') //派发
+		                  },
+					{
+		                      element: document.getElementById('bClear') //清除
+		                  },
+					{
+		                      element: document.getElementById('delete') //删除
+		                  },
+					{
+		                      element: document.getElementById('cView') //自定义视图
+		                  },
+					{
+		                      element: document.getElementById('sel') //选择
+		                  },
+					{
+		                      element: document.getElementById('mView') //我的视图
+		                  }
+		              ]);		
+		
+		              toolbar.setStickToRight(true);
+				
+				//创建布局对象
+		              borderPane = new ht.widget.BorderPane();
+				
+				//创建数据模型
+				dataModel = new ht.DataModel();  
+				
+				//创建表格面板
+				tablePane = new ht.widget.TablePane(dataModel);
+				
+				//创建列模型
+				columnModel = tablePane.getColumnModel();
+				
+				//将工具条添加到顶部
+		              borderPane.setTopView(toolbar);
+				
+				//将表格面板添加到中部
+				borderPane.setCenterView(tablePane);
+		
+				//获取视图并添加到window中
+		              view = borderPane.getView();  
+		              view.className = 'main';
+		              document.body.appendChild(view);
+		              window.addEventListener('resize', function (e) {
+		                  borderPane.invalidate();
+		              }, false); 
+						
+				/*************创建表格列*****************/
+				//告警状态
+				var  column = new ht.Column();
+		              column.setName("status");//列名称
+				column.setDisplayName("告警状态");//列显示名称
+				column.setAccessType('attr');//以什么方式获取值
+				column.setWidth(80);//设置列宽度
+		              columnModel.add(column);//将列添加到列模型中
+				
+				//告警级别
+				column = new ht.Column();
+		              column.setName("level");
+				column.setDisplayName("告警级别");
+				column.setAccessType('attr');
+				
+				//对列进行排序
+				column.setSortFunc(function(v1, v2, d1, d2){
+				    if(v1 === v2) {
+		                      return 0;
+		                  }
+		                  // keep 'Cleared' on top
+		                  if(v1 === 0) {
+		                      return -1;
+		                  }
+					
+		                  if(v2 === 0) { 
+		                      return 1;
+		                  }
+		                  
+		                  // compare value
+		                  if(v1 > v2){
+		                      return 1;
+		                  } else { 
+		                      return -1; 
+		                  } 
+					
+				});
+				
+				//渲染列
+				column.drawCell = function (g, data, selected, column, x, y, w, h, view) {
+				  var color =  map[data.getAttr("level")].color
+				  var value  =  map[data.getAttr("level")].name;
+				  
+				   // draw background                    
+		                  g.fillStyle = selected ? ht.Default.darker(color) : color;
+		                  g.beginPath();
+		                  g.rect(x, y, w, h);
+		                  g.fill();
+		                  
+		                  // draw label     
+		                  color = selected ? 'white' : 'black'; 
+				  	ht.Default.drawText(g, value, null, color, x, y, w, h, 'center');
+				};
+				
+				column.setWidth(80);
+		              columnModel.add(column);
+				tablePane.getTableView().setSortColumn(column); 
+				
+				tablePane.getTableView().setCheckMode(true);
+				//告警源名称
+				column = new ht.Column();
+		              column.setName("sName");
+				column.setDisplayName("告警源名称");
+				column.setAccessType('attr');
+				column.setWidth(100);
+		              columnModel.add(column);
+				
+				
+			    //告警编码
+				column = new ht.Column();
+		              column.setName("code");
+				column.setDisplayName("告警编码");
+				column.setAccessType('attr');
+				column.setWidth(80);
+		              columnModel.add(column);
+				
+				//告警名称
+				column = new ht.Column();
+		              column.setName("name");
+				column.setDisplayName("告警名称");
+				column.setAccessType('attr');
+				column.setWidth(100);
+		              columnModel.add(column);
+				
+				
+				//首次发生的时间
+				column = new ht.Column();
+		              column.setName("fTime");
+				column.setDisplayName("首次发生的时间");
+				column.setAccessType('attr');
+				column.setWidth(120);
+		              columnModel.add(column);
+				
+				
+			    //告警类型
+				column = new ht.Column();
+		              column.setName("type");
+				column.setDisplayName("告警类型");
+				column.setAccessType('attr');
+				column.setWidth(80);
+		              columnModel.add(column);
+				
+			    //次数
+				column = new ht.Column();
+		              column.setName("count");
+				column.setDisplayName("次数");
+				column.setAccessType('attr');
+				column.setWidth(50);
+		              columnModel.add(column);
+				
+				
+				//最后发生的时间
+				column = new ht.Column();
+		              column.setName("lTime");
+				column.setDisplayName("最后发生的时间");
+				column.setAccessType('attr');
+				column.setWidth(120);
+		              columnModel.add(column);
+				
+				
+			    //告警源IP
+				column = new ht.Column();
+		              column.setName("ip");
+				column.setDisplayName("告警源IP");
+				column.setAccessType('attr');
+				column.setWidth(100);
+		              columnModel.add(column);
+				
+				
+				//设备类型
+				column = new ht.Column();
+		              column.setName("eType");
+				column.setDisplayName("设备类型");
+				column.setAccessType('attr');
+				column.setWidth(80);
+		              columnModel.add(column);
+				
+				
+				/**************以下是模拟数据*********************/
+				var data = new ht.Data();
+				data.a("status","未确认");
+				data.a("level","11");
+				data.a("sName","fabelDev01");
+				data.a("code","11");
+				data.a("name","默认阀值事件");
+				data.a("fTime","2014-6-12 15:30:22");
+				data.a("type","设备告警");
+				data.a("count","2");
+				data.a("lTime","2014-6-12 15:30:22");
+				data.a("ip","192.168.1.200");
+				data.a("eType","交换机");
+				dataModel.add(data);
+		
+				var data = new ht.Data();
+				data.a("status","未确认");
+				data.a("level","10");
+				data.a("sName","fabelDev02");
+				data.a("code","11");
+				data.a("name","默认阀值事件");
+				data.a("fTime","2014-6-12 15:30:22");
+				data.a("type","设备告警");
+				data.a("count","2");
+				data.a("lTime","2014-6-12 15:30:22");
+				data.a("ip","192.168.1.200");
+				data.a("eType","交换机");
+				dataModel.add(data);
+				
+			    var data = new ht.Data();
+				data.a("status","未确认");
+				data.a("level","11");
+				data.a("sName","fabelDev02");
+				data.a("code","11");
+				data.a("name","默认阀值事件");
+				data.a("fTime","2014-6-12 15:30:22");
+				data.a("type","设备告警");
+				data.a("count","2");
+				data.a("lTime","2014-6-12 15:30:22");
+				data.a("ip","192.168.1.200");
+				data.a("eType","交换机");
+				dataModel.add(data);
+		          }
+		      	
+		      	function getId() {
+			  	tablePane.getTableView().getSelectionModel()
+			  		.getSelection().each(function(id){
+						alert(id);
+			  });
+			}
+			
+			function look() {
+				dataModel.remove(dataModel.getDataById(15));
+			
+				tablePane.getTableView().getSelectionModel().getSelection().remove();
+			  	//getId();
+			}  
+		</script>
+	</head>
+
+
+	<body onload="init();">
+		<span id="emergency">紧急101</span>
+		<span id="main">主要11</span>
+		<span id="secondary">次要12</span>
+		<span id="prompt">提示13</span>
+		<span id="clear">清除11</span>
+
+		<select id="hour">
+			<option>前一小时</option>
+			<option>前两小时</option>
+			<option>前一天</option>
+		</select>
+
+		<button id="look" onclick="look();">
+			查看
+		</button>
+		<button id="confirm">
+			确认
+		</button>
+		<button id="cConfirm">
+			取消确认
+		</button>
+		<button id="distributed">
+			派发
+		</button>
+		<button id="bClear">
+			清除
+		</button>
+		<button id="delete">
+			删除
+		</button>
+		<button id="cView">
+			自定义视图
+		</button>
+
+		<label id="sel">
+			选择:
+		</label>
+		<select id="mView">
+			<option>
+				我的视图1
+			</option>
+			<option>
+				我的视图2
+			</option>
+		</select>
+	</body>
+</html>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.ipmanager.mapper.IPManSubNetInfoMapper">
+	<resultMap id="subNetInfoMap" type="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+		<id column="SubNetID" property="subNetId" jdbcType="INTEGER" />
+		<result column="SubNetType" property="subNetType" jdbcType="INTEGER" />
+		<result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+		<result column="SubNetMark" property="subNetMark" jdbcType="VARCHAR" />
+		<result column="UsedNum" property="usedNum" jdbcType="INTEGER" />
+		<result column="PreemptNum" property="preemptNum" jdbcType="INTEGER" />
+		<result column="FreeNum" property="freeNum" jdbcType="INTEGER" />
+		<result column="TotalNum" property="totalNum" jdbcType="INTEGER" />
+		<result column="NetAddress" property="netAddress" jdbcType="VARCHAR" />
+		<result column="BroadCast" property="broadCast" jdbcType="VARCHAR" />
+		<result column="Desc" property="desc" jdbcType="VARCHAR" />
+		<result column="IsSplit" property="isSplit" jdbcType="INTEGER" />
+		<result column="Gateway" property="gateway" jdbcType="VARCHAR" />
+		<result column="DNSAddress" property="dnsAddress" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getAllSubNetInfo" resultType="hashmap" resultMap="subNetInfoMap" >
+		select * from IPManSubNetInfo order by inet_aton(IPAddress)
+	</select>
+	
+	<select id="selectSubNetInfo" resultType="hashmap" resultMap="subNetInfoMap" parameterType="page">
+		select distinct info.*
+		from IPManSubNetInfo info
+		left join IPManSubNetRDept srd on srd.SubNetID = info.SubNetID
+		left join SysDepartment dept on dept.DeptID = srd.DeptID
+		where 1=1
+		<if test="params.startIp !='' and params.startIp != null ">
+			 and inet_aton(info.IPAddress) &gt;= inet_aton(#{params.startIp})
+		</if>
+		<if test="params.endIp !='' and params.endIp != null ">
+			 and inet_aton(info.IPAddress) &lt;= inet_aton(#{params.endIp})
+		</if>
+		<if test="params.deptName !='' and params.deptName != null ">
+			 and dept.DeptName like ${concat("'%'","'"+params.deptName+"'","'%'")}
+		</if>
+		<if test="params.totalNum !='' and params.totalNum !='-1' and params.totalNum != null ">
+			 and info.TotalNum =#{params.totalNum} 
+		</if>
+		order by inet_aton(info.IPAddress)
+	</select>
+	
+	<select id="getSubnetInfoByID" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+		select * from IPManSubNetInfo where SubNetID = #{subNetId,jdbcType=INTEGER} 
+	</select>
+	
+	<select id="getByIPAndSubNetMark" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+		select * from IPManSubNetInfo 
+		where inet_aton(BroadCast) &gt; inet_aton(#{ipAddress,jdbcType=VARCHAR}) and inet_aton(IPAddress) &lt;= inet_aton(#{broadCast,jdbcType=VARCHAR})
+	</select>
+	
+	<insert id="insertSubnetInfo" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+	insert into IPManSubNetInfo (SubNetID,SubNetType,IPAddress,SubNetMark,UsedNum,PreemptNum,FreeNum,TotalNum,NetAddress,BroadCast,Descr,IsSplit,Gateway,DNSAddress)
+	values (#{subNetId,jdbcType=INTEGER}, #{subNetType,jdbcType=INTEGER},#{ipAddress,jdbcType=VARCHAR},#{subNetMark,jdbcType=VARCHAR},
+			#{usedNum,jdbcType=INTEGER},#{preemptNum,jdbcType=INTEGER},	#{freeNum,jdbcType=INTEGER},#{totalNum,jdbcType=INTEGER},
+			#{netAddress,jdbcType=VARCHAR},#{broadCast,jdbcType=VARCHAR},#{descr,jdbcType=VARCHAR},#{isSplit,jdbcType=INTEGER},
+			#{gateway,jdbcType=VARCHAR},#{dnsAddress,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateSubnetInfoByID" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean" >
+    update IPManSubNetInfo
+    <set>
+      <if test="subNetType != null" >
+        SubNetType = #{subNetType,jdbcType=INTEGER},
+      </if>
+      <if test="ipAddress != null" >
+        IPAddress = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="subNetMark != null" >
+        SubNetMark = #{subNetMark,jdbcType=VARCHAR},
+      </if>
+      <if test="usedNum != null" >
+        UsedNum = #{usedNum,jdbcType=INTEGER},
+      </if>
+      <if test="preemptNum != null" >
+        PreemptNum = #{preemptNum,jdbcType=INTEGER},
+      </if>
+      <if test="freeNum != null" >
+        FreeNum = #{freeNum,jdbcType=INTEGER},
+      </if>
+      <if test="totalNum != null" >
+        TotalNum = #{totalNum,jdbcType=INTEGER},
+      </if>
+      <if test="netAddress != null" >
+        NetAddress = #{netAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="broadCast != null" >
+        BroadCast = #{broadCast,jdbcType=VARCHAR},
+      </if>
+      <if test="descr != null" >
+        Descr = #{descr,jdbcType=VARCHAR},
+      </if>
+      <if test="isSplit != null" >
+        IsSplit = #{isSplit,jdbcType=INTEGER},
+      </if>
+      <if test="gateway != null" >
+        Gateway = #{gateway,jdbcType=VARCHAR},
+      </if>
+      <if test="dnsAddress != null" >
+        DNSAddress = #{dnsAddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SubNetID = #{subNetId,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delSubNetInfoById" parameterType="Integer">
+	delete from IPManSubNetInfo where SubNetID = #{subNetId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="delSubNetInfos" parameterType="hashmap">
+	delete from IPManSubNetInfo where SubNetID in 
+	<foreach collection="list" item="subNetIds"  open="(" separator="," close=")">
+     #{subNetIds}
+    </foreach> 
+  </delete>
+  
+  <select id="getByIpAddress" parameterType="String" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+  	select * from IPManSubNetInfo where IPAddress like ${concat("'%'","'"+ipAddress+"'","'%'")} order by inet_aton(IPAddress)
+  </select>
+  
+  <select id="getBySubnetAndDept" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+  	select info.*,srd.DeptID,dept.DeptName
+	from IPManSubNetInfo info
+	left join IPManSubNetRDept srd on srd.SubNetID = info.SubNetID
+	left join SysDepartment dept on dept.DeptID = srd.DeptID
+	where 1=1 and info.SubNetID=#{subNetId}  and dept.DeptName like ${concat("'%'","'"+deptName+"'","'%'")}
+  </select>
+  
+  <select id="getAllSubnetByCondition" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetInfoBean">
+  	select distinct info.*
+	from IPManSubNetInfo info
+	left join IPManSubNetRDept srd on srd.SubNetID = info.SubNetID
+	left join SysDepartment dept on dept.DeptID = srd.DeptID
+	where 1=1
+	<if test="startIp !='' and startIp != null ">
+		 and inet_aton(info.IPAddress) &gt;= inet_aton(#{startIp})
+	</if>
+	<if test="endIp !='' and endIp != null ">
+		 and inet_aton(info.IPAddress) &lt;= inet_aton(#{endIp})
+	</if>
+	<if test="deptName !='' and deptName != null ">
+		 and dept.DeptName like ${concat("'%'","'"+deptName+"'","'%'")}
+	</if>
+	<if test="totalNum !='' and totalNum !='-1' and totalNum != null ">
+		 and info.TotalNum =#{totalNum} 
+	</if>
+	order by inet_aton(info.IPAddress)
+  </select>
+</mapper>
+

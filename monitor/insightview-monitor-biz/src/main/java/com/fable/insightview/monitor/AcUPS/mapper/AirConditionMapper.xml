@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.AcUPS.mapper.AirConditionMapper">
+	
+	<resultMap type="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean" id="airCondition">  
+    <id property="moID" column="MOID" />  
+    <result property="moName" column="MOName" />  
+    <result property="mOAlias" column="MOAlias" />  
+    <result property="pefOperStatus" column="OperStatus" />  
+    <result property="adminStatus" column="AdminStatus" />  
+    <result property="alarmLevel" column="AlarmLevel" />  
+    <result property="domainID" column="DomainID" />  
+    <result property="createTime" column="CreateTime" />  
+    <result property="lastUpdateTime" column="LastUpdateTime" />  
+    <result property="createBy" column="CreateBy" />  
+    <result property="updateBy" column="UpdateBy" />  
+    <result property="deviceIP" column="DeviceIP" />  
+    <result property="neCollectorID" column="NeCollectorID" />  
+    <result property="neManufacturerID" column="NeManufacturerID" />  
+    <result property="neCategoryID" column="NeCategoryID" />  
+    <result property="neVersion" column="NeVersion" />    
+     <result property="oS" column="OS" />  
+    <result property="oSVersion" column="OSVersion" />  
+    <result property="moClassID" column="MOClassID" />  
+     <result property="snmpVersion" column="SnmpVersion" />  
+     <result property="isManage" column="IsManage" />  
+     <result property="taskId" column="TaskId" />  
+    <result property="sysObjectID" column="SysObjectID" />  
+    <result property="updateAlarmTime" column="UpdateAlarmTime" />  
+    <result property="securityName" column="SecurityName" />  
+    <association property="SNMPbean"  resultMap="moduleMap" >  
+            </association>  
+</resultMap> 
+
+<resultMap type="com.fable.insightview.monitor.AcUPS.entity.SNMPbean" id="moduleMap">  
+    <id property="ID" column="ID" />  
+    <result property="snmpPort" column="SnmpPort" />  
+    <result property="readCommunity" column="ReadCommunity" />  
+    <result property="writeCommunity" column="WriteCommunity" />  
+    <result property="USMUser" column="USMUser" />  
+     <result property="authAlogrithm" column="AuthAlogrithm" />  
+    <result property="authKey" column="AuthKey" />  
+    <result property="encryptionAlogrithm" column="EncryptionAlogrithm" />  
+    <result property="encryptionKey" column="EncryptionKey" />
+    <result property="contexName" column="ContexName" />    
+     <result property="snmpVersions" column="sn_SnmpVersion" />  
+</resultMap>
+	
+	
+	<insert id="insertSNMP" parameterType="com.fable.insightview.monitor.AcUPS.entity.SNMPbean">
+		insert into SNMPCommunityCache (
+				<if test="ID !=null">
+				ID,
+				</if>
+				<if test="deviceIP !=null">
+				DeviceIP,
+				</if>
+				<if test="moID !=null">
+				MOID,
+				</if>
+				<if test="snmpPort !=null">
+				SnmpPort,
+				</if>
+				<if test="snmpVersions !=null">
+				SnmpVersion,
+				</if>
+				<if test="readCommunity !=null">
+				ReadCommunity,
+				</if>
+				<if test="writeCommunity !=null">
+				WriteCommunity,
+				</if>
+				<if test="USMUser !=null">
+				USMUser,
+				</if>
+				<if test="authAlogrithm !=null">
+				AuthAlogrithm,
+				</if>
+				<if test="authKey !=null">
+				AuthKey,
+				</if>
+				<if test="encryptionAlogrithm !=null">
+				EncryptionAlogrithm,
+				</if>
+				<if test="encryptionKey !=null">
+				EncryptionKey,
+				</if>
+				<if test="contexName !=null">
+				ContexName
+				</if>
+				) values (
+				<if test="ID !=null">
+				#{ID,jdbcType=INTEGER},
+				</if>
+			<if test="deviceIP !=null">
+				#{deviceIP,jdbcType=VARCHAR},
+			</if>
+			<if test="moID !=null">
+				#{moID,jdbcType=INTEGER},
+			</if>
+			<if test="snmpPort !=null">
+				#{snmpPort,jdbcType=INTEGER},
+			</if>
+			<if test="snmpVersions !=null">
+				#{snmpVersions,jdbcType=INTEGER},
+			</if>
+			<if test="readCommunity !=null">
+				#{readCommunity,jdbcType=VARCHAR},
+				</if>
+				<if test="writeCommunity !=null">
+				#{writeCommunity,jdbcType=VARCHAR},
+				</if>
+				<if test="USMUser !=null">
+				#{USMUser,jdbcType=VARCHAR},
+				</if>
+				<if test="authAlogrithm !=null">
+				#{authAlogrithm,jdbcType=VARCHAR},
+				</if>
+				<if test="authKey !=null">
+				#{authKey,jdbcType=VARCHAR},
+				</if>
+				<if test="encryptionAlogrithm !=null">
+				#{encryptionAlogrithm,jdbcType=VARCHAR},
+				</if>
+				<if test="encryptionKey !=null">
+				#{encryptionKey,jdbcType=VARCHAR},
+				</if>
+				<if test="contexName !=null">
+				#{contexName,jdbcType=VARCHAR}
+				</if>
+			)
+	</insert>
+	
+	
+	<insert id="insertMOIPInfo" parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean">
+		insert into MOIPInfo (MOID,DeviceIP) values (#{moID,jdbcType=INTEGER},#{deviceIP,jdbcType=VARCHAR})
+	</insert>
+	
+	 <insert id="addData" parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean" >
+	insert into MODevice (
+	<if test="moID !=null">
+		MOID,
+  	  </if>
+	<if test="moName !=null">
+		MOName,
+  	  </if>
+  	  	<if test="mOAlias !=null">
+		MOAlias,
+		</if>
+	OperStatus, AdminStatus,AlarmLevel,
+	<if test="domainID !=null">
+		DomainID,
+	   </if>
+	<if test="createTime !=null">
+		CreateTime,
+	 </if>
+	<if test="lastUpdateTime !=null">
+		LastUpdateTime,
+	 </if>
+	<if test="createBy !=null">
+		CreateBy,
+	 </if>
+	<if test="updateBy !=null">
+		UpdateBy,
+	  </if>
+	<if test="deviceIP !=null">
+		DeviceIP,
+	   </if>
+	<if test="neCollectorID !=null">
+		NeCollectorID,
+	   </if>
+	<if test="neManufacturerID !=null">
+		NeManufacturerID,
+	   </if>
+	<if test="neCategoryID!=null">
+		NeCategoryID, 
+	   	</if>
+	<if test="taskId !=null">
+		TaskId,
+   		</if>
+	<if test="moClassID !=null">
+		MOClassID,
+   		</if>
+	IsManage,
+	<if test="sysObjectID !=null">
+		SysObjectID,
+ 	</if>
+	<if test="updateAlarmTime !=null">
+		UpdateAlarmTime)
+ 	</if>
+	values(
+	<if test="moID !=null">
+		#{moID,jdbcType=INTEGER},
+  	  </if>
+	<if test="moName !=null">
+		#{moName,jdbcType=VARCHAR},
+  	  </if>
+  	  <if test="mOAlias !=null">
+		#{mOAlias,jdbcType=VARCHAR},
+	</if>
+	1,1,0,
+	<if test="domainID !=null">
+		#{domainID,jdbcType=INTEGER},
+  	  </if>
+	<if test="createTime !=null">
+		#{createTime,jdbcType=VARCHAR},
+  	  </if>
+	<if test="lastUpdateTime !=null">
+		#{lastUpdateTime,jdbcType=VARCHAR},
+  	 </if>
+	<if test="createBy !=null">
+		#{createBy,jdbcType=INTEGER},
+  	 </if>
+	<if test="updateBy !=null">
+		#{updateBy,jdbcType=INTEGER},
+  	 </if>
+	<if test="deviceIP !=null">
+		#{deviceIP,jdbcType=VARCHAR},
+  	 </if>
+	<if test="neCollectorID !=null">
+		#{neCollectorID,jdbcType=INTEGER},
+  	</if>
+	<if test="neManufacturerID !=null">
+		#{neManufacturerID,jdbcType=INTEGER},
+  	</if>
+	<if test="neCategoryID!=null">
+		#{neCategoryID,jdbcType=INTEGER},
+  	</if>
+	<if test="taskId !=null">
+		#{taskId,jdbcType=INTEGER},
+  	</if>
+	<if test="moClassID !=null">
+		#{moClassID,jdbcType=INTEGER},
+  	</if>
+	1,
+	<if test="sysObjectID !=null">
+		#{sysObjectID,jdbcType=VARCHAR},
+  	</if>
+	<if test="updateAlarmTime !=null">
+		#{updateAlarmTime,jdbcType=VARCHAR}
+  	</if>
+	)
+	  </insert>
+ 
+ 
+ <select id="queryAcConditionList" resultType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean"  parameterType="page">
+	select m.*,manufacturer.ResManufacturerName resManufacturerName,a.alarmlevelname, a.LevelIcon
+		from MODevice m
+		left join AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+		left join SysManagedDomain d ON m.DomainID=d.DomainID
+		left join ManufacturerInfo manufacturer on m.NeManufacturerID = manufacturer.ResManufacturerID
+		where m.MOClassID in (${params.MOClassID})
+    	<if test="params.ResManufacturerName != null and params.ResManufacturerName != '' ">
+			and a.ResManufacturerName like ${concat("'%'","'"+params.ResManufacturerName+"'","'%'")}  
+    	</if>
+ </select>
+ 
+ 
+ <select id="DomainList" resultType="com.fable.insightview.monitor.AcUPS.entity.DomainBean">
+ 	select DomainID,IP1,IP2,ScopeType from SysManagedDomainIPScope order by ScopeID asc
+ </select>
+ 
+ <select id="queryAcditionByMOID" resultMap="airCondition"  parameterType="hashmap">
+ select m.deviceIP,m.mOAlias,m.domainID,m.moID,m.moName,m.moClassID,m.neManufacturerID,m.lastUpdateTime,snmp.SnmpPort,snmp.ReadCommunity,snmp.WriteCommunity, snmp.USMUser,snmp.AuthAlogrithm,snmp.AuthKey, 
+  snmp.EncryptionAlogrithm,snmp.EncryptionKey,snmp.ContexName, snmp.SnmpVersion  sn_SnmpVersion,mo.ClassName,d1.taskId,
+ manufacturer.ResManufacturerName resManufacturerName from MODevice m
+ left join MObjectDef mo on mo.ClassID = m.MOClassID  
+left join ManufacturerInfo manufacturer on m.NeManufacturerID = manufacturer.ResManufacturerID
+left join SNMPCommunityCache snmp on snmp.MOID = m.MOID
+left join SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+	where  m.MOID in (${MOID})
+ </select>
+ 
+ 
+ <select id="checkbeforeAdd" resultType="java.lang.Integer"  parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean">
+ 	select count(1) from SNMPCommunityCache where  DeviceIP =#{deviceIP}
+ 	<if test="moID !=null and moID !=''">
+ 	 and MOID  != (SELECT MOID FROM MOIPInfo WHERE DeviceIP =#{deviceIP})
+ 	</if>
+ </select>
+ 
+ <select id="selectIPinfo" resultType="AirConditionBean" parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean">
+		select MOID from  MOIPInfo  where DeviceIP = #{deviceIP}
+	</select>
+	
+	<update id="updateSNMPInfo" parameterType="com.fable.insightview.monitor.AcUPS.entity.SNMPbean">
+		update SNMPCommunityCache 
+	<set >
+		<if test="deviceIP !=null" >
+		 DeviceIP = #{deviceIP,jdbcType=VARCHAR},
+		</if>
+		 <if test="snmpPort !=null">
+		 SnmpPort = #{snmpPort,jdbcType=INTEGER},
+		 </if>
+		 <if test="snmpVersions !=null">
+		 	SnmpVersion = #{snmpVersions,jdbcType=INTEGER},
+		 </if>
+		 <if test="readCommunity !=null">
+		 ReadCommunity = #{readCommunity,jdbcType=VARCHAR},
+		 </if>
+		 <if test="writeCommunity !=null">
+		 WriteCommunity = #{writeCommunity,jdbcType=VARCHAR},
+		 </if>
+		 <if test="USMUser !=null">
+		 USMUser = #{USMUser,jdbcType=VARCHAR},
+		 </if>
+		 <if test="authAlogrithm !=null">
+		 AuthAlogrithm =#{authAlogrithm,jdbcType=VARCHAR},
+		 </if>
+		 <if test="authKey !=null">
+		  AuthKey = #{authKey,jdbcType=VARCHAR},
+		 </if>
+		 <if test="encryptionAlogrithm !=null">
+		 EncryptionAlogrithm =#{encryptionAlogrithm,jdbcType=VARCHAR},
+		 </if>
+		 <if test="encryptionKey !=null">
+		 EncryptionKey = #{encryptionKey,jdbcType=VARCHAR},
+		 </if>
+		 <if test="contexName !=null">
+		 ContexName = #{contexName,jdbcType=VARCHAR}
+		 </if>
+	</set>
+		 where MOID =#{moID,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateModevice"  parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean">
+		update MODevice 
+		<set>
+		<if test="mOAlias !=null">
+			MOAlias =#{mOAlias,jdbcType=VARCHAR},
+		</if>
+		<if test="deviceIP !=null" >
+		 DeviceIP = #{deviceIP,jdbcType=VARCHAR},
+		</if>
+		<if test="createTime !=null">
+		CreateTime = #{createTime,jdbcType=VARCHAR},
+		 </if>
+		<if test="lastUpdateTime !=null">
+		LastUpdateTime = #{lastUpdateTime,jdbcType=VARCHAR},
+		 </if>
+		<if test="neManufacturerID !=null">
+		NeManufacturerID = #{neManufacturerID,jdbcType=INTEGER},
+		</if>
+		<if test="moClassID !=null">
+		 MOClassID = #{moClassID,jdbcType=INTEGER},
+		</if>
+		<if test="updateAlarmTime !=null">
+		UpdateAlarmTime = #{updateAlarmTime,jdbcType=VARCHAR}
+ 		</if>
+		</set>
+		 where MOID = #{moID}
+	</update>
+	
+	<update id="updateMOIpinfo" parameterType="com.fable.insightview.monitor.AcUPS.entity.AirConditionBean">
+		update  MOIPInfo set DeviceIP =  #{deviceIP}  where MOID = #{moID}
+	</update>
+	<select id="queryperfRoomInfo" resultType="com.fable.insightview.monitor.AcUPS.entity.PerfRoomConditionsBean">
+		select * from PerfRoomConditions where MOID = ${moId}
+	</select>
+	
+	<select id="getConfParamValue" resultType="Integer">
+		select ParaValue from SysConfig where Type = 1001 and ParaKey = 'ThresholdMultiples'
+	</select>
+	
+	<select id="getUpsInfo" resultType="com.fable.insightview.monitor.AcUPS.entity.perfEastUpsBean">
+		select * from  PerfRoomEastUps where MOID =${moId}
+	</select>
+	
+	<select id="getInvtUpsInfo" resultType="com.fable.insightview.monitor.AcUPS.entity.perfInvtUpsBean">
+		select * from  PerfRoomInvtUps where MOID =${moId}
+	</select>
+	
+	<select id="getResManufacturerID" resultType="Integer">
+		SELECT pen.ResManufacturerID FROM SNMPDeviceSysObjectID obj,SNMPPEN pen where obj.pen = pen.pen and pen.EnterpriseOID ='${OID}'
+	</select>
+</mapper>
+

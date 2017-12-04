@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!--例外添加 -->
+	<http pattern="/style/**" security="none" />
+	<http pattern="/easyui/**" security="none" />
+	<http pattern="/js/**" security="none" />
+	<http pattern="/plugin/**" security="none" />
+	<http pattern="/framelayout/**" security="none" />
+	<http pattern="/template/**" security="none" />
+	<http pattern="/login*" security="none" />
+	<http pattern="/left*" security="none" />
+	<http pattern="/fonts/**" security="none" />
+	<http pattern="/commonLogin/right.html" security="none" />
+	<http pattern="/commonLogin/refreshMenu" security="none" />
+	<http pattern="/dashboard/toDashboardList" security="none" />
+	<http pattern="/eventManage/toBlockEventQueryList" security="none" />
+	<http pattern="/api/server/**" security="none" />
+	<http pattern="/api/room/**" security="none" />
+	<!-- 首页登录下载例外 -->
+	<http pattern="/commonLogin/loginGetApkUrl" security="none"/>
+	<http pattern="/commonFileUpload/CosDownload" security="none"/>
+	<http pattern="/commonLogin/loginGetTDC" security="none"/>
+	<http pattern="/commonLogin/getQrCode" security="none"/>
+	<http pattern="/commonLogin/getGoogleDownload" security="none"/>
+	<!-- 科信业务相关的外链 begin -->
+	<http pattern="/center/process/viewServiceCatalog" security="none" />
+	<http pattern="/center/process/viewPersonalService" security="none" />
+	<!-- 科信业务相关的外链 end -->
+	
+	<!-- 移动警务端到端检测url -->
+	<http pattern="/channel/confirm" security="none" />
+	
+	<!-- REST鉴权 -->
+	<http pattern="/rest/**" entry-point-ref="restAuthenticationEntryPoint" 
+		  create-session="stateless">
+ 		<custom-filter ref="restAuthenticationFilter" before="PRE_AUTH_FILTER"/>
+   </http>
+   <beans:bean id="restAuthenticationFilter"
+		class="com.fable.insightview.platform.security.RestUsernamePasswordAuthenticationFilter">
+		<beans:property name="postOnly" value="false" />
+		<beans:property name="authenticationManager" ref="fableAuthenticationManager" />
+		<beans:property name="authenticationSuccessHandler" ref="restSuccessHandler" />
+	</beans:bean>
+   <beans:bean id="restAuthenticationEntryPoint" class="com.fable.insightview.platform.security.RestAuthenticationEntryPoint"/>
+   <beans:bean id="restSuccessHandler"
+      class="com.fable.insightview.platform.security.RestAuthenticationSuccessHandler"/>
+
+	<!-- <http auto-config='true'> <intercept-url pattern="/**" access="ROLE_USER" 
+		/> </http> <http auto-config='true'> <intercept-url pattern="/**" access="ROLE_USER" 
+		/> <form-login login-page='/login.jsp' default-target-url='/wcit_security.jsp' 
+		always-use-default-target='true' /> </http> <authentication-manager> <authentication-provider 
+		user-service-ref="userInfoService"> </authentication-provider> </authentication-manager> -->
+
+	<http use-expressions="true" entry-point-ref="authenticationProcessingFilterEntryPoint"
+		access-denied-page="/login.jsp"><!-- 当访问被拒绝时，会转到/root.jsp -->
+		<logout logout-success-url="/login.jsp" delete-cookies="JSESSIONID"
+			invalidate-session="true" />
+		<!-- 实现免登陆验证 -->
+		<remember-me token-validity-seconds="100" key="jbcpPetStore" user-service-ref="securityUserService"/>
+		<!-- id登陆唯一. 后登陆的账号会挤掉第一次登陆的账号 error-if-maximum-exceeded="true" 禁止2次登陆; 
+			session-fixation-protection="none" 防止伪造sessionid攻击. 用户登录成功后会销毁用户当前的session. 
+			创建新的session,并把用户信息复制到新session中. -->
+		<session-management session-authentication-strategy-ref="sas"/>
+		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
+		<custom-filter ref="concurrencyFilter" position="CONCURRENT_SESSION_FILTER"/>
+		<custom-filter ref="securityFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+
+	<!-- 实现了UserDetailsService的Bean -->
+	<authentication-manager alias="fableAuthenticationManager" erase-credentials="false">
+		<authentication-provider user-service-ref="securityUserService" />
+	</authentication-manager>
+
+	<!-- 登录验证器 -->
+	<beans:bean id="loginFilter"
+		class="com.fable.insightview.platform.security.FableUsernamePasswordAuthenticationFilter">
+		<!-- 处理登录 -->
+		<beans:property name="filterProcessesUrl" value="/fable_security" />
+		<beans:property name="authenticationSuccessHandler"
+			ref="loginLogAuthenticationSuccessHandler" />
+		<beans:property name="authenticationFailureHandler"
+			ref="simpleUrlAuthenticationFailureHandler" />
+		<beans:property name="authenticationManager" ref="fableAuthenticationManager" />
+		<beans:property name="sessionAuthenticationStrategy" ref="sas"></beans:property>
+	</beans:bean>
+
+	<!-- 认证过滤器 -->
+	<!--调用顺序为：AbstractSecurityInterceptor调用SecurityMetadataSource取得资源的所有可访问权限，然后再调用AccessDecisionManager来实现决策，确定用户是否有权限访问该资源。 -->
+	<beans:bean id="securityFilter"
+		class="com.fable.insightview.platform.security.FableSecurityFilter">
+		<!-- 用户拥有的权限 -->
+		<beans:property name="authenticationManager" ref="fableAuthenticationManager" />
+		<!-- 用户是否拥有所请求资源的权限 访问决策器 -->
+		<beans:property name="accessDecisionManager" ref="platform.fableAccessDecisionManager" />
+		<!-- 资源与权限对应关系 资源权限获取器 -->
+		<beans:property name="securityMetadataSource" ref="platform.fableSecurityMetadataSource" />
+	</beans:bean>
+
+	<!--认证成功处理器 -->
+	<beans:bean id="loginLogAuthenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/commonLogin/toMain"></beans:property>
+	</beans:bean>
+	<!--认证失败处理器 -->
+	<beans:bean id="simpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/login.jsp"></beans:property>
+	</beans:bean>
+
+	<!-- 未登录的切入点 -->
+	<beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/login.jsp"></beans:property>
+		<!-- <beans:property name="useForward" value="true"></beans:property>
+		<beans:property name="forceHttps" value="true"></beans:property> -->
+	</beans:bean>
+	<!-- ConcurrentSessionFilter过滤器配置(主要设置账户session过期路径) -->
+	<beans:bean id="concurrencyFilter"
+		class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<beans:property name="expiredUrl" value="/login.jsp"></beans:property>
+		<beans:property name="sessionRegistry" ref="sessionRegistry"></beans:property>
+	</beans:bean>
+	
+	<!-- 注入到UsernamePasswordAuthenticationFilter中，否则默认使用的是NullAuthenticatedSessionStrategy，则获取不到登录用户数 
+		error-if-maximum-exceeded：若当前maximumSessions为1，当设置为true表示同一账户登录会抛出SessionAuthenticationException异常， 
+		异常信息为：Maximum sessions of {0} for this principal exceeded; 当设置为false时，不会报错，则会让同一账户最先认证的session过期。 
+		具体参考：ConcurrentSessionControlStrategy:onAuthentication() -->
+	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+		<beans:property name="maximumSessions" value="10"></beans:property>
+		<beans:property name="exceptionIfMaximumExceeded" value="false"></beans:property>
+		<beans:constructor-arg name="sessionRegistry" ref="sessionRegistry"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"></beans:bean>
+	<beans:bean id="securityUserService" class="com.fable.insightview.platform.common.service.impl.SecurityUserServiceImpl"></beans:bean>
+</beans:beans>

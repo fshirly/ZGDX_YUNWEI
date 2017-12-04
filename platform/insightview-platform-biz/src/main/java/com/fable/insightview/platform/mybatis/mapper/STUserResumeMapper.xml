@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.mybatis.mapper.STUserResumeMapper" > 
+
+	<resultMap id="stUserResume" type="STUserResume">
+		<id column="resumeID" property="resumeID" jdbcType="INTEGER" />
+		<result column="userID" property="userID" jdbcType="INTEGER" />
+		<result column="gender" property="gender" jdbcType="INTEGER" />
+		<result column="nation" property="nation" jdbcType="VARCHAR" />
+		<result column="nativePlace" property="nativePlace" jdbcType="VARCHAR" />
+		<result column="IDNumber" property="IDNumber" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+        <result column="education" property="education" jdbcType="VARCHAR" />
+        <result column="major" property="major" jdbcType="VARCHAR" />
+        <result column="post" property="post" jdbcType="VARCHAR" />
+        <result column="postTitle" property="postTitle" jdbcType="VARCHAR" />
+        <result column="politicsStatus" property="politicsStatus" jdbcType="VARCHAR" />
+        <result column="tenure" property="tenure" jdbcType="TIMESTAMP" />
+        <result column="duringTime" property="duringTime" jdbcType="TIMESTAMP" />
+        <result column="beOnTheJob" property="beOnTheJob" jdbcType="TIMESTAMP" />
+        <result column="engageTime" property="engageTime" jdbcType="TIMESTAMP" />
+        <result column="politicalInfoOne" property="politicalInfoOne" jdbcType="VARCHAR" />
+        <result column="politicalInfoTwo" property="politicalInfoTwo" jdbcType="VARCHAR" />
+        <result column="politicalInfoThree" property="politicalInfoThree" jdbcType="VARCHAR" />
+        <result column="professionInfo" property="professionInfo" jdbcType="VARCHAR" />
+        <result column="userIcon" property="userIcon" jdbcType="VARCHAR" />
+        <result column="userName" property="userName" jdbcType="VARCHAR" />
+        <result column="mobilePhone" property="mobilePhone" jdbcType="VARCHAR" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="userLearningExp" type="UserLearningExp">
+        <id column="learningExpId" property="learningExpId" jdbcType="INTEGER" />
+        <result column="resumeID" property="resumeID" jdbcType="INTEGER" />
+        <result column="startTime" property="startTime" jdbcType="VARCHAR" />
+        <result column="endTime" property="endTime" jdbcType="VARCHAR" />
+        <result column="eduAndMajor" property="eduAndMajor" jdbcType="VARCHAR" />
+        <result column="graduationInfo" property="graduationInfo" jdbcType="VARCHAR" />
+        <result column="reference" property="reference" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="userTrainingExp" type="UserTrainingExp">
+        <id column="trainingExpId" property="trainingExpId" jdbcType="INTEGER" />
+        <result column="resumeID" property="resumeID" jdbcType="INTEGER" />
+        <result column="startTime" property="startTime" jdbcType="VARCHAR" />
+        <result column="endTime" property="endTime" jdbcType="VARCHAR" />
+        <result column="followUpWork" property="followUpWork" jdbcType="VARCHAR" />
+        <result column="reference" property="reference" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="userWorkingExp" type="UserWorkingExp">
+        <id column="workingExpId" property="workingExpId" jdbcType="INTEGER" />
+        <result column="resumeID" property="resumeID" jdbcType="INTEGER" />
+        <result column="startTime" property="startTime" jdbcType="VARCHAR" />
+        <result column="endTime" property="endTime" jdbcType="VARCHAR" />
+        <result column="unitAndPost" property="unitAndPost" jdbcType="VARCHAR" />
+        <result column="reference" property="reference" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="userProjectExp" type="UserProjectExp">
+        <id column="projectExpId" property="projectExpId" jdbcType="INTEGER" />
+        <result column="resumeID" property="resumeID" jdbcType="INTEGER" />
+        <result column="startTime" property="startTime" jdbcType="VARCHAR" />
+        <result column="endTime" property="endTime" jdbcType="VARCHAR" />
+        <result column="projectName" property="projectName" jdbcType="VARCHAR" />
+        <result column="reference" property="reference" jdbcType="VARCHAR" />
+    </resultMap>
+
+	<select id="getResumeByUserId" resultMap="stUserResume" parameterType="Integer">
+     SELECT t1.*,t2.userIcon,t2.userName,t2.mobilePhone,t2.email FROM STUserResume t1, SysUserInfo t2 WHERE t1.UserID = t2.UserID AND t1.UserID = #{userID}
+	</select>
+	
+	<select id="getUserInfoByUserId" resultMap="stUserResume" parameterType="Integer">
+     SELECT userIcon,userName,mobilePhone,email FROM SysUserInfo WHERE UserID = #{userID}
+    </select>
+    
+	<insert id="insertEmtpyResume" parameterType="stUserResume" >
+     insert into STUserResume
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+     	resumeID,
+		<if test="userID != null" >
+        userID,
+		</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{resumeID,jdbcType=INTEGER},
+		<if test="userID != null" >
+        #{userID,jdbcType=INTEGER},
+		</if>
+		</trim>
+	</insert>
+	
+	<update id="updateResume" parameterType="stUserResume">
+        update STUserResume
+        <set>
+        <if test="gender != null" >
+        Gender = #{gender,jdbcType=INTEGER},
+        </if>
+        <if test="nation != null" >
+        Nation = #{nation,jdbcType=VARCHAR},
+        </if>
+        <if test="nativePlace != null" >
+        NativePlace = #{nativePlace,jdbcType=VARCHAR},
+        </if>
+        <if test="IDNumber != null" >
+        IDNumber = #{IDNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="birthday != null" >
+        Birthday = #{birthday,jdbcType=TIMESTAMP},
+        </if>
+        <if test="education != null" >
+        Education = #{education,jdbcType=VARCHAR},
+        </if>
+        <if test="major != null" >
+        Major = #{major,jdbcType=VARCHAR},
+        </if>
+        <if test="post != null" >
+        Post = #{post,jdbcType=VARCHAR},
+        </if>
+        <if test="postTitle != null" >
+        PostTitle = #{postTitle,jdbcType=VARCHAR},
+        </if>
+        <if test="politicsStatus != null" >
+        PoliticsStatus = #{politicsStatus,jdbcType=VARCHAR},
+        </if>
+        <if test="tenure != null" >
+        Tenure = #{tenure,jdbcType=TIMESTAMP},
+        </if>
+        <if test="duringTime != null" >
+        DuringTime = #{duringTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="beOnTheJob != null" >
+        BeOnTheJob = #{beOnTheJob,jdbcType=TIMESTAMP},
+        </if>
+        <if test="engageTime != null" >
+        EngageTime = #{engageTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="politicalInfoOne != null" >
+        PoliticalInfoOne = #{politicalInfoOne,jdbcType=VARCHAR},
+        </if>
+         <if test="politicalInfoTwo != null" >
+        PoliticalInfoTwo = #{politicalInfoTwo,jdbcType=VARCHAR},
+        </if>
+         <if test="politicalInfoThree != null" >
+        PoliticalInfoThree = #{politicalInfoThree,jdbcType=VARCHAR},
+        </if>
+         <if test="professionInfo != null" >
+        ProfessionInfo = #{professionInfo,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where UserID = #{userID}
+    </update>
+    
+    <update id="updateUserInfo" parameterType="stUserResume">
+    	update SysUserInfo
+        <set>
+        <if test="userIcon != null" >
+        UserIcon = #{userIcon,jdbcType=VARCHAR},
+        </if>
+        <if test="userName != null" >
+        UserName = #{userName,jdbcType=VARCHAR},
+        </if>
+        <if test="mobilePhone != null" >
+        MobilePhone = #{mobilePhone,jdbcType=VARCHAR},
+        </if>
+        <if test="email != null" >
+        Email = #{email,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where UserID = #{userID}
+    </update>
+    
+    
+    <select id="getUserLearningExp" resultMap="userLearningExp" parameterType="Integer">
+     SELECT * from UserLearningExp WHERE learningExpId = #{learningExpId}
+    </select>
+    
+    <select id="queryUserLearningExp" resultMap="userLearningExp" parameterType="Integer">
+     SELECT * from UserLearningExp WHERE resumeID = #{resumeID} order by startTime
+    </select>
+    
+    <insert id="insertUserLearningExp" parameterType="userLearningExp" >
+     insert into UserLearningExp
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        learningExpId,
+        <if test="resumeID != null" >
+        resumeID,
+        </if>
+        <if test="startTime != null" >
+        startTime,
+        </if>
+        <if test="endTime != null" >
+        endTime,
+        </if>
+        <if test="eduAndMajor != null" >
+        eduAndMajor,
+        </if>
+        <if test="graduationInfo != null" >
+        graduationInfo,
+        </if>
+        <if test="reference != null" >
+        reference,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{learningExpId,jdbcType=INTEGER},
+        <if test="resumeID != null" >
+        #{resumeID,jdbcType=INTEGER},
+        </if>
+        <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="eduAndMajor != null" >
+        #{eduAndMajor,jdbcType=VARCHAR},
+        </if>
+        <if test="graduationInfo != null" >
+        #{graduationInfo,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        #{reference,jdbcType=VARCHAR},
+        </if>
+        </trim>
+    </insert>
+    
+    <update id="updateUserLearningExp" parameterType="userLearningExp">
+        update UserLearningExp
+        <set>
+        <if test="startTime != null" >
+        StartTime = #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        EndTime = #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="eduAndMajor != null" >
+        EduAndMajor = #{eduAndMajor,jdbcType=VARCHAR},
+        </if>
+        <if test="graduationInfo != null" >
+        GraduationInfo = #{graduationInfo,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        Reference = #{reference,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where LearningExpId = #{learningExpId,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteUserLearningExp" parameterType="Integer">
+      delete from UserLearningExp where LearningExpId = #{learningExpId,jdbcType=INTEGER}
+    </delete>
+    
+    
+    <select id="getUserTrainingExp" resultMap="userTrainingExp" parameterType="Integer">
+     SELECT * from UserTrainingExp WHERE trainingExpId = #{trainingExpId}
+    </select>
+    
+    <select id="queryUserTrainingExp" resultMap="userTrainingExp" parameterType="Integer">
+     SELECT * from UserTrainingExp WHERE resumeID = #{resumeID} order by startTime
+    </select>
+    
+    <insert id="insertUserTrainingExp" parameterType="userTrainingExp" >
+     insert into UserTrainingExp
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        trainingExpId,
+        <if test="resumeID != null" >
+        resumeID,
+        </if>
+        <if test="startTime != null" >
+        startTime,
+        </if>
+        <if test="endTime != null" >
+        endTime,
+        </if>
+        <if test="followUpWork != null" >
+        followUpWork,
+        </if>
+        <if test="reference != null" >
+        reference,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{trainingExpId,jdbcType=INTEGER},
+        <if test="resumeID != null" >
+        #{resumeID,jdbcType=INTEGER},
+        </if>
+        <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="followUpWork != null" >
+        #{followUpWork,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        #{reference,jdbcType=VARCHAR},
+        </if>
+        </trim>
+    </insert>
+    
+    <update id="updateUserTrainingExp" parameterType="userTrainingExp">
+        update UserTrainingExp
+        <set>
+        <if test="startTime != null" >
+        StartTime = #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        EndTime = #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="followUpWork != null" >
+        FollowUpWork = #{followUpWork,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        Reference = #{reference,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where TrainingExpId = #{trainingExpId,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteUserTrainingExp" parameterType="Integer">
+      delete from UserTrainingExp where TrainingExpId = #{trainingExpId,jdbcType=INTEGER}
+    </delete>
+    
+
+    <select id="getUserWorkingExp" resultMap="userWorkingExp" parameterType="Integer">
+     SELECT * from UserWorkingExp WHERE workingExpId = #{workingExpId}
+    </select>
+    
+    <select id="queryUserWorkingExp" resultMap="userWorkingExp" parameterType="Integer">
+     SELECT * from UserWorkingExp WHERE resumeID = #{resumeID} order by startTime
+    </select>
+    
+    <insert id="insertUserWorkingExp" parameterType="userWorkingExp" >
+     insert into UserWorkingExp
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        workingExpId,
+        <if test="resumeID != null" >
+        resumeID,
+        </if>
+        <if test="startTime != null" >
+        startTime,
+        </if>
+        <if test="endTime != null" >
+        endTime,
+        </if>
+        <if test="unitAndPost != null" >
+        unitAndPost,
+        </if>
+        <if test="reference != null" >
+        reference,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{workingExpId,jdbcType=INTEGER},
+        <if test="resumeID != null" >
+        #{resumeID,jdbcType=INTEGER},
+        </if>
+        <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="unitAndPost != null" >
+        #{unitAndPost,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        #{reference,jdbcType=VARCHAR},
+        </if>
+        </trim>
+    </insert>
+    
+    <update id="updateUserWorkingExp" parameterType="userWorkingExp">
+        update UserWorkingExp
+        <set>
+        <if test="startTime != null" >
+        StartTime = #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        EndTime = #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="unitAndPost != null" >
+        UnitAndPost = #{unitAndPost,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        Reference = #{reference,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where WorkingExpId = #{workingExpId,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteUserWorkingExp" parameterType="Integer">
+      delete from UserWorkingExp where WorkingExpId = #{workingExpId,jdbcType=INTEGER}
+    </delete>
+    
+     
+    <select id="getUserProjectExp" resultMap="userProjectExp" parameterType="Integer">
+     SELECT * from UserProjectExp WHERE projectExpId = #{projectExpId}
+    </select>
+    
+    <select id="queryUserProjectExp" resultMap="userProjectExp" parameterType="Integer">
+     SELECT * from UserProjectExp WHERE resumeID = #{resumeID} order by startTime
+    </select>
+    
+    <insert id="insertUserProjectExp" parameterType="userProjectExp" >
+     insert into UserProjectExp
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        projectExpId,
+        <if test="resumeID != null" >
+        resumeID,
+        </if>
+        <if test="startTime != null" >
+        startTime,
+        </if>
+        <if test="endTime != null" >
+        endTime,
+        </if>
+        <if test="projectName != null" >
+        projectName,
+        </if>
+        <if test="reference != null" >
+        reference,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{projectExpId,jdbcType=INTEGER},
+        <if test="resumeID != null" >
+        #{resumeID,jdbcType=INTEGER},
+        </if>
+        <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="projectName != null" >
+        #{projectName,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        #{reference,jdbcType=VARCHAR},
+        </if>
+        </trim>
+    </insert>
+    
+    <update id="updateUserProjectExp" parameterType="userProjectExp">
+        update UserProjectExp
+        <set>
+        <if test="startTime != null" >
+        StartTime = #{startTime,jdbcType=VARCHAR},
+        </if>
+        <if test="endTime != null" >
+        EndTime = #{endTime,jdbcType=VARCHAR},
+        </if>
+        <if test="projectName != null" >
+        ProjectName = #{projectName,jdbcType=VARCHAR},
+        </if>
+        <if test="reference != null" >
+        Reference = #{reference,jdbcType=VARCHAR},
+        </if>
+        </set>
+        where ProjectExpId = #{projectExpId,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteUserProjectExp" parameterType="Integer">
+      delete from UserProjectExp where ProjectExpId = #{projectExpId,jdbcType=INTEGER}
+    </delete>
+</mapper>

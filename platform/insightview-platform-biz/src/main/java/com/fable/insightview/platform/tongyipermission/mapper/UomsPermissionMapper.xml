@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.tongyipermission.mapper.UomsPermissionMapper" > 
+  <select id="selectUomsPermissionServiceInfo" parameterType="String" resultType="com.fable.insightview.platform.entity.SysMenuModuleBean">
+select DISTINCT f.MenuID,f.MenuName,f.MenuLevel,f.ParentMenuID,f.MenuClass,f.ShowOrder,f.LinkURL,f.Icon,f.Descr from insightviewPortal.s_permission_model a inner JOIN insightviewPortal.s_role_permission  b
+on a.permission_id=b.permission_id
+inner JOIN insightviewPortal.s_role c on b.roleId=c.id
+INNER JOIN insightviewPortal.s_user_role  d on c.id=d.role_id
+INNER JOIN insightviewPortal.s_user e on d.user_id=e.id  
+inner JOIN  SysMenuModule f on a.permission=f.MenuID
+where 1=1   and e.s_account=#{account} and f.MenuLevel=1    order by f.ShowOrder desc 
+  </select>
+  <select id="getShifPermission"  resultType="String">
+    SELECT ParaValue from SysConfig where type=778   </select>
+  <select id="getChilrenSysMenuModuleLst" parameterType="HASHMAP" resultType="com.fable.insightview.platform.entity.MenuNode">
+       select DISTINCT f.MenuID id ,f.MenuName text,f.ParentMenuID,f.LinkURL,f.Icon iconCls,f.ShowOrder showOrder from insightviewPortal.s_permission_model a inner JOIN insightviewPortal.s_role_permission  b
+on a.permission_id=b.permission_id
+inner JOIN insightviewPortal.s_role c on b.roleId=c.id
+INNER JOIN insightviewPortal.s_user_role  d on c.id=d.role_id
+INNER JOIN insightviewPortal.s_user e on d.user_id=e.id  
+inner JOIN  SysMenuModule f on a.permission=f.MenuID
+where 1=1   and e.s_account=#{userAccount} and f.parentMenuID=#{parentMenuID}
+order by f.ShowOrder  
+  </select>
+   <select id="selectUomsPermissionServiceInfoChildren" parameterType="String" resultType="com.fable.insightview.platform.entity.SysMenuModuleBean">
+     select DISTINCT f.MenuID,f.MenuName,f.MenuLevel,f.ParentMenuID,f.MenuClass,f.ShowOrder,f.LinkURL,f.Icon,f.Descr from insightviewPortal.s_permission_model a inner JOIN insightviewPortal.s_role_permission  b
+on a.permission_id=b.permission_id
+inner JOIN insightviewPortal.s_role c on b.roleId=c.id
+INNER JOIN insightviewPortal.s_user_role  d on c.id=d.role_id
+INNER JOIN insightviewPortal.s_user e on d.user_id=e.id  
+inner JOIN  SysMenuModule f on a.permission=f.MenuID
+where 1=1   and e.s_account=#{userAccount} and f.ParentMenuID=#{parentMenuID}    order by f.ShowOrder 
+  </select>
+</mapper>

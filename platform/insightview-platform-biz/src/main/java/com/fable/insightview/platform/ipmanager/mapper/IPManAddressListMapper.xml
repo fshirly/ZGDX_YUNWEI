@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.ipmanager.mapper.IPManAddressListMapper">
+	<resultMap id="addressListMap" type="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+		<result column="SubNetID" property="subNetId" jdbcType="INTEGER" />
+		<result column="DeptID" property="deptId" jdbcType="INTEGER" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="ResID" property="resId" jdbcType="INTEGER" />
+		<result column="Note" property="note" jdbcType="VARCHAR" />
+		<result column="UserID" property="userId" jdbcType="INTEGER" />
+		<result column="Depts" property="depts" jdbcType="VARCHAR" />
+		<result column="Rooms" property="rooms" jdbcType="VARCHAR" />
+		<result column="LocationType" property="locationType" jdbcType="INTEGER" />
+		<result column="Locations" property="locations" jdbcType="VARCHAR" />
+		<result column="OfficeID" property="officeID" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectFreeSubNetInfo" resultType="hashmap" resultMap="addressListMap" parameterType="page">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where a.DeptID is null and a.Status =1
+		<if test="params.startIp !='' and params.startIp != null ">
+			 and inet_aton(a.IPAddress) &gt;= inet_aton(#{params.startIp})
+		</if>
+		<if test="params.endIp !='' and params.endIp != null ">
+			 and inet_aton(a.IPAddress) &lt;= inet_aton(#{params.endIp})
+		</if>
+		<if test="params.subNetId !='' and params.subNetId != null and params.subNetId !='-1'">
+			 and a.SubNetID =#{params.subNetId}
+		</if>
+		order by a.ID
+	</select>
+	
+	<select id="getAllFreeSubNetInfo"  parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where a.DeptID is null and a.Status =1 and a.SubNetID =#{subNetId}
+	</select>
+	
+	<select id="getByDeptIdAndUserId" parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.* from IPManAddressList a where a.deptId=#{deptId} and a.userId=#{userId}
+	</select>
+	
+	<select id="selectAllSubnetDeptInfo" resultType="hashmap" resultMap="addressListMap" parameterType="page">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where 1=1 and (a.Status =2 || a.Status =3)
+		<if test="params.startIp !='' and params.startIp != null ">
+			 and inet_aton(a.IPAddress) &gt;= inet_aton(#{params.startIp})
+		</if>
+		<if test="params.endIp !='' and params.endIp != null ">
+			 and inet_aton(a.IPAddress) &lt;= inet_aton(#{params.endIp})
+		</if>
+		<if test="params.deptId !='' and params.deptId != null and params.deptId !='-1'">
+			 and a.DeptID =#{params.deptId}
+		</if>
+		<if test="params.subNetId !='' and params.subNetId != null and params.subNetId !='-1'">
+			 and a.SubNetID =#{params.subNetId}
+		</if>
+		<if test="params.status !='' and params.status != null and params.status !='-1'">
+			 and a.Status =#{params.status}
+		</if>
+		order by a.ID
+	</select>
+	
+	<select id="getAllSubNetDeptInfo"  parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where (a.Status =2 || a.Status =3) and a.SubNetID =#{subNetId} and  a.DeptID =#{deptId}
+	</select>
+	
+	<select id="getByDeptIdAndStatus" parameterType="page" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress,(select u.UserName FROM SysUserInfo u where a.UserID = u.UserID) userName 
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where 1=1 <!-- ${params.subSql} --> and a.DeptID = #{params.deptId} and a.Status = #{params.status} and a.NetType = #{params.netType}
+	</select>
+	
+	<select id="getAddressInfoByOfficeID" parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		SELECT r.CiId compId,comp.CiId ciId,ci.`Name` floorName,f.COL_buildingsType building FROM ResCi ci, ResPrefixBuildingFloor f, ResPrefixRoomNum r 
+        LEFT JOIN ResCiComponent comp 
+        ON comp.ComponentId=r.CiId 
+        WHERE comp.CiId=ci.CiId and f.CiId=comp.CiId and r.COL_RoomNum=#{officeID};
+	</select>
+	
+	<select id="getByUserId" parameterType="page" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.* from IPManAddressList a where a.UserID=#{params.userId} 
+		<if test="params.netType !='' and params.netType != null">
+			 and a.NetType =#{params.netType}
+		</if>
+	</select>
+	
+	<select id="getByUserId2" parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.* from IPManAddressList a where a.Status=3 and a.UserID=#{userId} and a.NetType=#{netType}
+	</select>
+	
+	<insert id="insertAddress" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	insert into IPManAddressList (ID,IPAddress,SubNetID,DeptID,Status,ResID)
+	values (#{id,jdbcType=INTEGER},#{ipAddress,jdbcType=VARCHAR},#{subNetId,jdbcType=INTEGER},
+			#{deptId,jdbcType=INTEGER},#{status,jdbcType=INTEGER},	#{resId,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="updateAddressByID" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set DeptID=#{deptId},Status=#{status},UserID=#{userId},OfficeID=#{officeID},DeviceID=#{deviceID},VlanId=#{vlanId},VlanNo=#{vlanNo},DevicePortNo=#{devicePortNo},PortNo = #{portNo},UseRemark=#{useRemark} where ID=#{id}
+	</update>
+	
+	<update id="updateAddressByIDs" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set DeptID=#{deptId},Status=#{status} where ID in (${ids})
+	</update>
+	
+	<select id="getAllBySubNetIdAndDept"  parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  select * from IPManAddressList where SubNetID =#{subNetId} and DeptID is not null
+	</select>
+	
+	<update id="updateAddressByID2" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set DeptID=null,Status=#{status} where ID=#{id}
+	</update>
+	
+	<delete id="delBySubNetId" parameterType="java.lang.Integer">
+	  delete from IPManAddressList	where SubNetID =#{subNetId} and DeptID is null
+	</delete>
+	
+	<update id="updateBySubNetAndDept" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set DeptID=null,Status=#{status} where SubNetID =#{subNetId} and DeptID =#{deptId}
+	</update>
+	
+	<select id="getByIPScopeAndSubNetId" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean" resultType="hashmap" resultMap="addressListMap">
+		select * from IPManAddressList
+		where SubNetID =#{subNetId} and inet_aton(IPAddress) &gt;= inet_aton(#{startIp}) and inet_aton(IPAddress) &lt;= inet_aton(#{endIp})
+	</select>
+	
+	<select id="getByIPAddress"  parameterType="java.lang.String" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select *
+		from IPManAddressList 
+		where IPAddress =#{ipAddress}
+	</select>
+	
+	<select id="getAddressByIPScope" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select * from IPManAddressList 
+		where inet_aton(IPAddress)  &lt;= inet_aton(#{endIp}) and inet_aton(IPAddress)  &gt;= inet_aton(#{startIp})
+		order by inet_aton(IPAddress)
+	</select>
+	
+	<select id="getCountByScopeAndStatus" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean" resultType="Integer">
+		select count(1) from IPManAddressList 
+		where inet_aton(IPAddress)  &lt; inet_aton(#{endIp}) and inet_aton(IPAddress)  &gt; inet_aton(#{startIp}) and Status=#{status}
+	</select>
+	
+	<update id="batchUpdate">
+		update IPManAddressList set SubNetID= #{subNetId} where ID in (${ids})
+	</update>
+	
+	<update id="updateAddressByID3" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set SubNetID= #{subNetId},Status=#{status},UserID=#{userId},Note=#{note} where ID=#{id}
+	</update>
+	
+	<select id="getCountByScopeAndStatusAndDept" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean" resultType="Integer">
+		select count(1) from IPManAddressList 
+		where inet_aton(IPAddress)  &lt;= inet_aton(#{endIp}) and inet_aton(IPAddress)  &gt;= inet_aton(#{startIp}) and Status=#{status}  and DeptID =#{deptId}
+	</select>
+	
+	<select id="getAllSubNetByDept" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select distinct a.SubNetID,info.IPAddress
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID = info.SubNetID
+		where a.DeptID = #{deptId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="listDeptUseSubNet"  resultType="hashmap" resultMap="addressListMap" parameterType="page">
+		select a.*,info.SubNetMark
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		where 1=1 
+		<if test="params.startIp !='' and params.startIp != null ">
+			 and inet_aton(a.IPAddress) &gt;= inet_aton(#{params.startIp})
+		</if>
+		<if test="params.endIp !='' and params.endIp != null ">
+			 and inet_aton(a.IPAddress) &lt;= inet_aton(#{params.endIp})
+		</if>
+		<if test="params.deptId !='' and params.deptId != null and params.deptId !='-1'">
+			 and a.DeptID =#{params.deptId}
+		</if>
+		<if test="params.subNetId !='' and params.subNetId != null and params.subNetId !='-1'">
+			 and a.SubNetID =#{params.subNetId}
+		</if>
+		<if test="params.status !='' and params.status != null and params.status !='-1'">
+			 and a.Status =#{params.status}
+		</if>
+		order by a.ID
+	</select>
+	
+	<update id="updateStatusById" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		update IPManAddressList set Status=#{status} where ID=#{id}
+	</update>
+	
+	<select id="getById" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select * from IPManAddressList where ID=#{id}
+	</select>
+	
+	<select id="getCountByIdsAndStatus" resultType="Integer" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select count(1) from IPManAddressList where ID in (${ids}) and Status=#{status}
+	</select>
+	
+	<insert id="batchInsertAddress" parameterType="java.util.List" useGeneratedKeys="true">
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+		insert into IPManAddressList (ID,IPAddress,SubNetID,Status)
+		values 
+		<foreach collection="list" item="item" index="index"  separator=",">
+		  ( #{item.id},#{item.ipAddress},#{item.subNetId},	#{item.status} )
+  		</foreach>
+	</insert>
+	
+	<select id="getFreeAddress" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	select a.* from IPManAddressList a
+	where a.DeptID is null and a.Status =1  
+	and inet_aton(a.IPAddress) &gt;= inet_aton(#{startIp})
+	and inet_aton(a.IPAddress) &lt;= inet_aton(#{endIp})
+	and a.SubNetID =#{subNetId}
+	</select>
+	
+	<select id="getAddressInfoById" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+		select a.*,info.SubNetMark,info.SubNetType,info.Gateway,info.DNSAddress,u.UserAccount as userName
+		from IPManAddressList a
+		left join IPManSubNetInfo info on a.SubNetID =info.SubNetID
+		left join SysUserInfo u on u.UserID =a.UserID
+		where 1=1  and a.ID=#{id}
+	</select>
+	
+	<update id="updateNoteAndUserByID" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set Note=#{note},UserID=#{userId} where ID=#{id}
+	</update>
+	
+	<update id="updateReservedAddressByID" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  update IPManAddressList set SubNetID= #{subNetId},Status=#{status},DeptID=null where ID=#{id}
+	</update>
+	
+	<select id="getBySubNetIdAndDeptAndStatus"  parameterType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean" resultType="com.fable.insightview.platform.ipmanager.entity.IPManAddressListBean">
+	  select * from IPManAddressList where SubNetID =#{subNetId} and DeptID is not null and status = #{status}
+	</select>
+	
+	<delete id="delBySubNetId2" parameterType="java.lang.Integer">
+	  delete from IPManAddressList	where SubNetID =#{subNetId}
+	</delete>
+	
+	<select id="getOutDeptByUserId" parameterType="Integer" resultType="com.fable.insightview.platform.provider.entity.ProviderInfoBean">
+		select p.* from SysProviderUser pu,ProviderInfo p where pu.ProviderID = p.ProviderID and pu.UserID = #{userId}
+	</select>
+</mapper>
+

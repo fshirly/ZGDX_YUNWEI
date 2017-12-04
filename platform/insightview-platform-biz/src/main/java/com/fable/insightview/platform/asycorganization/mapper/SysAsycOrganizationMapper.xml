@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper  namespace="com.fable.insightview.platform.asycorganization.mapper.SysAsycOrganizationMapper">
+<select id="findSyncOrganizationList"  resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycOrganization" parameterType="hashmap">
+  select * from 
+  (select CONCAT('O',OrganizationID) as organizationID,CONCAT('O',parentOrgID) as parentOrgID ,
+   organizationName,organizationCode from SysOrganization 
+   union
+  select CONCAT('D',deptID) as  organizationID,  CONCAT('D',ParentDeptID) as parentOrgID,deptName as  organizationName,
+  DeptCode as organizationCode from SysDepartment where 1=1 and ParentDeptID &lt;&gt;0
+  UNION
+  select CONCAT('D',aa.deptID) as  organizationID,  CONCAT('O',bb.OrganizationID) as parentOrgID,
+  aa.deptName as organizationName,aa.DeptCode as organizationCode from SysDepartment aa 
+  INNER JOIN SysOrganization bb on  aa.OrganizationID=bb.OrganizationID where 
+  aa.ParentDeptID=0 )a  where parentOrgID=#{parentOrgID}  ORDER BY organizationCode
+</select>
+<select id="quaryDeptInfos" resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycDepartMent" parameterType="hashmap">
+  SELECT dept.deptID,dept.deptName,dept.deptCode,dept.organizationID,dept.parentDeptID,dept.headOfDept,dept.descr,org.OrganizationCode,org.OrganizationName FROM SysDepartment dept
+  LEFT JOIN SysOrganization org on dept.OrganizationID=org.OrganizationID 
+  where 1=1
+  <if test="deptCode!=null and deptCode!=''">
+   and  dept.deptCode=#{deptCode}
+  </if>  
+</select>
+<select id="quaryOrganizationInfo" parameterType="hashmap" resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycOrganization">
+   select organizationID,parentOrgID,organizationName,descr,organizationCode
+   from SysOrganization where 1=1
+   <if test="organizationCode!=null and organizationCode!=''">
+    and  organizationCode=#{organizationCode}
+   </if>
+</select>
+<insert id="insertDepartmentInfo"  parameterType="com.fable.insightview.platform.asycorganization.entity.SysAsycDepartMent" >
+ insert into SysDepartment(DeptID,DeptName,DeptCode,OrganizationID,ParentDeptID,HeadOfDept,Descr)
+ values(#{deptID},#{deptName},#{deptCode},#{organizationID},#{parentDeptID},#{headOfDept},#{descr})
+</insert>
+<update id="updateDepartmentInfo" parameterType="com.fable.insightview.platform.asycorganization.entity.SysAsycDepartMent">
+  update SysDepartment set DeptName=#{deptName},DeptCode=#{deptCode},OrganizationID=#{organizationID},
+   ParentDeptID=#{parentDeptID},HeadOfDept=#{headOfDept},Descr=#{descr}
+     where DeptID=#{deptID}
+</update>
+<select id="findUserInsertSyncOrganizationList" resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycOrganization" parameterType="hashmap">
+   select organizationID,parentOrgID,organizationName,organizationCode from SysOrganization where 1=1
+   <if test="organizationId!=null and organizationId!=''">
+      organizationID=#{organizationId}
+   </if>
+</select>
+<select id="findUserInsertSyncDeptList" resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycDepartMent" parameterType="hashmap">
+SELECT dept.deptID,dept.deptName,dept.deptCode,dept.organizationID,dept.parentDeptID,dept.headOfDept,dept.descr FROM SysDepartment dept where 1=1 
+ <if test="deptCode!=null and deptCode!=''">
+   and  dept.parentDeptID=#{deptCode}
+ </if>
+ <if test="organizationID!=null and organizationID!=''">
+   and  dept.OrganizationID=#{organizationID} and parentDeptID=0 
+ </if>
+</select>
+<select id="findUserAddSyncOrganizationList" resultType="com.fable.insightview.platform.asycorganization.entity.SysAsycOrganization"
+ parameterType="hashmap">
+select organizationID,parentOrgID,organizationName,organizationCode from SysOrganization 
+where 1=1 and OrganizationCode=#{OrganizationCode}
+</select>
+</mapper>

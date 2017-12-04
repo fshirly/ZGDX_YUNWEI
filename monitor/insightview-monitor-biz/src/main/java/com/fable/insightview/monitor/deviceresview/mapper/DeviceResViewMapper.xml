@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deviceresview.mapper.DeviceResViewMapper" >
+  <resultMap id="deviceResMap" type="com.fable.insightview.monitor.deviceresview.entity.DeviceResViewBean" > 
+    <result column="MOID" property="moId" jdbcType="INTEGER" /> 
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+    <result column="DeviceIP" property="deviceIp" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainId" jdbcType="INTEGER" />
+    <result column="ResID" property="resId" jdbcType="INTEGER" />
+    <result column="ResLevel" property="resLevel" jdbcType="INTEGER" />
+    <result column="ClassLable" property="classLable" jdbcType="VARCHAR" />
+    <result column="DomainName" property="domainName" jdbcType="VARCHAR" /> 
+  </resultMap>
+  <select id="getDeviceInfo" parameterType="page" resultMap="deviceResMap">
+    select m.MOID,m.MOName,m.MOAlias,m.DeviceIP,m.MOClassID,m.DomainID,m.ResID,m.ResLevel,class.ClassLable,d.DomainName domainName
+    from v_DeviceResource m
+    left join MObjectDef class on m.MOClassID = class.ClassID
+	left join SysManagedDomain d on d.DomainID=m.DomainID
+	where 1=1 
+	<if test="params.moIds != null and params.moIds != '' ">
+		and m.MOID not in(${params.moIds}) 
+   	</if>
+   	<if test="params.selectedMoIds != null and params.selectedMoIds != '' ">
+		and m.MOID in(${params.selectedMoIds}) 
+   	</if>
+	<if test="params.moClassIds != null and params.moClassIds != '' ">
+		and m.MOClassID in(${params.moClassIds}) 
+   	</if>
+	<if test="params.moName != null and params.moName != '' ">
+		and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}  
+   	</if>	
+   	<if test="params.deviceIp != null and params.deviceIp != '' ">
+		and m.DeviceIP like ${concat("'%'","'"+params.deviceIp+"'","'%'")}	
+   	</if>
+   	<if test="params.resLevel != null and params.resLevel != '' and params.resLevel != -1">
+		and m.ResLevel = #{params.resLevel}
+   	</if>
+   	order by m.MOClassID,m.DeviceIP
+  </select>
+  
+  <select id="getDeviceByRuleID" parameterType="Integer" resultMap="deviceResMap">
+    select m.MOID,m.MOName,m.MOAlias,m.DeviceIP,m.MOClassID,m.DomainID,m.ResID,m.ResLevel,class.ClassLable,d.DomainName domainName
+    from v_DeviceResource m
+    left join MObjectDef class on m.MOClassID = class.ClassID
+	left join SysManagedDomain d on d.DomainID=m.DomainID
+	where m.MOID in(
+	SELECT res.MOID FROM AlarmRuleOfResource res
+	LEFT JOIN AlarmRuleOfMOClass roc ON res.RuleOfMOClassID = roc.ID
+	LEFT JOIN AlarmEventRedefine d ON roc.RuleID = d.RuleID
+	WHERE d.RuleID = #{ruleId}
+	)
+	order by m.MOClassID,m.DeviceIP
+  </select>
+</mapper>

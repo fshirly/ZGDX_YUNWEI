@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.demo.mapper.TestUserMapper" > 
+  <resultMap id="BaseResultMap" type="testUser" >
+    <id column="UserID" property="userid" jdbcType="INTEGER" />
+    <result column="UserAccount" property="useraccount" jdbcType="VARCHAR" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="UserPassword" property="userpassword" jdbcType="VARCHAR" />
+    <result column="MobilePhone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="Email" property="email" jdbcType="VARCHAR" />
+    <result column="Telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="IsAutoLock" property="isautolock" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="UserType" property="usertype" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="LastModifyTime" property="lastmodifytime" jdbcType="TIMESTAMP" />
+    <result column="LockedTime" property="lockedtime" jdbcType="TIMESTAMP" />
+    <result column="LockedReason" property="lockedreason" jdbcType="VARCHAR" />
+    <result column="State" property="state" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    UserID, UserAccount, UserName, UserPassword, MobilePhone, Email, Telephone, IsAutoLock, 
+    Status, UserType, CreateTime, LastModifyTime, LockedTime, LockedReason, State
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from UserBaseInfo
+    where UserID = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from UserBaseInfo
+    where UserID = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="testUser" >
+    insert into UserBaseInfo (UserID, UserAccount, UserName, 
+      UserPassword, MobilePhone, Email, 
+      Telephone, IsAutoLock, Status, 
+      UserType, CreateTime, LastModifyTime, 
+      LockedTime, LockedReason, State
+      )
+    values (#{userid,jdbcType=INTEGER}, #{useraccount,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{userpassword,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{isautolock,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{usertype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{lastmodifytime,jdbcType=TIMESTAMP}, 
+      #{lockedtime,jdbcType=TIMESTAMP}, #{lockedreason,jdbcType=VARCHAR}, #{state,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="testUser" >
+    insert into UserBaseInfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        UserID,
+      </if>
+      <if test="useraccount != null" >
+        UserAccount,
+      </if>
+      <if test="username != null" >
+        UserName,
+      </if>
+      <if test="userpassword != null" >
+        UserPassword,
+      </if>
+      <if test="mobilephone != null" >
+        MobilePhone,
+      </if>
+      <if test="email != null" >
+        Email,
+      </if>
+      <if test="telephone != null" >
+        Telephone,
+      </if>
+      <if test="isautolock != null" >
+        IsAutoLock,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="usertype != null" >
+        UserType,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="lastmodifytime != null" >
+        LastModifyTime,
+      </if>
+      <if test="lockedtime != null" >
+        LockedTime,
+      </if>
+      <if test="lockedreason != null" >
+        LockedReason,
+      </if>
+      <if test="state != null" >
+        State,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="useraccount != null" >
+        #{useraccount,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userpassword != null" >
+        #{userpassword,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="isautolock != null" >
+        #{isautolock,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="usertype != null" >
+        #{usertype,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastmodifytime != null" >
+        #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockedtime != null" >
+        #{lockedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockedreason != null" >
+        #{lockedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="testUser" >
+    update UserBaseInfo
+    <set >
+      <if test="useraccount != null" >
+        UserAccount = #{useraccount,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        UserName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userpassword != null" >
+        UserPassword = #{userpassword,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        MobilePhone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        Telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="isautolock != null" >
+        IsAutoLock = #{isautolock,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="usertype != null" >
+        UserType = #{usertype,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastmodifytime != null" >
+        LastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockedtime != null" >
+        LockedTime = #{lockedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lockedreason != null" >
+        LockedReason = #{lockedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        State = #{state,jdbcType=TINYINT},
+      </if>
+    </set>
+    where UserID = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="testUser" >
+    update UserBaseInfo
+    set UserAccount = #{useraccount,jdbcType=VARCHAR},
+      UserName = #{username,jdbcType=VARCHAR},
+      UserPassword = #{userpassword,jdbcType=VARCHAR},
+      MobilePhone = #{mobilephone,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      Telephone = #{telephone,jdbcType=VARCHAR},
+      IsAutoLock = #{isautolock,jdbcType=INTEGER},
+      Status = #{status,jdbcType=INTEGER},
+      UserType = #{usertype,jdbcType=INTEGER},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      LastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      LockedTime = #{lockedtime,jdbcType=TIMESTAMP},
+      LockedReason = #{lockedreason,jdbcType=VARCHAR},
+      State = #{state,jdbcType=TINYINT}
+    where UserID = #{userid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectUserInfo"   resultMap="BaseResultMap" parameterType="page">
+	select * from UserBaseInfo where UserAccount = 'Allen'
+  </select>
+  
+  <select id="selectUserByName"  resultType="hashmap"  parameterType="String">
+	select * from UserBaseInfo where UserAccount=#{useraccount}
+  </select>
+  
+  <select id="selectCount"  resultType="Integer" parameterType="testUser">
+	select count(1) from UserBaseInfo where 1=1
+	 <if test="useraccount != null and useraccount != '' " >
+        and UserAccount = #{useraccount,jdbcType=VARCHAR} 
+      </if>
+      <if test="username != null and username != '' " >
+        and UserName = #{username,jdbcType=VARCHAR}  
+      </if>
+      <if test="isautolock != null and isautolock != -1 " >
+        and IsAutoLock = #{isautolock,jdbcType=INTEGER} 
+      </if>
+      <if test="usertype != null and usertype != -1" >
+        and UserType = #{usertype,jdbcType=INTEGER}
+      </if>
+  </select>
+  
+   <select id="getMaxId"  resultType="Integer" >
+	select max(UserID) from UserBaseInfo
+  </select>
+  
+  
+   <select id="selectByConditions" resultType="hashmap" resultMap="BaseResultMap" parameterType="page">
+  	select * from UserBaseInfo where  1=1  
+  	  <if test="params.useraccount != null and params.useraccount != '' " >
+        and UserAccount = #{params.useraccount,jdbcType=VARCHAR} 
+      </if>
+      <if test="params.username != null and params.username != '' " >
+        and UserName = #{params.username,jdbcType=VARCHAR}  
+      </if>
+      <if test="params.isautolock != null and params.isautolock != -1 " >
+        and IsAutoLock = #{params.isautolock,jdbcType=INTEGER} 
+      </if>
+      <if test="params.usertype != null and params.usertype != -1" >
+        and UserType = #{params.usertype,jdbcType=INTEGER}
+      </if>
+      <if test="params.sort != null and params.sort != '' and params.order != null and params.order != '' " >
+        order by ${params.sort} ${params.order}
+      </if>
+  </select>  
+  
+</mapper>

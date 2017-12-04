@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.syslog.mapper.SysSyslogTaskMapper" >
+  <resultMap id="syslogTaskMap" type="com.fable.insightview.monitor.syslog.entity.SysSyslogTaskBean" >
+    <id column="TaskID" property="taskID" jdbcType="INTEGER" />
+    <result column="OperateStatus" property="operateStatus" jdbcType="INTEGER" />
+    <result column="ProgressStatus" property="progressStatus" jdbcType="INTEGER" />
+    <result column="LastStatusTime" property="lastStatusTime" jdbcType="VARCHAR" />
+    <result column="CollectorID" property="collectorID" jdbcType="INTEGER" />
+    <result column="RuleID" property="ruleID" jdbcType="INTEGER" />
+    <result column="Creator" property="creator" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+    <result column="LastOPResult " property="lastOPResult" jdbcType="INTEGER" />
+    <result column="ErrorInfo" property="errorInfo" jdbcType="VARCHAR" />
+    <result column="IsOffline" property="isOffline" jdbcType="VARCHAR" />
+  </resultMap>     
+  <select id="selectSyslogTasks" resultType="hashmap" resultMap="syslogTaskMap" parameterType="page">
+  	select task.TaskID,task.OperateStatus,task.ProgressStatus,task.LastStatusTime,
+  		   task.CollectorID,task.RuleID,task.Creator,task.CreateTime,task.LastOPResult,
+  		   err.ErrorMess as errorInfo,rule.RuleName,host.IPAddress as collectorName
+	from SysSyslogTask task
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	left join SysSyslogRules rule on rule.RuleID=task.RuleID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	where 1=1 and (task.OperateStatus!=3 or task.ProgressStatus!=5) and task.IsOffline is null
+      <if test="params.ruleName != '' and params.ruleName != null ">
+		and rule.RuleName like  ${concat("'%'","'"+params.ruleName+"'","'%'")}
+      </if>
+      <if test="params.taskID != 0 and params.taskID != '' and params.taskID != null">
+		and task.TaskID=#{params.taskID} 
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+      order by task.CreateTime desc
+  </select>
+  
+  <select id="getTaskInfoByTaskID" parameterType="Integer" resultType="syslogTask">
+  	select task.TaskID,task.OperateStatus,task.ProgressStatus,task.LastStatusTime,
+  		   task.CollectorID,task.RuleID,task.Creator,task.CreateTime,task.LastOPResult,
+  		   err.ErrorMess as errorInfo,rule.RuleName,host.IPAddress as collectorName,u.UserName as creatorName
+	from SysSyslogTask task
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	left join SysSyslogRules rule on rule.RuleID=task.RuleID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	left join SysUserInfo u on task.creator=u.UserID
+ 	 where 1=1 and task.TaskID = #{taskID,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertSyslogTask" parameterType="syslogTask">
+	insert into SysSyslogTask (TaskID,OperateStatus,ProgressStatus,LastStatusTime,CollectorID,RuleID,
+				Creator,CreateTime,LastOPResult,ErrorInfo,IsOffline)
+	values (#{taskID,jdbcType=INTEGER}, #{operateStatus,jdbcType=INTEGER},#{progressStatus,jdbcType=INTEGER}, 
+			${sysdate()},#{collectorID,jdbcType=INTEGER},#{ruleID,jdbcType=INTEGER},#{creator,jdbcType=INTEGER},
+			${sysdate()},#{lastOPResult,jdbcType=INTEGER},#{errorInfo,jdbcType=VARCHAR},#{isOffline,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateSyslogTaskByID" parameterType="syslogTask" >
+    update SysSyslogTask
+    <set>
+      <if test="operateStatus != null and operateStatus != 0" >
+        OperateStatus = #{operateStatus,jdbcType=INTEGER},
+      </if>
+      <if test="progressStatus != null" >
+        ProgressStatus = #{progressStatus,jdbcType=INTEGER},
+      </if>
+      <if test="lastStatusTime != null" >
+        LastStatusTime = #{lastStatusTime,jdbcType=VARCHAR},
+      </if>
+      <if test="collectorID != null" >
+        CollectorID = #{collectorID,jdbcType=INTEGER},
+      </if>
+      <if test="ruleID != null" >
+        RuleID = #{ruleID,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        Creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastOPResult != null" >
+        LastOPResult = #{lastOPResult,jdbcType=INTEGER},
+      </if>
+      <if test="errorInfo != null" >
+        ErrorInfo = #{errorInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TaskID = #{taskID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateSyslogTaskByIDs" parameterType="syslogTask" >
+    update SysSyslogTask
+    <set>
+      <if test="operateStatus != null  and operateStatus != 0" >
+        OperateStatus = #{operateStatus,jdbcType=INTEGER},
+      </if>
+      <if test="progressStatus != null" >
+        ProgressStatus = #{progressStatus,jdbcType=INTEGER},
+      </if>
+      <if test="lastStatusTime != null" >
+        LastStatusTime = #{lastStatusTime,jdbcType=VARCHAR},
+      </if>
+      <if test="collectorID != null" >
+        CollectorID = #{collectorID,jdbcType=INTEGER},
+      </if>
+      <if test="ruleID != null" >
+        RuleID = #{ruleID,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        Creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastOPResult != null" >
+        LastOPResult = #{lastOPResult,jdbcType=INTEGER},
+      </if>
+      <if test="errorInfo != null" >
+        ErrorInfo = #{errorInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where TaskID in (${taskIDs})
+  </update>
+  
+   <delete id="delSyslogTaskByID" parameterType="Integer">
+	delete from SysSyslogTask where TaskID = #{taskID,jdbcType=INTEGER}
+  </delete>
+  <delete id="delSyslogTaskByIDs" parameterType="String">
+	delete from SysSyslogTask where TaskID in (${taskIDs})
+  </delete>
+  
+  <select id="getCollectorByRuleID" resultType="hashmap" resultMap="syslogTaskMap" parameterType="syslogTask">
+    select task.TaskID,host.IPAddress as collectorName,host.IsOffline
+    from SysSyslogTask task
+	left join SysSyslogRules rule on rule.RuleID=task.RuleID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	where 1=1 and (task.OperateStatus!=3 or task.ProgressStatus!=5)
+    <if test="ruleID != '' and ruleID != null  and ruleID != -1">
+		and task.RuleID = #{ruleID}
+    </if>
+    order by host.IsOffline,host.IPAddress
+  </select>
+  
+  <select id="getTaskInfoByRuleID" parameterType="Integer" resultType="syslogTask">
+  	select task.TaskID,task.OperateStatus,task.ProgressStatus,task.LastStatusTime,
+  		   task.CollectorID,task.RuleID,task.Creator,task.CreateTime,task.LastOPResult,rule.RuleName
+	from SysSyslogTask task
+	left join SysSyslogRules rule on rule.RuleID=task.RuleID
+ 	where 1=1 and (task.OperateStatus!=3 or task.ProgressStatus!=5) and task.RuleID = #{ruleID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delDeledSyslogTask">
+	delete from SysSyslogTask where OperateStatus=3 and ProgressStatus=5
+  </delete>
+  
+  <select id="selectOfflineSyslogTasks" resultType="hashmap" resultMap="syslogTaskMap" parameterType="page">
+  	select task.TaskID,task.OperateStatus,task.ProgressStatus,task.LastStatusTime,
+  		   task.CollectorID,task.RuleID,task.Creator,task.CreateTime,task.LastOPResult,
+  		   err.ErrorMess as errorInfo,rule.RuleName,host.IPAddress as collectorName
+	from SysSyslogTask task
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	left join SysSyslogRules rule on rule.RuleID=task.RuleID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID
+	where 1=1 and (task.OperateStatus!=3 or task.ProgressStatus!=5) and task.IsOffline='1'
+      <if test="params.ruleName != '' and params.ruleName != null ">
+		and rule.RuleName like  ${concat("'%'","'"+params.ruleName+"'","'%'")}
+      </if>
+      <if test="params.taskID != 0 and params.taskID != '' and params.taskID != null">
+		and task.TaskID=#{params.taskID} 
+      </if>
+      <if test="params.collectorName != '' and params.collectorName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.collectorName+"'" ,"'%'")}
+      </if>
+      order by task.CreateTime desc
+  </select>
+  
+   <select id="getOfflineTaskByHost" parameterType="INTEGER"  resultType="syslogTask">
+  	select * from SysSyslogTask where IsOffline='1' and CollectorID=#{collectorID} and (OperateStatus!=3 or ProgressStatus!=5)
+  </select>
+</mapper>

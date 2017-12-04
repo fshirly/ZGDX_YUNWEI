@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.SToneU.mapper.StoneuMapper">
+
+	<resultMap type="com.fable.insightview.monitor.SToneU.entity.MODeviceSt" id="stoneu">
+	<id property="MOid" column="MOID" />
+	<result property="moName" column="MOName" />
+	<result property="createTime" column="CreateTime" />
+	<result property="lastUpdateTime" column="LastUpdateTime" />
+	<result property="deviceIp" column="DeviceIP" />
+	<result property="MOClassID" column="MOClassID" />
+	<result property="taskId" column="TaskID" />
+	<result property="templateID" column="TemplateID" />
+	<result property="domainid" column="DomainID" />
+	<result property="neManufacturerID" column="NeManufacturerID" />
+	<association property="SNMPbean" resultMap="moduleMap">
+	</association>
+</resultMap> 
+
+<resultMap type="com.fable.insightview.monitor.AcUPS.entity.SNMPbean"
+	id="moduleMap">
+	<id property="ID" column="ID" />
+	<result property="snmpPort" column="SnmpPort" />
+	<result property="readCommunity" column="ReadCommunity" />
+	<result property="writeCommunity" column="WriteCommunity" />
+	<result property="USMUser" column="USMUser" />
+	<result property="authAlogrithm" column="AuthAlogrithm" />
+	<result property="authKey" column="AuthKey" />
+	<result property="encryptionAlogrithm" column="EncryptionAlogrithm" />
+	<result property="encryptionKey" column="EncryptionKey" />
+	<result property="contexName" column="ContexName" />
+	<result property="snmpVersions" column="sn_SnmpVersion" />
+</resultMap>
+	
+	<select id="getStoneuList"  resultType="com.fable.insightview.monitor.SToneU.entity.MODeviceSt" parameterType="page">
+		SELECT ${nvl("p.PerfValue","0")}  OperStatus,p.CollectTime,m.MOID,m.MOName,m.CreateTime,m.LastUpdateTime,m.DeviceIP,m.MOClassID,m.NeManufacturerID,
+	    m.NeCollectorID,m.UpdateAlarmTime,e1.DoIntervals ,f.DoIntervals defDoIntervals,a.alarmlevelname,a.LevelIcon
+	    from MODevice m 
+	    LEFT JOIN AlarmLevel a on  m.alarmlevel = a.alarmlevelid
+	    LEFT JOIN PerfSnapshotHost p on p.MOID = m.MOID and KPIName ='DeviceAvailability'
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=${params.MID} 
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=${params.MID}) f on m.MOID=f.MOID
+	     where 1=1   and m.MOClassID = ${params.MOClassID}
+	     <if test="params.moName !=null and params.moName !=''">
+			and m.moName  like ${concat("'%'","'"+params.moName+"'","'%'")}
+		</if>
+    </select>  
+    
+    <select id="checkMOdevice" resultType="java.lang.Integer" parameterType="hashmap">
+    	select count(1) from MODevice where  DeviceIP = '${deviceIP}' 
+    	<if test="MOID !=null and MOID !=''">
+	    	and MOID != ${MOID}
+    	</if>
+    </select>
+    
+    <select id="getResManufacturerID" resultType="int">
+		SELECT pen.ResManufacturerID FROM SNMPPEN pen where  pen.EnterpriseOID ='${OID}'
+	</select>
+	
+	<insert id="addBatch" parameterType="java.util.List">
+		insert into StoneuModevice(MOID,MOName,DeviceIP,MOClassID,CreateTime,LastUpdateTime,NeManufacturerID,NeCategoryID,SourceMOID)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.MOid,jdbcType=INTEGER},#{item.moName,jdbcType=VARCHAR},#{item.deviceIp,jdbcType=VARCHAR},#{item.MOClassID,jdbcType=INTEGER},
+			#{item.createTime,jdbcType=VARCHAR},#{item.lastUpdateTime,jdbcType=VARCHAR},#{item.neManufacturerID,jdbcType=INTEGER},
+			#{item.neCategoryID,jdbcType=INTEGER},#{item.sourceMOID,jdbcType=INTEGER})
+		</foreach>
+	</insert>
+	
+	<insert id="insertSNMP" parameterType="com.fable.insightview.monitor.AcUPS.entity.SNMPbean">
+		insert into SNMPCommunityCache (ID,DeviceIP,MOID,SnmpPort,SnmpVersion,ReadCommunity,WriteCommunity,
+				USMUser,AuthAlogrithm,AuthKey,EncryptionAlogrithm,EncryptionKey,ContexName)
+				 values (#{ID,jdbcType=INTEGER},#{deviceIP,jdbcType=VARCHAR},#{moID,jdbcType=INTEGER},#{snmpPort,jdbcType=INTEGER},
+				 #{snmpVersions,jdbcType=INTEGER},#{readCommunity,jdbcType=VARCHAR},
+					#{writeCommunity,jdbcType=VARCHAR},#{USMUser,jdbcType=VARCHAR},#{authAlogrithm,jdbcType=VARCHAR},
+					#{authKey,jdbcType=VARCHAR},#{encryptionAlogrithm,jdbcType=VARCHAR},#{encryptionKey,jdbcType=VARCHAR},
+					#{contexName,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateInfo" parameterType="com.fable.insightview.monitor.SToneU.entity.MODeviceSt">
+		update MODevice set  DeviceIP =#{deviceIp,jdbcType=VARCHAR},LastUpdateTime = #{lastUpdateTime,jdbcType=VARCHAR},
+				updateAlarmTime = #{updateAlarmTime,jdbcType=VARCHAR}  where  MOID = #{MOid}
+	</update>
+	
+	<update id="updateSnmp" parameterType="com.fable.insightview.monitor.AcUPS.entity.SNMPbean">
+		update SNMPCommunityCache 
+	<set >
+		<if test="deviceIP !=null" >
+		 DeviceIP = #{deviceIP,jdbcType=VARCHAR},
+		</if>
+		 <if test="snmpPort !=null">
+		 SnmpPort = #{snmpPort,jdbcType=INTEGER},
+		 </if>
+		 <if test="snmpVersions !=null">
+		 	SnmpVersion = #{snmpVersions,jdbcType=INTEGER},
+		 </if>
+		 <if test="readCommunity !=null">
+		 ReadCommunity = #{readCommunity,jdbcType=VARCHAR},
+		 </if>
+		 <if test="writeCommunity !=null">
+		 WriteCommunity = #{writeCommunity,jdbcType=VARCHAR},
+		 </if>
+		 <if test="USMUser !=null">
+		 USMUser = #{USMUser,jdbcType=VARCHAR},
+		 </if>
+		 <if test="authAlogrithm !=null">
+		 AuthAlogrithm =#{authAlogrithm,jdbcType=VARCHAR},
+		 </if>
+		 <if test="authKey !=null">
+		  AuthKey = #{authKey,jdbcType=VARCHAR},
+		 </if>
+		 <if test="encryptionAlogrithm !=null">
+		 EncryptionAlogrithm =#{encryptionAlogrithm,jdbcType=VARCHAR},
+		 </if>
+		 <if test="encryptionKey !=null">
+		 EncryptionKey = #{encryptionKey,jdbcType=VARCHAR},
+		 </if>
+		 <if test="contexName !=null">
+		 ContexName = #{contexName,jdbcType=VARCHAR}
+		 </if>
+	</set>
+		 where ID =#{id,jdbcType=INTEGER}
+	</update>
+	
+	<insert id="addModevice" parameterType="com.fable.insightview.monitor.SToneU.entity.MODeviceSt">
+		insert into MODevice (MOID,MOName,MOAlias,OperStatus,AdminStatus,
+		AlarmLevel,DomainID,CreateTime,LastUpdateTime,CreateBy,UpdateBy,
+		DeviceIP,NeCollectorID,NeManufacturerID,NeCategoryID,MOClassID,
+		UpdateAlarmTime)
+		value
+		(#{MOid,jdbcType=INTEGER},#{moName,jdbcType=VARCHAR},#{moalias,jdbcType=VARCHAR},1,1,0,
+		#{domainid,jdbcType=INTEGER},#{createTime,jdbcType=VARCHAR},#{lastUpdateTime,jdbcType=VARCHAR},#{createby,jdbcType=INTEGER},
+		#{updateby,jdbcType=INTEGER},#{deviceIp,jdbcType=VARCHAR},#{necollectorId,jdbcType=INTEGER},#{neManufacturerID,jdbcType=INTEGER},
+		#{neCategoryID,jdbcType=INTEGER},#{MOClassID,jdbcType=INTEGER},#{updateAlarmTime,jdbcType=VARCHAR})
+	</insert>
+	
+	
+	
+	 <select id="queryByMOID" resultMap="stoneu"  parameterType="hashmap">
+		 select m.deviceIP,m.moName,m.moID,m.moClassID,m.lastUpdateTime,m.NeManufacturerID,m.domainId,snmp.SnmpPort,
+		 snmp.ReadCommunity,snmp.WriteCommunity,snmp.ID,
+		 snmp.USMUser,snmp.AuthAlogrithm,snmp.AuthKey, 
+		  snmp.EncryptionAlogrithm,snmp.EncryptionKey,snmp.ContexName, snmp.SnmpVersion  sn_SnmpVersion,d1.taskId,
+		 manufacturer.ResManufacturerName resManufacturerName from MODevice m
+		left join ManufacturerInfo manufacturer on m.NeManufacturerID = manufacturer.ResManufacturerID
+		left join SNMPCommunityCache snmp on snmp.MOID = m.MOID
+		left join SysPerfPollTask d1 on m.MOID=d1.MOID AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+			where  m.MOID in (${MOID})
+ </select>
+ 
+ <select id="queryChildInfo"  resultType="com.fable.insightview.monitor.SToneU.entity.MODeviceSt">
+ 	select MOName,MOClassID from StoneuDeviceKpi
+ </select>
+ 
+ <select id="perfList" resultType="com.fable.insightview.monitor.SToneU.entity.PerfStoneuBean">
+	select
+	st.moname,st.MOClassID,perftem.Temp,perftem.Humidity,perftem.status,perftem.DevStatus,perfsmoke.deviceStatus,
+	soundLight.status as slStatus,contacts.linkStatus,contacts.deviceStatus as consStatus,st.mOClassID
+	from StoneuModevice st
+	LEFT JOIN PerfStoneUTempHum perftem on st.MOID = perftem.MOID
+	LEFT JOIN PerfStoneuSmoke perfsmoke on st.MOID = perfsmoke.MOID
+	LEFT JOIN PerfSoundLight soundLight on st.MOID = soundLight.MOID
+	LEFT JOIN PerfStoneuContacts contacts on st.MOID = contacts.MOID 
+	where st.deviceIP = #{deviceIP,jdbcType=VARCHAR} ORDER BY st.MOClassID,st.moname
+ </select>
+ 
+ <select id="getDateNow" resultType="Date">
+		${currentTimeSql()}
+	</select>
+</mapper>
+

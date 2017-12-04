@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.perf.mapper.PerfPollTaskMapper" >
+  <resultMap id="PerfTaskMap" type="perfTask" >
+    <id column="TaskID" property="taskId" jdbcType="INTEGER" />
+    <result column="MID" property="mid" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DoIntervals" property="doIntervals" jdbcType="INTEGER" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+    <result column="DeviceIP" property="deviceIp" jdbcType="VARCHAR" />
+    <result column="ResCategoryName" property="deviceType" jdbcType="INTEGER" />
+    <result column="ResManufacturerName" property="deviceManufacture" jdbcType="VARCHAR" />
+    <result column="moCounts" property="moCounts" jdbcType="INTEGER" />
+    <result column="IPAddress" property="serverName" jdbcType="VARCHAR" />
+    <result column="ServerID" property="serverId" jdbcType="INTEGER" />
+      
+    <result column="IPAddress" property="serverName" jdbcType="VARCHAR" />
+    <result column="LastStatusTime" property="lastStatusTime" jdbcType="VARCHAR" />
+    <result column="ProgressStatus" property="progressStatus" jdbcType="INTEGER" />
+    <result column="OperateStatus" property="operateStatus" jdbcType="INTEGER" />
+    <result column="LastOPResult" property="lastOPResult" jdbcType="INTEGER" />
+    <result column="ErrorInfo" property="errorInfo" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    
+  </resultMap>
+ 
+  <select id="selectPerfPollTasks" resultType="hashmap" resultMap="PerfTaskMap" parameterType="page">
+  	select task.TaskID,task.MOID,task.Status,task.CreateTime,task.LastStatusTime,task.ProgressStatus,
+  	task.OperateStatus,task.LastOPResult,err.ErrorMess as errorInfo,task.MOClassID,def.ClassLable as className,
+  	device.DeviceIP,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,temp.moCounts,
+	host.ServerID,host.IPAddress  
+	from (select * from SysPerfPollTask where IsOffline is NULL and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)) task
+	left join MODevice device on task.MOID=device.MOID
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join (select count(1) as moCounts,device.MOID as moid from MODevice device,SysMOManufacturerResDef def 
+	where  def.ResManufacturerID=device.NeManufacturerID  and def.ResCategoryID=device.NeCategoryID 
+	group by device.MOID) temp on  temp.moid=task.MOID
+	left join MODBMSServer dbms on	task.MOID=dbms.MOID 
+	left join MOMiddleWareJMX jmx on	task.MOID=jmx.MOID
+	left join MOZoneManager zo on	task.MOID=zo.MOID 
+	left join MOSiteDns dns on	task.MOID=dns.MOID
+	left join MOSiteFtp ftp on	task.MOID=ftp.MOID
+	left join MOSiteHttp http on task.MOID=http.MOID
+	left join MOSitePort tcp on task.MOID=tcp.MOID
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	left join MObjectDef def  on def.ClassID=task.MOClassID
+	where 1=1 
+	
+	<if test="params.serverId != -1 and params.serverId != '' ">
+		 and task.CollectorID=#{params.serverId} 
+      </if>
+      <if test="params.taskId != 0 ">
+		and task.TaskID=#{params.taskId} 
+      </if>
+      <if test="params.status != -2 ">
+		and task.Status=#{params.status} 
+      </if>
+      <if test="params.serverName != '' and params.serverName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.serverName+"'" ,"'%'")}
+      </if>
+	<if test="params.deviceIp != '' and params.deviceIp != null ">
+		and (device.DeviceIP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or dbms.IP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or jmx.IP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or zo.IPAddress like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or dns.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or ftp.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or http.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or tcp.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")})
+      </if>
+      order by task.CreateTime desc
+      <if test="params.sort != null and params.sort != '' and params.order != null and params.order != '' " >
+       ,${params.sort} ${params.order}
+      </if>
+  </select>
+   <select id="getTotalTasks" resultType="Integer">
+   select count(1) from SysPerfPollTask where 1=1 and IsOffline is NULL and OperateStatus!=3
+   
+   <if test="serverId != -1 and serverId != '' " >
+       and CollectorID=#{serverId}
+      </if>
+   </select>
+   <select id="getMoList" resultType="String" parameterType="taskInfo">
+   select ${concat("MID", "','" ,"MOName")} as mo  from SysMOList where MID in 
+	(
+	select MID from SysMOManufacturerResDef where ResManufacturerID=
+	(select NeManufacturerID from MODevice where MOID=#{moId})
+	 and ResCategoryID=
+ 	(select NeCategoryID from MODevice where MOID=#{moId})
+ 	)
+   </select>
+    <select id="getMoByManufacturer" resultType="String" parameterType="taskInfo">
+   select ${concat("MID", "','" , "MOName")} as mo  from SysMOList where MID in 
+	(
+	select MID from SysMOManufacturerResDef where ResManufacturerID=
+	(select NeManufacturerID from MODevice where MOID=#{moId})
+ 	)
+   </select>
+   <select id="getMoListByTaskId" resultType="String" parameterType="Integer">
+   <!--
+   select CONCAT_WS(',',MID,DoIntervals) from SysPerfPollMonitors where TaskID=#{taskId}
+   -->
+    select ${concat("MID", "','" ,"DoIntervals")}  from SysPerfPollMonitors where TaskID=#{taskId}
+   </select>
+   <delete id="delTask" parameterType="Integer">
+   delete from SysPerfPollTask where TaskID=#{taskId}
+   </delete>
+   
+   <select id="getMaxId"  resultType="Integer" >
+	select max(ID) from SNMPCommunity
+  </select>
+   <insert id="insertTaskInfo" parameterType="taskInfo" >
+    insert into SysPerfPollTask (TaskID, MOID, Status,Creator, CreateTime,OperateStatus,ProgressStatus,LastStatusTime,MOClassID,CollectorID,DBName,OldCollectorID,IsOffline)
+    values (#{taskId,jdbcType=INTEGER}, #{moId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{creator,jdbcType=INTEGER}, ${sysdate()},
+      #{operateStatus,jdbcType=INTEGER},#{progressStatus,jdbcType=INTEGER}, ${sysdate()},
+      #{moClassId,jdbcType=INTEGER},#{collectorId,jdbcType=INTEGER}, #{dbName,jdbcType=VARCHAR},#{oldCollectorId,jdbcType=INTEGER}, #{isOffline,jdbcType=VARCHAR}
+      )
+  </insert>
+   <insert id="addTaskSnmp" parameterType="taskInfo" >
+    insert into SNMPCommunity (ID, DeviceIP, DomainID,MOID, SnmpPort,SnmpVersion,ReadCommunity,USMUser,
+    SecurityLevel,AuthAlogrithm,AuthKey,EncryptionAlogrithm,EncryptionKey,ContexName,WriteCommunity)
+    values (#{snmpId,jdbcType=INTEGER}, #{deviceIp,jdbcType=VARCHAR}, #{domainId,jdbcType=INTEGER}, 
+      #{moId,jdbcType=INTEGER}, #{snmpPort,jdbcType=INTEGER},
+      #{snmpVersion,jdbcType=INTEGER}, #{readCommunity,jdbcType=VARCHAR}, #{usmUser,jdbcType=VARCHAR}, 
+      #{securityLevel,jdbcType=VARCHAR}, #{authAlogrithm,jdbcType=VARCHAR},
+      #{authKey,jdbcType=VARCHAR}, #{encryptionAlogrithm,jdbcType=VARCHAR}, #{encryptionKey,jdbcType=VARCHAR}, 
+      #{contexName,jdbcType=VARCHAR}, #{writeCommunity,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertTaskMo" parameterType="moInfo" >
+    insert into SysPerfPollMonitors (ID, TaskID, MID,DoIntervals)
+    values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, 
+      #{doIntervals,jdbcType=INTEGER}
+      )
+  </insert>
+   <select id="getProcessByTaskId"  resultType="String" >
+	select ${concat("Status", "','" ,"ProgressStatus")}  from SysPerfPollTask where TaskID=#{taskId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getMonitorCounts" parameterType="Integer" resultType="Integer" >
+  select count(1) from SysPerfPollMonitors where TaskID=#{taskId}
+  </select>
+  
+   <select id="getServerNameByTaskId"  resultType="String" >
+	select host.IPAddress  
+	from SysPerfPollTask task
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	where TaskID=#{taskId,jdbcType=INTEGER}
+   </select>
+   
+   <select id="getTaskByTaskId" parameterType="Integer" resultType="perfTask">
+   select task.TaskID, task.MOID, task.Status,task.Creator, task.CreateTime,
+   task.OperateStatus,task.ProgressStatus,task.LastStatusTime,task.MOClassID,
+   task.CollectorID,task.LastOPResult,err.ErrorMess as errorInfo
+   from SysPerfPollTask task
+   left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+   where  task.TaskID=#{taskId,jdbcType=INTEGER}
+   </select>
+   
+     <insert id="addSnmpCommunity" parameterType="com.fable.insightview.platform.snmpcommunity.entity.SNMPCommunityBean" >
+    insert into SNMPCommunity (ID, DeviceIP, DomainID,MOID, SnmpPort,SnmpVersion,ReadCommunity,WriteCommunity,USMUser,
+    SecurityLevel,AuthAlogrithm,AuthKey,EncryptionAlogrithm,EncryptionKey,ContexName)
+    values (#{id,jdbcType=INTEGER}, #{deviceIP,jdbcType=VARCHAR}, #{domainID,jdbcType=INTEGER}, 
+      #{moID,jdbcType=INTEGER}, #{snmpPort,jdbcType=INTEGER},
+      #{snmpVersion,jdbcType=INTEGER}, #{readCommunity,jdbcType=VARCHAR},#{writeCommunity,jdbcType=VARCHAR}, #{usmUser,jdbcType=VARCHAR}, 
+      #{securityLevel,jdbcType=VARCHAR}, #{authAlogrithm,jdbcType=VARCHAR},
+      #{authKey,jdbcType=VARCHAR}, #{encryptionAlogrithm,jdbcType=VARCHAR}, #{encryptionKey,jdbcType=VARCHAR}, 
+      #{contexName,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateTaskClassID" parameterType="taskInfo">
+  	update SysPerfPollTask set MOClassID= #{moClassId,jdbcType=INTEGER} where TaskID=#{taskId}
+  </update>
+  
+  <select id="getByIP" resultType="com.fable.insightview.platform.snmpcommunity.entity.SNMPCommunityBean" parameterType="com.fable.insightview.platform.snmpcommunity.entity.SNMPCommunityBean" >
+  select * from SNMPCommunity where DeviceIP like ${concat("'%'", "'"+deviceIP+"'" ,"'%'")}
+  </select>
+  
+  <select id="getVCenterTask" parameterType="Integer" resultType="perfTask">
+  select p.* 
+  from SysPerfPollTask p
+  left join MODevice d on p.MOID=d.MOID
+  left join MOPhysicsHostInfo i on d.DeviceIP = i.vCenterIP
+  where p.MOClassID =75 and i.MOID=#{moId} and p.IsOffline is NULL and (p.Status!=-1 or p.ProgressStatus!=5) and (p.OperateStatus!=3 or p.ProgressStatus!=5)
+  </select>
+  
+  <select id="getOfflinePerfTask" resultType="hashmap" resultMap="PerfTaskMap" parameterType="page">
+  	select task.TaskID,task.MOID,task.Status,task.CreateTime,task.LastStatusTime,task.ProgressStatus,
+  	task.OperateStatus,task.LastOPResult,err.ErrorMess as errorInfo,task.MOClassID,def.ClassLable as className,
+  	device.DeviceIP,rescate.ResCategoryName as deviceType,manu.ResManufacturerName as deviceManufacture,temp.moCounts,
+	host.ServerID,host.IPAddress  
+	from (select * from SysPerfPollTask where IsOffline='1' and (Status!=-1 or ProgressStatus!=5)and (OperateStatus!=3 or ProgressStatus!=5)) task
+	left join MODevice device on task.MOID=device.MOID
+	left join ManufacturerInfo manu on device.NeManufacturerID=manu.ResManufacturerID
+	left join ResCategoryDefine rescate on device.NeCategoryID=rescate.ResCategoryID
+	left join SysServerHostInfo host on task.CollectorID=host.ServerID 
+	left join (select count(1) as moCounts,device.MOID as moid from MODevice device,SysMOManufacturerResDef def 
+	where  def.ResManufacturerID=device.NeManufacturerID  and def.ResCategoryID=device.NeCategoryID 
+	group by device.MOID) temp on  temp.moid=task.MOID
+	left join MODBMSServer dbms on	task.MOID=dbms.MOID 
+	left join MOMiddleWareJMX jmx on	task.MOID=jmx.MOID
+	left join MOZoneManager zo on	task.MOID=zo.MOID 
+	left join MOSiteDns dns on	task.MOID=dns.MOID
+	left join MOSiteFtp ftp on	task.MOID=ftp.MOID
+	left join MOSiteHttp http on task.MOID=http.MOID
+	left join MOSitePort tcp on task.MOID=tcp.MOID
+	left join SystemErrorInfo err on err.ErrorID=task.ErrorInfo
+	left join MObjectDef def  on def.ClassID=task.MOClassID
+	where 1=1 
+      <if test="params.taskId != 0 ">
+		and task.TaskID=#{params.taskId} 
+      </if>
+      <if test="params.status != -2 ">
+		and task.Status=#{params.status} 
+      </if>
+      <if test="params.serverName != '' and params.serverName != null ">
+		and host.IPAddress like ${concat("'%'", "'"+params.serverName+"'" ,"'%'")}
+      </if>
+	<if test="params.deviceIp != '' and params.deviceIp != null ">
+		and (device.DeviceIP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or dbms.IP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or jmx.IP like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or zo.IPAddress like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or dns.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or ftp.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or http.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")} or tcp.SiteName like
+		${concat("'%'","'"+params.deviceIp+"'","'%'")})
+      </if>
+      order by task.CreateTime desc
+      <if test="params.sort != null and params.sort != '' and params.order != null and params.order != '' " >
+       ,${params.sort} ${params.order}
+      </if>
+  </select>
+  
+  <select id="getVCenterTask2" parameterType="Integer" resultType="perfTask">
+  select p.* 
+  from SysPerfPollTask p
+  left join MODevice d on p.MOID=d.MOID
+  left join MOPhysicsHostInfo i on d.DeviceIP = i.vCenterIP
+  where p.MOClassID =75 and i.MOID=#{moId} and (p.Status!=-1 or p.ProgressStatus!=5) and (p.OperateStatus!=3 or p.ProgressStatus!=5)
+   <if test="isOffline != '' and isOffline != null and isOffline != 'null'">
+	  and p.IsOffline = #{isOffline}
+    </if>
+    <if test="isOffline == '' or isOffline == null or isOffline == 'null' ">
+	  and p.IsOffline is NULL
+    </if>
+  </select>
+</mapper>
+

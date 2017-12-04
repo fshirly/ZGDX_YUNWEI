@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.smstools.mapper.SysSmsConfigMapper">
+	<resultMap id="SysSmsConfigMap" type="com.fable.insightview.platform.smstools.entity.SysSmsConfigBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="ParamKey" property="paramKey" jdbcType="VARCHAR" />
+		<result column="ParamValue" property="paramValue" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getConfigInfo" resultType="com.fable.insightview.platform.smstools.entity.SysSmsConfigBean">
+	  select * from SysSmsConfig order by ID;
+	</select>
+	
+</mapper>
+

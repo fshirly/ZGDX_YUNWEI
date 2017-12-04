@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmhistory.mapper.AlarmHistoryMapper" >
+<resultMap id="AlarmHistoryMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmHistoryInfo" >
+    <id column="AlarmID" property="alarmID" jdbcType="INTEGER" />
+    <result column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+    <result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+    <result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moclassID" jdbcType="INTEGER" />
+    <result column="SourceMOClassID" property="sourceMOClassID" jdbcType="INTEGER" />
+    <result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER" />
+    <result column="SourceMOName" property="sourceMOName" jdbcType="VARCHAR" />
+    <result column="SourceMOIPAddress" property="sourceMOIPAddress" jdbcType="VARCHAR" />
+    <result column="Confirmer" property="confirmer" jdbcType="VARCHAR" />
+    <result column="ConfirmInfo" property="confirmInfo" jdbcType="VARCHAR" />
+    <result column="Cleaner" property="cleaner" jdbcType="VARCHAR" />
+    <result column="CleanInfo" property="cleanInfo" jdbcType="VARCHAR" />
+    <result column="DispatchUser" property="dispatchUser" jdbcType="VARCHAR" />
+    <result column="WorkOrderId" property="dispatchID" jdbcType="VARCHAR" />
+    <result column="DispatchInfo" property="dispatchInfo" jdbcType="VARCHAR" />
+    <result column="AlarmContent" property="alarmContent" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="AlarmType" property="alarmType" jdbcType="INTEGER" />
+    <result column="RepeatCount" property="repeatCount" jdbcType="INTEGER" />
+    <result column="UpgradeCount" property="upgradeCount" jdbcType="INTEGER" />
+    <result column="AlarmStatus" property="alarmStatus" jdbcType="INTEGER" />
+    <result column="AlarmOperateStatus" property="alarmOperateStatus" jdbcType="INTEGER" />
+    <result column="StatusName" property="operateStatusName" jdbcType="VARCHAR" />
+    <result column="StartTime" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="LastTime" property="lastTime" jdbcType="TIMESTAMP" />
+    <result column="ConfirmTime" property="confirmTime" jdbcType="TIMESTAMP" />
+    <result column="CleanTime" property="cleanTime" jdbcType="TIMESTAMP" />
+    <result column="DispatchTime" property="dispatchTime" jdbcType="TIMESTAMP" />
+    <result column="DeletedUser" property="deletedUser" jdbcType="VARCHAR" />
+    <result column="DeleteTime" property="deleteTime" jdbcType="TIMESTAMP" />
+</resultMap>
+ 
+<select id="queryList" resultType="hashmap" resultMap="AlarmHistoryMap" parameterType="page">
+  		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tb.LevelColor,tc.StatusName,t.AlarmStatus,t.SourceMOName,t.MOName,t.AlarmOperateStatus,
+  			   t.StartTime,t.RepeatCount,t.DeleteTime,t.SourceMOIPAddress,t.AlarmTitle,t.LastTime,t.MOID,t.MOClassID,t.SourceMOClassID
+		from AlarmHistoryDetail t	
+  		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID
+  		where 1=1 
+		<if test="params.timeBegin != null and params.timeBegin != '' ">
+			and t.StartTime &gt;= ${toDate(params.timeBegin)}
+		</if>
+		<if test="params.timeEnd != null and params.timeEnd != '' ">
+			and t.StartTime  &lt;= ${toDate(params.timeEnd)}
+		</if>
+		<if test="params.moName != null and params.moName != '' ">
+			and t.MOName like ${concat("'%'","'"+params.moName+"'","'%'")} 		
+    	</if>	
+		<if test="params.alarmLevel != 0 and params.alarmLevel != '' ">
+			and t.AlarmLevel = #{params.alarmLevel}	
+    	</if>
+    	<if test="params.alarmTitle != null and params.alarmTitle != '' ">
+			and t.AlarmTitle like ${concat("'%'","'"+params.alarmTitle+"'","'%'")}		
+    	</if>
+    	<if test="params.sourceMOIPAddress != null and params.sourceMOIPAddress != '' ">
+			and t.SourceMOIPAddress like ${concat("'%'","'"+params.sourceMOIPAddress+"'","'%'")}		
+    	</if>
+    	<if test="params.alarmOperateStatus != 0 and params.alarmOperateStatus != '' ">
+			and t.AlarmOperateStatus = #{params.alarmOperateStatus}		
+    	</if>
+    	<if test="params.alarmType != 0 and params.alarmType != '' ">
+			and t.AlarmType = #{params.alarmType}	
+    	</if>	
+  			<!-- order by t.AlarmStatus,t.AlarmLevel -->
+  			order by t.StartTime desc
+</select> 
+
+<select id="getInfoById" resultType="hashmap" resultMap="AlarmHistoryMap"  parameterType="java.lang.Integer">
+		select t.AlarmID,ta.AlarmTypeName,tb.AlarmLevelName,tc.StatusName,t.AlarmContent,t.StartTime,
+			   t.LastTime,t.ConfirmTime,t.CleanTime,t.DispatchTime,t.AlarmTitle,t.alarmDefineID,
+			   t.AlarmOID,t.MOID,t.MOName,t.MOClassID,t.SourceMOID,t.SourceMOName,t.SourceMOIPAddress,
+			   t.Confirmer,t.ConfirmInfo,t.Cleaner,t.CleanInfo,t.DispatchUser,t.DispatchID,t.DispatchInfo,
+			   t.AlarmLevel,t.AlarmType,t.RepeatCount,t.UpgradeCount,t.AlarmStatus,t.deletedUser,t.deleteTime,t.SourceMOClassID,t.AlarmOperateStatus,dis.WorkOrderId
+		from AlarmHistoryDetail t
+		left join AlarmType ta on t.AlarmType = ta.AlarmTypeID
+  		left join AlarmLevel tb on t.AlarmLevel = tb.AlarmLevelID
+  		left join AlarmStatusDef tc on t.AlarmOperateStatus = tc.StatusID	
+  		left join AlarmDispatchDetail dis on  t.DispatchID =dis.DispatchID		
+		where t.AlarmID=#{id}
+</select>
+
+<insert id="insertInfo" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmHistoryInfo" >
+    	insert into AlarmHistoryDetail
+    		(AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner,CleanInfo,DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,
+    		 AlarmType,RepeatCount,UpgradeCount,AlarmStatus,StartTime,LastTime,ConfirmTime,CleanTime,DispatchTime,
+    		 DeletedUser,DeleteTime,SourceMOClassID
+    		)
+    	values
+    		(
+    		#{alarmID,jdbcType=INTEGER},#{alarmDefineID,jdbcType=VARCHAR},#{alarmOID,jdbcType=VARCHAR},
+    		#{alarmTitle,jdbcType=VARCHAR},#{moid,jdbcType=INTEGER},#{moName,jdbcType=VARCHAR},
+    		#{moclassID,jdbcType=INTEGER},#{sourceMOID,jdbcType=INTEGER},#{sourceMOName,jdbcType=VARCHAR},
+    		#{sourceMOIPAddress,jdbcType=VARCHAR},#{confirmer,jdbcType=VARCHAR},#{confirmInfo,jdbcType=VARCHAR},
+    		#{cleaner,jdbcType=VARCHAR},#{cleanInfo,jdbcType=VARCHAR},#{dispatchUser,jdbcType=VARCHAR},
+    		#{dispatchID,jdbcType=VARCHAR},#{dispatchInfo,jdbcType=VARCHAR},#{alarmContent,jdbcType=VARCHAR},
+    		#{alarmLevel,jdbcType=INTEGER},#{alarmType,jdbcType=VARCHAR},#{repeatCount,jdbcType=INTEGER},
+    		#{upgradeCount,jdbcType=INTEGER},#{alarmStatus,jdbcType=INTEGER},#{startTime,jdbcType=VARCHAR},
+    		#{lastTime,jdbcType=VARCHAR},#{confirmTime,jdbcType=VARCHAR},#{cleanTime,jdbcType=VARCHAR},
+    		#{dispatchTime,jdbcType=VARCHAR},#{deletedUser,jdbcType=VARCHAR},#{deleteTime,jdbcType=VARCHAR},
+    		#{sourceMOClassID,jdbcType=INTEGER}	
+      	 	)
+</insert>
+
+<insert id="copyActiveDeleteInfo" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmHistoryInfo" >
+    	insert into AlarmHistoryDetail
+    		(AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner,CleanInfo,DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,
+    		 AlarmType,RepeatCount,UpgradeCount,AlarmStatus,StartTime,LastTime,ConfirmTime,CleanTime,DispatchTime,
+    		 DeletedUser,DeleteTime,SourceMOClassID,AlarmOperateStatus
+    		)
+    	select 
+    		 AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner,CleanInfo,DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,
+    		 AlarmType,RepeatCount,UpgradeCount, AlarmStatus,StartTime,LastTime,
+    		 ConfirmTime,CleanTime,DispatchTime,'${deletedUser}' DeletedUser,
+    		 '${deleteTime}' DeleteTime,SourceMOClassID,${alarmOperateStatus} AlarmOperateStatus
+    		 from 
+		AlarmActiveDetail where AlarmID in (${moName})			
+</insert>
+
+<insert id="copyActiveClearInfo" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmHistoryInfo" >
+    	insert into AlarmHistoryDetail
+    		(AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner,CleanInfo,DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,AlarmOperateStatus,
+    		 AlarmType,RepeatCount,UpgradeCount,AlarmStatus,StartTime,LastTime,ConfirmTime,CleanTime,DispatchTime,SourceMOClassID
+    		)
+    	select 
+    		 AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,'${cleaner}' Cleaner,'${cleanInfo}' CleanInfo,
+    		 DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,${alarmOperateStatus} AlarmOperateStatus,
+    		 AlarmType,RepeatCount,UpgradeCount, AlarmStatus,StartTime,LastTime,
+    		 ConfirmTime,'${cleanTime}' CleanTime,DispatchTime,SourceMOClassID
+    		 from 
+		AlarmActiveDetail where AlarmID in (${moName})			
+</insert>
+
+<insert id="insertActiveInfo"  parameterType="hashmap">
+    	insert into AlarmHistoryDetail
+    		(AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner,CleanInfo,DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,AlarmOperateStatus,
+    		 AlarmType,RepeatCount,UpgradeCount,AlarmStatus,StartTime,LastTime,ConfirmTime,CleanTime,DispatchTime,SourceMOClassID
+    		)
+    	select 
+    		 AlarmID,AlarmDefineID,AlarmOID,AlarmTitle,MOID,MOName,MOClassID,SourceMOID,SourceMOName,SourceMOIPAddress,
+    		 Confirmer,ConfirmInfo,Cleaner, CleanInfo,
+    		 DispatchUser,DispatchID,DispatchInfo,AlarmContent,AlarmLevel,${alarmOperateStatus} AlarmOperateStatus,
+    		 AlarmType,RepeatCount,UpgradeCount, AlarmStatus,StartTime,LastTime,
+    		 ConfirmTime,CleanTime,DispatchTime,SourceMOClassID
+    		 from 
+		AlarmActiveDetail where DispatchID in (${dispatchID})			
+</insert>
+      
+</mapper>

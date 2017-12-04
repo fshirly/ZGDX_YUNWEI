@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.momemories.mapper.MOMemoriesMapper" >
+  <resultMap id="moMemoriesMap" type="moMemories" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="Instance" property="instance" jdbcType="VARCHAR" />
+    <result column="RawDescr" property="rawDescr" jdbcType="VARCHAR" />
+    <result column="MemType" property="memType" jdbcType="VARCHAR" />
+    <result column="IsManaged" property="isManaged" jdbcType="INTEGER" />
+    <result column="MemorySize" property="memorySize" jdbcType="INTEGER" />
+    <result column="MIBModule" property="mIBModule" jdbcType="VARCHAR" />
+    <result column="ResID" property="resid" jdbcType="INTEGER" />
+  </resultMap>
+ 
+   <select id="selectMOMemories" resultType="hashmap"
+	resultMap="moMemoriesMap" parameterType="page">
+	select
+	memories.*,mo.MOName as deviceMOName
+	from MOMemories memories
+	left join MODevice mo on memories.DeviceMOID=mo.MOID
+	where 1=1
+	<if test="params.moName !='' and params.moName != null ">
+		and memories.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+	</if>
+	<if test="params.deviceMOID != -1 and params.deviceMOID != '' ">
+	    and memories.DeviceMOID=#{params.deviceMOID} 
+    </if>
+   </select>
+
+   <select id="getMOMemoriesById" parameterType="Integer" resultType="moMemories">
+	 select
+	 memories.*
+	 from MOMemories memories
+	 where 1=1 and memories.MOID = #{moID}
+   </select>
+	
+	<select id="getByDeviceMOIDAndMOID" parameterType="moMemories" resultType="Integer">
+	select count(1) from MOMemories
+	where 1=1 and DeviceMOID = #{deviceMOID}  and MOID = #{moID}
+	</select>
+	
+  <select id="synchronMOMemoryToRes" resultMap="moMemoriesMap" parameterType="page">
+  	SELECT m.* from MOMemories m where m.DeviceMOID in (select MOID from MODevice where MOID in(${params.moIDs}))
+  </select>
+  
+  <update id="updateResId" parameterType="hashmap" >
+	update MOMemories set ResID = ${resid}  where MOID = ${moid}
+  </update> 
+	
+<select id="queryList" resultType="hashmap" resultMap="moMemoriesMap" parameterType="page">
+	select me.MOID,me.MOName,me.MOAlias,me.OperStatus,me.AdminStatus,
+	me.AlarmLevel,me.DeviceMOID,me.Instance,me.RawDescr,me.MemType,me.IsManaged,
+	me.MemorySize,me.MIBModule,mo.MOName deviceMOName,mo.DeviceIP
+	from MOMemories me,MODevice mo
+	where me.DeviceMOID=mo.MOID  and mo.MOClassID=#{params.mOClassID}	
+	<if test="params.deviceMOName !='' and params.deviceMOName != null ">
+		and mo.MOName like ${concat("'%'","'"+params.deviceMOName+"'","'%'")}
+	</if>
+	<if test="params.operStatus !='' and params.operStatus != null ">
+		and me.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+	</if>	
+	<if test="params.deviceIP !='' and params.deviceIP != null ">
+		and mo.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")} 
+	</if>
+</select>
+
+	<select id="getResIDByDeviceId" parameterType="Integer" resultType="Integer">
+		select ResID from MOMemories where DeviceMOID = #{deviceMoId}
+	</select> 
+</mapper>
+

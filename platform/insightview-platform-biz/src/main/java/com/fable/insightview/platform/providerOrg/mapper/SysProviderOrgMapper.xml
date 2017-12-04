@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.providerOrg.mapper.SysProviderOrgMapper" > 
+  
+  <select id="getOrgByProviderId" parameterType="INTEGER" resultType="sysProviderOrganization">
+	SELECT * FROM SysProviderOrganization WHERE ProviderId = #{providerId,jdbcType=INTEGER}
+  </select>
+  
+    
+  <delete id="delByProviderId" parameterType="INTEGER" >
+    delete from SysProviderOrganization
+    where ProviderId = #{providerId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertProviderOrg" parameterType="sysProviderOrganization">
+    insert into SysProviderOrganization (id, providerId, organizationId)
+    values (#{id,jdbcType=INTEGER}, #{providerId,jdbcType=VARCHAR}, #{organizationId,jdbcType=VARCHAR})
+  </insert>
+  
+  <select id="queryProviderByOrgId" parameterType="INTEGER" resultType="com.fable.insightview.platform.provider.entity.ProviderInfoBean">
+	SELECT p.* FROM ProviderInfo p
+	LEFT JOIN SysProviderOrganization spo ON spo.ProviderId=p.ProviderID
+	WHERE spo.OrganizationId= #{orgId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getProviderUser" resultType="com.fable.insightview.platform.entity.SysUserInfoBean" parameterType="page">
+  	select * from SysUserInfo su
+  	LEFT JOIN SysProviderUser spu ON su.UserID=spu.UserID WHERE 1=1
+  	AND spu.ProviderID IN(
+		SELECT p.ProviderID FROM ProviderInfo p
+		LEFT JOIN SysProviderOrganization spo ON spo.ProviderId=p.ProviderID
+		WHERE spo.OrganizationId= #{params.organizationID,jdbcType=INTEGER})
+  	  <if test="params.userAccount != null and params.userAccount != '' " >
+        and su.userAccount like ${concat("'%'", "'"+params.userAccount+"'" ,"'%'")}
+      </if>
+      <if test="params.userName != null and params.userName != '' " >
+       and su.userName like ${concat("'%'", "'"+params.userName+"'" ,"'%'")}
+      </if>
+      <if test="params.providerId != null and params.providerId != -1 " >
+        and spu.ProviderID = #{params.providerId,jdbcType=INTEGER} 
+      </if>
+       <if test="params.groupIdFilter != null and params.groupIdFilter != -1 " >
+        and su.UserID NOT IN (SELECT UserID FROM SysUserInGroups WHERE GroupID = #{params.groupIdFilter,jdbcType=INTEGER} )
+      </if>
+  </select>  
+  
+   <select id="getTotalCount" resultType="Integer" parameterType="com.fable.insightview.platform.entity.SysUserInfoBean">
+  	select count(1) from SysUserInfo su
+  	LEFT JOIN SysProviderUser spu ON su.UserID=spu.UserID WHERE 1=1 
+  	AND spu.ProviderID IN(
+		SELECT p.ProviderID FROM ProviderInfo p
+		LEFT JOIN SysProviderOrganization spo ON spo.ProviderId=p.ProviderID
+		WHERE spo.OrganizationId= #{organizationId,jdbcType=INTEGER})
+  	  <if test="userAccount != null and userAccount != '' " >
+        and su.userAccount like ${concat("'%'", "'"+userAccount+"'" ,"'%'")}
+      </if>
+      <if test="userName != null and userName != '' " >
+       and su.userName like ${concat("'%'", "'"+userName+"'" ,"'%'")}
+      </if>
+      <if test="providerId != null and providerId != -1 " >
+        and spu.ProviderID = #{providerId,jdbcType=INTEGER} 
+      </if>
+       <if test="groupIdFilter != null and groupIdFilter != -1 " >
+        and su.UserID NOT IN (SELECT UserID FROM SysUserInGroups WHERE GroupID = #{groupIdFilter,jdbcType=INTEGER} )
+      </if>
+  </select>  
+  
+</mapper>

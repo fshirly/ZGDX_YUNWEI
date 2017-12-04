@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.dutylog.mapper.DutyLogMapper">
+
+	<insert id="insert" parameterType="com.fable.insightview.platform.dutymanager.dutylog.entity.PfDutyLog">
+		INSERT INTO PfLogOfDuty 
+		(ID,DutyId,Title,LeaderRegisterDate,NoticePoints,LeaderLog,DutyerRegisterDate,Advices,DutyLog)
+ 		VALUES (#{id,jdbcType=INTEGER},#{dutyId,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},
+ 		#{leaderRegisterDate,jdbcType=TIMESTAMP},#{noticePoints,jdbcType=VARCHAR},#{leaderLog,jdbcType=VARCHAR},
+ 		#{dutyerRegisterDate,jdbcType=TIMESTAMP},#{advices,jdbcType=VARCHAR},#{dutyLog,jdbcType=VARCHAR});
+	</insert>
+
+	<select id="queryLogs" resultType="HASHMAP">
+		SELECT ID LogId,DutyId,NoticePoints,LeaderLog,Advices,DutyLog FROM PfLogOfDuty
+		WHERE DutyId IN 
+		<foreach collection="list" item="dutyId" separator="," open="( " close=" )">
+		#{dutyId}
+		</foreach>
+	</select>
+	
+	<select id="queryLog" resultType="HASHMAP">
+		SELECT dt.ID, ui.UserName,ld.ID LogId,ld.NoticePoints,ld.LeaderLog,ld.LeaderRegisterDate,
+		ld.Title,ld.Advices,ld.LeaderRegisterDate,ld.DutyerRegisterDate,ld.DutyLog 
+		FROM PfDuty dt LEFT JOIN PfLogOfDuty ld ON dt.ID=ld.DutyId 
+		LEFT JOIN SysUserInfo ui ON dt.LeaderId=ui.UserID 
+		WHERE dt.DutyDate=#{duty,jdbcType=DATE}
+	</select>
+	
+	<update id="updateLeaderLog" parameterType="com.fable.insightview.platform.dutymanager.dutylog.entity.PfDutyLog">
+		UPDATE PfLogOfDuty 
+		SET NoticePoints=#{noticePoints,jdbcType=VARCHAR},LeaderLog=#{leaderLog,jdbcType=VARCHAR},LeaderRegisterDate=#{leaderRegisterDate,jdbcType=TIMESTAMP},Title=#{title,jdbcType=VARCHAR} 
+		WHERE ID=#{id,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateDuyterLog" parameterType="com.fable.insightview.platform.dutymanager.dutylog.entity.PfDutyLog">
+		UPDATE PfLogOfDuty 
+		SET DutyerRegisterDate=#{dutyerRegisterDate,jdbcType=TIMESTAMP},Advices=#{advices,jdbcType=VARCHAR},DutyLog=#{dutyLog,jdbcType=VARCHAR} 
+		WHERE ID=#{id,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateLeadNotice">
+		UPDATE PfLogOfDuty SET NoticePoints=#{notices} WHERE DutyId=#{dutyId}
+	</update>
+	
+	<update id="updateDutyLogs" parameterType="HASHMAP">
+		UPDATE PfLogOfDuty SET DutyerRegisterDate=#{dutyerRegisterDate,jdbcType=TIMESTAMP},Advices=#{advices,jdbcType=VARCHAR},DutyLog=#{dutyLog,jdbcType=VARCHAR} WHERE DutyId=#{dutyId}
+	</update>
+	
+	<select id="queryDutyLogs" resultType="HASHMAP">
+		SELECT plo.ID,pd.DutyDate FROM PfLogOfDuty plo, PfDuty pd WHERE plo.DutyId=pd.ID AND plo.DutyId=#{dutyId}
+	</select>
+	
+</mapper>

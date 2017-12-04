@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.perf.mapper.SysKPIOfMOClassMapper" >
+  <resultMap id="KPIOfMOClassMap" type="kpiOfMoClass" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="KPIID" property="kpiID" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+    <result column="IsSupport" property="isSupport" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="getKPIOfMOClassList" resultType="hashmap" resultMap="KPIOfMOClassMap" parameterType="page">
+  	select r.ID,r.KPIID,r.MOClassID,r.IsSupport,perf.Name,m.ClassLable as moClassName
+  	from SysKPIOfMOClass r
+  	left join PerfKPIDef perf on r.KPIID = perf.KPIID
+  	left join MObjectDef m on r.MOClassID = m.ClassID
+  	where 1=1
+      <if test="params.kpiID != '' and params.kpiID != null ">
+		and r.KPIID = #{params.kpiID}
+      </if>
+  </select>
+  
+  <select id="getByKPIAndClass" parameterType="kpiOfMoClass" resultType="kpiOfMoClass">
+  	select r.ID,r.KPIID,r.MOClassID,r.IsSupport
+  	from SysKPIOfMOClass r
+  	where 1=1 and r.KPIID = #{kpiID} and r.MOClassID = #{moClassID}
+  </select>
+  
+  <delete id="delKPIOfMOClass" parameterType="Integer">
+	delete from SysKPIOfMOClass where ID = #{id}
+  </delete>
+  
+  <insert id="insertKPIOfMOClass" parameterType="kpiOfMoClass">
+ 	 insert into SysKPIOfMOClass (ID,KPIID,MOClassID,IsSupport)
+	 values (#{id,jdbcType=INTEGER}, #{kpiID,jdbcType=INTEGER}, #{moClassID,jdbcType=INTEGER}, #{isSupport,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <select id="getCountByKPIID" parameterType="Integer" resultType="Integer">
+	select count(1) from SysKPIOfMOClass where KPIID = #{kpiID}
+  </select>
+  
+</mapper>
+

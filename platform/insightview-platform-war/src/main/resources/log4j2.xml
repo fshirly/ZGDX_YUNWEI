@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error" monitorInterval="50" strict="true">
+	<Properties>
+		<Property name="platform.log">../logs/platform/platform.log</Property>
+		<Property name="monitor.log">../logs/monitor/monitor.log</Property>
+		<Property name="itsm.log">../logs/itsm/itsm.log</Property>
+		<Property name="resource.log">../logs/resource/resource.log</Property>
+		<Property name="report.log">../logs/report/report.log</Property>
+		<Property name="inspection.log">../logs/inspection/inspection.log</Property>
+		<Property name="interaction.log">../logs/interaction/interaction.log</Property>
+		<Property name="monitorRestService.log">../logs/monitorRestService/monitorRestService.log</Property>
+		<Property name="hibernate.log">../logs/platform/hibernate.log</Property>
+	</Properties>
+	
+	<Appenders>
+		<Appender type="Console" name="StdOut">
+			<Layout type="PatternLayout" pattern="%m MDC%X%n" />
+		</Appender>
+		<Appender type="File" name="platform.log" fileName="${platform.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="monitor.log" fileName="${monitor.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="itsm.log" fileName="${itsm.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="resource.log" fileName="${resource.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="report.log" fileName="${report.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="inspection.log" fileName="${inspection.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="interaction.log" fileName="${interaction.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="hibernate.log" fileName="${hibernate.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="monitorRestService.log" fileName="${monitorRestService.log}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+	</Appenders>
+	
+	<Loggers>
+		
+		<Logger name="com.fable.insightview.platform" level="Error" additivity="false">
+			<AppenderRef ref="platform.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.monitor" level="Error" additivity="false">
+			<AppenderRef ref="StdOut" />
+			<AppenderRef ref="monitor.log" />
+		</Logger>
+		
+		<Logger name="nl.justobjects.pushlet" level="Error" additivity="false">
+			<AppenderRef ref="StdOut" /> 
+			<AppenderRef ref="monitor.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.itsm" level="Error" additivity="false">
+			<AppenderRef ref="itsm.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.resource" level="Error" additivity="false">
+			<AppenderRef ref="resource.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.report" level="Error" additivity="false">
+			<AppenderRef ref="report.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.inspection" level="Error" additivity="false">
+			<AppenderRef ref="StdOut" />
+			<AppenderRef ref="inspection.log" />
+		</Logger>
+		
+		<Logger name="com.fable.insightview.interaction" level="Error" additivity="false">
+			<AppenderRef ref="StdOut" />
+			<AppenderRef ref="interaction.log" />
+		</Logger>
+		
+		<Logger name="org.hibernate" level="Error">
+			<AppenderRef ref="hibernate.log" />
+		</Logger>
+		<Logger name="com.fable.insightview.monitorRestService" level="debugger" additivity="false">
+			<AppenderRef ref="StdOut" />
+			<AppenderRef ref="monitorRestService.log" />
+		</Logger>
+		<Root level="Error">
+			<AppenderRef ref="StdOut" />
+			<AppenderRef ref="platform.log" />
+		</Root>
+	</Loggers>
+</Configuration>

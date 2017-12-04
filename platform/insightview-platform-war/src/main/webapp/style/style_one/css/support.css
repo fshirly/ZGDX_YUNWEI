@@ -1,0 +1,87 @@
+/*~~ 自适应登陆页面 ~~*/
+
+/*~~ 主容器 ~~*/
+#main{margin:0px auto;height:100%;width:100%;min-width:770px;min-height:702px;font:宋体;font-size:12px;}
+	  /*~~ 头部 ~~*/
+	  #header{width:100%;min-width:770px;min-height:121px;background:url(../images/login/login_head_bg.gif) repeat-x;}
+	  		  /*~~ logo ~~*/
+	  		  #logo{width:358px;height:121px;position:relative;left:10%;float:left;}
+			  
+	  /*~~ 内容 ~~*/		  
+	  #content{width:100%;min-width:770px;min-height:550px;}		  
+			  #loginArea{width:80%;;height:100%;margin-left:10%;margin-top:1%;}
+			  #loginArea #title{width:100%;height:35px;line-height:35px;}
+			  #loginArea #title h1{color:#707070;}
+			  /*~~ 返回标签 ~~*/
+			  #loginArea #title .return{display:block;width:80px;height:30px;line-height:30px;text-align:center;background-color:#3FB2F5;
+			  					 font-family:'微软雅黑';font-size:14px;color:#FFF;cursor:pointer;}			  
+			  #loginArea #title	.return:link {color: #FFF;text-decoration: none;}
+			  #loginArea #title .return:visited {color: #FFF;text-decoration: none;}
+			  #loginArea #title .return:hover, .return:active, .return:focus {text-decoration: none;color:#FFF;background-color:#06F;}								 
+			  
+			  /*~~分隔符~~*/
+			  #loginArea #split{margin-top:5px;width:100%;height:1px;background:url(../images/login/line_up.gif) repeat-x;}				  			  
+			 
+			  #loginArea #supportTitle{width:100%;margin-top:10px;height:40px;}
+			  #loginArea #supportTitle ul{list-style:none;}
+			  #loginArea #supportTitle ul li{float:left;}	
+			  #loginArea #supportTitle ul .type{width:90px;height:35px;line-height:35px;text-align:center;}	
+			  #loginArea #supportTitle ul a{display:block;width:90px;height:35px;line-height:35px;text-align:center;font-family:'微软雅黑';font-size:14px;color:#484646;}
+			  #loginArea #supportTitle ul a:link {color: #484646;text-decoration: none;}
+			  #loginArea #supportTitle ul a:visited {color: #484646;text-decoration: none;}
+			  #loginArea #supportTitle ul a:hover,#supportTitle ul a:active,#supportTitle ul a:focus {text-decoration: none;color:#484646;background-color:#BADFF9;}	
+			  #loginArea #supportTitle ul .type_line{width:10px;height:15px;line-height:15px;text-align:center;margin-top:10px;}
+			  
+			  /*~~ 提问区域 ~~*/
+			  #loginArea #ask{width:100%;height:450px;border:1px solid #CCC;min-width:750px;}
+			  #loginArea #ask .askTitle{margin-left:6%;margin-top:20px;font-family:'宋体';font-size:12px;color:#555555;width:550px;height:30px;line-height:30px;}
+			  #loginArea #ask .askSplit{margin-left:5%;margin-top:5px;;background:url(../images/support/dashed.gif) repeat-x;width:700px;height:5px;}
+			  #loginArea #ask .put{margin-left:5%;margin-top:5px;width:700px;font-family:'宋体';font-size:14px;color:#555555;font-weight:bold;
+			  vertical-align:text-bottom; margin-bottom:2px; margin-bottom:-2px\9}
+			  #loginArea #ask .put .tt{width:650px;height:30px;line-height:30px;border:1px solid #CCC;}
+			  #loginArea #ask .put textarea{width:650px;height:300px;border:1px solid #CCC;}
+			  #loginArea #ask .put .ss{border:none;width:85px;height:30px;background-color:#3FB2F5;color:#FFF;float:right;}
+			  
+			  /*~~ 我的提问区域 ~~*/
+			  #loginArea #myQuestions,
+			  #loginArea #administrator {display:none;width:100%;height:400px;min-width:700px;}
+			  #loginArea #myQuestions table,
+			  #loginArea #administrator table {width:100%;height:100%;min-width:700px;font-family:'宋体';font-size:12px;color:#555555;}
+			  #loginArea #myQuestions .QueHeadTit,
+			  #loginArea #administrator .QueHeadTit {font-size:14px;color:#555555;}
+			  #loginArea #myQuestions .QueHeadOther,
+			  #loginArea #administrator .QueHeadOther {font-size:14px;color:#aaaaaa;}
+			  #loginArea #myQuestions table .QueTit,
+			  #loginArea #administrator table .QueTit {width:70%;}
+			  #loginArea #myQuestions table .QueTit a,
+			  #loginArea #administrator table .QueTit a {text-decoration:none;color:#555555;}
+			  #loginArea #myQuestions table .QueTit a:link,
+			  #loginArea #administrator table .QueTit a:link {color: #555555;text-decoration: none;}
+			  #loginArea #myQuestions table .QueTit a:visited,
+			  #loginArea #administrator table .QueTit a:visited {color: #555555;text-decoration: none;}
+			  #loginArea #myQuestions table .QueTit a:hover,#loginArea #myQuestions table .QueTit a:active, 
+			  #loginArea #myQuestions table .QueTit a:focus,
+			  #loginArea #administrator table .QueTit a:hover,#loginArea #administrator table .QueTit a:active, 
+			  #loginArea #administrator table .QueTit a:focus 
+			  {text-decoration: undeline;color:#0CC;}	
+			  
+			  
+			  /*~~ 分页区域 ~~*/
+			  #loginArea #page{display:none;width:400px;height:30px;float:right;}
+			  #loginArea #page a,#loginArea #page span {display:block;float:left;margin-left:15px;height:30px;line-height:30px;color:#aaaaaa;}
+			  #loginArea #page a:link {color: #aaaaaa;text-decoration: none;}
+			  #loginArea #page a:visited {color: #aaaaaa;text-decoration: none;}
+			  #loginArea #page a:hover,#loginArea #page a:active,#loginArea #page a:focus {text-decoration: none;color:#09F;}	
+			  #loginArea #page span .num{width:30px;}
+			  #loginArea #page span .go{width:30px;border:none;background-color:#3FB2F5;}			  
+			  	  
+	  /*~~ 脚注 ~~*/		  													
+	  #footer{width:100%;min-width:700px;min-height:31px;color:#5B5B5B;text-align:center;}
+	  		  /*~~ 分隔符 ~~*/
+	  		  #footer_1{width:80%;height:1px;background:url(../images/login/line_down.gif) repeat-x;margin-left:10%;}	
+			  /*~~ 版权申明 ~~*/	  
+			  #footer_2{width:100%;height:30px;line-height:30px;color:#06F;}				  
+			 	  
+			 
+			  
+	  

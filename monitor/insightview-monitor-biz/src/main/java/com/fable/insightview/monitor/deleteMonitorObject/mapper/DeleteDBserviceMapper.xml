@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.DeleteDBserviceMapper">
+ 
+ 
+ <sql id="limit">
+ LIMIT 100000;
+ </sql>
+ 
+<select id="queryChildMOID" resultType="java.lang.Integer" parameterType="hashmap">
+SELECT MOID FROM ${tableName} WHERE DBMSMOID IN (${MOID})
+</select> 
+ 
+<delete id="deletePrefData" parameterType="hashmap">
+delete from  ${prefTableName} where MOID  in  (${MOID}) <include refid="limit"></include>
+</delete>
+ 
+ <delete id="deletePrefSnapshot" parameterType="hashmap">
+ delete from ${prefTableName} where DeviceMOID  in (${MOID})  <include refid="limit"></include>
+ </delete>
+ 
+ <delete id="deleteChildDevice" parameterType="hashmap">
+ delete from ${tableName} where ServerMOID  in (${MOID})  <include refid="limit"></include>
+ </delete>
+ 
+ <delete id="deleteAlarmDetail" parameterType="hashmap">
+delete from ${alarmTableName} where SourceMOID in (${MOID}) <include refid="limit"></include>
+</delete>
+
+<delete id="deleteTaskAndvars" parameterType="hashmap">
+delete from ${tableName} where MOID in (${MOID})  <include refid="limit"></include>
+</delete>
+ 
+ <delete id="deleteSNMP" parameterType="hashmap">
+delete from ${snmpTableName} where IP IN (select IP from ${tableName}  where DBMSMOID in (${MOID})) 
+AND  PORT  in (select Port from ${tableName}  where DBMSMOID in (${MOID})) and DBMSType ='${DBtype}';
+</delete>
+ 
+<delete id="deleteAlarmFilter" parameterType="hashmap">
+delete from ${tableName} where FilterKey='AlarmSourceMOID'  and  FilterKeyValue in (${MOID})  <include refid="limit"></include>
+</delete>
+
+<delete id="deleteMODevice" parameterType="hashmap">
+delete from ${tableName} where DBMSMOID in (${MOID})
+</delete>
+
+<delete id="deleteDBMSservice" parameterType="hashmap">
+delete from MODBMSServer where MOID in (${MOID})
+</delete>
+
+
+<!-- deleteOracle -->
+
+<select id="queryDBMOID"  resultType="java.lang.Integer"  parameterType="hashmap">
+ select DBMOID from  MOOracleInstance where DBMSMOID IN (${MOID});
+</select>
+
+<select id="queryOracleChlidMOID"  resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from ${tableName} where DBMOID in (${MOID});
+</select>
+<select id="queryInstanceID"  resultType="java.lang.Integer"  parameterType="hashmap">
+ select MOID  from MOOracleInstance  where DBMSMOID IN (${MOID});
+</select>
+
+<select id="querySGAMOID" resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from ${tableName} where InstanceMOID in (${MOID})
+</select>
+
+<delete id="deleteOralceOrDB2Child" parameterType="hashmap">
+delete from  ${tableName} where DBMOID in (${MOID});
+</delete>
+
+<delete id="deleteSGAOrDB2" parameterType="hashmap">
+delete  FROM  ${tableName} where InstanceMOID in (${MOID});
+</delete>
+
+<delete id="deleteSGApref" parameterType="hashmap">
+delete  from ${prefTableName} where MOID  IN ( ${MOID})
+</delete>
+<delete id="deleteOracleDB" parameterType="hashmap">
+delete from  MOOracleDB where DBMSMOID IN (${MOID});
+</delete>
+
+<select id="queryDB2DataBaseMOID" resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from ${tableName} where InstanceMOID in (${MOID})
+</select>
+
+<select id="queryDBInfo" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select  db.IP as ip,db.Port,def.ClassName as MOName from MODBMSServer db,MObjectDef  def where db.MOClassID =def.ClassID and MOID in(${MOID});
+</select>
+
+<delete id="deleteDiscoverDBInfo" parameterType="hashmap">
+	delete from SysNetworkDiscoverTask where TaskType=4 and  MOClassNames='${MOName}' and IPAddress1='${IP}';
+</delete>
+
+<delete id="deleteTemplate" parameterType="hashmap">
+delete from SysMonitorsTemplateUsed  where MOID in (${MOID})
+</delete>
+</mapper>

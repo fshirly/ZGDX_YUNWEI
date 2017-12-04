@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.listview.mapper.ListviewFieldLabelBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.listview.entity.ListviewFieldLabelBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="LISTVIEW_ID" property="listviewId" jdbcType="VARCHAR" />
+        <result column="PROPERTY_NAME" property="propertyName" jdbcType="VARCHAR" />
+        <result column="DISPLAY_TITLE" property="displayTitle" jdbcType="VARCHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, LISTVIEW_ID, PROPERTY_NAME, DISPLAY_TITLE, NOTE, CREATOR_ID, CREATOR_NAME, 
+        CREATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_LISTVIEW_FIELD_LABEL
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectFieldLabelByListviewId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_LISTVIEW_FIELD_LABEL
+        where LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_LISTVIEW_FIELD_LABEL
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteAllByListviewId" parameterType="java.lang.String" >
+        delete from FBS_LISTVIEW_FIELD_LABEL
+        where LISTVIEW_ID = #{ListviewId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.listview.entity.ListviewFieldLabelBean" >
+        insert into FBS_LISTVIEW_FIELD_LABEL (ID, SYS_ID, LISTVIEW_ID, 
+            PROPERTY_NAME, DISPLAY_TITLE, NOTE, 
+            CREATOR_ID, CREATOR_NAME, CREATED_TIME
+            )
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{listviewId,jdbcType=VARCHAR}, 
+            #{propertyName,jdbcType=VARCHAR}, #{displayTitle,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+            #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewFieldLabelBean" >
+        insert into FBS_LISTVIEW_FIELD_LABEL
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="listviewId != null" >
+                LISTVIEW_ID,
+            </if>
+            <if test="propertyName != null" >
+                PROPERTY_NAME,
+            </if>
+            <if test="displayTitle != null" >
+                DISPLAY_TITLE,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="listviewId != null" >
+                #{listviewId,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyName != null" >
+                #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="displayTitle != null" >
+                #{displayTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.listview.entity.ListviewFieldLabelBean" >
+        update FBS_LISTVIEW_FIELD_LABEL
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="listviewId != null" >
+                LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyName != null" >
+                PROPERTY_NAME = #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="displayTitle != null" >
+                DISPLAY_TITLE = #{displayTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.listview.entity.ListviewFieldLabelBean" >
+        update FBS_LISTVIEW_FIELD_LABEL
+        set SYS_ID = #{sysId,jdbcType=VARCHAR},
+            LISTVIEW_ID = #{listviewId,jdbcType=VARCHAR},
+            PROPERTY_NAME = #{propertyName,jdbcType=VARCHAR},
+            DISPLAY_TITLE = #{displayTitle,jdbcType=VARCHAR},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertList" parameterType="java.util.List" >
+        insert into FBS_LISTVIEW_FIELD_LABEL (ID, SYS_ID, LISTVIEW_ID, 
+            PROPERTY_NAME, DISPLAY_TITLE, NOTE, 
+            CREATOR_ID, CREATOR_NAME, CREATED_TIME
+            )
+        <foreach collection="list" item="item" index="index" open="VALUES" separator="," close=";">
+        	(#{item.id,jdbcType=VARCHAR}, #{item.sysId,jdbcType=VARCHAR}, #{item.listviewId,jdbcType=VARCHAR}, 
+            #{item.propertyName,jdbcType=VARCHAR}, #{item.displayTitle,jdbcType=VARCHAR}, #{item.note,jdbcType=VARCHAR}, 
+            #{item.creatorId,jdbcType=VARCHAR}, #{item.creatorName,jdbcType=VARCHAR}, #{item.createdTime,jdbcType=TIMESTAMP})
+        </foreach>    
+    </insert>
+</mapper>

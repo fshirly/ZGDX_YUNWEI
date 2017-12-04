@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.modulelog.mapper.FbsSessionLogBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.modulelog.entity.FbsSessionLogBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+        <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+        <result column="SESSION_ID" property="sessionId" jdbcType="VARCHAR" />
+        <result column="CLIENT_NAME" property="clientName" jdbcType="VARCHAR" />
+        <result column="IP" property="ip" jdbcType="VARCHAR" />
+        <result column="CLIENT_AGENT" property="clientAgent" jdbcType="VARCHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, USER_ID, USERNAME, SESSION_ID, CLIENT_NAME, IP, CLIENT_AGENT, NOTE, CREATOR_ID, 
+        CREATOR_NAME, CREATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_SESSION_LOG
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectBySessionId" resultType="int" parameterType="java.lang.String" >
+        select 
+        count(1)
+        from FBS_SESSION_LOG
+        where SESSION_ID = #{sessionId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_SESSION_LOG
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.modulelog.entity.FbsSessionLogBean" >
+        insert into FBS_SESSION_LOG (ID, SYS_ID, USER_ID, 
+            USERNAME, SESSION_ID, CLIENT_NAME, 
+            IP, CLIENT_AGENT, NOTE, 
+            CREATOR_ID, CREATOR_NAME, CREATED_TIME
+            )
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+            #{username,jdbcType=VARCHAR}, #{sessionId,jdbcType=VARCHAR}, #{clientName,jdbcType=VARCHAR}, 
+            #{ip,jdbcType=VARCHAR}, #{clientAgent,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+            #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.modulelog.entity.FbsSessionLogBean" >
+        insert into FBS_SESSION_LOG
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="userId != null" >
+                USER_ID,
+            </if>
+            <if test="username != null" >
+                USERNAME,
+            </if>
+            <if test="sessionId != null" >
+                SESSION_ID,
+            </if>
+            <if test="clientName != null" >
+                CLIENT_NAME,
+            </if>
+            <if test="ip != null" >
+                IP,
+            </if>
+            <if test="clientAgent != null" >
+                CLIENT_AGENT,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null" >
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null" >
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="sessionId != null" >
+                #{sessionId,jdbcType=VARCHAR},
+            </if>
+            <if test="clientName != null" >
+                #{clientName,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null" >
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="clientAgent != null" >
+                #{clientAgent,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.modulelog.entity.FbsSessionLogBean" >
+        update FBS_SESSION_LOG
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null" >
+                USER_ID = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null" >
+                USERNAME = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="sessionId != null" >
+                SESSION_ID = #{sessionId,jdbcType=VARCHAR},
+            </if>
+            <if test="clientName != null" >
+                CLIENT_NAME = #{clientName,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null" >
+                IP = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="clientAgent != null" >
+                CLIENT_AGENT = #{clientAgent,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.modulelog.entity.FbsSessionLogBean" >
+        update FBS_SESSION_LOG
+        set SYS_ID = #{sysId,jdbcType=VARCHAR},
+            USER_ID = #{userId,jdbcType=VARCHAR},
+            USERNAME = #{username,jdbcType=VARCHAR},
+            SESSION_ID = #{sessionId,jdbcType=VARCHAR},
+            CLIENT_NAME = #{clientName,jdbcType=VARCHAR},
+            IP = #{ip,jdbcType=VARCHAR},
+            CLIENT_AGENT = #{clientAgent,jdbcType=VARCHAR},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

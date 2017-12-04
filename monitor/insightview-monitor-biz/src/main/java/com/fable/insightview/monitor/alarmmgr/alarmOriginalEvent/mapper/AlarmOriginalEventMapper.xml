@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmOriginalEvent.mapper.AlarmOriginalEventMapper">
+	<select id="getOriginalEvent" resultType="map" parameterType="page">
+		select * from (SELECT aoe.eventId ,aoe.sourceMOID ,aoe.moId ,aoe.eventOid ,aoe.times ,DATE_FORMAT(aoe.eventTime ,'%Y-%m-%d %T') eventTime ,aoe.eventContent, ae.AlarmName eventName,aa.sourceMOName
+		,aa.sourceMOIPAddress ipAddr,aa.moName from (SELECT * ,count(*) times from (SELECT * from AlarmOriginalEventDetail 
+		<where>
+			<if test="params.timeBegin != null and params.timeBegin != ''">
+				and EventTime &gt;= #{params.timeBegin}
+			</if>
+			<if test="params.timeEnd != null and params.timeEnd != ''">
+				and EventTime &lt; ADDDATE(#{params.timeEnd},INTERVAL 1 day)
+			</if>
+		</where>
+		ORDER BY eventid desc) temp GROUP BY temp.moid ,temp.eventOid) aoe
+		join AlarmActiveDetail aa on aa.SourceMOID = aoe.SourceMOID and aa.MOID = aoe.MOID and aa.alarmOid = aoe.eventOid
+		JOIN AlarmEventDefine ae on ae.AlarmDefineID = aa.AlarmDefineID 
+		<where>
+			<if test="params.moName != null and params.moName != ''">
+				aa.MOName like '%${params.moName}%'
+			</if>
+			<if test="params.sourceMoName != null and params.sourceMoName != ''">
+				and aa.SourceMOName like '%${params.sourceMoName}%'
+			</if>
+			<if test="params.ipAddr != null and params.ipAddr != ''">
+				and aa.SourceMOIPAddress like '%${params.ipAddr}%'
+			</if>
+			<if test="params.timeBegin != null and params.timeBegin != ''">
+				and aa.startTime &gt;= #{params.timeBegin}
+			</if>
+			<if test="params.timeEnd != null and params.timeEnd != ''">
+				and aa.startTime &lt; ADDDATE(#{params.timeEnd},INTERVAL 1 day)
+			</if>
+		</where>
+		GROUP BY aa.MOID ,aoe.eventOid
+		union
+		SELECT aoe.eventId ,aoe.sourceMOID ,aoe.moId ,aoe.eventOid ,aoe.times ,DATE_FORMAT(aoe.eventTime ,'%Y-%m-%d %T') eventTime ,aoe.eventContent, ae.AlarmName eventName,aa.sourceMOName
+		,aa.sourceMOIPAddress ipAddr,aa.moName from (SELECT * ,count(*) times from (SELECT * from AlarmOriginalEventDetail 
+		<where>
+			<if test="params.timeBegin != null and params.timeBegin != ''">
+				and EventTime &gt;= #{params.timeBegin}
+			</if>
+			<if test="params.timeEnd != null and params.timeEnd != ''">
+				and EventTime &lt; ADDDATE(#{params.timeEnd},INTERVAL 1 day)
+			</if>
+		</where>
+		ORDER BY eventid desc) temp GROUP BY temp.moid ,temp.eventOid) aoe
+		join AlarmHistoryDetail aa on aa.SourceMOID = aoe.SourceMOID and aa.MOID = aoe.MOID and aa.alarmOid = aoe.eventOid
+		JOIN AlarmEventDefine ae on ae.AlarmDefineID = aa.AlarmDefineID 
+		<where>
+			<if test="params.moName != null and params.moName != ''">
+				aa.MOName like '%${params.moName}%'
+			</if>
+			<if test="params.sourceMoName != null and params.sourceMoName != ''">
+				and aa.SourceMOName like '%${params.sourceMoName}%'
+			</if>
+			<if test="params.ipAddr != null and params.ipAddr != ''">
+				and aa.SourceMOIPAddress like '%${params.ipAddr}%'
+			</if>
+			<if test="params.timeBegin != null and params.timeBegin != ''">
+				and aa.startTime &gt;= #{params.timeBegin}
+			</if>
+			<if test="params.timeEnd != null and params.timeEnd != ''">
+				and aa.startTime &lt; ADDDATE(#{params.timeEnd},INTERVAL 1 day)
+			</if>
+		</where>
+		GROUP BY aa.MOID ,aoe.eventOid) t order by t.sourceMOID
+	</select>
+	
+	<insert id="insert2OriginalHistory" parameterType="map">
+		insert into AlarmOriginalEventDetaiHis
+		select * from AlarmOriginalEventDetail where EventOID in(${eventOids})
+		<if test="timeBegin != null and timeBegin != ''">
+			and EventTime &gt;= #{timeBegin}
+		</if>
+		<if test="timeEnd != null and timeEnd != ''">
+			and EventTime &lt; ADDDATE(#{timeEnd},INTERVAL 1 day)
+		</if>
+		<if test="moids != null and moids != ''">
+			and MOID in(${moids})
+		</if>
+		<if test="sourceMoids != null and sourceMoids != ''">
+			and SourceMOID in(${sourceMoids})
+		</if>
+	</insert>
+	
+	<delete id="deleteOriginalEvent" parameterType="map">
+		delete from AlarmOriginalEventDetail where EventOID in(${eventOids})
+		<if test="timeBegin != null and timeBegin != ''">
+			and EventTime &gt;= #{timeBegin}
+		</if>
+		<if test="timeEnd != null and timeEnd != ''">
+			and EventTime &lt; ADDDATE(#{timeEnd},INTERVAL 1 day)
+		</if>
+		<if test="moids != null and moids != ''">
+			and MOID in(${moids})
+		</if>
+		<if test="sourceMoids != null and sourceMoids != ''">
+			and SourceMOID in(${sourceMoids})
+		</if>
+	</delete>
+</mapper>

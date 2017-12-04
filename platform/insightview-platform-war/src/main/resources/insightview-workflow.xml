@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:drools="http://drools.org/schema/drools-spring"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+         http://www.springframework.org/schema/tx 
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://drools.org/schema/drools-spring 
+		 http://drools.org/schema/drools-spring-1.3.0.xsd
+		 http://www.springframework.org/schema/webflow-config
+		 http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd">
+	
+	<!-- Spring MVC Integration With Spring Web Flow -->
+    <!-- 1.Registering the FlowHandlerAdapter, Enables FlowHandler URL mapping -->
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+        <property name="flowExecutor" ref="flowExecutor" />
+    </bean>
+
+    <!-- 2.Defining flow mappings, Maps request paths to flows in the flowRegistry -->
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+        <property name="flowRegistry" ref="flowRegistry" />
+        <property name="order" value="-1" />
+    </bean>
+	
+	<!-- The registry of executable flow definitions -->
+    <webflow:flow-registry id="flowRegistry" flow-builder-services="flowBuilderServices" base-path="/WEB-INF/classes/workflow">
+        <webflow:flow-location-pattern value="/**/*-flow.xml" />
+    </webflow:flow-registry>
+
+     <!-- Executes flows: the entry point into the Spring Web Flow system -->
+    <webflow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
+        <webflow:flow-execution-listeners>
+            <webflow:listener ref="securityFlowExecutionListener" />
+        </webflow:flow-execution-listeners>
+    </webflow:flow-executor>
+
+    <!-- Plugs in a custom creator for Web Flow views -->
+    <webflow:flow-builder-services id="flowBuilderServices" view-factory-creator="mvcViewFactoryCreator"
+     development="true" />
+
+    <!-- Installs a listener to apply Spring Security authorities -->
+    <bean id="securityFlowExecutionListener" class="org.springframework.webflow.security.SecurityFlowExecutionListener" />
+	
+	<!-- Configures Web Flow to use Tiles to create views for rendering -->
+    <bean id="mvcViewFactoryCreator" class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator">
+        <property name="viewResolvers">
+            <list>
+                <ref bean="viewResolver" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean name="/frontEndFlow.do" class="org.springframework.webflow.mvc.servlet.FlowController">
+  		<property name="flowExecutor" ref="flowExecutor"/>
+	</bean>
+</beans>

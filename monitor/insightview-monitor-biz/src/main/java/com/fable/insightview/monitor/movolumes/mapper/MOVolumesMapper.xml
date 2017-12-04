@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.movolumes.mapper.MOVolumesMapper" >
+  <resultMap id="moVolumesMap" type="moVolumes" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="Instance" property="instance" jdbcType="VARCHAR" />
+    <result column="RawDescr" property="rawDescr" jdbcType="VARCHAR" />
+    <result column="VolumeType" property="volumeType" jdbcType="VARCHAR" />
+    <result column="DiskSize" property="diskSize" jdbcType="INTEGER" />
+    <result column="MIBModule" property="mIBModule" jdbcType="VARCHAR" />
+    <result column="ResID" property="resid" jdbcType="INTEGER" />
+  </resultMap>
+ 
+   <select id="selectMOVolumes" resultType="hashmap"
+	resultMap="moVolumesMap" parameterType="page">
+	select
+	v.*,mo.MOName as deviceMOName
+	from MOVolumes v
+	left join MODevice mo on v.DeviceMOID=mo.MOID
+	where 1=1
+	<if test="params.moName !='' and params.moName != null ">
+		and v.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+	</if>
+	<if test="params.deviceMOID != -1 and params.deviceMOID != '' ">
+	    and v.DeviceMOID=#{params.deviceMOID} 
+    </if>
+  </select>
+
+ <select id="getVolumesById" parameterType="Integer" resultType="moVolumes">
+	select
+	v.*
+	from MOVolumes v
+	where 1=1 and v.MOID = #{moID}
+</select>
+
+<select id="getByDeviceMOIDAndMOID" parameterType="moVolumes" resultType="Integer">
+	select count(1) from MOVolumes
+	where 1=1 and DeviceMOID = #{deviceMOID}  and MOID = #{moID}
+	</select>
+	
+ <select id="queryList" resultType="hashmap" resultMap="moVolumesMap" parameterType="page">
+	select  mo.MOName deviceMOName,mo.DeviceIP,
+	v.MOID,v.MOName,v.OperStatus,v.AdminStatus,v.DeviceMOID,v.DiskSize,v.MIBModule,v.RawDescr,v.isCollect
+	from MOVolumes v,MODevice mo 
+	where v.DeviceMOID=mo.MOID  and mo.MOClassID=#{params.mOClassID}
+	<if test="params.deviceMOName !='' and params.deviceMOName != null ">
+		and mo.MOName like ${concat("'%'","'"+params.deviceMOName+"'","'%'")}
+	</if>
+	<if test="params.operStatus !='' and params.operStatus != null ">
+		and v.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+	</if>
+	<if test="params.deviceIP !='' and params.deviceIP != null ">
+		and mo.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")} 
+	</if>
+	<if test="params.rawDescr !='' and params.rawDescr != null" >
+	   and v.rawDescr like ${concat("'%'","'"+params.rawDescr+"'","'%'")} 
+	</if>
+	order by mo.MOID,v.MOID
+</select>
+ <select id="synchronMOVolumes"  resultType="hashmap" resultMap="moVolumesMap" parameterType="page"> 
+ 	SELECT * from MOVolumes where DeviceMOID in (select MOID from MODevice where MOID in(${params.moIDs}))
+ </select>
+  	
+<update id="updateResId" parameterType="hashmap" >
+	update MOVolumes set ResID = ${resid}  where MOID = ${moid}
+</update> 
+	<select id="getResIDByDeviceId" parameterType="Integer" resultType="Integer">
+		select ResID from MOVolumes where DeviceMOID = #{deviceMoId}
+	</select>
+	<update id="updateDiskIfCollect" >
+	   	update MOVolumes set isCollect = ${isCollect} where MOID = ${moID}
+	</update>
+	<delete id="deleteSnapshotDeviceDevice">
+	    delete from PerfSnapshotHost where KPIName like 'Disk%' and moid=${moID}
+	</delete>
+</mapper>
+

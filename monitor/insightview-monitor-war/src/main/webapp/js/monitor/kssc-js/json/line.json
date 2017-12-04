@@ -1,0 +1,15 @@
+{
+	"recordsTotal": 57, 
+	"recordsFiltered": 57,
+	"data":[
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"},
+		{"id":"1","connectivity":"0","inflow":"0.01","outflow":"0.01","lose":"1","falut":"0","rate":"4gbps","flow":"100Kbps"}
+	]
+}

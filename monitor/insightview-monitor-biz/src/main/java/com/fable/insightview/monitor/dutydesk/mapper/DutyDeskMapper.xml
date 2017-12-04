@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.dutydesk.mapper.DutyDeskMapper">
+	<select id="getResMODeviceInfo" resultType="com.fable.insightview.monitor.dutydesk.bean.ResDeviceBean" parameterType="hashmap">
+		select di.ConstantItemId As rid,di.ConstantItemName name ,${nvl("t1.resCount","0")} resourceNumber,${nvl("t2.alarmCount","0")} value 
+		from (
+		(SELECT Area,COUNT(Area) as resCount FROM v_ResDevice GROUP BY Area) t1
+		 LEFT JOIN (
+			 SELECT COUNT(aa.SourceMOID) alarmCount,aa.Area 
+             FROM (SELECT DISTINCT(a.SourceMOID),r.Area FROM v_ResDevice r LEFT JOIN AlarmActiveDetail a ON a.SourceMOID=r.MOID WHERE a.AlarmLevel &lt;=#{alarmLevel})aa 
+             GROUP BY aa.Area
+		)t2 on t1.Area=t2.Area
+		)
+		right join SysConstantItemDef di on t1.Area = di.ConstantItemId
+        right join SysConstantTypeDef dt on di.ConstantTypeId=dt.ConstantTypeId
+        where dt.ConstantTypeName=#{constantTypeName}  order by di.ConstantItemId
+   
+        <!--select di.ConstantItemId As rid,di.ConstantItemName name,ifnull(t1.resCount,0) resourceNumber,ifnull(t2.alarmCount,0) value  FROM (
+                (SELECT Area,COUNT(Area) as resCount FROM test_hanl GROUP BY test_hanl.Area) t1
+                LEFT JOIN (
+                        select t3.Area,COUNT(t3.MOID) alarmCount 
+                        FROM (select r.* FROM test_hanl r LEFT JOIN AlarmActiveDetail a ON a.SourceMOID=r.MOID WHERE a.AlarmLevel = #{alarmLevel})t3 
+                        GROUP BY t3.Area
+                )t2 on t1.Area=t2.Area
+                
+        )
+        right join SysConstantItemDef di on t1.Area = di.ConstantItemId
+        right join SysConstantTypeDef dt on di.ConstantTypeId=dt.ConstantTypeId
+       
+        where dt.ConstantTypeName=#{constantTypeName}  order by di.ConstantItemId--> 
+    </select>
+    
+    <select id="getRoom3Ds" resultType="com.fable.insightview.monitor.dutydesk.bean.ResDeviceBean">
+        select rc.CiId roomId,rc.Name roomName 
+        from ResCi rc ,ResPrefixRoom rr 
+		where rc.CiId=rr.CiId order by rc.CiId
+    </select>
+    
+    <select id="getAreaId" parameterType="String" resultType="Integer">
+    select di.ConstantItemId from SysConstantItemDef di 
+    left join SysConstantTypeDef dt on di.ConstantTypeId=dt.ConstantTypeId
+    where dt.ConstantTypeName="Area" and di.ConstantItemName=#{constantTypeName}
+    </select>
+</mapper>
+

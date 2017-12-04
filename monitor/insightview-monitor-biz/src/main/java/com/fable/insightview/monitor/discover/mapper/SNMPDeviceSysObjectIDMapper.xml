@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.discover.mapper.SNMPDeviceSysObjectIDMapper" >
+  <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+    <id column="DeviceOID" property="deviceoid" jdbcType="VARCHAR" />
+    <id column="PEN" property="pen" jdbcType="INTEGER" />
+    <result column="DeviceModelName" property="devicemodelname" jdbcType="VARCHAR" />
+    <result column="DeviceType" property="devicetype" jdbcType="VARCHAR" />
+    <result column="DeviceNameAbbr" property="devicenameabbr" jdbcType="VARCHAR" />
+    <result column="OS" property="os" jdbcType="VARCHAR" />
+    <result column="DeviceIcon" property="deviceicon" jdbcType="VARCHAR" />
+    <result column="ResCategoryID" property="rescategoryid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    DeviceOID, PEN, DeviceModelName, DeviceType, DeviceNameAbbr, OS, DeviceIcon, ResCategoryID
+  </sql> 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectIDKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from SNMPDeviceSysObjectID
+    where DeviceOID = #{deviceoid,jdbcType=VARCHAR}
+      and PEN = #{pen,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectIDKey" >
+    delete from SNMPDeviceSysObjectID
+    where DeviceOID = #{deviceoid,jdbcType=VARCHAR}
+      and PEN = #{pen,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+    insert into SNMPDeviceSysObjectID (DeviceOID, PEN, DeviceModelName, 
+      DeviceType, DeviceNameAbbr, OS, 
+      DeviceIcon, ResCategoryID)
+    values (#{deviceoid,jdbcType=VARCHAR}, #{pen,jdbcType=INTEGER}, #{devicemodelname,jdbcType=VARCHAR}, 
+      #{devicetype,jdbcType=VARCHAR}, #{devicenameabbr,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, 
+      #{deviceicon,jdbcType=VARCHAR}, #{rescategoryid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+    insert into SNMPDeviceSysObjectID
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="deviceoid != null" >
+        DeviceOID,
+      </if>
+      <if test="pen != null" >
+        PEN,
+      </if>
+      <if test="devicemodelname != null" >
+        DeviceModelName,
+      </if>
+      <if test="devicetype != null" >
+        DeviceType,
+      </if>
+      <if test="devicenameabbr != null" >
+        DeviceNameAbbr,
+      </if>
+      <if test="os != null" >
+        OS,
+      </if>
+      <if test="deviceicon != null" >
+        DeviceIcon,
+      </if>
+      <if test="rescategoryid != null" >
+        ResCategoryID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="deviceoid != null" >
+        #{deviceoid,jdbcType=VARCHAR},
+      </if>
+      <if test="pen != null" >
+        #{pen,jdbcType=INTEGER},
+      </if>
+      <if test="devicemodelname != null" >
+        #{devicemodelname,jdbcType=VARCHAR},
+      </if>
+      <if test="devicetype != null" >
+        #{devicetype,jdbcType=VARCHAR},
+      </if>
+      <if test="devicenameabbr != null" >
+        #{devicenameabbr,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null" >
+        #{os,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceicon != null" >
+        #{deviceicon,jdbcType=VARCHAR},
+      </if>
+      <if test="rescategoryid != null" >
+        #{rescategoryid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+    update SNMPDeviceSysObjectID
+    <set >
+      <if test="devicemodelname != null" >
+        DeviceModelName = #{devicemodelname,jdbcType=VARCHAR},
+      </if>
+      <if test="devicetype != null" >
+        DeviceType = #{devicetype,jdbcType=VARCHAR},
+      </if>
+      <if test="devicenameabbr != null" >
+        DeviceNameAbbr = #{devicenameabbr,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null" >
+        OS = #{os,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceicon != null" >
+        DeviceIcon = #{deviceicon,jdbcType=VARCHAR},
+      </if>
+      <if test="rescategoryid != null" >
+        ResCategoryID = #{rescategoryid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where DeviceOID = #{deviceoid,jdbcType=VARCHAR}
+      and PEN = #{pen,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fable.insightview.monitor.discover.entity.SNMPDeviceSysObjectID" >
+    update SNMPDeviceSysObjectID
+    set DeviceModelName = #{devicemodelname,jdbcType=VARCHAR},
+      DeviceType = #{devicetype,jdbcType=VARCHAR},
+      DeviceNameAbbr = #{devicenameabbr,jdbcType=VARCHAR},
+      OS = #{os,jdbcType=VARCHAR},
+      DeviceIcon = #{deviceicon,jdbcType=VARCHAR},
+      ResCategoryID = #{rescategoryid,jdbcType=INTEGER}
+    where DeviceOID = #{deviceoid,jdbcType=VARCHAR}
+      and PEN = #{pen,jdbcType=INTEGER}
+  </update>
+</mapper>

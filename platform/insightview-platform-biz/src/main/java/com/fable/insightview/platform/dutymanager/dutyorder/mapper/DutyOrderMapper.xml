@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.dutyorder.mapper.DutyOrderMapper">
+	
+	<select id="selectAllDutyOrder" resultType="DutyOrder">
+		SELECT * FROM PfDutyOrders
+	</select>
+	
+	<insert id="insertDutyOrder" parameterType="DutyOrder">
+		INSERT INTO PfDutyOrders(ID, Title, BeginPoint, Endpoint, IntervalDays, ExchangeStart, ExchangeEnd, ForceTime)
+		<trim prefix="value (" suffix=")">
+			#{id,jdbcType=INTEGER},
+			#{title,jdbcType=VARCHAR},
+			#{beginPoint,jdbcType=VARCHAR},
+			#{endPoint,jdbcType=VARCHAR},
+			#{intervalDays,jdbcType=INTEGER},
+			#{exchangeStart,jdbcType=VARCHAR},
+			#{exchangeEnd,jdbcType=VARCHAR},
+			#{forceTime,jdbcType=VARCHAR}
+		</trim>
+	</insert>
+	
+	<update id="updateDutyOrder" parameterType="DutyOrder">
+		UPDATE PfDutyOrders
+		<set>
+			<if test="title!=null and title!=''">
+				title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="beginPoint!=null and beginPoint!=''">
+				beginPoint=#{beginPoint,jdbcType=VARCHAR},
+			</if>
+			<if test="endPoint!=null and endPoint!=''">
+				endPoint=#{endPoint,jdbcType=VARCHAR},
+			</if>
+			<if test="intervalDays != null">
+				intervalDays=#{intervalDays,jdbcType=INTEGER},
+			</if>
+			<if test="exchangeStart!=null and exchangeStart!=''">
+				exchangeStart=#{exchangeStart,jdbcType=VARCHAR},
+			</if>
+			<if test="exchangeEnd!=null and exchangeEnd!=''">
+				exchangeEnd=#{exchangeEnd,jdbcType=VARCHAR},
+			</if>
+			<if test="forceTime!=null and forceTime!=''">
+				forceTime=#{forceTime,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE id=#{id,jdbcType=INTEGER}
+	</update>
+	
+	<delete id="deleteDutyOrder" parameterType="Integer">
+		DELETE FROM PfDutyOrders WHERE ID=#{id,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="selectDutyOrderById" parameterType="Integer" resultType="DutyOrder">
+		SELECT * FROM PfDutyOrders
+		<where>
+			id=#{id,jdbcType=INTEGER}
+		</where>
+	</select>
+</mapper>

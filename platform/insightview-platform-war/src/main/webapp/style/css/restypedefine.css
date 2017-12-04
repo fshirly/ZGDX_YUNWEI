@@ -1,0 +1,141 @@
+ @CHARSET "utf-8";	
+ /*配置项类型列表页面css*/
+ #tblAddResCiType{
+		          background-color:rgb(200,200,205);
+		          margin: 2px 4px;
+		    }
+		    .txtAG{
+		          background-color:#fff;
+		          text-align: right;
+		          width:110px;
+		    }
+		    .txtBC{
+		          background-color:#fff;
+		          width:220px;
+		    }
+		    .btnSt{
+		          background-color:#fff;
+		          text-align: right;
+		    }
+
+/*添加配置项类型基本信息页面css*/
+#tblBaseInfo{
+   background-color: rgb(200,200,205);
+   width:100%;
+}
+#tblBaseInfo td{
+   background-color: #fff;
+}
+.staHide{
+		display:none;
+}
+.nodepreciateInfo{
+		        margin-left:160px;
+		        color:red;
+		        height:60px;
+		        font-size: 16px;
+		        padding:20px 0;
+		    }
+#tblBaseInfo .inputWidths{
+	width:156px;
+}
+.textAlign{
+   text-align: right;
+   width:160px;
+}
+/*动态属性的样式*/
+#tblResCiAttributesInfo{
+	background-color: rgb(200,200,205);
+}
+#tblResCiAttributesInfo td{
+   background-color: #fff;
+   width:162px;
+}
+.tblcss{
+	background-color: rgb(200,200,205);
+	width:656px;
+}
+.tblcss td{
+	background-color: #fff;
+}
+.buttonPosition{
+	margin-left: 400px;
+}
+/*配置项新增页面样式*/
+.newFrameLayout{
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto
+}
+.tlbBorderDesigner{
+	border:rgb(200,200,205) 1px solid;
+	width: 100%;
+}
+.tlbBorderDesigner td{
+	width: 16%;
+}
+.tlbBorderDesigner tr,.tlbBorderDesigner td{
+	border:rgb(200,200,205) 1px solid;
+}
+.reportSpan{
+	font-size:0.9em;
+	color:red;
+}
+
+.formTdContent{
+	text-align:right;
+	padding-right:16%;
+	width:50%;
+}
+.to_add_page{
+	width:100%;
+    height:460px !important;
+}
+/*新增配置项导航图片*/
+/*.stepDivContainer {
+	height: 40px;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20%;
+	color: #666666;
+}*/
+.stepDivContainer {
+	height: 40px;
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 12%;
+	color: #666666;
+}
+.stepDivContainer ul{
+	list-style: none;
+}
+.stepDivContainer ul li{
+	float: left;
+	text-align:center;
+	height : 35px;
+	line-height: 35px;
+	width: 160px;
+}
+
+.handleFirstIng{
+	background: url(../images/step1sel.png) no-repeat;
+	color:#cc6600;
+}
+.handleFirstDone{
+	background: url(../images/step1.png) no-repeat;
+	color:#666666;
+}
+.handleOtherIng{
+	background: url(../images/step2sel.png) no-repeat;
+	color:#cc6600;
+}
+.handleOtherUndone{
+	background: url(../images/step2.png) no-repeat;
+	color:#666666;
+}
+.handleOtherDone{
+	background: url(../images/step2ok.png) no-repeat;
+	color:#666666;
+}

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.mapper.AlarmBlackListMapper" >
+  <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackListBean" >
+    <id column="BlackID" property="blackID" jdbcType="INTEGER" />
+    <result column="MOID" property="MOID" jdbcType="INTEGER" />
+    <result column="DeviceIP" property="deviceIP" jdbcType="VARCHAR" />
+    <result column="ConnIPAddresss" property="connIPAddresss" jdbcType="VARCHAR" />
+    <result column="PortType" property="portType" jdbcType="CHAR" />
+    <result column="OprateStatus" property="oprateStatus" jdbcType="CHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="CollectorID" property="collectorID" jdbcType="INTEGER" />
+    <result column="CollectorIPAddr" property="collectorIPAddr" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectAlarmBlackList" resultMap="BaseResultMap" parameterType="page" >
+		SELECT
+			a.BlackID,
+			a.MOID,
+			a.DeviceIP,
+			a.ConnIPAddresss,
+			a.PortType,
+			a.OprateStatus,
+			a.CreateTime,
+			b.CollectorID,
+			c.IPAddress CollectorIPAddr
+		FROM
+			AlarmBlackList a
+		LEFT JOIN SysBlackListTask b ON a.BlackID = b.BlackID
+		LEFT JOIN SysServerHostInfo c ON b.CollectorID = c.ServerID
+		WHERE 1=1
+    <if test="params.deviceIP !='' and params.deviceIP != null ">
+   	 	AND a.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")}
+    </if>
+    	AND a.PortType IN (${params.portTypes})
+  </select>
+  	<!-- 详情列表信息  FOR  接口-->
+	<select id="selectInterfaceListByDeviceIP" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="page">
+SELECT
+	m.DeviceIP,
+  ifnull(perf.PerfValue, 0) OperStatus,
+	n.MOName ifName,
+  n.MOAlias moalias,
+  cons.ConstantItemName ifTypeName,
+  ifdescr,
+	n.IfMtu,
+	n.MOID ifMOID,
+	n.DeviceMOID ifDeviceMOID,
+	a.BlackPortID blackPortID,
+	a.BlackID blackID,
+	a.OprateStatus blackOprateStatus,
+	a.Type type
+FROM
+	MONetworkIf n
+LEFT JOIN AlarmBlackPortList a ON n.MOID = a.MOID
+LEFT JOIN MODevice m ON m.MOID = n.DeviceMOID
+LEFT JOIN (
+			SELECT
+				MOID,
+				PerfValue,
+				CollectTime
+			FROM
+				PerfSnapshotNetDevice perf
+			WHERE
+				perf.KPIName = 'ifOperStatus'
+		) perf ON perf.MOID=n.MOID
+left join 
+(select * FROM SysConstantItemDef where ConstantTypeId in(select ConstantTypeId from SysConstantTypeDef WHERE ConstantTypeName='InterfaceType')) cons
+on cons.ConstantItemId=n.IfType
+		
+WHERE
+			m.DeviceIP = #{params.deviceIP} 
+			<if test="params.opt =='add' ">
+			AND (a.Type IS NULL or a.Type = #{params.type,jdbcType=CHAR})
+			</if>
+			<if test="params.opt =='show' and params.type != null ">
+			AND (a.Type = #{params.type,jdbcType=CHAR})
+			</if>
+			<if test="params.opt =='edit' and params.type != null ">
+			AND (a.Type IS NULL or a.Type = #{params.type,jdbcType=CHAR})
+			</if>
+			  order by  OperStatus
+			<if  test="params.order != null and params.order =='down'">
+			     desc
+			</if>
+	</select>
+	<!-- 详情列表信息  FOR  服务端口-->
+	<select id="selectPortListByDeviceIP" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="page">
+		SELECT
+			m.DeviceIP,
+			n.BlackPortID blackPortID,
+			n.BlackID blackID,
+			n.PORT port,
+			n.PortService portService,
+			n.GatewayIP gatewayIP,
+			n.PortType portType,
+			n.Type type,
+			n.OprateStatus blackOprateStatus
+		FROM
+			MODevice m
+		LEFT JOIN AlarmBlackList o ON m.MOID = o.MOID
+		RIGHT JOIN AlarmBlackPortList n ON o.BlackID = n.BlackID
+		WHERE
+			m.DeviceIP = #{params.deviceIP,jdbcType=VARCHAR} 
+			<if test="params.opt =='add' and params.portType != null and params.type != null">
+			AND o.PortType = #{params.portType,jdbcType=VARCHAR} AND n.Type = #{params.type,jdbcType=CHAR}
+			</if>
+			<if test="params.opt =='show' and params.portType != null and params.type != null ">
+			AND o.PortType = #{params.portType,jdbcType=VARCHAR} AND n.Type = #{params.type,jdbcType=CHAR}
+			</if>
+			<if test="params.opt =='edit' and params.portType != null and params.type != null ">
+			AND o.PortType = #{params.portType,jdbcType=VARCHAR} AND n.Type = #{params.type,jdbcType=CHAR}
+			</if>
+	</select>
+		<!-- 详情列表信息  FOR  互联网接入链路-->
+	<select id="selectChainListByDeviceIP" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="page">
+		SELECT
+			m.DeviceIP,
+			n.BlackPortID blackPortID,
+			n.BlackID blackID,
+			n.PortService portService,
+			n.GatewayIP gatewayIP,
+			n.OprateStatus blackOprateStatus
+		FROM
+			MODevice m
+		LEFT JOIN AlarmBlackList o ON m.MOID = o.MOID
+		RIGHT JOIN AlarmBlackPortList n ON o.BlackID = n.BlackID
+		WHERE
+			m.DeviceIP = #{params.deviceIP,jdbcType=VARCHAR}
+			<if test="params.opt =='show' and params.portType != null">
+			AND o.PortType = #{params.portType,jdbcType=VARCHAR}
+			</if>
+			<if test="params.opt =='edit' and params.portType != null">
+			AND o.PortType = #{params.portType,jdbcType=VARCHAR}
+			</if>
+	</select>
+	<insert id="insertIntoAlarmBlackList" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackListBean" >
+	    <selectKey resultType="int" order="AFTER" keyProperty="blackID">
+			SELECT @@IDENTITY
+		</selectKey>
+	    INSERT INTO AlarmBlackList (MOID, DeviceIP,ConnIPAddresss, PortType,OprateStatus,CreateTime)
+		VALUES (#{MOID,jdbcType=INTEGER}, 
+		#{deviceIP,jdbcType=VARCHAR},
+		#{connIPAddresss,jdbcType=VARCHAR},
+		#{portType,jdbcType=CHAR},
+		#{oprateStatus,jdbcType=CHAR},
+		#{createTime,jdbcType=TIMESTAMP})
+  	</insert>
+  	<delete id="deleteAlarmBlackListRow" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackListBean">
+	    DELETE FROM AlarmBlackList
+	    WHERE BlackID = #{blackID,jdbcType=INTEGER}
+  	</delete>
+  	<update id="updateIntoAlarmBlackList" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.AlarmBlackListBean" >
+   	 	UPDATE AlarmBlackList
+	    <set >
+	      <if test="MOID != null" >
+	        MOID = #{MOID,jdbcType=INTEGER},
+	      </if>
+	      <if test="deviceIP != null" >
+	        DeviceIP = #{deviceIP,jdbcType=VARCHAR},
+	      </if>
+	      <if test="connIPAddresss != null" >
+	        ConnIPAddresss = #{connIPAddresss,jdbcType=VARCHAR},
+	      </if>
+	      <if test="portType != null" >
+	        PortType = #{portType,jdbcType=CHAR},
+	      </if>
+	      <if test="oprateStatus != null" >
+	        OprateStatus = #{oprateStatus,jdbcType=CHAR},
+	      </if>
+	      <if test="createTime != null" >
+	        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    WHERE BlackID = #{blackID,jdbcType=INTEGER}
+ 	 </update>
+ 	 <select id="selectBlackIDByDeviceIPAndPortType" resultType="int">
+	    select 
+	    BlackID
+	    from AlarmBlackList
+	    <if test="deviceIP !='' and deviceIP != null ">
+	    where DeviceIP = #{deviceIP,jdbcType=VARCHAR}
+	    </if>
+	    <if test="portType !='' and portType != null ">
+	    and PortType = #{portType,jdbcType=CHAR}
+	    </if>
+  	</select>
+  	<select id="getMOIDByDeviceIp" resultType="long" parameterType="string">
+		SELECT
+			MOID
+		FROM
+			MODevice
+		WHERE
+			DeviceIP = #{deviceIP,jdbcType=VARCHAR}
+  	</select>
+  	<select id="selectMonitorInfo" parameterType="string" resultType="map">
+  		SELECT *,
+			CASE TimeUnit
+				WHEN 1 THEN DoIntervals*60
+				WHEN 2 THEN DoIntervals*60*60
+				WHEN 3 THEN DoIntervals*60*60*24
+				ELSE DoIntervals END AS DoIntervalsBySec
+ 		FROM SysMOList
+ 		WHERE MOClass = #{kind,jdbcType=VARCHAR}
+  	</select>
+</mapper>

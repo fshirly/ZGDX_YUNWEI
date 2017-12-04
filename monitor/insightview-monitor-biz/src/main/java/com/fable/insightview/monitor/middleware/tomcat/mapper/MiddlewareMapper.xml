@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.middleware.tomcat.mapper.MiddlewareMapper">
+	<resultMap id="MiddlewareMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="JmxType" property="jmxType" jdbcType="INTEGER" />
+		<result column="PortType" property="portType" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+		<result column="UserName" property="userName" jdbcType="VARCHAR" />
+		<result column="PassWord" property="passWord" jdbcType="TIMESTAMP" />
+		<result column="ServerName" property="serverName" jdbcType="VARCHAR" />
+		<result column="JmxVersion" property="jmxVersion" jdbcType="VARCHAR" />
+		<result column="JmxStatus" property="jmxStatus" jdbcType="VARCHAR" />
+		<result column="StartupTime" property="startupTime" jdbcType="TIMESTAMP" />
+		<result column="OSName" property="oSName" jdbcType="VARCHAR" />
+		<result column="OSVersion" property="oSVersion" jdbcType="VARCHAR" />
+		<result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+		<result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+		<result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="LastUpdateTime" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+		<result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryList" resultType="hashmap" resultMap="MiddlewareMap" parameterType="page">
+  		select a.* from (
+		select ${nvl("p.PerfValue","0")} OperStatus, t.MOID,t.JmxType,t.MOAlias,t.PortType,t.IP,t.Port,t.UserName,t.PassWord,t.ServerName,t.JmxVersion,t.JmxStatus,t.StartupTime,
+  			   t.OSName,t.OSVersion,t.AdminStatus,t.DeviceMOID,t.AlarmLevel,t.CreateTime,t.LastUpdateTime,t.MOClassID,
+		ta.AlarmLevelName,ta.LevelColor,ta.LevelIcon,t.UpdateAlarmTime,p.CollectTime,e.DoIntervals,f.DoIntervals defDoIntervals
+		from MOMiddleWareJMX t	
+  		left join AlarmLevel ta on t.AlarmLevel = ta.AlarmLevelID
+  		LEFT JOIN PerfSnapshotMiddleware p ON p.DeviceMOID=t.MOID AND KPIName='ServiceAvailability'
+  		LEFT JOIN SysPerfPollTask d on t.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{params.jobMiddleAvailable}
+		LEFT JOIN (select MOMiddleWareJMX.*,SysMOList.DoIntervals from MOMiddleWareJMX,SysMOList where MID=#{params.jobMiddleAvailable}) f on t.MOID=f.MOID
+  		where 1=1 
+  		<if test="params.jmxType != null and params.jmxType != ''">
+			and t.JmxType = #{params.jmxType}
+		</if>
+		<if test="params.ip != null and params.ip != '' ">
+			and t.IP like ${concat("'%'","'"+params.ip+"'","'%'")}			
+    	</if>
+  		order by (case when t.AlarmLevel =0 then 6 end),t.AlarmLevel,t.MOID )a where 1=1
+    	<if test="params.operStatus ==1 || params.operStatus ==2 ">
+			and a.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+		</if>
+		<if test="params.operStatus ==3 ">
+			and a.OperStatus not in (1,2)
+		</if>	
+	</select> 
+	
+	<select id="queryListByCondition" parameterType="hashmap" resultMap="MiddlewareMap">
+		select t.MOID,t.MOAlias,t.PortType,t.IP,t.Port,t.UserName,t.PassWord,t.ServerName,t.JmxVersion,t.JmxStatus,t.StartupTime,
+  			   t.OSName,t.OSVersion,t.AdminStatus,t.DeviceMOID,t.AlarmLevel,t.CreateTime,t.LastUpdateTime,t.MOClassID,b.ClassLable jmxType
+  	    from MOMiddleWareJMX t	
+		left join  MObjectDef b on t.MOClassID = b.ClassID
+		where 1=1 
+		<if test="moClassId != null and moClassId != ''">
+			and t.MOClassID = #{moClassId}
+		</if>
+		<if test="ip != null and ip != '' ">
+			and t.IP like ${concat("'%'","'"+ip+"'","'%'")}			
+    	</if>
+	</select>
+	
+	<select id="selectMoMidByPrimaryKey" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		select * from MOMiddleWareJMX where MOID = #{moId}
+	</select>
+	
+	<select id="getMiddleWareInfo" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+	select  middle.MOID,middle.JmxType,middle.PortType,middle.IP,middle.ServerName,middle.JmxVersion,middle.JmxStatus,middle.StartupTime,
+  			   middle.OSName,middle.OSVersion,middle.OperStatus,middle.AdminStatus,middle.DeviceMOID,middle.AlarmLevel,middle.CreateTime,middle.LastUpdateTime,middle.MOClassID,
+  			   manage.DomainName,com.PORT,com.UserName,com.PASSWORD,com.DomainID as domainId,com.Url,com.ID
+	from MOMiddleWareJMX middle
+	left join SysMiddleWareCommunity com on middle.IP=com.IPAddress and middle.JmxType=com.MiddleWareType and middle.Port=com.Port
+	left join SysManagedDomain manage on com.DomainID=manage.DomainID
+	where middle.MOID=#{moId}
+	</select>
+	
+	<select id="getJMXByIPAndType" parameterType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean" resultType="Integer">
+	select count(1) from MOMiddleWareJMX where JmxType = #{jmxType} and IP=#{ip} and Port=#{port}
+	</select>
+	
+	<select id="getJMXInfoByIPAndType" parameterType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+	select * from MOMiddleWareJMX where JmxType = #{jmxType} and IP=#{ip} and Port=#{port}
+	</select>
+	<select id="getJMXInfoByIPAndTypeAlias" parameterType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+	select * from MOMiddleWareJMX where JmxType = #{jmxType} and IP=#{ip} and Port=#{port} and MOID!=#{moId} 
+	</select>
+	<select id="getFirstMiddle" parameterType="String" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		select t.MOID,t.JmxType,t.PortType,t.IP,t.Port,t.UserName,t.PassWord,t.ServerName,t.JmxVersion,t.JmxStatus,t.StartupTime,
+  			   t.OSName,t.OSVersion,t.OperStatus,t.AdminStatus,t.DeviceMOID,t.AlarmLevel,t.CreateTime,t.LastUpdateTime,
+		ta.AlarmLevelName,ta.LevelColor,ta.LevelIcon
+		from MOMiddleWareJMX t	
+  		left join AlarmLevel ta on t.AlarmLevel = ta.AlarmLevelID
+  		where 1=1 and t.JmxType =#{jmxType}
+  		and ${rownum(1)} order by t.AlarmLevel,t.MOID desc ${limit(1)}
+	</select>
+	
+	<update id="updateMiddleWareJMX" parameterType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+   update MOMiddleWareJMX set MOClassID= #{moClassId,jdbcType=INTEGER},PORT= #{port,jdbcType=INTEGER},PortType= #{portType,jdbcType=INTEGER},JmxType= #{jmxType,jdbcType=INTEGER},MOAlias= #{moalias,jdbcType=VARCHAR}  where MOID = #{moId,jdbcType=INTEGER}
+   </update>
+   <select id="queryAll" resultType="hashmap" resultMap="MiddlewareMap">
+   SELECT * FROM MOMiddleWareJMX 
+   </select>
+</mapper>

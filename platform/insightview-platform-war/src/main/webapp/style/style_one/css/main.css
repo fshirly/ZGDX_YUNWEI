@@ -1,0 +1,179 @@
+@charset "utf-8";
+dfn{color: red;}
+#main{/*overflow:hidden;*/}
+.container {width:100%;height:100%;margin: 0 auto;min-width:1000px;background:#E6EFF8;}
+/* ~~ 头部 ~~ */
+.header {width:100%;height:auto;min-width:1000px;min-height:96px;z-index:50;}
+		 /*~~ 头部logo ~~*/
+		 .userMsgAll{width:100%;height:59px;background:url(../images/main/head_bg.gif) repeat-x;}
+		 .userMsgAll .logo{width:228px;height:59px;background:url(../images/main/logo.gif) no-repeat;margin-left:40px;float:left;}	
+ 		 .userMsgAll .userMsg{width:400px;height:59px;float:right;font-size:12px;margin-right:10px;}
+		 .userMsgAll .userMsg .userMsgFir,
+		 .userMsgAll .userMsg .userMsgSec {font:'宋体';font-size:12px;text-align:right;margin-top:10px;}
+		 
+		 /*~~ 个人信息 ~~*/
+		 .userMsgAll .userMsg .userMsgFir a{text-decoration:none;color:#0072FF;}
+		 .userMsgAll .userMsg .userMsgFir a:link {text-decoration: none; color:#0072FF;}
+		 .userMsgAll .userMsg .userMsgFir a:visited {text-decoration: none;color:#0072FF;}
+		 .userMsgAll .userMsg .userMsgFir a:hover {text-decoration: underline;color:#0072FF;}
+		 
+		 /*.userMsgAll .userMsg .userMsgFir #dateArea{}*/
+		 .userMsgAll .userMsg .userMsgSec .msgNum{color:#009dfe;}
+		 .userMsgAll .userMsg .userMsgSec span{margin-left:8px!important;_margin-left:4px;}	 
+		 
+		 /*~~ 头部nav ~~*/
+		 .headerMenu{width:100%;height:37px;background:url(../images/main/nav_bg.gif) repeat-x;}	
+		 .headerMenu ul{list-style:none;width:960px;height:37px;margin-left:25px;}	
+		 .headerMenu ul li{float:left;}	
+		 /*~~ 头部nav一个汉字所占宽度为15px ~~*/
+		 .headerMenu ul li .characters_2{width:50px;}
+		 .headerMenu ul li .characters_3{width:65px;}		 
+		 .headerMenu ul li .characters_4{width:80px;}	 		 
+		 .headerMenu ul li a{text-decoration:none;margin-top:4px;height:32px;line-height:32px;font-size:14px;color:#083461;text-align:center;display:block;}
+		 .headerMenu ul li a:hover, .headerMenu ul li a.visited_top{background:#FFF;border:solid #94B9E6;border-width:1px 1px 0 1px; width:78px;}
+		 /*~~ 头部导航选中样式 ~~*/
+		 .headerMenu ul li a.visited_top{font-weight:bold;}
+		 
+
+
+/*~~ 分割区 ~~*/
+.bgSplit{width:100%;min-width:1000px;height:5px;background-color:#E6EFF8;}
+/*~~主区域~~*/
+.main{width:100%;min-width:1000px;background-color:#E6EFF8; position:absolute; top:101px; left:0; right:0; bottom:25px;;z-index:50;}
+
+		/*~~ iframe ~~*/
+		.frameHere{width:100%;height:100%;}	
+
+
+		 /*~~ 左侧导航 ~~*/ 
+		 
+		 
+		 /*~~ 左侧导航一级菜单 ~~*/
+		  .sidebar1{width: 190px;background-color:#FFF;display: inline;border:1px solid #94B9E6;position:absolute; top:0; left:0;bottom:5px;}
+					
+ 
+
+		 /*~~ 折叠区域 ~~*/
+		 .picBox {position:absolute; left:192px; bottom:5px; top:0;width:15px;background:#E6EFF8 url(../images/main/right.gif) no-repeat center left;
+		 		  cursor:pointer;display: inline;border-top:1px solid #94B9E6;}
+			
+
+		 /*~~ 内容~~*/
+		 .content{position:absolute; top:0; bottom:5px; left:0px; right:5px;border:1px solid #94B9E6;background-color:#FFF;}
+		 			
+		
+		
+		
+					
+ 
+
+		
+		 
+			
+
+		 
+		 						
+		
+			
+/*~~脚注~~*/			
+.footer{z-index:50;width:100%;height:25px;line-height:25px;min-width:1000px;min-height:25px;background-color:#D3E0F1;color:#154F8E;clear:both;font-size:12px;
+		font-weight:bold;text-align:center;border-top:1px solid #94B9E6;border-bottom:1px solid #94B9E6; position:absolute; bottom:0; left:0; right:0;}
+		
+
+	
+
+/*~~ 个人信息弹出层 ~~*/		
+.personal{width:236px;height:219px;background:url(../images/main/tip_bg.gif) no-repeat;position:absolute;font-family:'宋体';font-size:12px;z-index:100;}
+		  .tip_head{width:95%;height:24px;line-height:24px;margin:0px auto;}
+		  .tip_head span{color:#003978;font-weigth:bold;}
+		  .tip_head a{diplay:block;width:11px;height:11px;margin-top:5px;}
+		  .tip_content{margin:0px auto;width:95%;margin-top:10px;}
+		  .tip_content .line{margin:0px auto;color:#000000;width:95%;height:25px;line-height:25px;border-bottom:1px solid #CCC;}
+		  .tip_content span{color:#5c5c5c;}		  
+		  .tip_content .infoInputs{width:170px;height:20px;line-height:20px;border:1px solid #CCC;}
+		  .tip_content .no_line{margin:0px auto;color:#000000;width:95%;height:25px;line-height:25px;}
+		  .tip_content a{display:block;width:76px;height:25px;line-height:25px;text-align:center;background-color:#66BDFF;color:#FFF;margin-top:10px;
+		  				border:1px solid #3f98dc;}
+		  .tip_content a:link {text-decoration: none; color:#FFF;}
+		  .tip_content a:visited{text-decoration: none;color:#FFF;}
+		  .tip_content a:hover{text-decoration: none;color:#FFF;background-color:#0CF;}
+		  
+#mycontent{
+          margin:0 auto;
+          background-color:#a1a1a1;
+          font-size: 14px;
+     }
+     #mycontent tr{
+          text-align:right;
+          background-color:#fff;
+     }
+     
+#eventNextForm, #resoluteForm, #resoluteForm, #resoluteForm {padding-top:6px;}
+.nextTable {margin:0 auto; font-size:12px; border:1px solid #95B8E7; border-collapse:collapse; text-align:left;}
+.nextTable td, .nextTable th {padding:5px;}
+.nextTable th {background-color: #E0ECFF;}
+.nextTable textarea {font-size:12px; width:450px; padding:3px;}
+.nextTable input[type="radio"], .nextTable input[type="checkbox"]{vertical-align:-2px;}
+.nextTable label {margin:0 10px 0 3px;}
+.borderbox {border:1px solid #86a3bf; border-collapse:collapse; width:453px;}
+.borderbox #selectCondition {border-bottom:1px solid #86a3bf;}
+.borderbox .divbox {width:200px;; height:180px; overflow:auto; border:1px solid #ccc; padding:5px;}
+#departmentMan li{line-height:22px;}
+
+
+
+/*~~ 知识检索弹出层 ~~*/	
+	.resultstable {width:100%; border-collapse:collapse; font-size:12px; padding:0;}
+	#errorText {text-align:center; color:red; font-size:14px; min-height:16px;}
+	.resultstdL {background:#e0f2ff; width:26%; padding:0 8px;}	
+	.resultstdL table{width:100%; border-collapse:collapse;}	
+	.resultstdL td.title {background:#c8e5fa; font-weight:bold; padding:6px;}
+	.resultstdL #title {margin:5px 0; height:20px; line-height:20px; width:155px}
+	.resultstdL #searchBtn {margin:5px 0; height:26px; width:62px;}
+	.resultstdL .dtree {background:#ffffff; height:400px; padding:6px 5px; border:1px solid #bcd3eb;}
+	.resultstdR {padding:0;}
+	.resultstdR .easyui-panel {padding:8px 10px; width:auto !important; border:solid #bcd3eb; border-width:1px 1px 0 1px; min-height:450px;}
+	.resultstdR .easyui-panel ol {list-style:none; overflow:hidden;}
+	.resultstdR .easyui-panel li {font-size:12px; padding-left:8px;}
+	.resultstdR .easyui-panel li.titleLi {color:#0066cc; font-weight:bold; background:url(../images/main/arrow-li.gif) no-repeat 0 4px;}
+	.resultstdR .easyui-pagination{background:#f4f4f4; border:1px solid #d5d5d5;}
+	
+/*~~ rapidCreateEvent页面 ~~*/	
+.rapidCreatTab, .announceTab, .knowledgeTab {width:86%; margin:0 auto; font-size:12px;}
+.rapidCreatTab .title {text-align:right; vertical-align:top; line-height:24px; width:65px;}
+.rapidCreatTab #requesterName, .rapidCreatTab #title, .rapidCreatTab #serialNo, .knowledgeTab #title{width:100%; height:20px; margin-bottom:8px;}
+.rapidCreatTab textarea {width:100%; font-size:12px; height:85px; margin-bottom:8px;}
+.rapidCreatTab .combo {width:176px !important; margin-bottom:8px;}
+.rapidCreatTab .combo input {width:154px !important;}
+
+/*~~ announcement页面 ~~*/	
+.announceTab th {text-align:left; padding-top:10px;}
+.announceTab .thwidth {width:115px; text-align:center;}
+.announceTab td {line-height:22px;}
+.announceTab .butTd {text-align:right; padding-top:10px;}
+.announceTab a {text-decoration:none; color:#003399;}
+.butTd a {text-decoration:none; color:#ffffff}
+
+/*~~ knowledgeSearch页面 ~~*/	
+.knowledgeTab td{padding:5px 20px;}
+
+/*~~ myReportedEvents页面 ~~*/	
+.myReportedTabT, .myReportedTabM{width:99%; margin:0 0 0 auto; font-size:12px;}
+.myReportedTabT {overflow:hidden;}
+.myReportedTabT div {display:inline-block; width:20%; margin:5px 0; min-width:140px;}
+.myReportedTabT input {width:130px; height:20px;}
+.myReportedTabT .combo {width:132px !important;}
+.myReportedTabT .combo input {width:110px !important;}
+.myReportedTabT .butTd {width:17%;}
+.myReportedTabM {}
+
+/*~~ 公用 ~~*/
+.buttonB {background:url(../images/main/btn.gif) no-repeat; color:#FFFFFF; height:24px; line-height:24px; text-align:center; width:62px; border:0 none; display:inline-block;cursor:pointer;}
+.w80 {width:80px;}
+.searchTable td {padding-right:10px; font-size:12px; }
+.searchTable td>span {display:inline-block; width:65px; text-align:right;} 
+.searchTable td.conditionsBtn {padding-right:0;}
+.searchTable td .inputs, .searchTable td select, .searchTable td .combo{height:22px; line-height:22px; width:150px;}
+.openTable td {height:30px;}
+.textcenter {text-align:center;}
+		

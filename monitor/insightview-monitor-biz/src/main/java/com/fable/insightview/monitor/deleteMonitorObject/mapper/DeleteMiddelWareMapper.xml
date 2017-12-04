@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.DeleteMiddelWareMapper">
+ 
+ <sql id="doLimit">
+ LIMIT 100000;
+ </sql>
+ <delete id="deleteSnapshot" parameterType="hashmap">
+ delete from ${prefTableName} where DeviceMOID  in (${MOID})  <include refid="doLimit"></include>
+ </delete>
+ <delete id="deletetask" parameterType="hashmap">
+ delete from ${tableName} where MOID  in (${MOID}) 
+ </delete>
+ <delete id="deleteAlarmDetail" parameterType="hashmap">
+delete from ${alarmTableName} where SourceMOID in (${MOID}) <include refid="doLimit"></include>
+</delete>
+
+<delete id="deleteAlarmFilter" parameterType="hashmap">
+delete from ${tableName} where FilterKeyValue in (${MOID}) and FilterKey='AlarmSourceMOID' <include refid="doLimit"></include>
+</delete>
+
+ <delete id="deleteSNMP" parameterType="hashmap">
+ delete from SysMiddleWareCommunity where  IPAddress in (select IP from MOMiddleWareJMX where MOID in (${MOID}))
+ and port in (select port from MOMiddleWareJMX where MOID in (${MOID})) and MiddleWareType ='${wareType}';
+</delete>
+ 
+<delete id="deleteMiddelWareChildDevice" parameterType="hashmap">
+delete  from ${tableName} WHERE ParentMOID in (${MOID});
+</delete>
+<delete id="deleteDevice" parameterType="hashmap">
+	delete from MOMiddleWareJMX where MOID in (${MOID})
+</delete>
+
+<delete id="deleteTemplate" parameterType="hashmap">
+delete from SysMonitorsTemplateUsed  where MOID in (${MOID})
+</delete>
+
+<select id="queryJ2eeAppMOID" resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from ${tableName} where ParentMOID in (${MOID});
+</select>
+
+<select id="queryWebModubleMOID" resultType="java.lang.Integer" parameterType="hashmap">
+select MOID from MOMiddleWareWebModule where ParentMOID in (${MOID});
+</select>
+
+<select id="queryMiddleWareInfo" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select middle.Ip,middle.Port, def.ClassName as MOName from MOMiddleWareJMX middle,MObjectDef def where middle.MOClassID = def.ClassID and MOID  IN (${MOID})
+</select>
+
+<delete id="deleteDiscoveMiddleWare" parameterType="hashmap">
+	delete from SysNetworkDiscoverTask where TaskType=4 and  MOClassNames='${MOName}' and IPAddress1='${IP}';
+</delete>
+</mapper>

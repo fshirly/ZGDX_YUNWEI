@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.aaServiceForKscc.mapper.KsccSchemeMapper">
+	<select id="getFileSize"  resultType="String">
+		SELECT SUM(FILE_SIZE) from fbs_live_file where UPLOAD_STATUS = '1' and STOREFILE_STATUS <![CDATA[<> ]]>  '1';
+	</select>
+	<select id="findAllLiveCodecForYw" resultType="hashmap" parameterType="hashmap">
+		SELECT flc.ID id,CODEC_OWNERSHIP codecOwnership,NEWVIDEO_NUM newvideoNum,IP ip,MAC mac,HOSPITAL_ID hospitalId,
+		USERNAME username,PASSWORD password,PORT port,fhi.LOCATION location,fhi.HOSPITAL_NAME hospitalName
+		FROM FBS_LIVE_CODEC flc
+		INNER JOIN
+		fbs_hospital_information fhi
+		ON flc.HOSPITAL_ID = fhi.ID
+		WHERE 1=1
+		<if test="hospitalId !=null and hospitalId != ''">
+			AND  HOSPITAL_ID = #{hospitalId}
+		</if>
+	</select>
+	<select id="selectFbsInterfaceList" resultType="com.fable.insightview.platform.aaServiceForKscc.entity.FbsInterface">
+		SELECT ID id,URL url,NAME name,STATUS status,METHOD method FROM fbs_interface WHERE 1=1
+	</select>
+	<select id="getHospital" resultType="hashmap">
+			SELECT
+			ID id,
+			HOSPITAL_CONTENT hospitalContent,
+			HOSPITAL_URL hospitalUrl,
+			HOSPITAL_NAME hospitalName,
+			PARENT_ID parentId,
+			CREATOR_ID creatorId,
+			CREATOR_TIME creatorTime,
+			UPDATE_ID updateId,
+			UPDATE_TIME updateTime,
+			LOGO_URL logoUrl
+		From
+		FBS_HOSPITAL_INFORMATION
+	</select>
+</mapper>
+

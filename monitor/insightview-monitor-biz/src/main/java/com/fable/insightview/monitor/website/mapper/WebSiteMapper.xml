@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.website.mapper.WebSiteMapper">
+	<resultMap id="webSiteMapper" type="com.fable.insightview.monitor.website.entity.WebSite" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainID" jdbcType="INTEGER" />
+    <result column="SiteName" property="siteName" jdbcType="VARCHAR" />
+    <result column="SiteInfo" property="siteInfo" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="siteAddr" property="siteAddr" jdbcType="VARCHAR" />
+    <result column="SiteType" property="siteType" jdbcType="INTEGER" />
+    <result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+    <result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="UpdateAlarmTime" property="updateAlarmTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <resultMap id="webSiteHttpMapper" type="com.fable.insightview.monitor.website.entity.SiteHttp" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+    <result column="HttpUrl" property="httpUrl" jdbcType="VARCHAR" />
+    <result column="SiteName" property="siteName" jdbcType="VARCHAR" />
+    <result column="SiteInfo" property="siteInfo" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+    <result column="UpdateAlarmTime" property="updateAlarmTime" jdbcType="TIMESTAMP" />
+    <result column="perfAvailable" property="perfAvailable" jdbcType="DOUBLE" />
+    <result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="siteAddr" property="siteAddr" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="webSiteFtpMapper" type="com.fable.insightview.monitor.website.entity.SiteFtp" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+    <result column="IPAddr" property="ipAddr" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="IsAuth" property="isAuth" jdbcType="INTEGER" />
+    <result column="SiteName" property="siteName" jdbcType="VARCHAR" />
+    <result column="SiteInfo" property="siteInfo" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+    <result column="UpdateAlarmTime" property="updateAlarmTime" jdbcType="TIMESTAMP" />
+    <result column="perfAvailable" property="perfAvailable" jdbcType="DOUBLE" />
+    <result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="siteAddr" property="siteAddr" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="webSiteDnsMapper" type="com.fable.insightview.monitor.website.entity.SiteDns" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+    <result column="IPAddr" property="ipAddr" jdbcType="VARCHAR" />
+    <result column="DomainName" property="domainName" jdbcType="INTEGER" />
+    <result column="SiteName" property="siteName" jdbcType="VARCHAR" />
+    <result column="SiteInfo" property="siteInfo" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+    <result column="UpdateAlarmTime" property="updateAlarmTime" jdbcType="TIMESTAMP" />
+    <result column="perfAvailable" property="perfAvailable" jdbcType="DOUBLE" />
+    <result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="siteAddr" property="siteAddr" jdbcType="VARCHAR" />
+    </resultMap>
+  	
+  	<resultMap id="AlarmResultMap"
+		type="com.fable.insightview.monitor.host.entity.AlarmActiveDetail">
+		<id column="AlarmID" property="alarmid" jdbcType="INTEGER" />
+		<result column="AlarmDefineID" property="alarmdefineid"
+			jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmoid" jdbcType="VARCHAR" />
+		<result column="AlarmTitle" property="alarmtitle" jdbcType="VARCHAR" />
+		<result column="SourceMOID" property="sourcemoid" jdbcType="INTEGER" />
+		<result column="SourceMOName" property="sourcemoname" jdbcType="VARCHAR" />
+		<result column="SourceMOIPAddress" property="sourcemoipaddress"
+			jdbcType="VARCHAR" />
+		<result column="MOClassID" property="moclassid" jdbcType="INTEGER" />
+		<result column="MOID" property="moid" jdbcType="INTEGER" />
+		<result column="MOName" property="moname" jdbcType="VARCHAR" />
+		<result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+		<result column="AlarmType" property="alarmtype" jdbcType="INTEGER" />
+		<result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
+		<result column="LastTime" property="lasttime" jdbcType="TIMESTAMP" />
+		<result column="RepeatCount" property="repeatcount" jdbcType="INTEGER" />
+		<result column="UpgradeCount" property="upgradecount" jdbcType="INTEGER" />
+		<result column="AlarmStatus" property="alarmstatus" jdbcType="INTEGER" />
+		<result column="Confirmer" property="confirmer" jdbcType="VARCHAR" />
+		<result column="ConfirmTime" property="confirmtime" jdbcType="TIMESTAMP" />
+		<result column="ConfirmInfo" property="confirminfo" jdbcType="VARCHAR" />
+		<result column="Cleaner" property="cleaner" jdbcType="VARCHAR" />
+		<result column="CleanTime" property="cleantime" jdbcType="TIMESTAMP" />
+		<result column="CleanInfo" property="cleaninfo" jdbcType="VARCHAR" />
+		<result column="DispatchUser" property="dispatchuser" jdbcType="VARCHAR" />
+		<result column="DispatchID" property="dispatchid" jdbcType="VARCHAR" />
+		<result column="DispatchTime" property="dispatchtime" jdbcType="TIMESTAMP" />
+		<result column="DispatchInfo" property="dispatchinfo" jdbcType="VARCHAR" />
+		<result column="AlarmContent" property="alarmcontent" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="webSitePortMapper" type="com.fable.insightview.monitor.website.entity.SitePort" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+    <result column="IPAddr" property="ipAddr" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="PortType" property="portType" jdbcType="INTEGER" />
+    <result column="SiteName" property="siteName" jdbcType="VARCHAR" />
+    <result column="SiteInfo" property="siteInfo" jdbcType="VARCHAR" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LastUpdateTime" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateAlarmTime" property="updateAlarmTime" jdbcType="TIMESTAMP" />
+    <result column="available" property="available" jdbcType="VARCHAR" />
+    <result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+    <result column="durationTime" property="durationTime" jdbcType="VARCHAR" />
+    <result column="ResponseTime" property="responseTime" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="AlarmLevelName" property="alarmLevelName" jdbcType="VARCHAR" />
+    <result column="perfAvailable" property="perfAvailable" jdbcType="DOUBLE" />
+    </resultMap>
+	
+	<insert id="insertWebSite"
+		parameterType="com.fable.insightview.monitor.website.entity.WebSite">
+		insert into MOWebSite (MOID, MOClassID, DomainID, SiteType)
+		values (#{moID,jdbcType=INTEGER}, #{moClassID,jdbcType=INTEGER},
+		 #{domainID,jdbcType=INTEGER}, #{siteType,jdbcType=INTEGER}
+		) 
+	</insert>
+
+	<insert id="insertWebSiteHttp"
+		parameterType="com.fable.insightview.monitor.website.entity.SiteHttp">
+		insert into MOSiteHttp (MOID, ParentMOID, HttpUrl, SiteName, SiteInfo, AlarmLevel, CreateTime,LastUpdateTime,UpdateAlarmTime)
+		values (#{moID,jdbcType=INTEGER}, #{parentMOID,jdbcType=INTEGER}, #{httpUrl,jdbcType=VARCHAR},
+			 #{siteName,jdbcType=VARCHAR}, #{siteInfo,jdbcType=VARCHAR},
+			0, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},${sysdate()}
+		)
+	</insert>
+
+	<insert id="insertWebSiteFtp"
+		parameterType="com.fable.insightview.monitor.website.entity.SiteFtp">
+		insert into MOSiteFtp (MOID, ParentMOID, IPAddr, Port, IsAuth, SiteName, SiteInfo, AlarmLevel, CreateTime,LastUpdateTime,UpdateAlarmTime)
+		values (#{moID,jdbcType=INTEGER},
+				#{parentMOID,jdbcType=INTEGER},#{ipAddr,jdbcType=VARCHAR},
+				#{port,jdbcType=INTEGER}, #{isAuth,jdbcType=INTEGER},
+				#{siteName,jdbcType=VARCHAR},
+				#{siteInfo,jdbcType=VARCHAR}, 0, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},${sysdate()}
+		)
+	</insert>
+
+	<insert id="insertWebSiteDns"
+		parameterType="com.fable.insightview.monitor.website.entity.SiteDns">
+		insert into MOSiteDns (MOID, ParentMOID, DomainName, IPAddr, SiteName, SiteInfo, AlarmLevel, CreateTime,LastUpdateTime,UpdateAlarmTime)
+		values
+		(#{moID,jdbcType=INTEGER}, #{parentMOID,jdbcType=INTEGER}, #{domainName,jdbcType=VARCHAR},
+		 #{ipAddr,jdbcType=VARCHAR}, #{siteName,jdbcType=VARCHAR}, #{siteInfo,jdbcType=VARCHAR}, 
+		 0, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},${sysdate()}
+		) 
+	</insert>
+	
+	<select id="getAllWebSites" parameterType="page" resultType="hashmap" resultMap="webSiteMapper">
+		select websites.* from (select t1.*,t2.available from 
+		(select a.MOID,a.HttpUrl siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.MOClassID,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteHttp a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{params.responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSiteHTTP}
+		left join (select MOSiteHttp.*,SysMOList.DoIntervals from MOSiteHttp,SysMOList where MID=#{params.jobSiteHTTP}) f on a.MOID=f.MOID)t1 left join 
+		(select a.MOID,b.PerfValue available from MOSiteHttp a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.connsStateKPI})t2 
+		on t1.MOID=t2.MOID where 1=1  
+		<if test="params.siteName != null and params.siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+		<if test="params.siteType != -1 and params.siteType != '' and params.siteType != null ">
+			and SiteType=#{params.siteType}
+		</if>
+		union all 
+		select t3.*,t4.available from 
+		(select a.MOID,a.DomainName siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.MOClassID,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteDns a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{params.responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSiteDNS}
+		left join (select MOSiteDns.*,SysMOList.DoIntervals from MOSiteDns,SysMOList where MID=#{params.jobSiteDNS}) f on a.MOID=f.MOID)t3 left join 
+		(select a.MOID,b.PerfValue available from MOSiteDns a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.dnsStateKPI})t4 
+		on t3.MOID=t4.MOID where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+		<if test="params.siteType != -1 and params.siteType != '' and params.siteType != null ">
+			and SiteType=#{params.siteType}
+		</if>
+		union all 
+		select t5.*,t6.available from 
+		(select a.MOID,a.IPAddr siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.MOClassID,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteFtp a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{params.responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSiteFTP}
+		left join (select MOSiteFtp.*,SysMOList.DoIntervals from MOSiteFtp,SysMOList where MID=#{params.jobSiteFTP}) f on a.MOID=f.MOID)t5 left join 
+		(select m.MOID,${concat("m.connsState", "n.loginState")} as available from (select a.MOID,b.PerfValue connsState from MOSiteFtp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.connsStateKPI})m
+		left join
+		(select a.MOID,b.PerfValue loginState from MOSiteFtp a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.loginStateKPI})n on m.MOID=n.MOID
+		)t6 
+		on t5.MOID=t6.MOID where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+		<if test="params.siteType != -1 and params.siteType != '' and params.siteType != null ">
+			and SiteType=#{params.siteType}
+		</if>
+		union all 
+		select t7.*,t8.available from 
+		(select a.MOID,a.IPAddr siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.MOClassID,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSitePort a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{params.responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSiteTCP}
+		left join (select MOSitePort.*,SysMOList.DoIntervals from MOSitePort,SysMOList where MID=#{params.jobSiteTCP}) f on a.MOID=f.MOID)t7 left join 
+		(select a.MOID,b.PerfValue available from MOSitePort a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID 
+		and b.KPIName=#{params.portStateKPI})t8 
+		on t7.MOID=t8.MOID where 1=1  
+		<if test="params.siteName != null and params.siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+		<if test="params.siteType != -1 and params.siteType != '' and params.siteType != null ">
+			and SiteType=#{params.siteType}
+		</if>
+		)websites 
+		where 1=1 
+		<if test="params.includeType != '' and params.includeType != null ">
+			and websites.SiteType in (${params.includeType})
+		</if>
+		ORDER BY  (case when websites.AlarmLevel =0 then 6 end), websites.AlarmLevel
+	</select>
+	
+	<select id="getAllWebSiteHttp" parameterType="page" resultType="hashmap" resultMap="webSiteHttpMapper">
+		select t1.*,t2.responseTime from (select a.*,z.MOClassID,b.LevelIcon,b.AlarmLevelName,c.PerfValue available,g.RequestMethod,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteHttp a 
+		left join MOWebSite z on a.ParentMOID = z.MOID
+		left join AlarmLevel b on a.AlarmLevel=b.AlarmLevelID 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{params.connsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{params.MID}
+		left join (select MOSiteHttp.*,SysMOList.DoIntervals from MOSiteHttp,SysMOList where MID=#{params.MID}) f on a.MOID=f.MOID
+		left join SysSiteCommunity g on a.HttpUrl=g.IPAddress 
+		where 1=1 )t1 left join (select a.MOID,b.PerfValue responseTime from MOSiteHttp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.responseTimeKPI})t2 
+		on t1.MOID=t2.MOID where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and t1.SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+	</select>
+	
+	<select id="getAllWebSiteFtp" parameterType="page" resultType="hashmap" resultMap="webSiteFtpMapper">
+		select t1.*,${concat("t1.connsState", "t2.loginState")} as available,t3.responseTime from 
+		(select a.*,b.LevelIcon,b.AlarmLevelName,c.PerfValue connsState,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteFtp a 
+		left join AlarmLevel b on a.AlarmLevel=b.AlarmLevelID 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{params.connsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{params.MID}
+		left join (select MOSiteFtp.*,SysMOList.DoIntervals from MOSiteFtp,SysMOList where MID=#{params.MID}) f on a.MOID=f.MOID )t1
+		left join 
+		(select a.MOID,b.PerfValue loginState from MOSiteFtp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.loginStateKPI} )t2 
+		on t1.MOID=t2.MOID 
+		left join 
+		(select a.MOID,b.PerfValue responseTime from MOSiteFtp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.responseTimeKPI})t3 
+		on t2.MOID=t3.MOID 
+		where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and t1.SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+	</select>
+	
+	<select id="getAllWebSiteDns" parameterType="page" resultType="hashmap" resultMap="webSiteDnsMapper">
+		select t1.*,t2.responseTime from (select a.*,b.LevelIcon,b.AlarmLevelName,c.PerfValue available,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals  from MOSiteDns a 
+		left join AlarmLevel b on a.AlarmLevel=b.AlarmLevelID 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{params.dnsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{params.MID}
+		left join (select MOSiteDns.*,SysMOList.DoIntervals from MOSiteDns,SysMOList where MID=#{params.MID}) f on a.MOID=f.MOID 
+		where 1=1 )t1 left join (select a.MOID,b.PerfValue responseTime from MOSiteDns a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.responseTimeKPI})t2 
+		on t1.MOID=t2.MOID where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and t1.SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+	</select>
+	
+	<select id="getSiteDnsByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SiteDns">
+		select MOID,ParentMOID,DomainName,IPAddr,SiteName,SiteInfo,AlarmLevel,
+		CreateTime,LastUpdateTime,UpdateAlarmTime from MOSiteDns where MOID=#{moID}
+	</select>
+	
+	<select id="getSiteFtpByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SiteFtp">
+		select MOID,ParentMOID,IPAddr,Port,IsAuth,SiteName,SiteInfo,AlarmLevel,
+		CreateTime,LastUpdateTime,UpdateAlarmTime from MOSiteFtp where MOID=#{moID}
+	</select>
+	
+	<select id="getSiteHttpByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SiteHttp">
+		select a.MOID,a.ParentMOID,a.HttpUrl,b.RequestMethod,a.SiteName,a.SiteInfo,a.AlarmLevel,
+		a.CreateTime,a.LastUpdateTime,a.UpdateAlarmTime from MOSiteHttp a 
+		left join SysSiteCommunity b on a.HttpUrl=b.IPAddress 
+		where a.MOID=#{moID}
+		
+	</select>
+	
+	<select id="getFirstSiteDns" resultType="com.fable.insightview.monitor.website.entity.SiteDns">
+		select MOID,ParentMOID,DomainName,IPAddr,SiteName,SiteInfo,AlarmLevel,
+		CreateTime,LastUpdateTime,UpdateAlarmTime from MOSiteDns 
+		where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+	</select>
+	
+	<select id="getFirstSiteFtp" resultType="com.fable.insightview.monitor.website.entity.SiteFtp">
+		select MOID,ParentMOID,IPAddr,Port,IsAuth,SiteName,SiteInfo,AlarmLevel,
+		CreateTime,LastUpdateTime,UpdateAlarmTime from MOSiteFtp 
+		where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+	</select>
+	
+	<select id="getFirstSiteHttp" resultType="com.fable.insightview.monitor.website.entity.SiteHttp">
+		select MOID,ParentMOID,HttpUrl,SiteName,SiteInfo,AlarmLevel,
+		CreateTime,LastUpdateTime,UpdateAlarmTime from MOSiteHttp 
+		where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+	</select>
+	
+	<select id="getPerfSiteDnsByMoId" parameterType="hashmap" resultType="hashmap" resultMap="webSiteDnsMapper">
+		select a.MOID,a.ParentMOID,a.DomainName siteAddr,a.IPAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,
+		a.CreateTime,a.LastUpdateTime,a.UpdateAlarmTime,c.PerfValue available,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteDns a 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{dnsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{MID}
+		left join (select MOSiteDns.*,SysMOList.DoIntervals from MOSiteDns,SysMOList where MID=#{MID}) f on a.MOID=f.MOID 
+		where a.MOID=#{moID}
+	</select>
+	
+	<select id="getPerfSiteFtpByMoId" parameterType="hashmap" resultType="hashmap" resultMap="webSiteFtpMapper">
+		select t1.*,${concat("t1.connsState", "t2.loginState")} as available from 
+		(select a.MOID,a.ParentMOID,a.IPAddr siteAddr,a.Port,a.IsAuth,a.SiteName,a.SiteInfo,a.AlarmLevel,
+		a.CreateTime,a.LastUpdateTime,a.UpdateAlarmTime,c.PerfValue connsState,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteFtp a 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{connsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{MID}
+		left join (select MOSiteFtp.*,SysMOList.DoIntervals from MOSiteFtp,SysMOList where MID=#{MID}) f on a.MOID=f.MOID
+		 )t1
+		left join 
+		(select a.MOID,b.PerfValue loginState from MOSiteFtp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{loginStateKPI} )t2 
+		on t1.MOID=t2.MOID where 1=1 and t1.MOID=#{moID}
+	</select>
+	
+	<select id="getPerfSiteHttpByMoId" parameterType="hashmap" resultType="hashmap" resultMap="webSiteHttpMapper">
+		select a.MOID,a.ParentMOID,a.HttpUrl siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.CreateTime,
+		a.LastUpdateTime,a.UpdateAlarmTime,c.PerfValue available,c.PerfValue available,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteHttp a 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{connsStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{MID}
+		left join (select MOSiteHttp.*,SysMOList.DoIntervals from MOSiteHttp,SysMOList where MID=#{MID}) f on a.MOID=f.MOID 
+		where a.MOID=#{moID}
+	</select>
+	
+	<select id="getDnsChartAvailability" parameterType="hashmap" resultType="com.fable.insightview.monitor.website.entity.SiteDns">
+		select round(t1.count1/t2.Sumcount,2)*100 perfAvailable from 
+		(select count(b.DnsState) count1 from MOSiteDns a left join 
+		PerfSiteDns b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.DnsState=1 and
+		b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t1,
+		(select count(b.DnsState) Sumcount from MOSiteDns a left join 
+		PerfSiteDns b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t2
+	</select>
+	
+	<select id="getFtpChartAvailability" parameterType="hashmap" resultType="com.fable.insightview.monitor.website.entity.SiteFtp">
+		select round(t1.count1/t2.Sumcount,2)*100 perfAvailable from 
+		(select count(b.ConnsState) count1 from MOSiteFtp a left join 
+		PerfSiteFtp b on a.MOID=b.MOID 
+		where a.MOID=#{moID} and b.ConnsState=1 and b.LoginState=1 and 
+		b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t1,
+		(select count(b.ConnsState) Sumcount from MOSiteFtp a left join 
+		PerfSiteFtp b on a.MOID=b.MOID 
+		where a.MOID=#{moID} and b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t2
+	</select>
+	
+	<select id="getHttpChartAvailability" parameterType="hashmap" resultType="com.fable.insightview.monitor.website.entity.SiteHttp">
+		select round(t1.count1/t2.Sumcount,2)*100 perfAvailable from 
+		(select count(b.ConnsState) count1 from MOSiteHttp a left join 
+		PerfSiteHttp b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.ConnsState=1 and
+		b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t1,
+		(select count(b.ConnsState) Sumcount from MOSiteHttp a left join 
+		PerfSiteHttp b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t2
+	</select>
+	
+	<select id="queryDnsPerf" parameterType="hashmap" resultType="hashmap" resultMap="webSiteDnsMapper">
+		select a.*,${dateFormat("a.CollectTime")} formatTime from PerfSiteDns a 
+		left join MOSiteDns b on a.MOID=b.MOID where b.MOID=#{moID} 
+		and a.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)} 
+		order by a.CollectTime
+	</select>
+	
+	<select id="queryFtpPerf" parameterType="hashmap" resultType="hashmap" resultMap="webSiteFtpMapper">
+		select a.*,${dateFormat("a.CollectTime")} formatTime from PerfSiteFtp a 
+		left join MOSiteFtp b on a.MOID=b.MOID where b.MOID=#{moID} 
+		and a.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)} 
+		order by a.CollectTime
+	</select>
+	
+	<select id="queryHttpPerf" parameterType="hashmap" resultType="hashmap" resultMap="webSiteHttpMapper">
+		select a.*,${dateFormat("a.CollectTime")} formatTime from PerfSiteHttp a 
+		left join MOSiteHttp b on a.MOID=b.MOID where b.MOID=#{moID} 
+		and a.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)} 
+		order by a.CollectTime
+	</select>
+	
+	<select id="getWebSiteAlarmInfo" parameterType="hashmap" resultType="hashmap" resultMap="AlarmResultMap">
+		select ad.AlarmID,ad.AlarmLevel,l.LevelIcon,ad.SourceMOName,ad.SourceMOIPAddress,ad.AlarmTitle,s.StatusName,
+		StartTime,ad.RepeatCount,ad.UpgradeCount from
+		AlarmActiveDetail ad,AlarmLevel l
+		,AlarmStatusDef s 
+		where ad.AlarmLevel=l.AlarmLevelValue and s.StatusID=ad.AlarmStatus and ad.SourceMOID=#{moID} 
+		and ad.MOClassID=(select ClassID from MObjectDef where ClassName=#{moClass}) order 
+		by ad.StartTime desc
+	</select>
+	<select id="getDNSCountByName" parameterType="com.fable.insightview.monitor.website.entity.SiteDns" resultType="Integer">
+	select count(1) from MOSiteDns where SiteName=#{siteName,jdbcType=VARCHAR} and DomainName!=#{domainName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getFTPCountByName" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="Integer">
+	select count(1) from MOSiteFtp where SiteName=#{siteName,jdbcType=VARCHAR} and (IPAddr != #{ipAddr,jdbcType=VARCHAR} or Port != #{port,jdbcType=INTEGER})
+	</select>
+	
+	<select id="getHttpCountByName" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="Integer">
+	select count(1) from MOSiteHttp where SiteName=#{siteName,jdbcType=VARCHAR} and HttpUrl !=#{httpUrl,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDNSCountByUrl" parameterType="com.fable.insightview.monitor.website.entity.SiteDns" resultType="Integer">
+	select count(1) from MOSiteDns where SiteName!=#{siteName,jdbcType=VARCHAR} and DomainName=#{domainName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getFTPCountByUrl" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="Integer">
+	select count(1) from MOSiteFtp where IPAddr = #{ipAddr,jdbcType=VARCHAR} and Port = #{port,jdbcType=INTEGER} and SiteName!=#{siteName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getHttpCountByUrl2" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="Integer">
+	select count(1) from MOSiteHttp where SiteName!=#{siteName,jdbcType=VARCHAR} and HttpUrl =#{httpUrl,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateWebSiteHttp" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp">
+	update MOSiteHttp 
+	<set>
+	  <if test="parentMOID != null and parentMOID != 0" >
+        ParentMOID = #{parentMOID,jdbcType=INTEGER},
+      </if>
+      <if test="httpUrl != null" >
+        HttpUrl = #{httpUrl,jdbcType=INTEGER},
+      </if>
+      <if test="siteName != null" >
+        SiteName = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="siteInfo != null" >
+        SiteInfo = #{siteInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LastUpdateTime = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where MOID = #{moID,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateWebSiteFtp" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp">
+	update MOSiteFtp 
+	<set>
+	  <if test="parentMOID != null and parentMOID != 0" >
+        ParentMOID = #{parentMOID,jdbcType=INTEGER},
+      </if>
+      <if test="ipAddr != null" >
+        IPAddr = #{ipAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        Port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="isAuth != null" >
+        IsAuth = #{isAuth,jdbcType=INTEGER},
+      </if>
+      <if test="siteName != null" >
+        SiteName = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="siteInfo != null" >
+        SiteInfo = #{siteInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LastUpdateTime = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where MOID = #{moID,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateWebSiteDns" parameterType="com.fable.insightview.monitor.website.entity.SiteDns">
+	update MOSiteDns 
+	<set>
+	  <if test="parentMOID != null and parentMOID != 0" >
+        ParentMOID = #{parentMOID,jdbcType=INTEGER},
+      </if>
+      <if test="domainName != null" >
+        DomainName = #{domainName,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddr != null" >
+        IPAddr = #{ipAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="siteName != null" >
+        SiteName = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="siteInfo != null" >
+        SiteInfo = #{siteInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LastUpdateTime = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where MOID = #{moID,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getDnsByNameAndDomainName" parameterType="com.fable.insightview.monitor.website.entity.SiteDns" resultType="com.fable.insightview.monitor.website.entity.SiteDns">
+	select * from MOSiteDns where SiteName=#{siteName,jdbcType=VARCHAR} and DomainName=#{domainName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getFtpByNameAndIpAndPort" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="com.fable.insightview.monitor.website.entity.SiteFtp">
+	select * from MOSiteFtp where SiteName=#{siteName,jdbcType=VARCHAR} and IPAddr = #{ipAddr,jdbcType=VARCHAR} and Port = #{port,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getHttpByNameUrl" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="com.fable.insightview.monitor.website.entity.SiteHttp">
+	select * from MOSiteHttp where SiteName=#{siteName,jdbcType=VARCHAR} and HttpUrl =#{httpUrl,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDNSCountByName2" parameterType="com.fable.insightview.monitor.website.entity.SiteDns" resultType="Integer">
+	select count(1) from MOSiteDns where SiteName=#{siteName,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getFTPCountByName2" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="Integer">
+	select count(1) from MOSiteFtp where SiteName=#{siteName,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getHttpCountByName2" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="Integer">
+	select count(1) from MOSiteHttp where SiteName=#{siteName,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if>  
+	</select>
+	
+	<select id="getDNSCountByDomainName" parameterType="com.fable.insightview.monitor.website.entity.SiteDns" resultType="Integer">
+	select count(1) from MOSiteDns where DomainName=#{domainName,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getFTPCountByIPAddr" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="Integer">
+	select count(1) from MOSiteFtp where IPAddr=#{ipAddr,jdbcType=VARCHAR}  and Port = #{port,jdbcType=INTEGER}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getHttpCountByUrl" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="Integer">
+	select count(1) from MOSiteHttp where HttpUrl=#{httpUrl,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if>  
+	</select>
+	
+	<select id="getFtpAndCommInfo" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SiteFtp">
+		select f.*,com.UserName,com.Password
+		from MOSiteFtp f
+		left join SysSiteCommunity com on com.IPAddress=f.IPAddr and com.Port=f.Port
+		where f.MOID=#{moID} and com.SiteType=1
+	</select>
+	
+	<select id="getHttpAndCommInfo" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SiteHttp">
+		select f.*,com.RequestMethod
+		from MOSiteHttp f
+		left join SysSiteCommunity com on com.IPAddress=f.HttpUrl	
+		where f.MOID=#{moID} and com.SiteType=2
+	</select>
+	
+	<select id="getAllWebSitePort" parameterType="page" resultType="hashmap" resultMap="webSitePortMapper">
+		select t1.*,t2.responseTime from (select a.*,z.MOClassID,b.LevelIcon,b.AlarmLevelName,c.PerfValue available,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSitePort a 
+		left join MOWebSite z on a.ParentMOID = z.MOID
+		left join AlarmLevel b on a.AlarmLevel=b.AlarmLevelID 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{params.portStateKPI}  
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{params.MID}
+		left join (select MOSitePort.*,SysMOList.DoIntervals from MOSitePort,SysMOList where MID=#{params.MID}) f on a.MOID=f.MOID
+		where 1=1 )t1 left join (select a.MOID,b.PerfValue responseTime from MOSitePort a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{params.responseTimeKPI})t2 
+		on t1.MOID=t2.MOID where 1=1 
+		<if test="params.siteName != null and params.siteName != '' ">
+			and t1.SiteName like ${concat("'%'", "'"+params.siteName+"'" ,"'%'")} 
+		</if>
+	</select>
+	
+	<select id="getSitePortByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SitePort">
+		select MOID,ParentMOID,IPAddr,Port,PortType,SiteName,SiteInfo,AlarmLevel,CreateTime,
+		LastUpdateTime,UpdateAlarmTime from MOSitePort where MOID=#{moID}
+	</select>
+	
+	<select id="getFirstSitePort" resultType="com.fable.insightview.monitor.website.entity.SitePort">
+		select MOID,ParentMOID,IPAddr,Port,PortType,SiteName,SiteInfo,AlarmLevel,CreateTime,
+		LastUpdateTime,UpdateAlarmTime from MOSitePort 
+		where 1=1 and ${rownum(1)} order by MOID desc ${limit(1)}
+	</select>
+	
+	<select id="getPerfSitePortByMoId" parameterType="hashmap" resultType="hashmap" resultMap="webSitePortMapper">
+		select a.MOID,a.ParentMOID,a.IPAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.Port,
+		a.CreateTime,a.LastUpdateTime,a.UpdateAlarmTime,c.PerfValue available,c.PerfValue available,c.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSitePort a 
+		left join PerfSnapshotSite c on a.MOID=c.MOID and a.ParentMOID=c.ParentMOID and c.KPIName=#{portStateKPI}
+		left join SysPerfPollTask d on a.MOID=d.MOID AND d.IsOffline is NULL AND (d.Status!=-1 or d.ProgressStatus!=5)and (d.OperateStatus!=3 or d.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d.TaskID=e.TaskID and e.MID=#{MID}
+		left join (select MOSitePort.*,SysMOList.DoIntervals from MOSitePort,SysMOList where MID=#{MID}) f on a.MOID=f.MOID 
+		where a.MOID=#{moID}
+	</select>
+	
+	<select id="getPortChartAvailability" parameterType="hashmap" resultType="com.fable.insightview.monitor.website.entity.SitePort">
+		select round(t1.count1/t2.Sumcount,2)*100 perfAvailable from 
+		(select count(b.PortState) count1 from MOSitePort a left join 
+		PerfSitePort b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.PortState=1 and
+		b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t1,
+		(select count(b.PortState) Sumcount from MOSitePort a left join 
+		PerfSitePort b on a.MOID=b.MOID
+		where a.MOID=#{moID} and b.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)})t2
+	</select>
+	
+	<insert id="insertWebSitePort"
+		parameterType="com.fable.insightview.monitor.website.entity.SitePort">
+		insert into MOSitePort (MOID, ParentMOID, IPAddr, Port, PortType, SiteName, SiteInfo, AlarmLevel, CreateTime,LastUpdateTime,UpdateAlarmTime)
+		values (#{moID,jdbcType=INTEGER},
+				#{parentMOID,jdbcType=INTEGER},#{ipAddr,jdbcType=VARCHAR},
+				#{port,jdbcType=INTEGER}, #{portType,jdbcType=INTEGER},
+				#{siteName,jdbcType=VARCHAR},
+				#{siteInfo,jdbcType=VARCHAR}, 0, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},${sysdate()}
+		)
+	</insert>
+	
+	<update id="updateWebSitePort" parameterType="com.fable.insightview.monitor.website.entity.SitePort">
+	update MOSitePort 
+	<set>
+	  <if test="parentMOID != null and parentMOID != 0" >
+        ParentMOID = #{parentMOID,jdbcType=INTEGER},
+      </if>
+      <if test="ipAddr != null" >
+        IPAddr = #{ipAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        Port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="portType != null and portType != 0" >
+        PortType = #{portType,jdbcType=INTEGER},
+      </if>
+      <if test="siteName != null" >
+        SiteName = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="siteInfo != null" >
+        SiteInfo = #{siteInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LastUpdateTime = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where MOID = #{moID,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getTCPCountByName" parameterType="com.fable.insightview.monitor.website.entity.SitePort" resultType="Integer">
+	select count(1) from MOSitePort where SiteName=#{siteName,jdbcType=VARCHAR}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getTCPCountByIPAddr" parameterType="com.fable.insightview.monitor.website.entity.SitePort" resultType="Integer">
+	select count(1) from MOSitePort where IPAddr=#{ipAddr,jdbcType=VARCHAR}  and Port = #{port,jdbcType=INTEGER}
+	<if test="moID != '' and moID != null ">
+	  and MOID != #{moID,jdbcType=INTEGER}
+    </if> 
+	</select>
+	
+	<select id="getTCPCountByCondition" parameterType="com.fable.insightview.monitor.website.entity.SitePort" resultType="Integer">
+	select count(1) from MOSitePort where SiteName=#{siteName,jdbcType=VARCHAR} and (IPAddr != #{ipAddr,jdbcType=VARCHAR} or Port != #{port,jdbcType=INTEGER})
+	</select>
+	
+	<select id="getTCPCountByCondition2" parameterType="com.fable.insightview.monitor.website.entity.SitePort" resultType="Integer">
+	select count(1) from MOSitePort where IPAddr = #{ipAddr,jdbcType=VARCHAR}  and Port = #{port,jdbcType=INTEGER} and SiteName!=#{siteName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getTcpByNameAndIpAndPort" parameterType="com.fable.insightview.monitor.website.entity.SitePort" resultType="com.fable.insightview.monitor.website.entity.SitePort">
+	select * from MOSitePort where SiteName=#{siteName,jdbcType=VARCHAR} and IPAddr = #{ipAddr,jdbcType=VARCHAR} and Port = #{port,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getSiteNameAnMOID" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.WebSite">
+	select site.* from (
+		select MOID,SiteName from MOSiteDns
+		union all
+		select MOID,SiteName from MOSiteFtp
+		union all
+		select MOID,SiteName from MOSiteHttp
+		)site where site.MOID=#{moID}
+	</select>
+	
+	<select id="getDateNow" resultType="Date">
+		${currentTimeSql()}
+	</select>
+	<select id="getConfParamValue" resultType="Integer">
+		select ParaValue from SysConfig where Type = 1001 and ParaKey = 'ThresholdMultiples'
+	</select>
+	
+	
+	<select id="getAllSites" parameterType="hashmap" resultType="com.fable.insightview.monitor.website.entity.WebSite">
+		select websites.* from (select t1.*,t2.available from 
+		(select a.MOID,a.HttpUrl siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteHttp a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{params.jobSiteHTTP}
+		left join (select MOSiteHttp.*,SysMOList.DoIntervals from MOSiteHttp,SysMOList where MID=#{jobSiteHTTP}) f on a.MOID=f.MOID)t1 left join 
+		(select a.MOID,b.PerfValue available from MOSiteHttp a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{connsStateKPI})t2 
+		on t1.MOID=t2.MOID where 1=1  
+		<if test="siteName != null and siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+siteName+"'" ,"'%'")} 
+		</if>
+		<if test="siteType != -1 and siteType != '' and siteType != null ">
+			and SiteType=#{siteType}
+		</if>
+		union all 
+		select t3.*,t4.available from 
+		(select a.MOID,a.DomainName siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteDns a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{jobSiteDNS}
+		left join (select MOSiteDns.*,SysMOList.DoIntervals from MOSiteDns,SysMOList where MID=#{jobSiteDNS}) f on a.MOID=f.MOID)t3 left join 
+		(select a.MOID,b.PerfValue available from MOSiteDns a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{dnsStateKPI})t4 
+		on t3.MOID=t4.MOID where 1=1 
+		<if test="siteName != null and siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+siteName+"'" ,"'%'")} 
+		</if>
+		<if test="siteType != -1 and siteType != '' and siteType != null ">
+			and SiteType=#{siteType}
+		</if>
+		union all 
+		select t5.*,t6.available from 
+		(select a.MOID,a.IPAddr siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSiteFtp a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{jobSiteFTP}
+		left join (select MOSiteFtp.*,SysMOList.DoIntervals from MOSiteFtp,SysMOList where MID=#{jobSiteFTP}) f on a.MOID=f.MOID)t5 left join 
+		(select m.MOID,${concat("m.connsState", "n.loginState")} as available from (select a.MOID,b.PerfValue connsState from MOSiteFtp a 
+		left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{connsStateKPI})m
+		left join
+		(select a.MOID,b.PerfValue loginState from MOSiteFtp a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID and b.KPIName=#{loginStateKPI})n on m.MOID=n.MOID
+		)t6 
+		on t5.MOID=t6.MOID where 1=1 
+		<if test="siteName != null and siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+siteName+"'" ,"'%'")} 
+		</if>
+		<if test="siteType != -1 and siteType != '' and siteType != null ">
+			and SiteType=#{siteType}
+		</if>
+		union all 
+		select t7.*,t8.available from 
+		(select a.MOID,a.IPAddr siteAddr,a.SiteName,a.SiteInfo,a.AlarmLevel,a.UpdateAlarmTime,b.SiteType,c.LevelIcon,c.AlarmLevelName,d.PerfValue responseTime,d.CollectTime,e.DoIntervals ,f.DoIntervals defDoIntervals from MOSitePort a
+		left join MOWebSite b on a.ParentMOID=b.MOID 
+		left join AlarmLevel c on a.AlarmLevel=c.AlarmLevelID 
+		left join PerfSnapshotSite d on a.MOID=d.MOID and a.ParentMOID=d.ParentMOID and d.KPIName=#{responseTimeKPI}
+		 left join SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		left join SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{jobSiteTCP}
+		left join (select MOSitePort.*,SysMOList.DoIntervals from MOSitePort,SysMOList where MID=#{jobSiteTCP}) f on a.MOID=f.MOID)t7 left join 
+		(select a.MOID,b.PerfValue available from MOSitePort a left join PerfSnapshotSite b on a.MOID=b.MOID and a.ParentMOID=b.ParentMOID 
+		and b.KPIName=#{portStateKPI})t8 
+		on t7.MOID=t8.MOID where 1=1  
+		<if test="siteName != null and siteName != '' ">
+			and SiteName like ${concat("'%'", "'"+siteName+"'" ,"'%'")} 
+		</if>
+		<if test="siteType != -1 and siteType != '' and siteType != null ">
+			and SiteType=#{siteType}
+		</if>
+		)websites 
+		where 1=1 
+		<if test="includeType != '' and includeType != null ">
+			and websites.SiteType in (${includeType})
+		</if>
+	</select>
+	<update id="updateWebSiteHttpId"  parameterType="hashmap">
+	   update MOSiteHttp set ResID=#{resid}  where moid=#{moid}
+	</update>
+	<update id="updateWebSiteTcpId"  parameterType="hashmap">
+	   update MOSitePort set  ResID=#{resid}  where moid=#{moid}
+	</update>
+</mapper>

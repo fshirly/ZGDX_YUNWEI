@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.smstools.mapper.SMSServerOutMapper">
+	<resultMap id="SMSServerOutMap" type="com.fable.insightview.platform.smstools.entity.SMSServerOutBean">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="recipient" property="recipient" jdbcType="VARCHAR" />
+		<result column="text" property="text" jdbcType="VARCHAR" />
+		<result column="wap_url" property="wap_url" jdbcType="VARCHAR" />
+		<result column="wap_expiry_date" property="wap_expiry_date" jdbcType="VARCHAR" />
+		<result column="wap_signal" property="wap_signal" jdbcType="VARCHAR" />
+		<result column="create_date" property="create_date"	jdbcType="VARCHAR" />
+		<result column="originator" property="originator" jdbcType="VARCHAR" />
+		<result column="encoding" property="encoding" jdbcType="VARCHAR" />
+		<result column="status_report" property="status_report" jdbcType="INTEGER" />
+		<result column="flash_sms" property="flash_sms" jdbcType="INTEGER" />
+		<result column="src_port" property="src_port" jdbcType="INTEGER" />
+		<result column="dst_port" property="dst_port" jdbcType="INTEGER" />
+		<result column="sent_date" property="sent_date" jdbcType="VARCHAR" />
+		<result column="ref_no" property="ref_no" jdbcType="VARCHAR" />
+		<result column="priority" property="priority" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="errors" property="errors" jdbcType="INTEGER" />
+		<result column="gateway_id" property="gateway_id" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertSMSServerOut" parameterType="com.fable.insightview.platform.smstools.entity.SMSServerOutBean">
+	insert into smsserver_out (id,type,recipient,text,wap_url,wap_expiry_date,wap_signal,
+	create_date,originator,encoding,status_report,flash_sms,src_port,dst_port,sent_date,
+	ref_no,priority,status,errors,gateway_id)
+	values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{recipient,jdbcType=VARCHAR}, 
+      #{text,jdbcType=VARCHAR}, #{wap_url,jdbcType=VARCHAR},#{wap_expiry_date,jdbcType=VARCHAR},
+      #{wap_signal,jdbcType=VARCHAR},#{create_date,jdbcType=VARCHAR}, #{originator,jdbcType=VARCHAR},
+      #{encoding,jdbcType=VARCHAR},#{status_report,jdbcType=INTEGER}, #{flash_sms,jdbcType=INTEGER},
+      #{src_port,jdbcType=INTEGER},#{dst_port,jdbcType=INTEGER},#{sent_date,jdbcType=VARCHAR},
+      #{ref_no,jdbcType=VARCHAR},#{priority,jdbcType=INTEGER},#{status,jdbcType=VARCHAR},
+      #{errors,jdbcType=INTEGER},#{gateway_id,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+</mapper>
+

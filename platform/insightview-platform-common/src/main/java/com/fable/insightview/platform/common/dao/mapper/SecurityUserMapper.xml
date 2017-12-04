@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.common.dao.mapper.SecurityUserMapper" >
+
+
+ 	<!-- 获取机房登记表数据 -->
+	<select id="getBaseInfoByUserId"  resultType="com.fable.insightview.platform.common.entity.SecurityUserInfoBean" parameterType="Integer">
+		select a.UserID id,a.*from SysUserInfo a where a.UserID = #{id,jdbcType=INTEGER}
+	</select>
+	
+</mapper>

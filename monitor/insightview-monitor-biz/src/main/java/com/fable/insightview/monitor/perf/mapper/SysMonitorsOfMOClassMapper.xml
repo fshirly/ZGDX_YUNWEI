@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.perf.mapper.SysMonitorsOfMOClassMapper">
+	<resultMap 	 id="MonitorsOfMOClassMap" type="sysMonitorsOfMOClass">
+		<id column="ID" property="id"  jdbcType="INTEGER" />
+		<result column="MOClassID" property="moClassId" jdbcType="INTEGER"/>
+		<result column="MID" property="mid" jdbcType="INTEGER"/>
+	</resultMap>
+	
+ 	<select id="getByMOClassID" resultType="String" parameterType="Integer">
+		select  ${concat("s.MID", "','" ,"m.MOName")} as mo 
+  		from SysMonitorsOfMOClass s
+  		left join SysMOList m on s.MID=m.MID
+  		where MOClassID=#{moClassId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByMOClassID2" parameterType="Integer" resultType="sysMonitorsOfMOClass">
+		select * from SysMonitorsOfMOClass where MOClassID=#{moClassId,jdbcType=INTEGER}
+	</select>
+</mapper>

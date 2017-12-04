@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="insightview-monitor-alarmdispatcher" />
+        <module name="insightview-monitor-biz" />
+        <module name="insightview-monitor-war" />
+        <module name="insightview-monitor-web" />
+        <module name="insightview-platform-biz" />
+        <module name="insightview-platform-common" />
+        <module name="insightview-platform-core" />
+        <module name="insightview-platform-security" />
+        <module name="insightview-platform-war" />
+        <module name="insightview-platform-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="com.fable.insightview" target="1.7" />
+      <module name="insightview-monitor-alarmdispatcher" target="1.5" />
+      <module name="insightview-monitor-biz" target="1.7" />
+      <module name="insightview-monitor-war" target="1.7" />
+      <module name="insightview-monitor-web" target="1.7" />
+      <module name="insightview-platform-biz" target="1.7" />
+      <module name="insightview-platform-common" target="1.7" />
+      <module name="insightview-platform-core" target="1.7" />
+      <module name="insightview-platform-security" target="1.7" />
+      <module name="insightview-platform-war" target="1.7" />
+      <module name="insightview-platform-web" target="1.7" />
+      <module name="monitor" target="1.7" />
+      <module name="platform" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

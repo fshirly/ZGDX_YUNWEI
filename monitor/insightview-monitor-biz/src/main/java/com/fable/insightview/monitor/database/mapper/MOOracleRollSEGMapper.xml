@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.database.mapper.MOOracleRollSEGMapper" >
+  <resultMap id="oracleRollSEGMap" type="moOracleRollSEG" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="DBMOID" property="dbMOID" jdbcType="INTEGER" />
+    <result column="TBSMOID" property="tbsMOID" jdbcType="INTEGER" />
+    <result column="TBSName" property="tbsName" jdbcType="INTEGER" />
+    <result column="SEGName" property="segName" jdbcType="INTEGER" />
+    <result column="SEGID" property="segID" jdbcType="INTEGER" />
+    <result column="SEGSize" property="segSize" jdbcType="INTEGER" />
+    <result column="InitialExtent" property="initialExtent" jdbcType="INTEGER" />
+    <result column="PCTIncrease" property="pctIncrease" jdbcType="INTEGER" />
+    <result column="MinExtents" property="minExtents" jdbcType="INTEGER" />
+    <result column="MaxExtents" property="maxExtents" jdbcType="INTEGER" />
+    <result column="SEGStatus" property="segStatus" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="perfOracleRollSEGMap" type="com.fable.insightview.monitor.database.entity.PerfOrclRollbackBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collecttime" jdbcType="INTEGER" />
+    <result column="SegStatus" property="segstatus" jdbcType="INTEGER" />
+    <result column="CurrSize" property="currsize" jdbcType="INTEGER" />
+    <result column="InitialExtent" property="initialextent" jdbcType="INTEGER" />
+    <result column="NextExtent" property="nextextent" jdbcType="INTEGER" />
+    <result column="MinExtent" property="minextent" jdbcType="INTEGER" />
+    <result column="MaxExtent" property="maxextent" jdbcType="INTEGER" />
+    <result column="HWMSize" property="hwmsize" jdbcType="INTEGER" />
+    <result column="Shrinks" property="shrinks" jdbcType="INTEGER" />
+    <result column="Wraps" property="wraps" jdbcType="VARCHAR" />
+    <result column="Extend" property="extend" jdbcType="VARCHAR" />
+    <result column="Increase" property="increase" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<select id="getOrclRollSEGList" resultMap="oracleRollSEGMap" parameterType="hashmap">
+		SELECT seg.MOID,seg.DBMOID,seg.TBSMOID,seg.TBSName,seg.segName,seg.SEGID,seg.SEGSize,
+		   seg.InitialExtent,seg.PCTIncrease,seg.MinExtents,seg.MaxExtents,seg.SEGStatus,db.DBName as dbName
+			FROM MOOracleRollSEG seg
+			LEFT JOIN MOOracleDB db ON seg.DBMOID=db.MOID
+			LEFT JOIN MODBMSServer server ON db.DBMSMOID=server.MOID
+			where server.MOID = #{MOID}
+	</select>
+  
+  <select id="getRollSEGByMoID" resultType="moOracleRollSEG" parameterType="java.lang.Integer">
+  	SELECT seg.MOID,seg.DBMOID,seg.TBSMOID,seg.TBSName,seg.segName,seg.SEGID,seg.SEGSize,
+		   seg.InitialExtent,seg.PCTIncrease,seg.MinExtents,seg.MaxExtents,seg.SEGStatus,db.DBName as dbName
+			FROM MOOracleRollSEG seg
+			LEFT JOIN MOOracleDB db ON seg.DBMOID=db.MOID
+			LEFT JOIN MODBMSServer server ON db.DBMSMOID=server.MOID
+			WHERE seg.MOID=#{moID}
+  </select>
+  
+   <select id="queryAllOrclRollback" resultMap="oracleRollSEGMap" >
+  	SELECT seg.MOID,seg.DBMOID,seg.TBSMOID,seg.TBSName,seg.segName,seg.SEGID,seg.SEGSize,
+		   seg.InitialExtent,seg.PCTIncrease,seg.MinExtents,seg.MaxExtents,seg.SEGStatus,db.DBName as dbName
+			FROM MOOracleRollSEG seg
+			LEFT JOIN MOOracleDB db ON seg.DBMOID=db.MOID
+			LEFT JOIN MODBMSServer server ON db.DBMSMOID=server.MOID
+			WHERE server.MOID=${moId}
+  </select>
+  
+  <select id="queryOrclRollBackPerf" resultMap="perfOracleRollSEGMap" parameterType="hashmap">
+  		SELECT seg.ID,seg.MOID,${dateFormat("seg.CollectTime")} colTime,seg.SegStatus,
+  			   seg.CurrSize/1024/1024 CurrSize,seg.InitialExtent,seg.NextExtent,seg.HWMSize,
+		       seg.Shrinks,seg.Wraps,seg.Extend,seg.Increase
+		FROM   PerfOrclRollback seg
+	    WHERE  seg.MOID=#{seltItem}
+	    and    seg.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+	    order by seg.CollectTime
+  </select>
+  <!-- 获取所有回滚段信息 -->
+  <select id="getAllOrclRollSEGList" resultMap="oracleRollSEGMap" parameterType="page">
+		SELECT seg.MOID,seg.DBMOID,seg.TBSMOID,seg.TBSName,seg.segName,seg.SEGID,seg.SEGSize,
+		   seg.InitialExtent,seg.PCTIncrease,seg.MinExtents,seg.MaxExtents,seg.SEGStatus,db.DBName as dbName,server.IP
+			from MOOracleRollSEG seg
+			LEFT JOIN MOOracleDB db ON seg.DBMOID=db.MOID
+			LEFT JOIN MOOracleInstance ins ON ins.DBMOID=db.MOID
+			LEFT JOIN MODBMSServer server ON db.DBMSMOID=server.MOID
+			where 1=1 
+		<if test="params.dbName != null and params.dbName != '' " >
+        	 and db.DBName like ${concat("'%'","'"+params.dbName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and server.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.segName != null and params.segName != '' " >
+	         and seg.segName like ${concat("'%'","'"+params.segName+"'","'%'")}
+	    </if> 
+	    <if test="params.instanceMOID != -1 and params.instanceMOID != '' ">
+		    and ins.MOID=#{params.instanceMOID} 
+		</if>
+	</select>
+</mapper>

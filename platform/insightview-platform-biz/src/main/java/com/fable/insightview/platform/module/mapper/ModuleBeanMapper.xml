@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.module.mapper.ModuleBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.module.entity.ModuleBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="PID" property="pid" jdbcType="VARCHAR" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="TYPE" property="type" jdbcType="CHAR" />
+        <result column="SORT_ORDER" property="sortOrder" jdbcType="DECIMAL" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_ID" property="updateId" jdbcType="VARCHAR" />
+        <result column="UPDATE_NAME" property="updateName" jdbcType="VARCHAR" />
+        <result column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP" />
+        <result column="URL" property="url" jdbcType="VARCHAR"/>
+        <!--result column="METHOD_NAME" property="methodName"  jdbcType="VARCHAR"/-->
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, PID, NAME, NAME AS CODE, TYPE, SORT_ORDER, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME, 
+        UPDATE_ID, UPDATE_NAME, UPDATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_MODULE
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_MODULE
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.module.entity.ModuleBean" >
+        insert into FBS_MODULE (ID, SYS_ID, PID, 
+            NAME, TYPE, SORT_ORDER, 
+            NOTE, CREATOR_ID, CREATOR_NAME, 
+            CREATED_TIME, UPDATE_ID, UPDATE_NAME, 
+            UPDATED_TIME)
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR}, 
+            #{name,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, #{sortOrder,jdbcType=DECIMAL}, 
+            #{note,jdbcType=VARCHAR}, #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, 
+            #{createdTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=VARCHAR}, #{updateName,jdbcType=VARCHAR}, 
+            #{updatedTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.module.entity.ModuleBean" >
+        insert into FBS_MODULE
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="pid != null" >
+                PID,
+            </if>
+            <if test="name != null" >
+                NAME,
+            </if>
+            <if test="type != null" >
+                TYPE,
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+            <if test="updateId != null" >
+                UPDATE_ID,
+            </if>
+            <if test="updateName != null" >
+                UPDATE_NAME,
+            </if>
+            <if test="updatedTime != null" >
+                UPDATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null" >
+                #{pid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=CHAR},
+            </if>
+            <if test="sortOrder != null" >
+                #{sortOrder,jdbcType=DECIMAL},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null" >
+                #{updateId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null" >
+                #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="updatedTime != null" >
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.module.entity.ModuleBean" >
+        update FBS_MODULE
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null" >
+                PID = #{pid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                TYPE = #{type,jdbcType=CHAR},
+            </if>
+            <if test="sortOrder != null" >
+                SORT_ORDER = #{sortOrder,jdbcType=DECIMAL},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null" >
+                UPDATE_ID = #{updateId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null" >
+                UPDATE_NAME = #{updateName,jdbcType=VARCHAR},
+            </if>
+            <if test="updatedTime != null" >
+                UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.module.entity.ModuleBean" >
+        update FBS_MODULE
+        set SYS_ID = #{sysId,jdbcType=VARCHAR},
+            PID = #{pid,jdbcType=VARCHAR},
+            NAME = #{name,jdbcType=VARCHAR},
+            TYPE = #{type,jdbcType=CHAR},
+            SORT_ORDER = #{sortOrder,jdbcType=DECIMAL},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            UPDATE_ID = #{updateId,jdbcType=VARCHAR},
+            UPDATE_NAME = #{updateName,jdbcType=VARCHAR},
+            UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    
+   <!--  <select id="query" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_MODULE
+    </select> -->
+    
+      <select id="query" resultMap="BaseResultMap">
+        select a.*, group_concat(b.URL) as url from FBS_MODULE a left join FBS_METHOD b on a.ID=b.MODULE_ID
+		group by a.id 
+		order by a.name
+    </select> 
+    
+    <select id="queryChildren" resultType="java.lang.String" parameterType="java.lang.String">
+        select id
+		  from (select t.id, t.pid from FBS_MODULE t) v
+	     where FIND_IN_SET(id, getChildLst_module(#{id,jdbcType=VARCHAR}))
+    </select>
+    
+    <delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM FBS_MODULE where ID in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+</mapper>

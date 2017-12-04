@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.website.mapper.SysSiteCommunityMapper">
+	<resultMap id="siteCommunityMap" type="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="UserName" property="userName" jdbcType="VARCHAR" />
+    <result column="Password" property="password" jdbcType="VARCHAR" />
+    <result column="DomainID" property="domainId" jdbcType="INTEGER" />
+    <result column="SiteType" property="siteType" jdbcType="INTEGER" />
+    <result column="RequestMethod" property="requestMethod" jdbcType="INTEGER" />
+    </resultMap>
+	
+	<select id="getByIPAndPort" parameterType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+		select * from SysSiteCommunity where IPAddress = #{ipAddress} and Port=#{port}
+	</select>
+	
+	<select id="getByIPAndSiteType" parameterType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+		select * from SysSiteCommunity where IPAddress = #{ipAddress} and SiteType=#{siteType}
+	</select>
+	
+	<insert id="insertSiteCommunity" parameterType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+		insert into SysSiteCommunity (ID, IPAddress, Port, UserName, Password, DomainID, SiteType,RequestMethod)
+		values (#{id,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER},
+			#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{domainId,jdbcType=INTEGER},
+			#{siteType,jdbcType=INTEGER}, #{requestMethod,jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<update id="updateSiteCommunity" parameterType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+	update SysSiteCommunity
+    <set>
+      <if test="ipAddress != null" >
+        IPAddress = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        Port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        UserName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        Password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="domainId != null" >
+        DomainID = #{domainId,jdbcType=INTEGER},
+      </if>
+      <if test="siteType != null" >
+        SiteType = #{siteType,jdbcType=INTEGER},
+      </if>
+      <if test="requestMethod != null" >
+        RequestMethod = #{requestMethod,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getFtpCommunityByMOID" parameterType="com.fable.insightview.monitor.website.entity.SiteFtp" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+	select com.* from SysSiteCommunity com
+	left join MOSiteFtp f on com.IPAddress=f.IPAddr and com.Port=f.Port
+	where f.MOID=#{moID} and com.SiteType=1
+	</select>
+	
+	<select id="getHttpCommunityByMOID" parameterType="com.fable.insightview.monitor.website.entity.SiteHttp" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+	select com.* from SysSiteCommunity com
+	left join MOSiteHttp f on com.IPAddress=f.HttpUrl
+	where f.MOID=#{moID} and com.SiteType=2
+	</select>
+	
+	<select id="getCommunityByConditions" resultType="hashmap" resultMap="siteCommunityMap" parameterType="page">
+	  select ID, IPAddress, Port, UserName, Password, DomainID, SiteType,RequestMethod
+	  from SysSiteCommunity 
+	  where 1=1
+      <if test="params.ipAddress != '' and params.ipAddress != null ">
+		and IPAddress like ${concat("'%'","'"+params.ipAddress+"'","'%'")}
+      </if>
+      <if test="params.siteType != '' and params.siteType != null  and params.siteType != -1">
+		and SiteType = #{params.siteType}
+      </if>
+      order by ID desc
+	</select>
+	
+	<select id="getByConditions" parameterType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+	  select ID, IPAddress, Port, UserName, Password, DomainID, SiteType,RequestMethod
+	  from SysSiteCommunity
+	  where 1=1
+	  <if test="ipAddress != '' and ipAddress != null ">
+	    and IPAddress = #{ipAddress,jdbcType=VARCHAR}
+      </if>
+       <if test="port != '' and port != null  and port != 0">
+	    and Port = #{port,jdbcType=INTEGER}
+      </if>
+      <if test="siteType != '' and siteType != null and siteType != -1">
+	    and SiteType = #{siteType,jdbcType=INTEGER}
+      </if>
+      <if test="id != '' and id != null and id != -1">
+	    and ID != #{id,jdbcType=INTEGER}
+      </if>
+	</select>
+	
+	<select id="getByID" parameterType="Integer" resultType="com.fable.insightview.monitor.website.entity.SysSiteCommunityBean">
+	  select ID, IPAddress, Port, UserName, Password, DomainID, SiteType,RequestMethod
+	  from SysSiteCommunity
+	  where ID = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="delById" parameterType="Integer">
+	delete from SysSiteCommunity where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="delByIds" parameterType="java.lang.String">
+	delete from SysSiteCommunity where ID in (${ids})
+	</delete>
+</mapper>

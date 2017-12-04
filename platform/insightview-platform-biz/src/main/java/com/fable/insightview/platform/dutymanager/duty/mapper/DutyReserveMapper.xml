@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.duty.mapper.DutyReserveMapper">
+	
+	<insert id="insert" parameterType="com.fable.insightview.platform.dutymanager.duty.entity.PfDutyReserve">
+		INSERT INTO PfDutyReserve (ID,DutyId,UserId)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{dutyId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM PfDutyReserve WHERE DutyId=#{dutyId,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="query" resultType="HASHMAP">
+		SELECT dr.DutyId,dr.UserId,su.UserName FROM PfDutyReserve dr 
+		LEFT JOIN SysUserInfo su ON dr.UserId=su.UserID WHERE dr.DutyId=#{dutyId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryMulti" resultType="HASHMAP">
+		SELECT dr.DutyId,dr.UserId,su.UserName FROM PfDutyReserve dr 
+		LEFT JOIN SysUserInfo su ON dr.UserId=su.UserID 
+		<if test="list.size() > 0"> 
+			WHERE dr.DutyId IN
+			<foreach collection="list" item="dutyId" open="( " separator="," close=" )">
+	        #{dutyId}
+	        </foreach>
+        </if>
+	</select>
+</mapper>

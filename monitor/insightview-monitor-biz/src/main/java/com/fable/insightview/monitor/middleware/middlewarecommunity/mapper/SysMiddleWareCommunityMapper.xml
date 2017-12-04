@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.middleware.middlewarecommunity.mapper.SysMiddleWareCommunityMapper" >
+  <resultMap id="middleWareCommunityMap" type="middleWareCommunity" >
+  <id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+		<result column="MiddleWareName" property="middleWareName" jdbcType="INTEGER" />
+		<result column="MiddleWareType" property="middleWareType" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+		<result column="UserName" property="userName" jdbcType="VARCHAR" />
+		<result column="PassWord" property="passWord" jdbcType="VARCHAR" />
+		<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+		<result column="Url" property="url" jdbcType="VARCHAR" /> 
+  </resultMap>
+  
+  <resultMap id="middleWareJVMMap" type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJVMBean" > 
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMoId" jdbcType="INTEGER" />
+    <result column="JvmName" property="jvmName" jdbcType="VARCHAR" />
+    <result column="JvmVendor" property="jvmVendor" jdbcType="VARCHAR" />
+    <result column="JvmVersion" property="jvmVersion" jdbcType="VARCHAR"/>
+    <result column="JavaVendor" property="javaVendor" jdbcType="VARCHAR" />
+    <result column="JavaVersion" property="javaVersion" jdbcType="VARCHAR" />
+    <result column="ClassPath" property="classPath" jdbcType="VARCHAR" />
+    <result column="InputArguments" property="inputArguments" jdbcType="VARCHAR"/>
+    <result column="UpTime" property="upTime" jdbcType="INTEGER" />
+    <result column="HeapSizeInit" property="heapSizeInit" jdbcType="INTEGER" />
+    <result column="HeapSizeMax" property="heapSizeMax" jdbcType="INTEGER" />   
+  </resultMap>
+  
+   <resultMap id="middleWareMempoolMap" type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean" > 
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+    <result column="MemType" property="memType" jdbcType="VARCHAR" />
+    <result column="MemName" property="memName" jdbcType="VARCHAR" />
+    <result column="MGRName" property="mGRName" jdbcType="VARCHAR"/>
+    <result column="InitSize" property="initSize" jdbcType="INTEGER" />
+    <result column="MaxSize" property="maxSize" jdbcType="INTEGER" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="ServerName" property="serverName" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <select id="getByIP" parameterType="middleWareCommunity" resultMap="middleWareCommunityMap" resultType="hashmap">
+  select * from SysMiddleWareCommunity 
+  where IPAddress=#{ipAddress} and MiddleWareType=#{middleWareType}
+  </select>     
+  
+  <insert id="insertMiddleWareCommunity" parameterType="middleWareCommunity">
+  insert into SysMiddleWareCommunity(ID,IPAddress,MiddleWareName,MiddleWareType,Port,UserName,PassWord,DomainID,Url)    
+  values (#{id,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR},
+			#{middleWareName,jdbcType=INTEGER},#{middleWareType,jdbcType=VARCHAR},
+			#{port,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},
+			#{passWord,jdbcType=VARCHAR},#{domainID,jdbcType=INTEGER},#{url,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateMiddleWareCommunity" parameterType="middleWareCommunity">
+  update SysMiddleWareCommunity
+  set IPAddress=#{ipAddress},MiddleWareName=#{middleWareName},
+     Port=#{port},UserName=#{userName},PassWord=#{passWord},DomainID=#{domainID},Url=#{url}
+	where IPAddress=#{ipAddress,jdbcType=VARCHAR} and MiddleWareType=#{middleWareType,jdbcType=VARCHAR}  and Port=#{port,jdbcType=INTEGER} 
+  </update>
+  
+  <select id="getMiddleWareTask" resultType="middleWareCommunity" parameterType="java.lang.Integer" >
+  select com.*  from SysMiddleWareCommunity com
+  	left join MOMiddleWareJMX middle on middle.IP=com.IPAddress and com.MiddleWareType = middle.JmxType and com.Port=middle.Port
+  	left join SysPerfPollTask task on task.MOID=middle.MOID and task.IsOffline is NULL 
+  	where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getMiddleWareCommunityList" resultType="hashmap" resultMap="middleWareCommunityMap" parameterType="page">
+  select  com.ID,com.IPAddress,com.MiddleWareName,com.MiddleWareType,com.Port,com.UserName,com.PassWord,com.DomainID,com.Url,manage.DomainName
+  from SysMiddleWareCommunity com
+  left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+  where 1=1 
+     <if test="params.ipAddress != '' and params.ipAddress != null ">
+	  and com.IPAddress like ${concat("'%'","'"+params.ipAddress+"'","'%'")}
+     </if>
+     <if test="params.middleWareType != '' and params.middleWareType != null ">
+	  and com.MiddleWareType like ${concat("'%'","'"+params.middleWareType+"'","'%'")}
+     </if>
+     <if test="params.userName != '' and params.userName != null ">
+	  and com.UserName like ${concat("'%'","'"+params.userName+"'","'%'")}
+     </if>
+  </select>
+  
+  <delete id="delMiddleWareCommunity" parameterType="hashmap">
+	delete from SysMiddleWareCommunity where ID in
+	<foreach collection="list" item="ids"  open="(" separator="," close=")">
+     #{ids}
+    </foreach> 
+  </delete>
+  
+  <select id="getCommunityByNameAndIP" parameterType="middleWareCommunity" resultType="Integer">
+    select count(1) from SysMiddleWareCommunity where IPAddress=#{ipAddress} and MiddleWareName=#{middleWareName} and Port=#{port}
+  </select>
+  
+  <select id="getCommunityByNameAndIPAndID" parameterType="middleWareCommunity" resultType="Integer">
+    select count(1) from SysMiddleWareCommunity 
+    where IPAddress=#{ipAddress} and MiddleWareName=#{middleWareName}  and Port=#{port} and ID!=#{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getCommunityByID" parameterType="Integer" resultType="middleWareCommunity">
+   select  com.ID,com.IPAddress,com.MiddleWareName,com.MiddleWareType,com.Port,com.UserName,com.PassWord,com.DomainID,com.Url,manage.DomainName as domainName
+   from SysMiddleWareCommunity com
+   left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+   where ID=#{id,jdbcType=INTEGER}
+  </select>
+  
+    <select id="getCommunityByIP" parameterType="java.lang.String" resultType="middleWareCommunity">
+   select  com.ID,com.IPAddress,com.MiddleWareName,com.MiddleWareType,com.Port,com.UserName,com.PassWord,com.DomainID,com.Url,manage.DomainName as domainName
+   from SysMiddleWareCommunity com
+   left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+   where IPAddress=#{ipAddress,jdbcType=VARCHAR} and MiddleWareType=#{middleWareType,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateCommunityByID" parameterType="middleWareCommunity">
+  update SysMiddleWareCommunity
+  set IPAddress=#{ipAddress},MiddleWareName=#{middleWareName},MiddleWareType=#{middleWareType,jdbcType=VARCHAR},
+     Port=#{port},UserName=#{userName},PassWord=#{passWord},DomainID=#{domainID},Url=#{url}
+  where ID=#{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryListJVM" resultType="hashmap" resultMap="middleWareJVMMap" parameterType="page">
+  		select t.MOID,t.ParentMOID,t.JvmName,t.JvmVendor,t.JvmVersion,t.JavaVendor,t.JavaVersion,
+  		t.ClassPath,t.InputArguments,t.UpTime,t.HeapSizeInit,t.HeapSizeMax,
+  		ta.OSName,ta.OSVersion,ta.ip
+  		from MOMiddleWareJVM t 		
+  		left join MOMiddleWareJMX ta on t.ParentMOID = ta.MOID
+  		where 1=1
+  		<if test="params.jvmName != null and params.jvmName != '' ">
+			and t.JvmName like ${concat("'%'","'"+params.jvmName+"'","'%'")}		
+    	</if>
+    	<if test="params.ip != null and params.ip != '' ">
+			and ta.ip like ${concat("'%'","'"+params.ip+"'","'%'")}		
+    	</if>	
+    	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and t.ParentMOID = #{ params.parentMoId}
+	    </if>
+	    <if test="params.jmxType != null and params.jmxType != '' ">
+			and ta.JmxType= #{ params.jmxType}
+    	</if>
+  		order by t.MOID 	
+  </select> 
+  
+   <select id="queryListMemPool" resultType="hashmap" resultMap="middleWareMempoolMap" parameterType="page">
+  		select ta.ip,ta.Port,ta.ServerName,t.MOID,t.ParentMOID,t.MemType,t.MemName,t.MGRName,t.InitSize,t.MaxSize
+  		from MOMiddleWareMemory	t
+  		left join MOMiddleWareJMX ta on t.ParentMOID = ta.MOID
+  		where 1=1	
+  		<if test="params.memName != null and params.memName != '' ">
+			and t.MemName like ${concat("'%'","'"+params.memName+"'","'%'")}		
+    	</if>
+    	<if test="params.ip != null and params.ip != '' ">
+			and ta.ip like ${concat("'%'","'"+params.ip+"'","'%'")}		
+    	</if>	
+    	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and t.ParentMOID = #{ params.parentMoId}
+	    </if>
+	     <if test="params.jmxType != null and params.jmxType != '' ">
+			and ta.JmxType= #{ params.jmxType}
+    	</if>
+  		order by t.MOID	
+  </select>
+  
+  <select id="querySnapshot" resultType="hashmap" resultMap="middleWareMempoolMap" 
+  	parameterType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean">
+  	select MOID,KPIName,PerfValue from PerfSnapshotMiddleware where MOID=#{moId,jdbcType=INTEGER}
+  	and (KPIName='MemoryFree' or KPIName='MemoryUsage')
+  </select>
+
+ <select id="getCommunityByIPAndPort" parameterType="middleWareCommunity" resultType="middleWareCommunity">
+   select  com.ID,com.IPAddress,com.MiddleWareName,com.MiddleWareType,com.Port,com.UserName,com.PassWord,com.DomainID,com.Url,manage.DomainName as domainName
+   from SysMiddleWareCommunity com
+   left join SysManagedDomain manage on com.DomainID=manage.DomainID 
+   where IPAddress=#{ipAddress,jdbcType=VARCHAR} and MiddleWareType=#{middleWareType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="getByConditions" parameterType="middleWareCommunity" resultMap="middleWareCommunityMap" resultType="hashmap">
+  select * from SysMiddleWareCommunity 
+  where IPAddress like ${concat("'%'","'"+ipAddress+"'","'%'")} and MiddleWareType=#{middleWareType} and Port =#{port}
+  </select>   
+ </mapper>

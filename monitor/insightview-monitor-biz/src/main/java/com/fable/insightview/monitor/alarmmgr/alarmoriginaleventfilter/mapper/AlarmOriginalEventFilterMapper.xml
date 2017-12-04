@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmoriginaleventfilter.mapper.AlarmOriginalEventFilterMapper">
+	<resultMap id="AlarmOriginalEventFilterMap" type="alarmOriginalEventFilter">
+		<id column="FilterID" property="filterID" jdbcType="INTEGER" />
+		<result column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+		<result column="KeyWord" property="keyWord" jdbcType="VARCHAR" />
+		<result column="KeyOperator" property="keyOperator" jdbcType="VARCHAR" />
+		<result column="KeyValue" property="keyValue" jdbcType="VARCHAR" />
+		<result column="MFlag" property="mFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<delete id="delAlarmFilterByAlarmDefineID" parameterType="hashmap">
+		delete from AlarmOriginalEventFilter where AlarmDefineID in 
+		<foreach collection="list" item="alarmDefineIds"  open="(" separator="," close=")">
+	     #{alarmDefineIds}
+	    </foreach> 
+	</delete>
+	
+	<select id="selectAlarmFilter" resultType="hashmap"
+		resultMap="AlarmOriginalEventFilterMap" parameterType="page"> 
+		select filter.FilterID,filter.AlarmDefineID,filter.KeyWord,filter.KeyOperator,filter.KeyValue,filter.MFlag
+		from AlarmOriginalEventFilter filter
+		where 1=1 and filter.KeyWord not in ('Match','Action')
+		<if test="params.alarmDefineID!=''">
+		and filter.AlarmDefineID = #{params.alarmDefineID}
+		</if>
+	</select>
+	
+	<select id="getAlarmFilterByAlarmDefineId" resultType="hashmap"
+		resultMap="AlarmOriginalEventFilterMap" parameterType="java.lang.Integer"> 
+		select filter.FilterID,filter.AlarmDefineID,filter.KeyWord,filter.KeyOperator,filter.KeyValue,filter.MFlag
+		from AlarmOriginalEventFilter filter
+		where filter.AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER}
+	</select>
+	
+	<insert id="insertAlarmFilter" parameterType="alarmOriginalEventFilter">
+	insert into AlarmOriginalEventFilter (FilterID,AlarmDefineID,KeyWord,KeyOperator,KeyValue,MFlag)
+	values (#{filterID,jdbcType=INTEGER}, #{alarmDefineID,jdbcType=INTEGER}, #{keyWord,jdbcType=VARCHAR}, 
+      #{keyOperator,jdbcType=VARCHAR}, #{keyValue,jdbcType=VARCHAR},#{mFlag,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateAlarmFilter" parameterType="alarmOriginalEventFilter">
+	update AlarmOriginalEventFilter set KeyWord=#{keyWord},KeyOperator=#{keyOperator},KeyValue=#{keyValue},MFlag=#{mFlag}
+	where FilterID=#{filterID}
+	</update>
+	
+	<update id="updateFilterByMatch" parameterType="alarmOriginalEventFilter">
+	update AlarmOriginalEventFilter set KeyWord=#{keyWord},KeyOperator=#{keyOperator},KeyValue=#{keyValue},MFlag=#{mFlag}
+	where KeyWord=#{keyWord} and AlarmDefineID=#{alarmDefineID}
+	</update>
+	
+	<delete id="delAlarmFilterByAlarmFilterID" parameterType="java.lang.Integer">
+		delete from AlarmOriginalEventFilter where FilterID=#{filterID}
+	</delete>
+	
+	
+	<select id="getAlarmFilters" resultType="hashmap"
+		resultMap="AlarmOriginalEventFilterMap" parameterType="java.lang.Integer"> 
+		select filter.FilterID,filter.AlarmDefineID,filter.KeyWord,filter.KeyOperator,filter.KeyValue,filter.MFlag
+		from AlarmOriginalEventFilter filter
+		where filter.AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER} and filter.KeyWord!='Match' and filter.KeyWord!='Action'
+	</select>
+	
+	<select id="getByKeyWord"  parameterType="alarmOriginalEventFilter" resultType="java.lang.Integer">
+		select count(1) from AlarmOriginalEventFilter 
+		where AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER} and KeyWord=#{keyWord}
+	</select>
+	
+	<select id="getAlarmDefineIDs" resultType="java.lang.Integer">
+	select distinct AlarmDefineID from AlarmOriginalEventFilter
+	</select>
+	
+	<select id="getByKeyWordAndId"  parameterType="alarmOriginalEventFilter" resultType="java.lang.Integer">
+		select count(1) from AlarmOriginalEventFilter 
+		where AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER} and KeyWord=#{keyWord} and FilterID!=#{filterID}
+	</select>
+	
+	<resultMap id="SysTrapTaskMap" type="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+		<id column="TaskID" property="taskID" jdbcType="INTEGER" />
+		<result column="ServerIP" property="serverIP" jdbcType="VARCHAR" />
+		<result column="FilterExpression" property="filterExpression" jdbcType="VARCHAR" />
+		<result column="ProgressStatus" property="progressStatus" jdbcType="INTEGER" />
+		<result column="CollectorID" property="collectorID" jdbcType="INTEGER" />
+		<result column="Creator" property="creator" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+		<result column="LastOPResult" property="lastOPResult" jdbcType="INTEGER" />
+		<result column="ErrorInfo" property="errorInfo" jdbcType="VARCHAR" />
+		<result column="OperateStatus" property="operateStatus" jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertTrapTask" parameterType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+	insert into SysTrapTask (TaskID,ServerIP,FilterExpression,ProgressStatus,CollectorID,Creator,CreateTime,LastOPResult,ErrorInfo,OperateStatus,AlarmOID,IsOffline)
+	values (#{taskID,jdbcType=INTEGER}, #{serverIP,jdbcType=VARCHAR}, #{filterExpression,jdbcType=VARCHAR}, 
+      #{progressStatus,jdbcType=INTEGER}, #{collectorID,jdbcType=INTEGER},#{creator,jdbcType=INTEGER},
+      ${sysdate()},#{lastOPResult,jdbcType=INTEGER},#{errorInfo,jdbcType=VARCHAR},#{operateStatus,jdbcType=INTEGER},#{alarmOID,jdbcType=VARCHAR},#{isOffline,jdbcType=VARCHAR}
+      )
+	</insert>
+	<select id="getTrapTaskByMOID" parameterType="String" resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+	select TaskID,ServerIP,FilterExpression,ProgressStatus,CollectorID,Creator,CreateTime,LastOPResult,ErrorInfo,OperateStatus,AlarmOID 
+	from SysTrapTask where OperateStatus!=3 and AlarmOID=#{alarmOID,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getTaskByMOIDAndStatus" parameterType="String" resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+	select TaskID,ServerIP,FilterExpression,ProgressStatus,CollectorID,Creator,CreateTime,LastOPResult,ErrorInfo,OperateStatus,AlarmOID 
+	from SysTrapTask where AlarmOID=#{alarmOID,jdbcType=VARCHAR} and OperateStatus!=3
+	</select>
+	
+	<update id="updateSysTrapTask" parameterType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+	update SysTrapTask set ServerIP=#{serverIP,jdbcType=VARCHAR},FilterExpression=#{filterExpression,jdbcType=VARCHAR},
+	ProgressStatus=#{progressStatus,jdbcType=INTEGER},CollectorID=#{collectorID,jdbcType=INTEGER},Creator=#{creator,jdbcType=INTEGER},
+	CreateTime=${sysdate()},LastOPResult=#{lastOPResult,jdbcType=INTEGER},ErrorInfo=#{errorInfo,jdbcType=VARCHAR},OperateStatus=#{operateStatus,jdbcType=INTEGER},AlarmOID=#{alarmOID,jdbcType=VARCHAR}
+	where TaskID=#{taskID,jdbcType=INTEGER}
+	</update>
+	
+	<delete id="delSysTrapTask" parameterType="java.lang.Integer">
+	delete from SysTrapTask where TaskID=#{taskID,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="getTrapTaskByMOID2" parameterType="String" resultType="com.fable.insightview.monitor.alarmmgr.entity.SysTrapTaskBean">
+	select TaskID,ServerIP,FilterExpression,ProgressStatus,CollectorID,Creator,CreateTime,LastOPResult,ErrorInfo,OperateStatus,AlarmOID 
+	from SysTrapTask where OperateStatus!=3 and AlarmOID=#{alarmOID,jdbcType=VARCHAR}
+	</select>
+	</mapper>
+

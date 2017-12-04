@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.mocpus.mapper.MOCPUsMapper" >
+  <resultMap id="moCPUsMap" type="moCPUs" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="Instance" property="instance" jdbcType="VARCHAR" />
+    <result column="RawDescr" property="rawDescr" jdbcType="VARCHAR" />
+    <result column="MIBModule" property="mIBModule" jdbcType="VARCHAR" />
+    <result column="ResID" property="resid" jdbcType="INTEGER" />
+  </resultMap>
+ 
+   <select id="selectMOCPUs" resultType="hashmap"
+	resultMap="moCPUsMap" parameterType="page">
+	select
+	cpu.*,mo.MOName as deviceMOName
+	from MOCPUs cpu
+	left join MODevice mo on cpu.DeviceMOID=mo.MOID
+	where 1=1
+	<if test="params.moName !='' and params.moName != null ">
+		and cpu.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+	</if>
+	<if test="params.deviceMOID != -1 and params.deviceMOID != '' ">
+	    and cpu.DeviceMOID=#{params.deviceMOID} 
+    </if>
+   </select>
+
+   <select id="getMOCPUsId" parameterType="Integer" resultType="moCPUs">
+	 select
+	 cpu.*
+	from MOCPUs cpu
+	 where 1=1 and cpu.MOID = #{moID}
+   </select>
+   
+   <select id="getByDeviceMOIDAndMOID" parameterType="moCPUs" resultType="Integer">
+	select count(1) from MOCPUs
+	where 1=1 and DeviceMOID = #{deviceMOID}  and MOID = #{moID}
+	</select>
+	
+  <select id="synchronMOCPUsToRes"  resultType="hashmap" resultMap="moCPUsMap" parameterType="page">
+  	<!-- select * from MOCPUs where ResID is null or OperStatus = 2 -->
+  	SELECT * from MOCPUs m where m.DeviceMOID in (select MOID from MODevice where MOID in(${params.moIDs}))
+  </select>
+  <update id="updateResId" parameterType="hashmap" >
+	update MOCPUs set ResID = ${resid}  where MOID = ${moid}
+ </update> 
+ <select id="queryList" resultType="hashmap" resultMap="moCPUsMap" parameterType="page">
+	select
+	cpu.*,mo.MOName deviceMOName,mo.DeviceIP
+	from MOCPUs cpu,MODevice mo
+	where cpu.DeviceMOID=mo.MOID  and mo.MOClassID=#{params.mOClassID}	
+	<if test="params.deviceMOName !='' and params.deviceMOName != null ">
+		and mo.MOName like ${concat("'%'","'"+params.deviceMOName+"'","'%'")}
+	</if>
+	<if test="params.operStatus !='' and params.operStatus != null ">
+		and cpu.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+	</if>
+	<if test="params.deviceIP !='' and params.deviceIP != null ">
+		and mo.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")} 
+	</if>
+	order by mo.MOID,cpu.MOID
+</select> 
+
+	<select id="getResIDByDeviceId" parameterType="Integer" resultType="Integer">
+		select ResID from MOCPUs where DeviceMOID = #{deviceMoId}
+	</select>  
+</mapper>
+

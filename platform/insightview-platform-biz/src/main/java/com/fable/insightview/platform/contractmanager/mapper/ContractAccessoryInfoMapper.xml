@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.contractmanager.mapper.ContractAccessoryInfoMapper">
+  <resultMap id="ContractAccessoryInfoMapper" type="com.fable.insightview.platform.contractmanager.entity.ContractAccessoryInfo" >
+    <id column="Id" property="id" jdbcType="INTEGER"/>
+    <result column="ContractID" property="contractID" jdbcType="INTEGER"/>
+    <result column="FileName" property="fileName" jdbcType="VARCHAR"/>
+    <result column="Url" property="url" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertContractAccessoryInfo">
+   insert into ContractAccessoryInfo(Id,ContractID,FileName,Url) values(
+      #{id,jdbcType=INTEGER},
+      #{contractID,jdbcType=INTEGER},
+      #{fileName,jdbcType=VARCHAR},
+      #{url,jdbcType=VARCHAR}
+   )
+  </insert>
+  <select id="selectContractFileInfoList" resultMap="ContractAccessoryInfoMapper" resultType="hashmap" parameterType="Integer">
+    select ID,ContractID,FileName,Url from ContractAccessoryInfo where 1=1
+      and ContractID=#{_parameter}
+  </select>
+  <delete id="deleteContractAccessoryInfo" parameterType="Integer">
+    delete from ContractAccessoryInfo where ContractID=#{contractID,jdbcType=INTEGER}
+  </delete>
+</mapper>

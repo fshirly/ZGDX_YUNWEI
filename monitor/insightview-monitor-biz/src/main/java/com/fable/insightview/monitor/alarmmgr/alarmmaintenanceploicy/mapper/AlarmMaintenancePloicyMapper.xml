@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmmaintenanceploicy.mapper.AlarmMaintenancePloicyMapper">
+	<resultMap  id="AlarmMaintenancePloicyMap" type="com.fable.insightview.monitor.alarmmgr.alarmmaintenanceploicy.entity.AlarmMaintenancePloicyBean">
+		<id column="PloicyID" property="ploicyID"  jdbcType="INTEGER" />
+		<result column="MaintainTitle" property="maintainTitle" jdbcType="VARCHAR"/>
+		<result column="MaintainType" property="maintainType" jdbcType="INTEGER"/>
+		<result column="MaintainDesc" property="maintainDesc" jdbcType="VARCHAR"/>
+		<result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER"/>
+		<result column="StartTime" property="startTime" jdbcType="TIMESTAMP"/>
+		<result column="EndTime" property="endTime" jdbcType="TIMESTAMP"/>
+		<result column="IsUsed" property="isUsed" jdbcType="INTEGER"/>
+		<result column="MFlag" property="mFlag" jdbcType="INTEGER"/>
+		<result column="CreateUser" property="createUser" jdbcType="VARCHAR"/>
+		<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR"/>
+		<result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<select id="queryInfoList" resultType="hashmap" resultMap="AlarmMaintenancePloicyMap" parameterType="page">
+		select  d.PloicyID,d.MaintainTitle,d.MaintainType,d.MaintainDesc,d.SourceMOID,e.MOID,e.MOName,e.DeviceIP,
+				d.StartTime,d.EndTime,d.IsUsed
+		from  AlarmMaintenancePolicy  d
+		left join  MODevice  e  on  d.SourceMOID = e.MOID
+		where 1=1
+		<if test="params.moname != null and params.moname != '' " >
+			and e.MOName like ${concat("'%'","'"+params.moname+"'","'%'")}
+		</if>
+		<if test="params.maintainTitle != null and params.maintainTitle != '' " >
+			and d.MaintainTitle like  ${concat("'%'","'"+params.maintainTitle+"'","'%'")}
+		</if>
+		group by d.MaintainTitle
+	</select>
+	
+	<select id="queryByID" resultMap="AlarmMaintenancePloicyMap"    parameterType="java.lang.Integer">
+		select  d.PloicyID,d.MaintainTitle,d.MaintainType,d.MaintainDesc,e.MOName ,e.DeviceIP,
+				d.StartTime,d.EndTime,d.IsUsed,e.MOID
+		from    AlarmMaintenancePolicy  d
+		left join  MODevice  e  on  d.SourceMOID = e.MOID
+		where 1=1  and  d.PloicyID = #{ploicyID,jdbcType=INTEGER}	
+	</select>
+	
+	<select id="checkName" resultType="Integer" parameterType="java.lang.String">
+		select count(1) from AlarmMaintenancePolicy where 1=1 and MaintainTitle = #{maintainTitle,jdbcType=VARCHAR}	
+	</select>
+	
+	<select id="checkName2" resultType="Integer" parameterType="com.fable.insightview.monitor.alarmmgr.alarmmaintenanceploicy.entity.AlarmMaintenancePloicyBean">
+		select count(1) from AlarmMaintenancePolicy where 1=1 and MaintainTitle = #{maintainTitle,jdbcType=VARCHAR}	and PloicyID != #{ploicyID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="checkMOName" resultType="Integer" parameterType="java.lang.Integer">
+		select count(1) from AlarmMaintenancePolicy where 1=1 and SourceMOID = #{sourceMOID,jdbcType=VARCHAR}	
+	</select>
+	
+	<insert id="insertSelective" parameterType="com.fable.insightview.monitor.alarmmgr.alarmmaintenanceploicy.entity.AlarmMaintenancePloicyBean" >
+  	  insert into AlarmMaintenancePolicy
+     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ploicyID != null" >
+        PloicyID,
+      </if>
+      <if test="maintainTitle != null" >
+        MaintainTitle,
+      </if>
+      <if test="maintainType != null" >
+        MaintainType,
+      </if>
+       <if test="maintainDesc != null" >
+        MaintainDesc,
+      </if>
+      <if test="sourceMOID != null" >
+        SourceMOID,
+      </if>
+      <if test="startTime != null" >
+        StartTime,
+      </if>
+      <if test="endTime != null" >
+        EndTime,
+      </if>
+      <if test="isUsed != null" >
+        IsUsed,
+      </if>
+       <if test="mFlag != null" >
+        MFlag,
+      </if>
+       <if test="createUser != null" >
+        CreateUser,
+      </if>
+       <if test="createTime != null" >
+        CreateTime,
+      </if>
+       <if test="modifyUser != null" >
+        ModifyUser,
+      </if>
+        <if test="modifyTime != null" >
+        ModifyTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ploicyID != null" >
+        #{ploicyID,jdbcType=INTEGER},
+      </if>
+       <if test="maintainTitle != null" >
+         #{maintainTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainType != null" >
+        #{maintainType,jdbcType=INTEGER},
+      </if>
+      <if test="maintainDesc != null" >
+        #{maintainDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceMOID != null" >
+        #{sourceMOID,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+        <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isUsed != null" >
+        #{isUsed,jdbcType=INTEGER},
+      </if>
+      <if test="mFlag != null" >
+        #{mFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+        <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUser != null" >
+        #{modifyUser,jdbcType=VARCHAR},
+      </if>
+        <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+	  </insert>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from AlarmMaintenancePolicy
+		where PloicyID = #{ploicyID,jdbcType=INTEGER}
+  	</delete>
+  	
+  	<update id="updateByPrimaryKey"
+	parameterType="com.fable.insightview.monitor.alarmmgr.alarmmaintenanceploicy.entity.AlarmMaintenancePloicyBean">
+	update AlarmMaintenancePolicy
+	<set>
+		<if test="maintainTitle != null">
+			MaintainTitle = #{maintainTitle,jdbcType=VARCHAR},
+	      </if>
+		<if test="maintainType != null">
+			MaintainType = #{maintainType,jdbcType=INTEGER},
+	      </if>
+		<if test="maintainDesc != null">
+			MaintainDesc = #{maintainDesc,jdbcType=VARCHAR},
+	      </if>
+		<if test="sourceMOID != null">
+			SourceMOID = #{sourceMOID,jdbcType=INTEGER},
+	      </if>
+		<if test="startTime != null">
+			StartTime = #{startTime,jdbcType=TIMESTAMP},
+	      </if>
+		<if test="endTime != null">
+			EndTime = #{endTime,jdbcType=TIMESTAMP},
+	      </if>
+		<if test="isUsed != null">
+			IsUsed = #{isUsed,jdbcType=INTEGER},
+	      </if>
+		<if test="mFlag != null">
+			MFlag = #{mFlag,jdbcType=INTEGER},
+	      </if>
+		<if test="createUser != null">
+			CreateUser = #{createUser,jdbcType=VARCHAR},
+	      </if>
+		<if test="createTime != null">
+			CreateTime = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+		<if test="modifyUser != null">
+			ModifyUser = #{modifyUser,jdbcType=VARCHAR},
+	      </if>
+		<if test="modifyTime != null">
+			ModifyTime = #{modifyTime,jdbcType=TIMESTAMP},
+	      </if>
+	</set>
+	where PloicyID = #{ploicyID,jdbcType=INTEGER}
+</update>
+	
+</mapper>

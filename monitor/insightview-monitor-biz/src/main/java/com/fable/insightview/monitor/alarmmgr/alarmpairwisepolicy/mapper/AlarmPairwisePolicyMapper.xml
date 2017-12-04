@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.alarmpairwisepolicy.mapper.AlarmPairwisePolicyMapper">
+	<resultMap id="AlarmPairwisePolicyMap" type="alarmPairwisePolicy">
+		<id column="PloicyID" property="ploicyID" jdbcType="INTEGER" />
+		<result column="CauseAlarmDefineID" property="causeAlarmDefineID" jdbcType="INTEGER" />
+		<result column="RecoverAlarmDefineID" property="recoverAlarmDefineID" jdbcType="INTEGER" />
+		<result column="TimeWindow" property="timeWindow" jdbcType="INTEGER" />
+		<result column="IsUsed" property="isUsed" jdbcType="INTEGER" />
+		<result column="MFlag" property="mFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectAlarmPairwisePolicy" resultType="hashmap"	resultMap="AlarmPairwisePolicyMap">
+		select pair.PloicyID,pair.CauseAlarmDefineID,pair.RecoverAlarmDefineID,
+		pair.TimeWindow,pair.IsUsed,pair.MFlag 
+		from AlarmPairwisePolicy pair where 1=1
+		<if test="params.causeAlarmDefineID != -1 and params.causeAlarmDefineID !='' ">
+		  and pair.causeAlarmDefineID =#{params.causeAlarmDefineID}
+		</if>
+		<if test="params.recoverAlarmDefineID != -1 and params.recoverAlarmDefineID !='' ">
+		  and pair.causeAlarmDefineID =#{params.causeAlarmDefineID}
+		</if>
+	</select>
+	
+	<delete id="delPairwisePolicy" parameterType="Integer">
+		delete from AlarmPairwisePolicy where PloicyID = #{ploicyID}
+	</delete>
+	
+	<select id="getByCauseIDAndRecoverID" parameterType="Integer" resultType="alarmPairwisePolicy"	>
+		select pair.PloicyID,pair.CauseAlarmDefineID,pair.RecoverAlarmDefineID,
+		pair.TimeWindow,pair.IsUsed,pair.MFlag 
+		from AlarmPairwisePolicy pair where CauseAlarmDefineID = #{alarmDefineID} or RecoverAlarmDefineID=#{alarmDefineID}
+	</select>
+	
+	<insert id="insertAlarmPairPolicy" parameterType="alarmPairwisePolicy">
+	insert into AlarmPairwisePolicy (PloicyID,CauseAlarmDefineID,RecoverAlarmDefineID,TimeWindow,IsUsed,MFlag)
+	values (#{ploicyID,jdbcType=INTEGER}, #{causeAlarmDefineID,jdbcType=INTEGER}, #{recoverAlarmDefineID,jdbcType=INTEGER}, 
+      #{timeWindow,jdbcType=INTEGER}, #{isUsed,jdbcType=INTEGER},#{mFlag,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateAlarmPairPolicy" parameterType="alarmPairwisePolicy">
+	update AlarmPairwisePolicy set TimeWindow=#{timeWindow},IsUsed=#{isUsed},MFlag=#{mFlag}
+	where RecoverAlarmDefineID=#{recoverAlarmDefineID}
+	</update>
+	
+	<select id="getByCauseIDAndRecoverID2" parameterType="Integer" resultType="alarmPairwisePolicy"	>
+		select pair.PloicyID,pair.CauseAlarmDefineID,pair.RecoverAlarmDefineID,
+		pair.TimeWindow,pair.IsUsed,pair.MFlag 
+		from AlarmPairwisePolicy pair where CauseAlarmDefineID = #{alarmDefineID} or RecoverAlarmDefineID=#{alarmDefineID}
+	</select>
+</mapper>
+

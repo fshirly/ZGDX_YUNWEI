@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:plugin="http://www.springframework.org/xmlns:plugin/"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="gridsterTabsTemplateFactory"
+		class="com.fable.insightview.platform.core.gridstertabs.TemplateFactory">
+		<property name="templateCache">
+			<map>
+				<entry>
+					<key>
+						<value>GridSter-pre</value>
+					</key>
+					<value><![CDATA[
+						moType = '$[moType]';
+						if('$[moType]' == 'host'){
+							$('<div id="tabs_window" class="easyui-tabs viewtabs"  fit="true"><div title="主机性能视图" id="$[divId]" class="gridster"><ul></ul></div></div>').appendTo('body');
+						}else if('$[moType]' == 'device'){
+							$('<div id="tabs_window" class="easyui-tabs viewtabs"  fit="true"><div title="网络设备视图" id="$[divId]" class="gridster"><ul></ul></div></div>').appendTo('body');
+						}else if('$[moType]' == 'mo'){
+							$('<div id="tabs_window" class="easyui-tabs viewtabs"  fit="true"><div title="概览视图" id="$[divId]" class="gridster"><ul></ul></div></div>').appendTo('body');
+						}else{
+							$('<div id="$[divId]" class="gridster"><ul></ul></div>').appendTo('body');
+						}
+						
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>GridSter-mid</value>
+					</key>
+					<value><![CDATA[
+						//计算部件基本大小
+						var pubUrl = "";
+						var w =  window.screen.width;
+						var h =  window.screen.height;
+						var baseWidth = 10; //基本大小
+						var baseHeight = baseWidth;
+						baseHeight = 29;
+						if(w >= 1600){
+							baseWidth = 34;
+						//	baseHeight = 27;
+						}else if (w == 1440 && h == 900) {
+							baseWidth = 29;
+						//	baseHeight = 24;
+						}else if (w < 1440 && w > 1280) {
+							baseWidth = 27;
+						//	baseHeight = 27;
+						}else if (w == 1280 && h <= 1024) {
+							baseWidth = 24;
+						//	baseHeight = 24;
+						}else if (w == 1152) {
+							baseWidth = 20;
+						//	baseHeight = 24;
+						}
+						
+						portalType = "$[portalType]";
+						if (portalType == "2") {
+							gridster[$[gridsterCount]] = $("#$[divId] ul").gridster({
+					          widget_margins: [$[marginsHorizontal], $[marginsVertival]],  //部件间水平和垂直边缘的距离。
+					       //   widget_base_dimensions: [$[baseDimensionsWidth], $[baseDimensionsHeight]],  //基本小部件的像素尺寸。第一个索引是宽度,第二个是高度。
+					          widget_base_dimensions: [baseWidth, baseHeight], 
+					          helper: 'clone',
+					          resize: {
+					            enabled: $[resize],
+					    	//	enabled: false,
+					            max_size: [34, 9],
+					            stop: function(e, ui, $widget){
+					            	var funName = $widget[0].id;
+					            //	if(funName.indexOf("Chart")>0 || funName.indexOf("Detail")>0 || funName.indexOf("Availability")>0){
+					            	if((funName.indexOf("Chart")>0 && funName.indexOf("LineChart")<0) || funName.indexOf("Availability")>0 || funName.indexOf("Usage")>0){
+					            		eval(funName+"();");
+					            	}else{
+					            		var funNameSub = funName.substring(1); 
+					            		eval("refreshIfrView(\""+funNameSub+"Frame\");");
+					            	}
+					            	
+					            }
+					          }
+					      }).data('gridster');
+						} else {
+							gridster[$[gridsterCount]] = $("#$[divId] ul").gridster({
+					          widget_margins: [$[marginsHorizontal], $[marginsVertival]],  //部件间水平和垂直边缘的距离。
+					       //   widget_base_dimensions: [$[baseDimensionsWidth], $[baseDimensionsHeight]],  //基本小部件的像素尺寸。第一个索引是宽度,第二个是高度。
+					          widget_base_dimensions: [baseWidth, baseHeight], 
+					          helper: 'clone',
+					          resize: {
+					            enabled: $[resize],
+					     	//	enabled: false,
+					            max_size: [30, 9],
+					            stop: function(e, ui, $widget){
+					            	var funName = $widget[0].id;
+					          //  	if(funName.indexOf("Chart")>0 || funName.indexOf("Detail")>0 || funName.indexOf("Availability")>0){
+					            	if((funName.indexOf("Chart")>0 && funName.indexOf("LineChart")<0) || funName.indexOf("Availability")>0 || funName.indexOf("Usage")>0){
+					            		eval(funName+"();");
+					            	}else{
+					            		var funNameSub = funName.substring(1); 
+					            		eval("refreshIfrView(\""+funNameSub+"Frame\");");
+					            	}
+					            	
+					            }
+					          }
+					      }).data('gridster');
+						}
+						
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>GridSter-end</value>
+					</key>
+					<value><![CDATA[
+						$.each(widgets, function(i, widget){
+					          gridster[$[gridsterCount]].add_widget.apply(gridster[$[gridsterCount]], widget)
+					      });
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>GridSter-tabsPre</value>
+					</key>
+					<value><![CDATA[
+						var outerDiv = $("#$[outerGridSterName]");
+						]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>GridSter-tabsDiv</value>
+					</key>
+					<value><![CDATA[
+						outerDiv.append('<div title="$[tabsDivTitle]" id="$[divId]" class="gridster"><ul></ul></div>');
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>Widget</value>
+					</key>
+					<value><![CDATA[
+						function L$[widgetName](time,widgetTitle,editPageUrl,isRefresh){
+						if(widgetTitle == undefined){
+							widgetTitle = "$[widgetTitle]";
+						}
+						if(isRefresh == undefined){
+							isRefresh = true;
+						}
+						if(editPageUrl == undefined){
+							editPageUrl = urlMaps.get('$[widgetName]');
+						}else{
+							 urlMaps.put('$[widgetName]',editPageUrl);
+						}
+						if("$[widgetName]".indexOf("Status")>0){
+							if('$[isEdit]' == 'true'){
+							//	var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/><div id="$[widgetName]Edit" title="编辑" class="sDashboard-icon sDashboard-edit-icon "/>'+widgetTitle+'</div><div style="height:100px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+								var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'</div><div style="height:100px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+								$("#L$[widgetName]").html(htmlStr);	
+							}else{
+							//	var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/>'+widgetTitle+'</div><div style="height:100px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+								var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'</div><div style="height:100px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+								$("#L$[widgetName]").html(htmlStr);	
+							}
+							
+						}else{
+							if(("$[chartType]" == "gauge" && "$[widgetName]".indexOf("Availability")>0) || "$[chartType]" == "line"){
+								if('$[isEdit]' == 'true'){
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/><div id="$[widgetName]Edit" title="编辑" class="sDashboard-icon sDashboard-edit-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24h$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7d$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="lastmonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24h$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7d$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="lastmonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}else{
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24h$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7d$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="lastmonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24h$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7d$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="lastmonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}
+								
+							}else if("$[chartType]" == "gauge" && "$[widgetName]".indexOf("Availability")<0){
+								if('$[isEdit]' == 'true'){
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/><div id="$[widgetName]Edit" title="编辑" class="sDashboard-icon sDashboard-edit-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24H$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="Today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="Yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="Week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7D$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="Month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="LastMonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24H$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="Today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="Yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="Week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7D$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="Month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="LastMonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);
+								}else{
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24H$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="Today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="Yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="Week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7D$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="Month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="LastMonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div id="timeBar" class="databbar"><a id="24H$[widgetName]" href="javascript:void(0);" class="line">24h</a><a id="Today$[widgetName]" href="javascript:void(0);" class="line">今天</a><a id="Yes$[widgetName]" href="javascript:void(0);" class="line">昨天</a><a id="Week$[widgetName]" href="javascript:void(0);" class="line">本周</a><a id="7D$[widgetName]" href="javascript:void(0);" class="line">7天</a><a id="Month$[widgetName]" href="javascript:void(0);" class="line">本月</a><a id="LastMonth$[widgetName]" href="javascript:void(0);" >上月</a></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);
+								}
+								if("$[widgetName]".indexOf("NoTime")>0){
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);
+								}
+								
+							}else if("$[chartType]" == "bar"){
+								if('$[isEdit]' == 'true'){
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/><div id="$[widgetName]Edit" title="编辑" class="sDashboard-icon sDashboard-edit-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}else{
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]AutoRef" title="自动刷新" class="sDashboard-icon sDashboard-auto-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}
+								
+							}else{
+								if('$[isEdit]' == 'true'){
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/><div id="$[widgetName]Edit" title="编辑" class="sDashboard-icon sDashboard-edit-icon "/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}else{
+							//		var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left"><div title="关闭" class="sDashboard-icon sDashboard-circle-remove-icon" onclick="removeWidget(\'L$[widgetName]\');"/><div title="刷新" class="sDashboard-icon sDashboard-refresh-icon " onclick="L$[widgetName](\'24H\');"/>'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:300px;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									var htmlStr = '<div class="sDashboardWidgetHeader sDashboard-clearfix" style=" text-align:left">'+widgetTitle+'<input id="$[widgetName]Hide" type="hidden" value="start"/></div><div style="height:100%;width:100%;" id="$[widgetName]"/><span class="gs-resize-handle gs-resize-handle-both"/>';
+									$("#L$[widgetName]").html(htmlStr);	
+								}
+								
+							}
+						}
+											
+	 				]]></value>
+				</entry>
+				
+				
+				<entry>
+					<key>
+						<value>BarChart</value>
+					</key>
+					<value><![CDATA[
+						var myChart;
+						var option;
+						if('$[isEdit]' == 'true'){
+												$('#$[widgetName]Edit').click(function(){	
+												if(editPageUrl != ""){
+													var editUrl = editPageUrl;
+													var reg=new RegExp("&","g");
+													editUrl = editUrl.replace(reg,";");
+													var url = getRootPatch()+"$[editUrl]"+"?widgetId=$[widgetId]&widgetName=$[widgetName]&widgetTitle="+widgetTitle+"&url="+editUrl
+													url=encodeURI(encodeURI(url));
+													parent.$('#popView').window({
+												    	title:'编辑页面',
+												        width:500,
+												        height:300,
+												        top:125,
+												        inline:true,
+												        minimizable:false,
+												        maximizable:false,
+												        collapsible:false,
+												        modal:true,
+												        href: url
+												    });
+												}
+											});
+											}
+						if(editPageUrl.indexOf("{moID}") >= 0 || editPageUrl.indexOf("{") >= 0){
+							var imgValue = '<img src='+getRootPatch()+'/style/images/nodataareachart.png>';
+							$("#$[widgetName]").append(imgValue);
+							}else{
+								(function(){
+									var resultData = {category:[], data:[]};
+									var rotateValue = 0;
+									var barWidthValue = 50;
+									//从后台加载要显示的数据  
+									$.ajax({
+										async : false,
+										type : "post",
+										url : getRootName()+editPageUrl,
+										data : {},
+										dataType : "json",
+										success : function(results) {
+											resultData = results;
+											if(resultData.category.length>=8 && resultData.category[0].length>=8){
+												rotateValue = -40;
+											}
+											if(resultData.category.length > 8){
+												rotateValue = -40;
+												barWidthValue = 10;
+											}
+											$('#$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url
+													//window.parent.frames.location = url;	
+													window.parent.open(url,"_blank");			
+												}
+													
+											});
+										}
+									});
+									option = {
+									    title : {
+									      //  text: '$[widgetTitle]'
+									       text: ''
+									    },
+									    tooltip : {
+									        trigger: 'axis'
+									    },
+									    legend: {
+									        data:$[legends]
+									    },
+									    color: [
+									        '#2ec7c9','#b6a2de','#5ab1ef','#ffb980','#d87a80',
+									        '#8d98b3','#e5cf0d','#97b552','#95706d','#dc69aa',
+									        '#07a2a4','#9a7fd1','#588dd5','#f5994e','#c05050',
+									        '#59678c','#c9ab00','#7eb00a','#6f5553','#c14089'
+									    ],
+									    /**
+									    toolbox: {
+									        show : true,
+									        feature : {
+									            mark : {show: true},
+									            dataView : {show: true, readOnly: false},
+									            magicType : {show: true, type: ['line', 'bar']},
+									            restore : {show: true},
+									            saveAsImage : {show: true}
+									        }
+									    },
+									    */
+									    calculable : true,
+									    xAxis : [
+									        {
+									            type : 'category',
+									            data : resultData.category,
+									            axisLabel:{rotate:rotateValue}
+									         	//data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+									        }
+									    ],
+									    yAxis : [
+									        {
+									            type : 'value',
+									             axisLabel : {   formatter: '{value} $[unit]'}
+									        }
+									    ],
+									    grid: {
+									   		x : '10%',
+									     	width : '80%',
+									     	height : '40%'
+									     },   
+									    series : $[series]
+									};
+									if (document.getElementById('$[widgetName]') != null) {
+										myChart = echarts.init(document.getElementById('$[widgetName]'));
+										myChart.setOption(option);
+									}
+								}());
+									$('#$[widgetName]AutoRef').click(function(){
+										barAutoRefresh(myChart,option,'$[widgetName]','$[fieldName]',getRootName()+'$[dataSourceUrl]')
+									});
+							}
+							
+						}
+						L$[widgetName]("24H","$[widgetTitle]","$[dataSourceUrl]");
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>ChartSeries</value>
+					</key>
+					<value><![CDATA[ 
+				        {
+				            name:'$[label]',
+				            type:'$[type]',
+				            data:resultData.data.$[fieldName]
+				            $[param]
+				            $[AxisChartItem]
+				        }
+				        ,
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>BarChartSeries</value>
+					</key>
+					<value><![CDATA[ 
+						 ,
+						 barWidth:barWidthValue,
+						 barGap:"80%",
+				         itemStyle: {
+						   normal: {
+						     color:function(seriesIndex, series, dataIndex, data){
+						     	//	console.log("seriesIndex = "+seriesIndex);
+						     	//	console.log("series = "+series);
+						     	//	console.log("dataIndex = "+dataIndex);
+						     	//	console.log("data = "+data);
+						            return option.color[series];
+						     }
+						   }
+						}
+						}
+				        ,
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>AxisChartItem</value>
+					</key>
+					<value><![CDATA[
+						,
+				        markPoint : {
+			                data : $[ChartMarks-markPoint]
+			            },
+			            markLine : {
+			                data : $[ChartMarks-markLine]
+			            }
+			            
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>ChartMark</value>
+					</key>
+					<value><![CDATA[
+				        {name:'$[name]',type:'$[type]'}
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>PieChart</value>
+					</key>
+					<value><![CDATA[
+						(function(){
+							var resultData = {category:[], data:[]};
+							var newArr = "";
+							var newArrValue = [];
+							var xx = [];
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+									newArr= resultData.dataName.$[pieName].toString().split(",");
+									$.each(resultData.data.$[fieldName], function(k, v){
+										if(typeof v == "string"){
+											newArrValue.push( eval('(' + v + ')'));
+										}
+									});
+								}
+							});
+	 						option = {
+							    title : {
+							        text: '$[widgetTitle]',
+							        subtext: '',
+							        x:'right'
+							    },
+							    tooltip : {
+							        trigger: 'item',
+							        formatter: "{a} <br/>{b} : {c} ({d}%)"
+							    },
+							    legend: {
+							        orient : 'vertical',
+							        x : 'left',
+							     	data:newArr
+							    },
+							    /**
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    */
+							    calculable : true,
+							    series : [ 
+								        {
+								            name:'$[label]',
+				           					type:'$[type]',
+								            data:newArrValue,
+									        itemStyle:{ 
+									           normal:{ 
+									               label:{ 
+									               show: false, 
+									               formatter: '{b} : {c} ({d}%)' 
+									               		}, 
+									               labelLine :{show:false} 
+									               	} 
+									        } 
+								        }
+								        
+				 					]
+							};
+							if (document.getElementById('$[widgetName]') != null) {
+										myChart = echarts.init(document.getElementById('$[widgetName]'));
+										myChart.setOption(option);
+									}
+						}());
+						}
+						L$[widgetName]("24H","$[widgetTitle]","$[dataSourceUrl]");
+	 				]]></value>
+				</entry>
+				
+				
+				<entry>
+					<key>
+						<value>GaugeChart</value>
+					</key>
+					<value><![CDATA[
+					var myChart;
+					var option;
+						if('$[isEdit]' == 'true'){
+												$('#$[widgetName]Edit').click(function(){	
+												if(editPageUrl != ""){
+													var editUrl = editPageUrl;
+													var reg=new RegExp("&","g");
+													editUrl = editUrl.replace(reg,";");
+													var url = getRootPatch()+"$[editUrl]"+"?widgetId=$[widgetId]&widgetName=$[widgetName]&widgetTitle="+widgetTitle+"&url="+editUrl
+													url=encodeURI(encodeURI(url));
+													parent.$('#popView').window({
+												    	title:'编辑页面',
+												        width:500,
+												        height:300,
+												        top:125,
+												        inline:true,
+												        minimizable:false,
+												        maximizable:false,
+												        collapsible:false,
+												        modal:true,
+												        href: url
+												    });
+												}
+											});
+											}
+					if(editPageUrl.indexOf("{moID}") >= 0 || editPageUrl.indexOf("{") >= 0){
+						var imgValue = '<img src='+getRootPatch()+'/style/images/nodataareachart2.png>';
+							$("#$[widgetName]").append(imgValue);
+							}else{
+								(function(){
+									var resultData = {category:[], data:[]};
+									
+									//从后台加载要显示的数据  
+									$.ajax({
+										async : false,
+										type : "post",
+										url : getRootName() + editPageUrl,
+										data : {
+											"time" :  time,
+											"t" : Math.random()
+										},
+										dataType : "json",
+										success : function(results) {
+											resultData = results;
+											if("$[widgetName]".indexOf("NoTime") < 0){
+												$('#$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url
+													chartUrl = url;
+													window.parent.open(url,"_blank");
+												}
+													
+												}
+												);
+											}
+											
+											$('#24H$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=24H"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#7D$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=7D"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#Today$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=Today"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#Yes$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=Yes"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#Week$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=Week"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#Month$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=Month"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											$('#LastMonth$[widgetName]').click(function(){	
+												if(resultData.url != ""){
+													var url = getRootPatch()+resultData.url+"&time=LastMonth"
+													window.parent.open(url,"_blank");	
+												}
+											});
+											
+											//可用性刷新
+											$('#24h$[widgetName]').click(function(){
+												L$[widgetName]("24H","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#7d$[widgetName]').click(function(){
+												L$[widgetName]("7D","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#today$[widgetName]').click(function(){
+												L$[widgetName]("Today","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#yes$[widgetName]').click(function(){
+												L$[widgetName]("Yes","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#week$[widgetName]').click(function(){	
+												L$[widgetName]("Week","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#month$[widgetName]').click(function(){
+												L$[widgetName]("Month","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											$('#lastmonth$[widgetName]').click(function(){	
+												L$[widgetName]("LastMonth","$[widgetTitle]","$[dataSourceUrl]");
+											});
+											
+											
+										}
+									});
+			 						option = {
+									    tooltip : {
+									        formatter: "{a} <br/>{b} : {c}%"
+									    },
+									    /**
+									    toolbox: {
+									        show : true,
+									        feature : {
+									            mark : {show: true},
+									            restore : {show: true},
+									            saveAsImage : {show: true}
+									        }
+									    },
+									    */
+									    series : $[series]
+									};
+									if (document.getElementById('$[widgetName]') != null) {
+										myChart = echarts.init(document.getElementById('$[widgetName]'));
+										myChart.setOption(option);
+									}
+									/**
+									if(time == "7D"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：7天</span>");	
+									}else if(time == "Today"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：今天</span>");	
+									}else if(time == "Yes"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：昨天</span>");	
+									}else if(time == "Week"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：本周</span>");
+									}else if(time == "Month"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：本月</span>");	
+									}else if(time == "LastMonth"){
+										$("#$[widgetName]Period").append("</br><span>采集周期：上月</span>");
+									}else{
+										$("#$[widgetName]Period").append("</br><span>采集周期：24小时</span>");	
+									}
+									*/
+								}());
+									$('#$[widgetName]AutoRef').click(function(){
+										gaugeAutoRefresh(myChart,option,'$[widgetName]','$[fieldName]',getRootName()+'$[dataSourceUrl]')
+									});
+									}
+						}
+						L$[widgetName]("24H","$[widgetTitle]","$[dataSourceUrl]");
+	 				]]></value>
+				</entry>
+				
+				
+				<entry>
+					<key>
+						<value>LineChart</value>
+					</key>
+					<value><![CDATA[
+					
+						(function(){
+							var resultData = {category:[], data:[]};
+								
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						option = {
+							    title : {
+							        text: '$[widgetTitle]'
+							    },
+							    tooltip : {
+							        trigger: 'axis'
+							    },
+							    legend: {
+							        data:$[legends]
+							    },
+							    /**
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            magicType : {show: true, type: ['line', 'bar']},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    */
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            boundaryGap : false,
+							         //   data :  ['周一','周二','周三','周四','周五','周六','周日']
+							         	data : resultData.category
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value',
+							            axisLabel : {
+							                formatter: '{value} °C'
+							            }
+							        }
+							    ],
+							    series : $[series]
+							};
+	                    	echarts.init(document.getElementById('$[widgetName]')).setOption(option);
+                    	}());
+                    	}
+						L$[widgetName]();
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>EmbedWidget</value>
+					</key>
+					<value><![CDATA[
+						if('$[isEdit]' == 'true'){
+												$('#$[widgetName]Edit').click(function(){	
+												if(editPageUrl != ""){
+													if (editPageUrl.indexOf("liInfo") >= 0) {
+														editPageUrl = editPageUrl.substring(0,editPageUrl.indexOf("liInfo")-1);
+													}
+													var editUrl = editPageUrl;
+													var reg=new RegExp("&","g");
+													editUrl = editUrl.replace(reg,";");
+													var url = getRootPatch()+"$[editUrl]"+"?widgetId=$[widgetId]&widgetName=$[widgetName]&widgetTitle="+widgetTitle+"&url="+editUrl
+													url=encodeURI(encodeURI(url));
+													parent.$('#popView').window({
+												    	title:'编辑页面',
+												        width:500,
+												        height:300,
+												        top:125,
+												        inline:true,
+												        minimizable:false,
+												        maximizable:false,
+												        collapsible:false,
+												        modal:true,
+												        href: url
+												   });
+												   $(".window-mask").css({ height: $(document).height()});
+												   if(!$(this).parent('iframe')){
+												   	   $("body").css("overflow-y","hidden");
+												       $(".panel-tool-close").click(function(){
+											               $("body").css("overflow-y","auto");
+											           });
+												   }
+												}	
+											});
+											} 
+						if(editPageUrl.indexOf("{moID}") >= 0 || editPageUrl.indexOf("{") >= 0){
+							var imgValue = '<img src='+getRootPatch()+'/style/images/nodataareachart.png>';
+							$("#$[widgetName]").append(imgValue);
+							}else{
+								if(arrWidgetIndex.in_array($[widgetIndex]) == false ){
+									arrWidgetIndex.push($[widgetIndex]);
+									liIdMaps.put($[widgetIndex],"L$[widgetName]"+";"+$[widgetWidth]);
+								}
+								/**
+		 						if (isRefresh == true) {
+		 							liInfo = "L$[widgetName]#$[widgetWidth]";
+									widgetIndex = $[widgetIndex];
+		 						}
+		 						*/
+		 						liInfo = "$[widgetIndex]|L$[widgetName]|$[widgetWidth]";
+		 						if (editPageUrl.indexOf("?") > 0) {
+		 							if (editPageUrl.indexOf("liInfo") < 0) {
+		 								editPageUrl = editPageUrl + "&liInfo="+liInfo;
+		 							}
+		 						} else {
+		 							editPageUrl = editPageUrl + "?liInfo="+liInfo;
+		 						}
+		 				//		$('#$[widgetName]').append("<iframe id='$[widgetName]Frame' name='frameName' src='"+getRootPatch()+editPageUrl+"' frameborder='0' width='100%' height='100%' style='border-bottom: 0px; border-left: 0px; border-top: 0px; border-right: 0px;' allowTransparency='allowtransparency' />")
+		 						$('#$[widgetName]').append("<iframe id='$[widgetName]Frame' name='frameName' frameborder='0' width='100%' height='100%' style='border-bottom: 0px; border-left: 0px; border-top: 0px; border-right: 0px;' allowTransparency='allowtransparency' />")
+		 						//拓扑双击事件
+		 						if ("$[widgetName]".indexOf("TopoInfoChart") >= 0) {
+										$('#L$[widgetName]').dblclick(function(){
+											window.open(getRootName()+editPageUrl,"","resizable=yes,scrollings=no,status=no,toolbar=no,menubar=no,location=no");
+										});
+									}
+		 					/**
+		 						$('#$[widgetName]AutoRef').click(function(){
+										embedAutoRefresh('$[widgetName]',getRootPatch()+'$[url]')
+									});
+									*/
+								
+							if("$[widgetName]".indexOf("List") >= 0 || "$[widgetName]".indexOf("Top") >= 0){
+								ifrSrcMaps.put('$[widgetName]Frame',editPageUrl);
+							} else {
+								otherSrcMaps.put('$[widgetName]Frame',editPageUrl);
+							}
+							}
+ 						}
+					L$[widgetName]("24H","$[widgetTitle]","$[url]",false);
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>DataTables</value>
+					</key>
+					<value><![CDATA[
+						(function(){
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						
+							$('$[widgetName]')
+									.datagrid(
+											{
+												iconCls : 'icon-edit',// 图标
+												width : 700,
+												height : 'auto',
+												nowrap : false,
+												striped : true,
+												border : true,
+												collapsible : false,// 是否可折叠的
+												fit : true,// 自动大小
+												fitColumns:true,
+												url :getRootName()+'$[dataSourceUrl]',
+												
+												remoteSort : false,
+												idField : 'fldId',
+												singleSelect : false,// 是否单选
+												checkOnSelect : false,
+												selectOnCheck : true,
+												pagination : true,// 分页控件
+												rownumbers : true,// 行号
+												
+												columns : $[columns]
+											});
+						   
+
+						}());
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>GridSterWidget</value>
+					</key>
+					<value><![CDATA[
+						['<li id="$[liName]" width="auto" style="min-width: 55px; min-height: 55px;"></li>', $[width], $[height] , $[col] , $[row]],
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>portalViewJs</value>
+					</key>
+					<value><![CDATA[
+						tabsIndex = $("#tabsIndex").val();
+						var flag = $("#flag").val();
+					   	if(flag == "device"){
+					   		$("#btnSave").hide();
+					   	}
+					   	var p = getRootPatch();
+					   	ss = ifrSrcMaps.keyset();
+					   	others = otherSrcMaps.keyset();
+					   	window.setTimeout(function(){
+							for (var i=0; i<others.length-1; i++) {
+								$("#"+others[i]).ready(function(){ 
+									$("#"+others[i+1]).attr("src", getRootPatch()+otherSrcMaps[others[i+1]+"_"]);
+								});
+								if (i == others.length-2) {
+									$("#"+ss[0]).attr("src", getRootPatch()+ifrSrcMaps[ss[0]+"_"]);
+								}
+							}
+							$("#"+others[0]).attr("src", getRootPatch()+otherSrcMaps[others[0]+"_"]);
+					   	}, 500);
+	 				]]></value>
+				</entry>
+				
+			</map>
+		</property>
+	</bean>
+</beans>

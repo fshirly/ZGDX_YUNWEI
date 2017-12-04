@@ -1,0 +1,11 @@
+{
+	"recordsTotal": 57, 
+	"recordsFiltered": 57,
+	"data":[
+		{"status":"0","name":"编解码器1","account":"***","ip":"192.168.20.11","mac":"ddd","frames":"5959","power":"1024*768"},
+		{"status":"0","name":"编解码器1","account":"***","ip":"192.168.20.11","mac":"ddd","frames":"5959","power":"1024*768"},
+		{"status":"0","name":"编解码器1","account":"***","ip":"192.168.20.11","mac":"ddd","frames":"5959","power":"1024*768"},
+		{"status":"0","name":"编解码器1","account":"***","ip":"192.168.20.11","mac":"ddd","frames":"5959","power":"1024*768"},
+		{"status":"0","name":"编解码器1","account":"***","ip":"192.168.20.11","mac":"ddd","frames":"5959","power":"1024*768"}
+	]
+}

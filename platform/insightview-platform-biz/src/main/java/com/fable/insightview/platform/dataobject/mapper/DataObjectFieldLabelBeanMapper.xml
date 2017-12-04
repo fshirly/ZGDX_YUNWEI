@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dataobject.mapper.DataObjectFieldLabelBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.dataobject.entity.DataObjectFieldLabelBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="DATAOBJECT_ID" property="dataobjectId" jdbcType="VARCHAR" />
+        <result column="PROPERTY_NAME" property="propertyName" jdbcType="VARCHAR" />
+        <result column="DISPLAY_TITLE" property="displayTitle" jdbcType="VARCHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, DATAOBJECT_ID, PROPERTY_NAME, DISPLAY_TITLE, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME
+    </sql>
+    <select id="selectListByDataObjectId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_DATAOBJECT_FIELD_LABEL
+        where DATAOBJECT_ID = #{dataObjectId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 根据数据对象ID获取DataObjectFieldLabelBean对象集 -->
+    <!-- <select id="queryFieldLabelsByDataObjectId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        SELECT property_name,display_title,note
+        FROM FBS_DATAOBJECT_FIELD_LABEL
+        WHERE dataobject_id=#{dataObjectId,jdbcType=VARCHAR}
+    </select> -->
+</mapper>

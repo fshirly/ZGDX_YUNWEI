@@ -1,0 +1,55 @@
+#container {
+	margin: 0 auto;
+	text-align: left;
+	font-size: 13px;
+	font: Î¢ÈíÑÅºÚ;
+}
+
+#problemTabs {
+	width: 860px; 
+	height: 460px; 
+	text-align: left;
+}
+
+.smallpart {
+	height: 360px;
+	width: 860px;
+	margin-top: 10px; 
+	margin-left: 10px; 
+	float: left;
+	/* border:1px solid rgb(200,200,205); */
+	background-color: rgb(200,200,205); 
+}
+
+.smallpart tr {
+	background-color: #fff;
+}
+
+.smallpart td {
+	/* border:1px solid rgb(200,200,205); */
+}
+
+.showbtn {
+	width: 80px;
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+.barProcessInfo {
+	background-color: #595D5E;
+	text-align: center;
+	margin-left: 0px;
+	margin-top: 6px;
+}
+
+.barProcessInfo tr {
+	background-color: #fff;
+	line-height: 22px;
+}
+
+.bardiv {
+	width: 880px;
+	height: 380px;
+	border: 1px solid rgb(200, 200, 205);
+	padding: 10px 6px;
+}

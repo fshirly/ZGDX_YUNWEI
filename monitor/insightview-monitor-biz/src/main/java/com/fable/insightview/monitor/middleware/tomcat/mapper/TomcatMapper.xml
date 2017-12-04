@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.middleware.tomcat.mapper.TomcatMapper">
+	<resultMap id="MOMiddleWareJMXResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="JMXTYPE" property="jmxType" jdbcType="VARCHAR" />
+		<result column="PORTTYPE" property="portType" jdbcType="VARCHAR" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+		<result column="USERNAME" property="userName" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="passWord" jdbcType="VARCHAR" />
+		<result column="SERVERNAME" property="serverName" jdbcType="VARCHAR" />
+		<result column="JMXVERSION" property="jmxVersion" jdbcType="VARCHAR" />
+		<result column="STARTUPTIME" property="startupTime" jdbcType="TIMESTAMP" />
+		<result column="OSNAME" property="oSName" jdbcType="VARCHAR" />
+		<result column="OSVERSION" property="oSVersion" jdbcType="VARCHAR" />
+		<result column="OPERSTATUS" property="operStatus" jdbcType="INTEGER" />
+		<result column="ADMINSTATUS" property="adminStatus" jdbcType="INTEGER" />
+		<result column="DEVICEMOID" property="deviceMOID" jdbcType="INTEGER" />
+		<result column="ALARMLEVEL" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="CREATETIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="LASTUPDATETIME" property="lastUpdateTime"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="PerfTomcatJVMHeapResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.PerfTomcatJVMHeapBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="HEAPSIZE" property="heapSize" jdbcType="DECIMAL" />
+		<result column="HEAPFREE" property="heapFree" jdbcType="DECIMAL" />
+		<result column="HEAPMAX" property="heapMax" jdbcType="DECIMAL" />
+		<result column="HEAPUSAGE" property="heapUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfTomcatMemoryPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.PerfTomcatMemoryPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="MEMORYCOMMITTED" property="memoryCommitted"
+			jdbcType="DECIMAL" />
+		<result column="MEMORYFREE" property="memoryFree" jdbcType="DECIMAL" />
+		<result column="MEMORYMAX" property="memoryMax" jdbcType="DECIMAL" />
+		<result column="MEMORYUSAGE" property="memoryUsage" jdbcType="DECIMAL" />
+	</resultMap>
+
+
+	<resultMap id="TomcatWebModuleResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.TomcatWebModuleBean">
+		<id column="ResObjID" property="resObjId" jdbcType="INTEGER" />
+		<result column="ParentObjID" property="parentObjId" jdbcType="INTEGER" />
+		<result column="WarName" property="warName" jdbcType="VARCHAR" />
+		<result column="Status" property="status" jdbcType="VARCHAR" />
+		<result column="URI" property="uri" jdbcType="VARCHAR" />
+		<result column="AppName" property="appName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="TomcatOperSituationResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.TomcatOperSituationBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="useStatus" property="useStatus" jdbcType="INTEGER" />
+		<result column="UpTime" property="upTime" jdbcType="VARCHAR" />
+		<result column="StartupTime" property="startupTime" jdbcType="TIMESTAMP" />
+		<result column="ResponseTime" property="responseTime" jdbcType="VARCHAR" />
+		<result column="DeviceStatus" property="deviceStatus" jdbcType="VARCHAR" />
+		<result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="PerfTomcatClassLoadResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.PerfTomcatClassLoadBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMoId" jdbcType="INTEGER" />
+		<result column="LoadedClassCount" property="loadedClasses"
+			jdbcType="VARCHAR" />
+		<result column="UnloadedClassCount" property="unloadedClasses"
+			jdbcType="VARCHAR" />
+		<result column="TotalLoadedClassCount" property="totalLoadedClasses"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="MoMiddleWareJvmResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJVMBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMoId" jdbcType="INTEGER" />
+		<result column="JvmVendor" property="jvmVendor" jdbcType="VARCHAR" />
+		<result column="JvmVersion" property="jvmVersion" jdbcType="VARCHAR" />
+		<result column="ClassPath" property="classPath" jdbcType="INTEGER" />
+		<result column="InputArguments" property="inputArguments"
+			jdbcType="INTEGER" />
+		<result column="UpTime" property="upTime" jdbcType="VARCHAR" />
+		<result column="HeapSizeInit" property="heapSizeInit" jdbcType="VARCHAR" />
+		<result column="HeapSizeMax" property="heapSizeMax" jdbcType="INTEGER" />
+		<result column="HeapSizeMin" property="heapSizeMin" jdbcType="INTEGER" />
+		<result column="NheapSizeInit" property="nheapSizeInit"
+			jdbcType="VARCHAR" />
+		<result column="NheapSizeMax" property="nheapSizeMax" jdbcType="VARCHAR" />
+		<result column="NheapSizeMin" property="nheapSizeMin" jdbcType="INTEGER" />
+		<result column="GCInfo" property="gcInfo" jdbcType="INTEGER" />
+		<result column="StackInfo" property="stackInfo" jdbcType="VARCHAR" />
+		<result column="HeapMax" property="heapMax" jdbcType="DECIMAL" />
+		<result column="HeapSize" property="heapSize" jdbcType="DECIMAL" />
+		<result column="HeapFree" property="heapFree" jdbcType="DECIMAL" />
+	</resultMap>
+
+	
+	<resultMap id="MiddleWareJdbcPoolMap" type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcPoolBean" >
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="DSName" property="dsName" jdbcType="VARCHAR" />
+		<result column="JdbcDriver" property="jdbcDriver" jdbcType="VARCHAR" />
+		<result column="PoolUrl" property="poolUrl" jdbcType="VARCHAR" />
+		<result column="DriverName" property="driverName" jdbcType="VARCHAR" />
+		<result column="MinConns" property="minConns" jdbcType="INTEGER" />
+		<result column="MaxConns" property="maxConns" jdbcType="INTEGER" />
+		<result column="CurConns" property="curConns" jdbcType="INTEGER" />
+		<result column="ConnTimeOut" property="connTimeOut" jdbcType="INTEGER" />
+		<result column="Status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="MiddleWareJMSMap" type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMSBean" >
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="Name" property="name" jdbcType="VARCHAR" />
+		<result column="Status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="MiddleWareJTAMap" type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJTABean" >
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="Name" property="name" jdbcType="VARCHAR" />
+		<result column="Status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+
+	
+	<resultMap id="MiddleWareThreadPoolMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean">
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="ParentMOID" property="parentMOID" jdbcType="INTEGER" />
+		<result column="ThreadName" property="threadName" jdbcType="VARCHAR" />
+		<result column="MinConns" property="minConns" jdbcType="INTEGER" />
+		<result column="InactivityTimeOut" property="inactivityTimeOut" jdbcType="INTEGER" />
+		<result column="Growable" property="growable" jdbcType="VARCHAR" />
+		<result column="InitCount" property="initCount" jdbcType="INTEGER" />
+		<result column="MaxSpareSize" property="maxSpareSize" jdbcType="INTEGER" />
+	</resultMap>
+
+
+	<select id="getTmInstanceList" parameterType="Integer"
+		resultType="hashmap" resultMap="TomcatWebModuleResultMap">
+		select
+		j2eeApp.*,webModule.WarName,webModule.Status from MOMiddleWareJ2eeApp
+		j2eeApp
+		left join MOMiddleWareWebModule webModule
+		on j2eeApp.MOID=webModule.ParentMOID
+		where j2eeApp.ParentMOID=#{moId}
+	</select>
+	<select id="getTomcatOperSituationInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="TomcatOperSituationResultMap">
+		select
+		jmx.AlarmLevel,jmx.StartupTime,jvm.UpTime,snapMid.PerfValue useStatus,al.LevelIcon
+		from MOMiddleWareJMX jmx
+		left join AlarmLevel al
+		on
+		jmx.AlarmLevel=al.AlarmLevelID
+		left join MOMiddleWareJVM jvm
+		on
+		jmx.MOID=jvm.ParentMOID
+		left join PerfSnapshotMiddleware snapMid
+		on
+		jmx.MOID=snapMid.MOID and
+		snapMid.KPIName=#{KPIserviceAvailability}
+		where jmx.MOID=#{moId} 
+	</select>
+	<select id="getTomcatClassLoaderInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfTomcatClassLoadResultMap">
+		select a.*,b.unloadedClasses,c.totalLoadedClasses from 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue loadedClasses from MOMiddleWareJMX jmx 
+		        left join MOMiddleClassLoad classLoad on jmx.MOID=classLoad.ParentMOID
+		        left join PerfSnapshotMiddleware snap on classLoad.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIclassLoaded}) a
+				left join 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue unloadedClasses from MOMiddleWareJMX jmx 
+		        left join MOMiddleClassLoad classLoad on jmx.MOID=classLoad.ParentMOID
+		        left join PerfSnapshotMiddleware snap on classLoad.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIclassunLoaded}) b on a.MOID=b.MOID
+				left join 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue totalLoadedClasses from MOMiddleWareJMX jmx 
+		        left join MOMiddleClassLoad classLoad on jmx.MOID=classLoad.ParentMOID
+		        left join PerfSnapshotMiddleware snap on classLoad.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIclassTotalLoaded})c on b.MOID=c.MOID
+	</select>
+	<select id="getListInfo" parameterType="page"
+		resultType="hashmap" resultMap="PerfTomcatClassLoadResultMap">
+		select class.MOID,class.ParentMOID,class.LoadedClassCount,class.UnloadedClassCount,
+				class.TotalLoadedClassCount,jmx.ServerName,jmx.ip
+		from MOMiddleClassLoad  class
+		left join MOMiddleWareJMX jmx on class.ParentMOID = jmx.MOID  
+		where 1=1
+	  <if test="params.serverName != null and params.serverName != '' " >
+         and jmx.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")} 
+      </if>
+      <if test="params.ip != null and params.ip != '' " >
+         and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")} 
+      </if>  
+      <if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and class.ParentMOID = #{ params.parentMoId}
+	  </if>
+	   <if test="params.jmxType != null and params.jmxType != '' " >
+         and jmx.JmxType =#{ params.jmxType}
+      </if>  
+      order by class.MOID
+	</select>
+	
+	<select id="getJdbcPoolInfo" resultType="hashmap" resultMap="MiddleWareJdbcPoolMap" parameterType="page">
+		select jp.MOID ,jp.ParentMOID,jp.DSName,jp.JdbcDriver,jp.PoolUrl,jp.DriverName,
+			   jp.MinConns,jp.MaxConns,jp.CurConns,jp.ConnTimeOut,jp.Status,jmx.ServerName,jmx.ip
+		from MOMiddleWareJdbcPool jp
+		left join  MOMiddleWareJMX jmx on jp.ParentMOID = jmx.MOID 
+		where 1=1
+		<if test="params.serverName != null and params.serverName != '' ">
+			and jmx.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}
+		</if>
+		<if test="params.dsName != null and params.dsName != '' " >
+			and jp.DSName like ${concat("'%'","'"+params.dsName+"'","'%'")}
+		</if>
+		<if test="params.ip != null and params.ip != '' " >
+			and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")}
+		</if>
+		<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and jp.ParentMOID = #{ params.parentMoId}
+	    </if>
+	    <if test="params.jmxType != null and params.jmxType != '' " >
+         and jmx.JmxType =#{ params.jmxType}
+        </if> 
+		order by jp.MOID
+	</select>
+		<select id="getJMSInfo" resultType="hashmap" resultMap="MiddleWareJMSMap" parameterType="page">
+		select jms.MOID ,jms.ParentMOID,jms.Name,jms.Status,jmx.ServerName,jmx.ip
+		from MOMiddleWareJMS jms
+		left join  MOMiddleWareJMX jmx on jms.ParentMOID = jmx.MOID 
+		where 1=1
+		<if test="params.serverName != null and params.serverName != '' ">
+			and jmx.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}
+		</if>
+		<if test="params.name != null and params.name != '' " >
+			and jms.Name like ${concat("'%'","'"+params.name+"'","'%'")}
+		</if>
+		<if test="params.ip != null and params.ip != '' " >
+			and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")}
+		</if>
+		<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and jms.ParentMOID = #{ params.parentMoId}
+	    </if>
+	    <if test="params.jmxType != null and params.jmxType != '' " >
+         and jmx.JmxType =#{ params.jmxType}
+        </if>  
+		order by jms.MOID
+	</select>
+	<select id="getJTAInfo" resultType="hashmap" resultMap="MiddleWareJTAMap" parameterType="page">
+		select jms.MOID ,jms.ParentMOID,jms.Name,jms.Status,jmx.ServerName,jmx.ip
+		from MOMiddleWareJTA jms
+		left join  MOMiddleWareJMX jmx on jms.ParentMOID = jmx.MOID 
+		where 1=1
+		<if test="params.serverName != null and params.serverName != '' ">
+			and jmx.ServerName like ${concat("'%'","'"+params.serverName+"'","'%'")}
+		</if>
+		<if test="params.name != null and params.name != '' " >
+			and jms.Name like ${concat("'%'","'"+params.name+"'","'%'")}
+		</if>
+		<if test="params.ip != null and params.ip != '' " >
+			and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")}
+		</if>
+		<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		 and jms.ParentMOID = #{ params.parentMoId}
+	    </if>
+	    <if test="params.jmxType != null and params.jmxType != '' " >
+         and jmx.JmxType =#{ params.jmxType}
+        </if> 
+		order by jms.MOID
+	</select>
+
+	<select id="getDeviceStatusAndResponseTime" parameterType="hashmap"
+		resultType="hashmap" resultMap="TomcatOperSituationResultMap">
+		select ResponseTime,DeviceStatus from
+		PerfDeviceAvailability
+		where MOID=#{moId} and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+	</select>
+	<select id="getJvmHeapInfos" parameterType="hashmap" resultType="hashmap" resultMap="PerfTomcatJVMHeapResultMap">
+		select a.*,b.heapSize,c.heapFree from 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue heapMax from MOMiddleWareJMX jmx 
+		        left join MOMiddleWareJVM jvm on jmx.MOID=jvm.ParentMOID
+		        left join PerfSnapshotMiddleware snap on jvm.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIheapMax}) a
+				left join 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue heapSize from MOMiddleWareJMX jmx 
+		        left join MOMiddleWareJVM jvm on jmx.MOID=jvm.ParentMOID
+		        left join PerfSnapshotMiddleware snap on jvm.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIheapSize}) b on a.MOID=b.MOID
+				left join 
+		(select snap.DeviceMOID,snap.MOID,snap.PerfValue heapFree from MOMiddleWareJMX jmx 
+		        left join MOMiddleWareJVM jvm on jmx.MOID=jvm.ParentMOID
+		        left join PerfSnapshotMiddleware snap on jvm.MOID=snap.MOID where
+				jmx.MOID=#{moId} and KPIName=#{KPIheapFree})c on b.MOID=c.MOID
+	</select>
+
+
+	<!--
+		获取监测对象信息列表-->
+	<select id="getTmInfo" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean" parameterType="hashmap">
+		SELECT a.ServerName,a.MoAlias,a.AlarmLevel,c.LevelIcon,c.AlarmLevelName,a.JmxType,a.JmxVersion,b.JvmName,b.JvmVendor,b.JvmVersion,b.JavaVendor,b.JavaVersion,
+		a.IP,a.OSName,a.OSVersion,d.MOID,d.DeviceIP,d.MOName,p.PerfValue,a.UpdateAlarmTime,p.CollectTime,e.DoIntervals,f.DoIntervals defDoIntervals
+		FROM	MOMiddleWareJMX a LEFT JOIN	MODevice d ON a.DeviceMOID=d.MOID
+		LEFT JOIN MOMiddleWareJVM b ON a.MOID=b.ParentMOID
+		LEFT JOIN AlarmLevel c ON a.AlarmLevel=c.AlarmLevelValue
+		LEFT JOIN PerfSnapshotMiddleware p ON p.DeviceMOID=a.MOID AND KPIName='ServiceAvailability'
+		LEFT JOIN SysPerfPollTask d1 on a.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{MID}
+		LEFT JOIN (select MOMiddleWareJMX.*,SysMOList.DoIntervals from MOMiddleWareJMX,SysMOList where MID=#{MID}) f on a.MOID=f.MOID
+		WHERE a.MOID=#{MOID}
+		</select>
+
+	<!--Tomcat可用率仪表盘-->
+	<select id="getTmChartAvailability"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean"
+		parameterType="hashmap">
+		SELECT
+		round(t1.count1/t2.Sumcount,2)*100
+		DeviceAvailability FROM (SELECT
+		COUNT(DeviceStatus) count1 FROM
+		PerfDeviceAvailability  WHERE
+		MOID=#{MOID} AND
+		DeviceStatus=1 AND CollectTime BETWEEN
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}) t1, (SELECT
+		COUNT(DeviceStatus) Sumcount FROM
+		PerfDeviceAvailability WHERE
+		MOID=#{MOID} AND
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}) t2
+	</select>
+
+	<!-- 查询列表数据源个数? -->
+	<select id="getJdbcDSCount"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcDSBean"
+		parameterType="hashmap">
+		select b.MOID from MOMiddleWareJMX a, ${tabName}
+		b where
+		a.MOID=b.ParentMOID AND a.MOID=#{MOID}
+	</select>
+	<select id="getJdbcDSValue"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcDSBean"
+		parameterType="hashmap">
+		select b.* from MOMiddleWareJMX a, ${tabName} b
+		where
+		a.MOID=b.ParentMOID AND b.MOID=#{MOID}
+	</select>
+	<!-- 查询列表线程池个数? -->
+	<select id="getThreadPoolCount"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean"
+		parameterType="hashmap">
+		select b.MOID from MOMiddleWareJMX a, ${tabName}
+		b where
+		a.MOID=b.ParentMOID AND a.MOID=#{MOID}
+	</select>
+	<select id="getThreadPoolValue"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean"
+		parameterType="hashmap">
+		select b.*,c.* from MOMiddleWareJMX a,
+		${tabName} b
+		,PerfSnapshotMiddleware c where
+		a.MOID=b.ParentMOID AND b.MOID=c.MOID
+		AND c.MOID=#{MOID} order by c.KPIName
+	</select>
+	<select id="getMemoryPoolValue"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean"
+		parameterType="hashmap">
+		select b.*,c.* from MOMiddleWareJMX a,
+		${tabName} b
+		,PerfSnapshotMiddleware c where
+		a.MOID=b.ParentMOID AND b.MOID=c.MOID
+		AND c.MOID=#{MOID} order by c.KPIName
+	</select>
+	<!-- 获取内存堆曲线数图?-->
+	<select id="queryTmMemoryUsedPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfTomcatJVMHeapResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,heapUsage FROM
+		MOMiddleWareJMX a LEFT JOIN
+		MOMiddleWareJVM b
+		ON a.MOID=b.ParentMOID
+		LEFT JOIN
+		PerfTomcatJVMHeap c ON b.MOID=c.MOID
+		where a.MOID=${seltItem}
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)}
+		and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+  	<!-- 获取内存池个数?-->
+	<select id="queryMemNameByMoID"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean"
+		parameterType="hashmap">
+		SELECT b.MOID,b.memName FROM MOMiddleWareJMX a, MOMiddleWareMemory b
+		WHERE a.MOID=b.ParentMOID AND a.MOID=#{MOID};
+	</select>
+	<!-- 获取内存池曲线数据?-->
+	<select id="queryTmMemoryPoolPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfTomcatMemoryPoolResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,memoryUsage FROM
+		PerfTomcatMemoryPool 
+		where MOID=${seltItem}
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+	<!--内存池使用百分比柱状图?-->
+	<select id="getBarChartMemory"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean"
+		parameterType="hashmap">
+		select b.memName,c.perfValue from MOMiddleWareJMX a,
+		MOMiddleWareMemory b ,PerfSnapshotMiddleware c where
+		a.MOID=b.ParentMOID AND
+		b.MOID=c.MOID
+		AND a.MOID=#{MOID} AND
+		c.kpiName=#{KPIName} order by c.moid
+	</select>
+	<!-- 获取设备部件个数 -->
+	<select id="queryNumsByMoID"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean"
+		parameterType="hashmap">
+		SELECT b.MOID,b.ThreadName FROM MOMiddleWareJMX a, MOMiddleWareThreadPool b
+		WHERE a.MOID=b.ParentMOID AND a.MOID=#{MOID}
+	</select>
+	<!-- 获取线程详情 -->
+	<select id="getPerfThreadPoolList"
+		resultType="com.fable.insightview.monitor.middleware.tomcat.entity.PerfTomcatThreadPoolBean"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")}
+		formatTime,CurrThreads,BusyThreads
+		from
+		PerfTomcatThreadPool
+		where
+		MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	
+	<select id="getThreadPoolList"  resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean"  parameterType="page" >
+	select pool.MOID,pool.ParentMOID,pool.ThreadName,
+	pool.MaxConns,pool.MinConns,pool.InactivityTimeOut,pool.Growable,pool.InitCount,
+	pool.MaxSpareSize,jmx.ip
+	from MOMiddleWareThreadPool pool
+	left join MOMiddleWareJMX jmx on pool.ParentMOID= jmx.MOID
+	where 1=1
+	<if test="params.jmxType !='' and params.jmxType != null ">
+		and jmx.JmxType = #{ params.jmxType}
+	</if>
+	<if test="params.threadName !='' and params.threadName != null ">
+		and pool.ThreadName like ${concat("'%'","'"+params.threadName+"'","'%'")} 
+	</if>
+	<if test="params.ip !='' and params.ip!= null ">
+		and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")} 
+	</if>
+	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		and pool.ParentMOID = #{ params.parentMoId}
+	</if>
+	</select>
+	
+	<select id="getJdbcDSList"  resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcDSBean"  parameterType="page" >
+	select ds.*,jmx.ip
+	from MOMiddleWareJdbcDS ds
+	left join MOMiddleWareJMX jmx on ds.ParentMOID= jmx.MOID
+	where 1=1
+	<if test="params.jmxType !='' and params.jmxType != null ">
+		and jmx.JmxType = #{ params.jmxType}
+	</if>
+	<if test="params.dSName !='' and params.dSName != null ">
+		and ds.dSName like ${concat("'%'","'"+params.dSName+"'","'%'")} 
+	</if>
+	<if test="params.ip != null and params.ip != '' " >
+		and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")}
+	</if>
+	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+	   and ds.ParentMOID = #{ params.parentMoId}
+    </if>
+	</select>
+	
+	<select id="getJ2eeAppList"  resultType="com.fable.insightview.monitor.middleware.websphere.entity.MoMiddleWareJ2eeAppBean"  parameterType="page" >
+	select ja.*,jmx.IP as parentMoName
+	from MOMiddleWareJ2eeApp ja
+	left join MOMiddleWareJMX jmx on ja.ParentMOID= jmx.MOID
+	where 1=1 
+	<if test="params.jmxType !='' and params.jmxType != null ">
+		and jmx.JmxType = #{ params.jmxType}
+	</if>
+	<if test="params.parentMoName !='' and params.parentMoName != null ">
+		and jmx.IP like ${concat("'%'","'"+params.parentMoName+"'","'%'")} 
+	</if>
+	<if test="params.appName !='' and params.appName != null ">
+		and ja.AppName like ${concat("'%'","'"+params.appName+"'","'%'")} 
+	</if>
+	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		and ja.ParentMOID = #{ params.parentMoId}
+	</if>
+	</select>
+	
+	<select id="getThreadPoolByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean">
+	select * from MOMiddleWareThreadPool where MOID = #{moId}
+	</select>
+	<select id="getClassLoadByID"  parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.PerfTomcatClassLoadBean">
+	select class.MOID,class.ParentMOID,class.LoadedClassCount as loadedClasses,class.UnloadedClassCount as unloadedClasses,
+			class.TotalLoadedClassCount as totalLoadedClasses,jmx.ServerName
+	from MOMiddleClassLoad  class
+	left join MOMiddleWareJMX jmx on class.ParentMOID = jmx.MOID  
+	where class.MOID = #{moId}
+	</select>
+	
+	<select id="getJdbcDSByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcDSBean">
+	select * from MOMiddleWareJdbcDS where MOID = #{moId}
+	</select>
+	
+	<select id="getJdbcPoolByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcPoolBean">
+	select * from MOMiddleWareJdbcPool where MOID = #{moId}
+	</select>
+	
+	<select id="getMemPoolByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareMemoryBean">
+	select * from MOMiddleWareMemory where MOID = #{moId}
+	</select>
+	
+	<select id="getMiddleWareJTAByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJTABean">
+	select * from MOMiddleWareJTA where MOID = #{moId}
+	</select>
+	
+	<select id="getMiddlewareJvmByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJVMBean">
+	select t.MOID,t.ParentMOID,t.JvmName,t.JvmVendor,t.JvmVersion,t.JavaVendor,t.JavaVersion,
+  		t.ClassPath,t.InputArguments,t.UpTime/3600 UpTime,t.HeapSizeInit/1024/1024 HeapSizeInit,t.HeapSizeMax/1024/1024 HeapSizeMax
+  		from MOMiddleWareJVM t 		
+  		where t.MOID = #{moId}
+	</select>
+	
+	<select id="getJ2eeAppByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.websphere.entity.MoMiddleWareJ2eeAppBean">
+	select * from MOMiddleWareJ2eeApp where MOID = #{moId}
+	</select>
+	
+	<select id="getMiddleJMSByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMSBean">
+	select * from MOMiddleWareJMS where MOID = #{moId}
+	</select>
+	
+	<select id="getWebModuleList"  resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareWebModuleBean"  parameterType="page" >
+	select m.*,app.AppName as parentMoName,jmx.IP as parentServerName
+	from MOMiddleWareWebModule m 
+	left join MOMiddleWareJ2eeApp app on m.ParentMOID= app.MOID
+	left join MOMiddleWareJMX jmx on app.ParentMOID= jmx.MOID
+	where 1=1
+	<if test="params.jmxType !='' and params.jmxType != null ">
+		and jmx.JmxType = #{ params.jmxType}
+	</if>
+	<if test="params.parentMoName !='' and params.parentMoName != null ">
+		and app.AppName like ${concat("'%'","'"+params.parentMoName+"'","'%'")} 
+	</if>
+	<if test="params.warName !='' and params.warName != null ">
+		and m.WarName like ${concat("'%'","'"+params.warName+"'","'%'")} 
+	</if>
+	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		and app.ParentMOID = #{ params.parentMoId}
+	</if>
+	</select>
+	
+	<select id="getServletList"  resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareServletBean"  parameterType="page" >
+	select s.*,app.AppName as parentMoName,m.WarName as warName,jmx.ip
+	from MOMiddleWareServlet s
+	left join MOMiddleWareWebModule m on s.ParentMOID=m.MOID
+	left join MOMiddleWareJ2eeApp app on m.ParentMOID= app.MOID
+	left join MOMiddleWareJMX jmx on app.ParentMOID= jmx.MOID
+	where 1=1
+	<if test="params.jmxType !='' and params.jmxType != null ">
+		and jmx.JmxType = #{ params.jmxType}
+	</if>
+	<if test="params.parentMoName !='' and params.parentMoName != null ">
+		and app.AppName like ${concat("'%'","'"+params.parentMoName+"'","'%'")} 
+	</if>
+	<if test="params.warName !='' and params.warName != null ">
+		and m.WarName like ${concat("'%'","'"+params.warName+"'","'%'")} 
+	</if>
+	<if test="params.ip !='' and params.ip != null ">
+		and jmx.ip like ${concat("'%'","'"+params.ip+"'","'%'")} 
+	</if>
+	<if test="params.parentMoId !='' and params.parentMoId != null  and params.parentMoId != -1">
+		and app.ParentMOID = #{ params.parentMoId}
+	</if>
+	</select>
+	
+	<select id="getWebModuleByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareWebModuleBean">
+	select * from MOMiddleWareWebModule where MOID = #{moId}
+	</select>
+	
+	<select id="getServletByID" parameterType="Integer" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareServletBean">
+	select * from MOMiddleWareServlet where MOID = #{moId}
+	</select>
+	
+	<select id="getThreadPoolPerf" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareThreadPoolBean"  parameterType="Integer" >
+	select distinct c.KPIName,pool.*,c.PerfValue
+	from MOMiddleWareThreadPool pool
+	left join PerfSnapshotMiddleware c on pool.MOID=c.MOID
+	where pool.MOID = #{params.parentMoId}
+	</select>
+	
+	<select id="getFirstJdbcPool" resultType="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJdbcPoolBean" parameterType="page">
+		select jp.MOID ,jp.ParentMOID,jp.DSName,jp.JdbcDriver,jp.PoolUrl,jp.DriverName,
+			   jp.MinConns,jp.MaxConns,jp.CurConns,jp.ConnTimeOut,jp.Status,jmx.ServerName,jmx.ip
+		from MOMiddleWareJdbcPool jp
+		left join  MOMiddleWareJMX jmx on jp.ParentMOID = jmx.MOID 
+		where 1=1
+	    <if test="jmxType != null and jmxType != '' " >
+         and jmx.JmxType =#{ jmxType}
+        </if> 
+		and ${rownum(1)} order by jp.MOID desc ${limit(1)}
+	</select>
+</mapper>

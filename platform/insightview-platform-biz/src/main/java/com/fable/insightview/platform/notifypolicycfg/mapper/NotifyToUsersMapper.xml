@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.notifypolicycfg.mapper.NotifyToUsersMapper">
+	<resultMap id="notifyToUsersMap" type="com.fable.insightview.platform.notifypolicycfg.entity.NotifyToUsersBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="PolicyID" property="policyId" jdbcType="INTEGER" />
+		<result column="UserID" property="userId" jdbcType="INTEGER" />
+		<result column="MobileCode" property="mobileCode" jdbcType="VARCHAR" />
+		<result column="Email" property="email" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="selectSql">
+		select n.ID,n.PolicyID,n.UserID,n.MobileCode,n.Email,u.UserName as userName
+		from NotifyToUsers n
+		left join SysUserInfo u on n.UserID= u.UserID  
+		where 1=1
+	</sql>
+	
+	<select id="getNotifyToUsersByID" parameterType="Integer" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyToUsersBean">
+		<include refid="selectSql"/>  
+		and n.PolicyID = #{policyId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectNotifyToUsers" resultType="hashmap" resultMap="notifyToUsersMap" parameterType="page">
+		<include refid="selectSql"/>  
+		<if test="params.policyId!='' and params.policyId!= null and params.policyId!= -1">
+		 and PolicyID = #{params.policyId}
+		</if>
+	</select>
+	<insert id="insertNotifyToUsers" parameterType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyToUsersBean">
+		insert into NotifyToUsers (ID,PolicyID,UserID,MobileCode,Email)
+		values (#{id,jdbcType=INTEGER}, #{policyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      			#{mobileCode,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR})
+	</insert>
+	<delete id="delByPolicyId" parameterType="Integer">
+		delete from NotifyToUsers where PolicyID = #{policyId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="delByPolicyIds" parameterType="String">
+		delete from NotifyToUsers where PolicyID in (${policyIds})
+	</delete>
+	
+	<select id="getUsersByPolicyID" resultType="com.fable.insightview.platform.notifypolicycfg.entity.NotifyToUsersBean" parameterType="Integer">
+		<include refid="selectSql"/>  
+		and n.PolicyID = #{policyId,jdbcType=INTEGER} 
+	</select>
+</mapper>
+

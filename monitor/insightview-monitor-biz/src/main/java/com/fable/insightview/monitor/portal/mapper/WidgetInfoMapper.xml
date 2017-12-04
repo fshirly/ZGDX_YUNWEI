@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.portal.mapper.WidgetInfoMapper" >
+  <resultMap id="WidgetInfoMap" type="widgetInfo" >
+    <id column="WidgetID" property="widgetId" jdbcType="VARCHAR" />
+    <result column="WidgetName" property="widgetName" jdbcType="VARCHAR" />
+    <result column="WidgetContent" property="widgetContent" jdbcType="VARCHAR" />
+    <result column="WidgetGroupID" property="widgetGroupId" jdbcType="VARCHAR" />
+    <result column="PreviewImage" property="previewImage" jdbcType="VARCHAR" />
+    <result column="WidgetDesc" property="widgetDesc" jdbcType="VARCHAR" />
+    <result column="WidgetGroupName" property="widgetGroupName" jdbcType="VARCHAR" />
+    <result column="WidgetFilter" property="widgetFilter" jdbcType="VARCHAR" />
+    <result column="EditUrl" property="editUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getAllWidget" resultType="hashmap" resultMap="WidgetInfoMap">
+  select *,WidgetGroup.WidgetGroupName from WidgetDef left join WidgetGroup on WidgetDef.WidgetGroupID = WidgetGroup.WidgetGroupID 
+  </select>
+  <select id="getWidgetByWidgetId" resultType="widgetInfo" parameterType="String">
+  select * from WidgetDef where 1=1 
+  <if test="_parameter != 0 ">
+   and WidgetID=#{widgetId}
+  </if> 
+   limit 0,1
+  </select>
+  <select id="getWidgetByFilter" resultType="hashmap" resultMap="WidgetInfoMap" parameterType="widgetInfo">
+  select *,WidgetGroup.WidgetGroupName from WidgetDef left join WidgetGroup on WidgetDef.WidgetGroupID = WidgetGroup.WidgetGroupID 
+  where WidgetFilter like ${concat("'%'","'" + widgetFilter + "'","'%'")}
+  </select>
+  
+  <!-- 部件title -->
+  <update id="modifyWidgetById" parameterType="widgetInfo">
+  	update WidgetDef set WidgetName=#{widgetName,jdbcType=VARCHAR} where WidgetID=#{widgetId,jdbcType=INTEGER}
+  </update>
+</mapper>
+

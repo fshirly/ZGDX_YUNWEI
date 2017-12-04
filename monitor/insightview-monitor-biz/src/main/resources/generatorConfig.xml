@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration   
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<!-- 配置MySQL驱动地址 -->
+	<classPathEntry location="E:\repository\mysql\mysql-connector-java\5.1.25\mysql-connector-java-5.1.25.jar" />
+	<context id="MySqlTables" targetRuntime="MyBatis3">
+	<!-- 去除自动生成的注释 -->
+		<commentGenerator>  
+        	<property name="suppressAllComments" value="true" />  
+		</commentGenerator> 
+		<!-- 加载MySQL驱动 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://192.168.1.200:3306/itsm" userId="root"
+			password="root123">
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!-- po类生成 -->
+		<javaModelGenerator targetPackage="com.fable.insightview.monitor.demo.model"
+			targetProject="E:\fbom-webapp\app-itsm\fable-itsm-parent\insightview-monitor-parent\insightview-monitor-biz\src\main\java">
+		    <property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<!-- mybatis的xml的配置,方法的定义 -->
+		<sqlMapGenerator targetPackage="com.fable.insightview.monitor.demo.mapper"
+			targetProject="E:\fbom-webapp\app-itsm\fable-itsm-parent\insightview-monitor-parent\insightview-monitor-biz\src\main\java">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		<!-- dao类生成 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.fable.insightview.monitor.demo.mapper" targetProject="E:\fbom-webapp\app-itsm\fable-itsm-parent\insightview-monitor-parent\insightview-monitor-biz\src\main\java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+		<table tableName="UserBaseInfo" domainObjectName="TestUser" 
+		enableCountByExample="false" enableSelectByExample="false" 
+		enableDeleteByExample="false" enableUpdateByExample="false" 
+		enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true"
+		enableDeleteByPrimaryKey="true"
+		>
+		<!-- 
+			<generatedKey column="ID"
+				sqlStatement="select s_sequence.nextval from dual" type="pre" />
+		 -->
+		</table>
+	</context>
+</generatorConfiguration> 

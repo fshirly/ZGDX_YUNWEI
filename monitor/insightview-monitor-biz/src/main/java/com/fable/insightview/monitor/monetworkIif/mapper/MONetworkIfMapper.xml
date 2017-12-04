@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.monetworkIif.mapper.MONetworkIfMapper">
+	<resultMap id="moNetworkIfMap" type="moNetworkIf">
+		<id column="MOID" property="moID" jdbcType="INTEGER" />
+		<result column="MOName" property="moName" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+		<result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+		<result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+		<result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="LastUpdateTime" property="lastUpdateTime"
+			jdbcType="TIMESTAMP" />
+		<result column="CreateBy" property="createBy" jdbcType="INTEGER" />
+		<result column="UpdateBy" property="updateBy" jdbcType="INTEGER" />
+		<result column="Instance" property="instance" jdbcType="VARCHAR" />
+		<result column="IfName" property="ifName" jdbcType="VARCHAR" />
+		<result column="IfAlias" property="ifAlias" jdbcType="VARCHAR" />
+		<result column="IfDescr" property="ifDescr" jdbcType="VARCHAR" />
+		<result column="IfName" property="ifName" jdbcType="VARCHAR" />
+		<result column="IfType" property="ifType" jdbcType="VARCHAR" />
+		<result column="IfMtu" property="ifMtu" jdbcType="INTEGER" />
+		<result column="IfSpeed" property="ifSpeed" jdbcType="NUMERIC" />
+		<result column="IfSpeed" property="ifSpeedDescr" jdbcType="VARCHAR" />
+		<result column="IfAdminStatus" property="ifAdminStatus"
+			jdbcType="INTEGER" />
+		<result column="IfOperStatus" property="ifOperStatus" jdbcType="INTEGER" />
+		<result column="IfLastChange" property="ifLastChange" jdbcType="VARCHAR" />
+		<result column="MIBModule" property="mIBModule" jdbcType="VARCHAR" />
+		<result column="FullDuplex" property="fullDuplex" jdbcType="INTEGER" />
+		<result column="ResID" property="resid" jdbcType="INTEGER" />
+		<result column="MOClassID" property="parentMoClassId" jdbcType="INTEGER" />
+		<result column="isCollect" property="isCollect" jdbcType="INTEGER" />
+		<result column="SourcePort" property="sourcePort" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectMONetworkIf" resultType="hashmap" resultMap="moNetworkIfMap"
+		parameterType="page">
+		select
+		n.*,mo.MOName as deviceMOName
+		from MONetworkIf n
+		left join MODevice mo on n.DeviceMOID=mo.MOID
+		where 1=1
+		<if test="params.ifName !='' and params.ifName != null ">
+			and n.IfName like ${concat("'%'","'"+params.ifName+"'","'%'")}
+		</if>
+		<if test="params.deviceMOID != -1 and params.deviceMOID != '' ">
+			and n.DeviceMOID=#{params.deviceMOID}
+		</if>
+	</select>
+
+	<select id="getMONetworkIfById" parameterType="Integer"
+		resultType="moNetworkIf">
+		select
+		n.*
+		from MONetworkIf n
+		where 1=1 and n.MOID = #{moID}
+	</select>
+
+	<select id="getByDeviceMOIDAndMOID" parameterType="moNetworkIf"
+		resultType="Integer">
+		select count(1) from MONetworkIf
+		where 1=1 and DeviceMOID = #{deviceMOID} and MOID = #{moID}
+	</select>
+	
+	<select id="queryList" resultType="hashmap" resultMap="moNetworkIfMap"
+		parameterType="page">
+		select * from (
+		select  ${nvl("perf.PerfValue","0")} OperStatus,device.MOName deviceMOName,device.DeviceIP,device.MOClassID parentMoClassId,networkIf.isCollect,networkIf.IfOperStatus,
+			networkIf.DeviceMOID DeviceMOID,networkIf.MOName IfName,networkIf.Instance,networkIf.MOID,
+			networkIf.IfMtu,networkIf.IfSpeed,networkIf.IfDescr,networkIf.IfType,topo.SourcePort,
+			e1.DoIntervals ,f.DoIntervals defDoIntervals,device.updateAlarmTime,perf.collectTime,networkIf.MOAlias moalias
+ 			from MONetworkIf networkIf 
+ 			left join MODevice device on networkIf.DeviceMOID = device.MOID 
+		 left join (select MOID,PerfValue,CollectTime from PerfSnapshotNetDevice perf where perf.KPIName='ifOperStatus' ) perf on networkIf.MOID=perf.MOID    
+<!-- 		and perf.CollectTime between ${toDate(params.timeBegin)} and ${toDate(params.timeEnd)}  -->
+		left join SysPerfPollTask d1 on device.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+	  	left join SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{params.MID}  
+	 	left join (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=#{params.MID} ) f on device.MOID=f.MOID
+		left join (select SourceMOID,SourcePort from TopoLink where  SourcePort >0 
+			union 
+			select DesMOID,DesPort from TopoLink where  DesPort >0) topo on topo.SourceMOID = networkIf.DeviceMOID and topo.SourcePort = networkIf.Instance
+		)t  where 1=1 
+		  <if test="params.moID =='' or params.moID == null ">
+			and t.parentMoClassId=#{params.mOClassID} 
+		</if>
+ 		<if test="params.deviceIP !='' and params.deviceIP != null ">
+			and t.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")} 
+		</if>
+		<if test="params.deviceMOName !='' and params.deviceMOName != null ">
+			and t.deviceMOName like ${concat("'%'","'"+params.deviceMOName+"'","'%'")} 
+		</if>
+		<if test="params.operStatus ==1 || params.operStatus ==2 ">
+			and t.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+		</if>
+		<if test="params.operStatus ==3 ">
+			and t.OperStatus not in (1,2)
+		</if>
+		<if test="params.moID !='' and params.moID != null ">
+			and t.DeviceMOID = #{params.moID}
+		</if>
+		order by t.moalias desc
+	</select>
+
+<!-- 	SELECT * from MONetworkIf where DeviceMOID in (select MOID from MODevice
+		where MOID in(${params.moIDs})) and ResID is null -->
+	<select id="synchronMONetworkIfToRes" resultType="hashmap"
+		resultMap="moNetworkIfMap" parameterType="page"> 
+		SELECT MOID,MOName,MOAlias,DeviceMOID,OperStatus,AdminStatus,AlarmLevel,CreateTime,LastUpdateTime,
+		CreateBy,UpdateBy,Instance,IfName,IfAlias,IfDescr,IfMtu,IfSpeed,IfAdminStatus,IfOperStatus,
+		IfLastChange,MIBModule,FullDuplex,ResID,SysConstantItemDef.ConstantItemName as IfType
+		from MONetworkIf left join SysConstantItemDef 
+		on IfType=SysConstantItemDef.ConstantItemId
+	 	left join SysConstantTypeDef 
+	 	on SysConstantTypeDef.ConstantTypeId = SysConstantItemDef.ConstantTypeId  
+	 	where DeviceMOID in (select MOID from MODevice where MOID in(${params.moIDs})) and ConstantTypeName='InterfaceType'
+	</select>
+
+	<update id="updateResId" parameterType="hashmap">
+		update MONetworkIf set ResID = ${resid} where MOID = ${moid}
+	</update>
+
+	<select id="getFirstInterface" parameterType="Integer"
+		resultType="moNetworkIf">
+		select mo.MOName deviceMOName,mo.DeviceIP,mo.MOClassID
+		parentMoClassId,n.DeviceMOID,n.MOID,n.MOName,n.OperStatus,
+		n.AdminStatus,n.AlarmLevel,n.IfMtu,n.IfSpeed/1000
+		IfSpeed,n.IfDescr,n.IfType,n.IfAlias,n.IfName,n.IfAdminStatus,n.IfOperStatus,n.IfLastChange
+		from MONetworkIf n,MODevice mo
+		where n.DeviceMOID=mo.MOID and mo.MOClassID=#{parentMoClassId}
+		and ${rownum(1)} order by mo.MOID,n.MOID desc ${limit(1)}
+	</select>
+	
+	<update id="updateNetWorkIf" >
+		update MONetworkIf set isCollect = ${isCollect} where MOID = ${moID}
+	</update>
+	<delete id="deleteSnapshotNetDevice">
+		delete from PerfSnapshotNetDevice where MOID = ${moID}
+	</delete>
+	<select id="queryTopoList" resultType="com.fable.insightview.monitor.monetworkIif.entity.TopoLinkBean">
+		select SourceMOID,SourcePort from TopoLink where  SourcePort >0
+	union 
+		select DesMOID,DesPort from TopoLink where  DesPort >0
+	</select>
+	
+	<update id="toUpdateNetWorkIf" >
+		update MONetworkIf set isCollect = ${isCollect} where DeviceMOID = ${DeviceMOID} and Instance = ${SourcePort}
+	</update>
+	
+	<select id="getResIDByDeviceId" parameterType="Integer" resultType="Integer">
+		select ResID from MONetworkIf where DeviceMOID = #{deviceMoId}
+	</select>
+</mapper>
+

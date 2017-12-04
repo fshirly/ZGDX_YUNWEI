@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>monitor</artifactId>
+		<groupId>com.fable.insightview.monitor</groupId>
+		<version>3.2.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.fable.insightview.monitor</groupId>
+	<artifactId>insightview-monitor-war</artifactId>
+	<packaging>war</packaging>
+	<name>insightview-monitor-war Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.fable.insightview.platform</groupId>
+			<artifactId>insightview-platform-war</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fable.insightview.monitor</groupId>
+			<artifactId>insightview-monitor-web</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>insightview-monitor-war</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>7.2.0.v20101020</version>
+				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+					<reload>automatic</reload>
+					<webAppConfig>
+						<contextPath>/insightview</contextPath>
+					</webAppConfig>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>9090</port>
+						</connector>
+					</connectors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

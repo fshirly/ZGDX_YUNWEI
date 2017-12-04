@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.database.mapper.Db2Mapper" >
+  <resultMap id="MODBMSServerResultMap" type="com.fable.insightview.monitor.database.entity.MODBMSServerBean" >
+    <id column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="MOName" property="moname" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+    <result column="DBMSType" property="dbmstype" jdbcType="VARCHAR" />
+    <result column="ServerVersion" property="serverversion" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="PORT" property="port" jdbcType="INTEGER" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operstatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminstatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainid" jdbcType="INTEGER" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="LastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP" />
+    <result column="CreateBy" property="createby" jdbcType="INTEGER" />
+    <result column="UpdateBy" property="updateby" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="moDeviceId" property="moDeviceId" jdbcType="INTEGER" />
+    <result column="InstanceName" property="instancename" jdbcType="VARCHAR" />
+    <result column="NodeNum" property="nodeNum" jdbcType="INTEGER" />
+    <result column="PerfValue" property="perfvalue" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="MODB2InfoResultMap" type="com.fable.insightview.monitor.database.entity.Db2InfoBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="InstanceMOID" property="instanceMOID" jdbcType="INTEGER" />
+    <result column="DatabaseName" property="databaseName" jdbcType="VARCHAR" />
+    <result column="DatabasePath" property="databasePath" jdbcType="VARCHAR" />
+    <result column="ConnTime" property="connTime" jdbcType="TIMESTAMP" />
+    <result column="DatabaseStatus" property="databaseStatus" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="InstanceName" property="instanceName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="MODB2TabsResultMap" type="com.fable.insightview.monitor.database.entity.MoDbTabsBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DBMOID" property="dbMoId" jdbcType="INTEGER" />
+    <result column="TbsName" property="tbsName" jdbcType="VARCHAR" />
+    <result column="BufferPoolMOID" property="bufferPoolMoId" jdbcType="INTEGER" />
+    <result column="Definer" property="definer" jdbcType="VARCHAR" />
+    <result column="CreateTIme" property="createTIme" jdbcType="TIMESTAMP" />
+    <result column="TbsID" property="tbsID" jdbcType="INTEGER" />
+    <result column="TbsType" property="tbsType" jdbcType="VARCHAR" />
+    <result column="DataType" property="dataType" jdbcType="VARCHAR" />
+    <result column="ExtentSize" property="extentSize" jdbcType="INTEGER" />
+    <result column="PreFetchSize" property="preFetchSize" jdbcType="INTEGER" />
+    <result column="OverHead" property="overHead" jdbcType="DECIMAL" />
+    <result column="TransferRate" property="transferRate" jdbcType="DECIMAL" />
+    <result column="PageSize" property="pageSize" jdbcType="INTEGER" />
+    <result column="DropRecorvery" property="dropRecorvery" jdbcType="VARCHAR" />
+    <result column="DatabaseName" property="databaseName" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="BufferPoolName" property="bufferPoolName" jdbcType="VARCHAR" />
+    <result column="InstanceName" property="instanceName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <resultMap id="MODB2BufferPoolResultMap" type="com.fable.insightview.monitor.database.entity.MoDb2BufferPoolBean" >
+    <id column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="DBMOID" property="dbMoId" jdbcType="INTEGER" />
+    <result column="BufferPoolName" property="bufferPoolName" jdbcType="VARCHAR" />
+    <result column="BufferPoolID" property="bufferPoolID" jdbcType="INTEGER" />
+    <result column="BufferSize" property="bufferSize" jdbcType="INTEGER" />
+    <result column="Npages" property="npages" jdbcType="INTEGER" />
+    <result column="PageSize" property="pageSize" jdbcType="INTEGER" />
+    <result column="DatabaseName" property="databaseName" jdbcType="VARCHAR" />
+    <result column="BufferPoolHits" property="bufferPoolHits" jdbcType="DECIMAL" />
+    <result column="IndexHits" property="indexHits" jdbcType="DECIMAL" />
+    <result column="DataPageHits" property="dataPageHits" jdbcType="DECIMAL" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="InstanceName" property="instanceName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="PerfDB2InstanceResultMap" type="com.fable.insightview.monitor.database.entity.PerfDB2InstanceBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="TotalConns" property="totalConns" jdbcType="INTEGER" />
+    <result column="LocalConns" property="localConns" jdbcType="INTEGER" />
+    <result column="LocalConnsExec" property="localConnsExec" jdbcType="INTEGER" />
+    <result column="RemConns" property="remConns" jdbcType="INTEGER" />
+    <result column="RemConnsExec" property="remConnsExec" jdbcType="INTEGER" />
+    <result column="ActiveAgents" property="activeAgents" jdbcType="INTEGER" />
+    <result column="IdleAgents" property="idleAgents" jdbcType="INTEGER" />
+    <result column="TotalAgents" property="totalAgents" jdbcType="INTEGER" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="PerfDB2TbsResultMap" type="com.fable.insightview.monitor.database.entity.PerfDB2TbsBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="TotalSize" property="totalSize" jdbcType="INTEGER" />
+    <result column="FreeSize" property="freeSize" jdbcType="INTEGER" />
+    <result column="UsedSize" property="usedSize" jdbcType="INTEGER" />
+    <result column="TBUsage" property="tbUsage" jdbcType="DECIMAL" />
+    <result column="TBStatus" property="tbStatus" jdbcType="VARCHAR" />
+    <result column="TbsType" property="tbsType" jdbcType="VARCHAR" />
+    <result column="TbsName" property="tbsName" jdbcType="VARCHAR" />
+    <result column="PerfValue" property="perfValue" jdbcType="VARCHAR" />
+    <result column="DatabaseName" property="databaseName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="PerfDB2DatabaseResultMap" type="com.fable.insightview.monitor.database.entity.PerfDB2DatabaseBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="SpilledUsage" property="spilledUsage" jdbcType="DECIMAL" />
+    <result column="LogUsage" property="logUsage" jdbcType="DECIMAL" />
+    <result column="DeadLocks" property="deadLocks" jdbcType="DECIMAL" />
+    <result column="ShareMemUsage" property="shareMemUsage" jdbcType="DECIMAL" />
+    <result column="LockEscals" property="lockEscals" jdbcType="DECIMAL" />
+    <result column="WaitingLockUsage" property="waitingLockUsage" jdbcType="DECIMAL" />
+    <result column="PkgCacheHits" property="pkgCacheHits" jdbcType="DECIMAL" />
+    <result column="CatCacheHits" property="catCacheHits" jdbcType="DECIMAL" />
+    <result column="SuccSqls" property="succSqls" jdbcType="DECIMAL" />
+    <result column="FailedSqls" property="failedSqls" jdbcType="DECIMAL" />
+    <result column="WorkUnits" property="workUnits" jdbcType="DECIMAL" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+    <result column="DatabaseName" property="databaseName" jdbcType="VARCHAR" />
+    <result column="PerfValue" property="perfValue" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="PerfDB2BufferPoolResultMap" type="com.fable.insightview.monitor.database.entity.PerfDB2BufferPoolBean" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="MOID" property="moId" jdbcType="INTEGER" />
+    <result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="BufferPoolHits" property="bufferPoolHits" jdbcType="DECIMAL" />
+    <result column="IndexHits" property="indexHits" jdbcType="DECIMAL" />
+    <result column="DataPageHits" property="dataPageHits" jdbcType="DECIMAL" />
+    <result column="DirectReads" property="directReads" jdbcType="DECIMAL" />
+    <result column="DirectWrites" property="directWrites" jdbcType="DECIMAL" />
+    <result column="DirectReadTime" property="directReadTime" jdbcType="DECIMAL" />
+    <result column="DirectWriteTime" property="directWriteTime" jdbcType="DECIMAL" />
+    <result column="BufferPoolName" property="bufferPoolName" jdbcType="DECIMAL" />
+    <result column="BufferPoolID" property="bufferPoolID" jdbcType="DECIMAL" />
+    <result column="BufferSize" property="bufferSize" jdbcType="DECIMAL" />
+    <result column="Npages" property="npages" jdbcType="DECIMAL" />
+    <result column="PageSize" property="pageSize" jdbcType="DECIMAL" />
+    <result column="PerfValue" property="perfValue" jdbcType="VARCHAR" />
+    <result column="formatTime" property="formatTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="PerfSDBResultMap" type="com.fable.insightview.monitor.database.entity.PerfSnapshotDatabaseBean" >
+	<id column="ID" property="id" jdbcType="INTEGER" />
+    <id column="MOID" property="moid" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="devicemoid" jdbcType="INTEGER" />
+    <result column="KPIName" property="kpiname" jdbcType="VARCHAR" />
+    <result column="PerfValue" property="perfvalue" jdbcType="VARCHAR" />
+    <result column="CollectTime" property="collecttime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- 获取实例InstanceList-->
+	<select id="getDb2InstanceList" resultType="hashmap" resultMap="MODBMSServerResultMap"
+		parameterType="page">
+		SELECT b.MOID,b.InstanceName,b.Port,a.IP,a.MOName,${dateFormat("b.StartTime")}
+		formatTime,b.NodeNum,a.AlarmLevel,a.OperStatus,p.PerfValue 
+		from MODB2Instance b LEFT JOIN MODBMSServer a ON a.MOID=b.DBMSMOID
+		LEFT JOIN PerfSnapshotDatabase p ON p.MOID=b.MOID AND p.KPIName='DBAvailability'
+		where 1=1 
+		<if test="params.instanceName != null and params.instanceName != '' " >
+         and b.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and a.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	</select>
+	
+	 <!-- 获取db2代理数数据-->
+	<select id="queryProxyInfo" resultMap="PerfSDBResultMap"
+		parameterType="hashmap">
+		select a.id,a.moid,a.devicemoid,a.kpiname,a.perfvalue,a.collecttime from PerfSnapshotDatabase a 
+			left join MODB2Instance b on a.MOID = b.MOID 
+			where b.moid = ${moid} and a.kpiname like ${concat("'%'","'"+kpiname+"'","'%'")}
+	</select>
+	
+	
+	 <!-- 获取db2表空间使用率-->
+	<select id="getDb2TBUsage" resultType="hashmap" resultMap="PerfDB2TbsResultMap"
+		parameterType="hashmap">
+		select distinct b.TbsName,a.PerfValue from PerfSnapshotDatabase a 
+			left join MODBTableSpace b on a.MOID = b.MOID 
+			left join MODB2Database d on b.DBMOID = d.MOID
+			where d.MOID = #{moid} and a.KPIName=#{TBUsage}
+	</select>
+	
+	<!-- 获取DB2数据库信息列表 -->
+  <select id="getDb2InfoList" parameterType="page" resultType="hashmap" resultMap="MODB2InfoResultMap">
+  	select a.MOID,a.InstanceMOID,a.DatabaseName,a.DatabasePath,${dateFormat("a.ConnTime")}
+	formatTime,a.DatabaseStatus,c.IP,b.InstanceName 
+	from MODB2Database a left join MODB2Instance b on a.InstanceMOID=b.MOID
+	left join MODBMSServer c on b.DBMSMOID=c.MOID where 1=1 
+  	<if test="params.databaseName != null and params.databaseName != '' " >
+         and a.DatabaseName like ${concat("'%'","'"+params.databaseName+"'","'%'")} 
+      </if> 
+      <if test="params.ip != null and params.ip != '' " >
+         and c.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+      </if>  
+      <if test="params.instanceMOID != null and params.instanceMOID != '' and params.instanceMOID != -1" >
+         and b.MOID=#{params.instanceMOID} 
+      </if>
+      <if test="params.instanceName != null and params.instanceName != '' " >
+             and b.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")}
+      </if>
+      <if test="params.dbmsMoId != null and params.dbmsMoId != '' and params.dbmsMoId != -1" >
+         and c.MOID=#{params.dbmsMoId} 
+      </if>
+  </select>
+  
+  <!-- 获取DB2表空间列表 -->
+  <select id="getDb2TabsList" resultType="hashmap" resultMap="MODB2TabsResultMap" parameterType="page">
+			select a.*,b.BufferPoolName,c.DatabaseName,d.InstanceName,e.IP from MODBTableSpace a 
+			left join MODB2BufferPool b on a.BufferPoolMOID=b.MOID 
+			left join MODB2Database c on a.DBMOID=c.MOID
+			left join MODB2Instance d on c.InstanceMOID=d.MOID
+			left join MODBMSServer e on d.DBMSMOID=e.MOID where 1=1
+		<if test="params.databaseName != null and params.databaseName != '' " >
+         and c.DatabaseName like ${concat("'%'","'"+params.databaseName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and e.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.tbsName != null and params.tbsName != '' " >
+	         and a.TbsName like ${concat("'%'","'"+params.tbsName+"'","'%'")}
+	    </if> 
+	    <if test="params.dbMoId != null and params.dbMoId != '' and params.dbMoId != -1" >
+             and c.MOID=#{params.dbMoId} 
+      	</if>
+      	<if test="params.instanceName != null and params.instanceName != '' " >
+             and d.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")}
+      	</if>
+	</select>
+	
+	<!-- 获取DB2缓冲池信息列表 -->
+	 <select id="getDb2BufferPoolList" resultType="hashmap" resultMap="MODB2BufferPoolResultMap" parameterType="page">
+			select a.*,b.DatabaseName,c.InstanceName,d.IP from MODB2BufferPool a 
+			left join MODB2Database b on a.DBMOID=b.MOID 
+			left join MODB2Instance c on b.InstanceMOID=c.MOID 
+			left join MODBMSServer d on c.DBMSMOID=d.MOID where 1=1
+		<if test="params.databaseName != null and params.databaseName != '' " >
+         and b.DatabaseName like ${concat("'%'","'"+params.databaseName+"'","'%'")} 
+	    </if> 
+	    <if test="params.ip != null and params.ip != '' " >
+	         and d.IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+	    </if>  
+	    <if test="params.bufferPoolName != null and params.bufferPoolName != '' " >
+	         and a.BufferPoolName like ${concat("'%'","'"+params.bufferPoolName+"'","'%'")}
+	    </if> 
+	    <if test="params.dbMoId != null and params.dbMoId != -1 " >
+	         and b.MOID=#{params.dbMoId} 
+	    </if>
+	    <if test="params.instanceName != null and params.instanceName != '' " >
+	         and c.InstanceName like ${concat("'%'","'"+params.instanceName+"'","'%'")}
+	    </if>
+	</select>
+	
+	<!-- 获取DB2数据库仪表盘数据 -->
+	<select id="getMODBMSServerByMoId" parameterType="hashmap" resultType="com.fable.insightview.monitor.database.entity.MODBMSServerBean">
+		select a.PerfValue from PerfSnapshotDatabase a left join MODB2Database b on a.MOID=b.MOID 
+		where b.MOID = #{MOID} and a.KPIName = #{KPIName} and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+	</select>
+	
+	<!-- 获取DB2实例性能数据曲线 -->
+	<select id="queryInstancePerf" parameterType="hashmap" resultType="hashmap" resultMap="PerfDB2InstanceResultMap">
+		select a.*,${dateFormat("a.CollectTime")} formatTime from PerfDB2Instance a 
+		left join MODB2Instance b on a.MOID=b.MOID where b.MOID=#{moID} 
+		and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)} 
+		order by a.CollectTime
+	</select>
+	
+	<!-- 获取DB2实例连接数信息进度条 -->
+	<select id="queryInsPerfLastest" parameterType="hashmap" resultType="com.fable.insightview.monitor.database.entity.PerfDB2InstanceBean">
+		select a.* from PerfDB2Instance a 
+		left join MODB2Instance b on a.MOID=b.MOID where b.MOID=#{moID} 
+		and ${rownum(1)} order by a.CollectTime desc ${limit(1)}
+	</select>
+	
+	<!-- 获取DB2实例列表部件 -->
+	<select id="getDb2InstanceByMoId" parameterType="Integer" resultType="MODBMSServer">
+	   	SELECT b.MOID,b.InstanceName,b.Port,a.IP,a.MOName,${dateFormat("b.StartTime")}
+		formatTime,b.NodeNum,a.AlarmLevel,a.OperStatus
+		from MODB2Instance b LEFT JOIN MODBMSServer a ON a.MOID=b.DBMSMOID
+		where 1=1 and b.MOID = #{moid} 
+	</select>
+	
+	<select id="getDb2DatabseByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.Db2InfoBean">
+		select * from MODB2Database where MOID=#{moId}
+	</select>
+	
+	<select id="getDb2BufferPoolByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MoDb2BufferPoolBean">
+		select a.*,b.DatabaseName from MODB2BufferPool a 
+		left join MODB2Database b on a.DBMOID=b.MOID
+		where a.MOID=#{moId} 
+	</select>
+	
+	<select id="getDb2TabsByMoId" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.MoDbTabsBean" >
+		select * from MODBTableSpace where MOID=#{moId}
+	</select>
+	
+	<select id="getDb2InfoByInstanceMoId" parameterType="Integer" resultType="hashmap" resultMap="MODB2InfoResultMap">
+  	select a.MOID,a.InstanceMOID,a.DatabaseName,a.DatabasePath,${dateFormat("a.ConnTime")}
+	formatTime,a.DatabaseStatus,c.MOAlias
+	from MODB2Database a left join MODB2Instance b on a.InstanceMOID=b.MOID LEFT JOIN MODBMSServer c ON b.DBMSMOID=c.MOID
+    where 1=1 and b.MOID=#{instanceMOID}
+  </select>
+  <!-- 获取DB2缓冲池信息列表部件 -->
+  <select id="getBufferPoolByDbMoId" resultType="hashmap" resultMap="PerfDB2BufferPoolResultMap" parameterType="Integer">
+	select t.*,t1.indexHits,t2.dataPageHits
+	from (select a.*,b.PerfValue bufferPoolHits from MODB2BufferPool a 
+	left join PerfSnapshotDatabase b on a.MOID=b.MOID 
+	left join MODB2Database c on a.DBMOID=c.MOID  where c.MOID=#{dbMoId} and b.KPIName='BPHits')t left join
+	(select b.PerfValue indexHits,a.MOID MOID from MODB2BufferPool a 
+	left join PerfSnapshotDatabase b on a.MOID=b.MOID 
+	left join MODB2Database c on a.DBMOID=c.MOID  where c.MOID=#{dbMoId} and b.KPIName='IndexHits')t1 on t.MOID=t1.MOID left join
+	(select b.PerfValue dataPageHits,a.MOID MOID from MODB2BufferPool a 
+	left join PerfSnapshotDatabase b on a.MOID=b.MOID 
+	left join MODB2Database c on a.DBMOID=c.MOID  where c.MOID=#{dbMoId} and b.KPIName='DataPageHits')t2 on t1.MOID=t2.MOID
+	where 1=1
+	</select>
+  <!-- 获取DB2表空间信息列表部件 -->
+    <select id="getDb2TabsByDbMoId" resultType="hashmap" resultMap="PerfDB2TbsResultMap" parameterType="Integer">
+		select t.*,t1.usedSize,t2.tbUsage from (select b.TbsName,b.TbsType,a.PerfValue totalSize,a.MOID MOID from PerfSnapshotDatabase a left join MODBTableSpace b on a.MOID=b.MOID 
+		left join MODB2Database c on b.DBMOID=c.MOID where c.MOID=#{dbMoId} and a.KPIName='TableSpaceSize')t 
+	left join 
+	(select b.TbsName,b.TbsType,a.PerfValue usedSize,a.MOID MOID from PerfSnapshotDatabase a left join MODBTableSpace b on a.MOID=b.MOID 
+		left join MODB2Database c on b.DBMOID=c.MOID where c.MOID=#{dbMoId} and a.KPIName='TableSpaceUsed' )t1 on t.MOID=t1.MOID
+	left join 
+	(select b.TbsName,b.TbsType,a.PerfValue tbUsage,a.MOID MOID from PerfSnapshotDatabase a left join MODBTableSpace b on a.MOID=b.MOID 
+		left join MODB2Database c on b.DBMOID=c.MOID where c.MOID=#{dbMoId} and a.KPIName='TableSpaceUsage')t2 on t1.MOID=t2.MOID
+	 where 1=1 order by t2.tbUsage
+	</select>
+	
+	<!-- 获取DB2数据库曲线 -->
+	<select id="queryDatabasePerf" parameterType="hashmap" resultType="hashmap" resultMap="PerfDB2DatabaseResultMap">
+		select a.* from PerfDB2Database a left join MODB2Database b on a.MOID=b.MOID 
+		where b.MOID = #{moID} and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+	</select>
+	
+	<!-- 获取DB2数据库柱状图 -->
+	<select id="queryDbPerfByInstanceMoId" parameterType="hashmap" resultType="hashmap" resultMap="PerfDB2DatabaseResultMap">
+		select a.PerfValue,b.DatabaseName from PerfSnapshotDatabase a left join MODB2Database b on a.MOID=b.MOID
+		left join MODB2Instance c on a.DeviceMOID=c.MOID and b.InstanceMOID=c.MOID 
+		where c.MOID = #{MOID} and a.KPIName = #{KPIName}
+	</select>
+	
+	<!-- 获取DB2缓冲池仪表盘信息 -->
+	<select id="getPerfBufferPool" parameterType="hashmap" resultType="com.fable.insightview.monitor.database.entity.PerfDB2BufferPoolBean">
+		select a.PerfValue from PerfSnapshotDatabase a left join MODB2BufferPool b on a.MOID=b.MOID 
+		where b.MOID = #{MOID} and a.KPIName = #{KPIName} and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+	</select>
+	
+	<!-- 获取DB2缓冲池曲线数据 -->
+	<select id="queryBufferPoolPerf" parameterType="hashmap" resultType="hashmap" resultMap="PerfDB2BufferPoolResultMap">
+		select a.*,${dateFormat("a.CollectTime")} formatTime,b.BufferPoolName from PerfDB2BufferPool a left join MODB2BufferPool b on a.MOID=b.MOID 
+		left join MODB2Database c on b.DBMOID=c.MOID where c.MOID = #{moId}
+		and a.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+	</select>
+	
+	<!-- 获取缓冲池柱状图信息 -->
+	<select id="queryBufferPoolBarPerf" parameterType="hashmap" resultType="hashmap" resultMap="PerfDB2BufferPoolResultMap">
+		select a.PerfValue,b.BufferPoolName from PerfSnapshotDatabase a left join MODB2BufferPool b on a.MOID=b.MOID
+		left join MODB2Database c on a.DeviceMOID=c.MOID and b.DBMOID=c.MOID 
+		where c.MOID = #{MOID} and a.KPIName = #{KPIName}
+	</select>
+	
+	<!-- 获取默认数据库实例 -->
+	<select id="getFirstDb2InsInfo" resultType="com.fable.insightview.monitor.database.entity.MODBMSServerBean"> 
+		SELECT b.* from MODB2Instance b LEFT JOIN MODBMSServer a ON a.MOID=b.DBMSMOID 
+		where 1=1 and ${rownum(1)} order by b.MOID desc ${limit(1)}
+	</select>
+	
+	<!-- 获取默认数据库 -->
+	<select id="getFirstDb2dbInfo" resultType="com.fable.insightview.monitor.database.entity.Db2InfoBean"> 
+		select a.MOID,a.InstanceMOID,a.DatabaseName,a.DatabasePath,${dateFormat("a.ConnTime")}
+		formatTime,a.DatabaseStatus,c.IP
+		from MODB2Database a left join MODB2Instance b on a.InstanceMOID=b.MOID
+		left join MODBMSServer c on b.DBMSMOID=c.MOID where 1=1 
+		and ${rownum(1)} order by a.MOID desc ${limit(1)}
+	</select>
+	
+	<!-- 数据库实例可用率仪表盘 -->
+	<select id="getDb2ChartAvailability" resultType="MODBMSServer"
+		parameterType="hashmap">
+		SELECT round(t1.count1/t2.Sumcount,2)*100 DeviceAvailability FROM  
+		(SELECT  COUNT(c.DeviceStatus) count1 FROM MODBMSServer a LEFT JOIN MODB2Instance b ON a.MOID=b.DBMSMOID
+		LEFT JOIN PerfDeviceAvailability c ON b.MOID=c.MOID 
+		WHERE b.MOID=#{MOID} AND c.DeviceStatus=1 AND c.CollectTime  BETWEEN  ${toDate(timeBegin)} and ${toDate(timeEnd)}) t1,		
+		(SELECT COUNT(c.DeviceStatus) Sumcount FROM MODBMSServer a LEFT JOIN MODB2Instance b ON a.MOID=b.DBMSMOID
+		LEFT JOIN PerfDeviceAvailability c ON b.MOID=c.MOID 
+		WHERE b.MOID=#{MOID} AND c.CollectTime BETWEEN	${toDate(timeBegin)} and ${toDate(timeEnd)}) t2		
+	</select>
+	
+	<!-- 获取表空间告警 -->
+		<select id="getTbsAlarmInfo"
+		resultType="com.fable.insightview.monitor.host.entity.AlarmActiveDetail"
+		parameterType="hashmap">
+		SELECT ad.AlarmID
+		,ad.AlarmLevel,l.LevelIcon,ad.SourceMOName,ad.SourceMOIPAddress,ad.AlarmTitle,s.StatusName,
+		StartTime,ad.RepeatCount,ad.UpgradeCount FROM
+		AlarmActiveDetail ad,AlarmLevel l
+		,AlarmStatusDef s
+		WHERE
+		ad.AlarmLevel=l.AlarmLevelValue AND
+		s.StatusID=ad.AlarmStatus AND ad.SourceMOID=#{MOID} ORDER
+		BY ad.StartTime
+		desc
+	</select>
+	
+	<select id="getDataBaseByserver" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.Db2InfoBean">
+	select db.* from MODB2Database db
+	left join MODB2Instance ins on ins.MOID = db.InstanceMOID
+	left join MODBMSServer ser on ser.MOID = ins.DBMSMOID
+	where ser.MOID=#{moId}	and db.DatabaseName in(select dbms.DBName from SysDBMSCommunity dbms
+      left join MODBMSServer dbserver on dbms.IP=dbserver.IP and dbms.DBMSType = dbserver.DBMSType and dbms.Port=dbserver.PORT
+      where dbserver.MOID=#{moId})
+	</select>
+	
+	<select id="getDB2DatabaseByMOID" parameterType="Integer" resultType="com.fable.insightview.monitor.database.entity.Db2InfoBean">
+	select db.MOID,db.InstanceMOID
+	from MODB2Database db
+	left join MODB2Instance ins on ins.MOID = db.InstanceMOID 
+	left join MODBMSServer ser on ser.MOID = ins.DBMSMOID
+	where ser.MOID=#{moId}
+	</select>
+	
+	<select id="getDb2InsList" resultType="hashmap" resultMap="MODBMSServerResultMap" parameterType="hashmap">
+		select b.MOID,b.InstanceName,b.Port,a.IP,a.MOName,${dateFormat("b.StartTime")}
+		formatTime,b.NodeNum,a.AlarmLevel,a.OperStatus,p.PerfValue,b.DBMSMOID,a.MOAlias as moAlias
+		from MODB2Instance b 
+		left join MODBMSServer a on a.MOID=b.DBMSMOID
+		left join PerfSnapshotDatabase p on p.MOID=b.MOID AND p.KPIName='DBAvailability'
+		where 1=1 
+	    <if test="ip != null and ip != '' " >
+	         and a.IP like ${concat("'%'","'"+ip+"'","'%'")}
+	    </if>  
+	</select>
+	
+	<select id="getDb2DBInfoList" parameterType="hashmap" resultType="hashmap" resultMap="MODB2InfoResultMap">
+  	select a.MOID,a.InstanceMOID,a.DatabaseName,a.DatabasePath,${dateFormat("a.ConnTime")}
+	formatTime,a.DatabaseStatus,c.IP,b.InstanceName ,b.DBMSMOID ,c.MOAlias as moAlias,b.Port
+	from MODB2Database a 
+	left join MODB2Instance b on a.InstanceMOID=b.MOID
+	left join MODBMSServer c on b.DBMSMOID=c.MOID 
+	where 1=1 
+      <if test="ip != null and ip != '' " >
+         and c.IP like ${concat("'%'","'"+ip+"'","'%'")}
+      </if>  
+   </select>
+   
+   <select id="getDB2AlarmSourceId" parameterType="Integer" resultType="Integer">
+	select ins.MOID from MODB2Instance ins where ins.DBMSMOID = #{dbmsMoId}
+	union 
+	(select d.MOID from MODB2Database d left join MODB2Instance i on d.InstanceMOID=i.MOID where i.DBMSMOID = #{dbmsMoId})
+	</select>
+  </mapper>

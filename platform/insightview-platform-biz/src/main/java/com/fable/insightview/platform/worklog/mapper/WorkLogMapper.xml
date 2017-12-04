@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.worklog.mapper.WorkLogMapper">
+	
+	<select id="selectWorkLogs" parameterType="com.fable.insightview.platform.page.Page" resultType="com.fable.insightview.platform.worklog.entity.WorkLog">
+		select a.* 
+		from PfWorkLog a
+		where 1=1
+		<if test="params.creater != null">
+			AND a.Creater=#{params.creater,jdbcType=INTEGER}
+		</if>
+		<if test="params.title != null and params.title != ''">
+			AND a.Title LIKE CONCAT('%',#{params.title},'%')
+		</if>
+		<if test="params.logStart1 != null">
+			AND a.StartTime &gt;= #{params.logStart1,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.logStart2 != null">
+			AND a.StartTime &lt;= #{params.logStart2,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.starLevel > -1">
+			AND a.StarLevel=#{params.starLevel,jdbcType=INTEGER} 
+		</if>
+		<if test="params.logEnd1 != null">
+			AND a.EndTime &gt;= #{params.logEnd1,jdbcType=TIMESTAMP} 
+		</if>
+		<if test="params.logEnd2 != null">
+			AND a.EndTime &lt;= #{params.logEnd2,jdbcType=TIMESTAMP}
+		</if>
+	</select>
+	
+	<select id="selectWorkLogsByUserId" resultType="com.fable.insightview.platform.worklog.entity.WorkLog">
+		select a.* from PfWorkLog a
+		<where>
+			a.Creater=#{userId,jdbcType=INTEGER}
+		</where>
+	</select>
+	
+	<select id="selectWorkLogById" resultType="com.fable.insightview.platform.worklog.entity.WorkLog">
+		SELECT (SELECT UserName FROM SysUserInfo WHERE UserId=a.Creater) createrName,a.*
+		FROM PfWorkLog a
+		WHERE a.Id=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteWorkLogById">
+		DELETE FROM PfWorkLog WHERE id=#{id,jdbcType=INTEGER}
+	</delete>
+	
+	<update id="updateWorkLog" parameterType="com.fable.insightview.platform.worklog.entity.WorkLog">
+		UPDATE PfWorkLog
+		<set>
+			<if test="title != null and title != ''">
+				Title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="starLevel != null">
+				StarLevel=#{starLevel,jdbcType=INTEGER},
+			</if>
+			<if test="startTime != null">
+				StartTime=#{startTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				EndTime=#{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="logContent != null and logContent != ''">
+				LogContent=#{logContent,jdbcType=VARCHAR},
+			</if>
+			<if test="creater != null">
+				Creater=#{creater,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null and createTime != ''">
+				CreateTime=#{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="taskFile != null and taskFile != ''">
+				TaskFile=#{taskFile,jdbcType=VARCHAR},
+			</if>
+			<if test="resultFile != null and resultFile != ''">
+				ResultFile=#{resultFile,jdbcType=VARCHAR}
+			</if>
+		</set>
+		<where>
+			Id=#{id,jdbcType=INTEGER}
+		</where>
+	</update>
+	
+	<insert id="insertWorkLog" parameterType="com.fable.insightview.platform.worklog.entity.WorkLog">
+		INSERT INTO PfWorkLog
+		(Id,Title,StarLevel,StartTime,EndTime,LogContent,Creater,CreateTime,TaskFile,ResultFile)
+		VALUES
+		(#{id,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{starLevel,jdbcType=INTEGER},
+		 #{startTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP},#{logContent,jdbcType=VARCHAR},
+		 #{creater,jdbcType=INTEGER},#{createTime,jdbcType=VARCHAR},
+		 #{taskFile,jdbcType=VARCHAR},#{resultFile,jdbcType=VARCHAR})
+	</insert>
+</mapper>
+
+

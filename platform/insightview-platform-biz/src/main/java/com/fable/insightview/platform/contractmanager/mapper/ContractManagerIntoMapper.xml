@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper  namespace="com.fable.insightview.platform.contractmanager.mapper.ContractManagerIntoMapper">
+
+<resultMap id="ProjectContractMapper" type="com.fable.insightview.platform.contractmanager.entity.ProjectContract" >
+<id  column="ID" property="id" jdbcType="INTEGER"/>
+<result column="ProjectId" property="projectId" jdbcType="INTEGER" />
+<result column="SignTime" property="signTime" jdbcType="TIMESTAMP" />
+<result column="ContractNo" property="contractNo" jdbcType="VARCHAR" />
+<result column="ValidTimeBegin" property="validTimeBegin" jdbcType="TIMESTAMP" />
+<result column="ValidTimeEnd" property="validTimeEnd" jdbcType="TIMESTAMP" /> 
+<result column="ContractType" property="contractType" jdbcType="TINYINT" />
+<result column="MoneyAmount" property="moneyAmount" jdbcType="DECIMAL" />
+<result column="ResponserName" property="responserName" jdbcType="VARCHAR" />
+<result column="ContractSummary" property="contractSummary" jdbcType="LONGVARCHAR" />
+<result column="Title" property="title" jdbcType="VARCHAR" />
+<result column="Owner" property="owner" jdbcType="VARCHAR" />
+<result column="PartyB" property="partyB" jdbcType="VARCHAR" />
+<result column="CashDeposit" property="cashDeposit" jdbcType="DOUBLE" />
+<result column="nextPayment" property="nextPayment" jdbcType="DOUBLE" />
+<result column="nextPayDate" property="nextPayDate" jdbcType="TIMESTAMP"/>
+<result column="nextAmount" property="nextAmount" javaType="DOUBLE"/>
+</resultMap>
+<insert id="insertContractInfo" parameterType="com.fable.insightview.platform.contractmanager.entity.ProjectContract">
+INSERT INTO ProjectContract(ID,ProjectId,SignTime,ContractNo,ValidTimeBegin,
+ValidTimeEnd,ContractType,MoneyAmount,ResponserName,ContractSummary,Title,OWNER,PartyB,CashDeposit)
+VALUES(
+     #{id,jdbcType=INTEGER},
+     #{projectId,jdbcType=INTEGER},
+     #{signTime,jdbcType=TIMESTAMP},
+     #{contractNo,jdbcType=VARCHAR},
+     #{validTimeBegin,jdbcType=TIMESTAMP},
+     #{validTimeEnd,jdbcType=TIMESTAMP},
+     #{contractType,jdbcType=TINYINT},
+     #{moneyAmount,jdbcType=DECIMAL},
+     #{responserName,jdbcType=VARCHAR},
+     #{contractSummary,jdbcType=LONGVARCHAR},
+     #{title,jdbcType=VARCHAR},
+     #{owner,jdbcType=VARCHAR},
+     #{partyB,jdbcType=VARCHAR},
+     #{cashDeposit,jdbcType=DOUBLE}
+)
+</insert>
+
+<select id="queryProjectCombox" resultType="com.fable.insightview.platform.contractmanager.entity.ComboxBean"   >
+    SELECT id,title as neir FROM Project ORDER BY id 
+</select>
+<select id="queryContractTypeCombox" resultType="com.fable.insightview.platform.contractmanager.entity.ComboxBean"   >
+    SELECT ConstantItemId AS id,remark AS neir FROM SysConstantItemDef WHERE ConstantTypeId=3053
+</select>
+<select id="queryContractList" resultType="hashmap" resultMap="ProjectContractMapper" parameterType="page">
+   select id,title,SignTime,nextPayDate,nextPayment,OWNER,PartyB,nextAmount from
+   (select id,
+        title,
+        SignTime,
+        (select min(planpaytime) from  ContractPayment where ContractID=id and  paymentTime is null and amount is null) nextPayDate, 
+        (select planPayAmount from   ContractPayment where  ContractID=id and  planpaytime=(select min(planpaytime) from   ContractPayment where ContractID=id and  paymentTime is null and amount is null)) nextPayment,
+        (SELECT Amount FROM   ContractPayment WHERE  ContractID=id AND  planpaytime=(SELECT MIN(planpaytime) FROM   ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL)) nextAmount,
+        OWNER,
+        PartyB 
+        from  ProjectContract)a where 1=1  
+     <if test="params.title!=null and params.title!='' ">
+      and title like ${concat("'%'", "'"+params.title+"'" ,"'%'")}
+     </if>
+     <if test="params.validTimeBegin!=null and params.validTimeBegin!=''">
+      and  SignTime &gt;=#{params.validTimeBegin} 
+     </if>
+     <if test="params.validTimeEnd!=null and params.validTimeEnd!=''">
+      and  SignTime &lt;=#{params.validTimeEnd}
+     </if>
+     <if test="params.owner!=null and params.owner!=''">
+      and Owner like ${concat("'%'", "'"+params.owner+"'" ,"'%'")}
+     </if>
+     <if test="params.partyB!=null and params.partyB!=''">
+     and PartyB like ${concat("'%'", "'"+params.partyB+"'" ,"'%'")}
+     </if>
+</select>
+<!-- 查询对象(编辑) -->
+<select id="queryContractInfo" parameterType="java.lang.Integer" resultType="hashmap"  resultMap="ProjectContractMapper">
+      select * from ProjectContract where id=#{contractid,jdbcType=INTEGER}
+</select>
+<!-- 修改信息 -->
+<update id="updateContractInfo" parameterType="com.fable.insightview.platform.contractmanager.entity.ProjectContract">
+ update ProjectContract set ProjectId=#{projectId,jdbcType=INTEGER},SignTime=#{signTime,jdbcType=TIMESTAMP},
+ ContractNo=#{contractNo,jdbcType=VARCHAR},ValidTimeBegin=#{validTimeBegin,jdbcType=TIMESTAMP},
+ ValidTimeEnd=#{validTimeEnd,jdbcType=TIMESTAMP},ContractType=#{contractType,jdbcType=TINYINT},
+ MoneyAmount= #{moneyAmount,jdbcType=DECIMAL},ResponserName=#{responserName,jdbcType=VARCHAR},
+ ContractSummary=#{contractSummary,jdbcType=LONGVARCHAR},Title=#{title,jdbcType=VARCHAR},
+ Owner=#{owner,jdbcType=VARCHAR},PartyB=#{partyB,jdbcType=VARCHAR},
+ CashDeposit= #{cashDeposit,jdbcType=DOUBLE} where ID=#{id,jdbcType=INTEGER}
+</update>
+<select id="queryContractInfoDetail" parameterType="java.lang.Integer" resultType="com.fable.insightview.platform.contractmanager.entity.ProjectContract" >
+    select ID,projecttitle,ProjectId,ContractType,SignTime,ContractNo,ValidTimeBegin,ValidTimeEnd,typeneir,MoneyAmount,ResponserName,ContractSummary,Title,OWNER,PartyB,CashDeposit,remainder from 
+   (select ID,(select title FROM Project where id=ProjectId)projecttitle,ProjectId,SignTime,ContractNo,ValidTimeBegin,ValidTimeEnd,ContractType,
+   (select remark  FROM SysConstantItemDef where ConstantTypeId=3053 and ConstantItemId=ContractType )typeneir,MoneyAmount,ResponserName,ContractSummary,
+    Title,OWNER,PartyB,CashDeposit,(MoneyAmount-(SELECT SUM(Amount) FROM ContractPayment WHERE ContractID=ID)) remainder from ProjectContract) a where ID=#{contractid,jdbcType=INTEGER}
+</select>
+<delete id="deleteProjectContractInfo" parameterType="Integer">
+    delete from ProjectContract where ID=#{contractid,jdbcType=INTEGER}
+</delete>
+<select id="queryContractListByProjectId" resultType="hashmap" resultMap="ProjectContractMapper" parameterType="page">
+   select id,title,SignTime,nextPayDate,nextPayment,OWNER,PartyB,ProjectId from
+   (SELECT id, title, SignTime, (SELECT MIN(planpaytime) FROM  ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL) nextPayDate, 
+        (SELECT planPayAmount FROM ContractPayment WHERE  ContractID=id AND  planpaytime=(SELECT MIN(planpaytime) FROM ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL)) nextPayment,
+        OWNER,
+        PartyB,ProjectId
+        FROM  ProjectContract)a WHERE 1=1
+    <if test="params.projectId != null" >
+        AND ProjectId=#{params.projectId,jdbcType=INTEGER}
+    </if>
+    	Order by id
+</select>
+<select id="getCountContractByProjectId" resultType="Integer" parameterType="Integer">
+   select count(1) from (
+	   select id,title,SignTime,nextPayDate,nextPayment,OWNER,PartyB,ProjectId from
+	   (SELECT id, title, SignTime, (SELECT MIN(planpaytime) FROM  ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL) nextPayDate, 
+	        (SELECT planPayAmount FROM   ContractPayment WHERE  ContractID=id AND  planpaytime=(SELECT MIN(planpaytime) FROM   ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL)) nextPayment,
+	        OWNER,
+	        PartyB,ProjectId
+	        FROM  ProjectContract)a WHERE 1=1
+	    <if test="projectId != null" >
+	        AND ProjectId=#{projectId,jdbcType=INTEGER}
+	    </if>
+    ) AS total
+</select>
+<select id="queryContractExculdeProjectId" resultType="com.fable.insightview.platform.contractmanager.entity.ProjectContract" parameterType="page">
+   select id,title,SignTime,nextPayDate,nextPayment,OWNER,PartyB,ProjectId,ValidTimeBegin,ValidTimeEnd from
+   (select id, title, SignTime, (SELECT MIN(planpaytime) FROM  ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL) nextPayDate, 
+        (select planPayAmount FROM ContractPayment WHERE  ContractID=id AND  planpaytime=(SELECT MIN(planpaytime) FROM ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL)) nextPayment,
+        OWNER,
+        PartyB,ProjectId,ValidTimeBegin,ValidTimeEnd FROM ProjectContract)a WHERE 1=1
+        AND ProjectId IS NULL
+	     <if test="params.title!=null and params.title!='' ">
+	      AND title like ${concat("'%'", "'"+params.title+"'" ,"'%'")}
+	     </if>
+	     <if test="params.validTimeBegin!=null and params.validTimeBegin!=''">
+	      AND SignTime &gt;=#{params.validTimeBegin} 
+	     </if>
+	     <if test="params.validTimeEnd!=null and params.validTimeEnd!=''">
+	      AND SignTime &lt;=#{params.validTimeEnd}
+	     </if>
+	     <if test="params.owner!=null and params.owner!=''">
+	      AND OWNER like ${concat("'%'", "'"+params.owner+"'" ,"'%'")}
+	     </if>
+	     <if test="params.partyB!=null and params.partyB!=''">
+	      AND PartyB like ${concat("'%'", "'"+params.partyB+"'" ,"'%'")}
+	     </if>
+</select>
+<select id="selectCountExculdeProjectId" resultType="Integer" parameterType="Map">
+   select count(1) from(
+	   select id,title,SignTime,nextPayDate,nextPayment,OWNER,PartyB,ProjectId,ValidTimeBegin,ValidTimeEnd FROM
+	   (select id, title, SignTime, (SELECT MIN(planpaytime) FROM  ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL) nextPayDate, 
+	        (select planPayAmount FROM ContractPayment WHERE  ContractID=id AND  planpaytime=(SELECT MIN(planpaytime) FROM ContractPayment WHERE ContractID=id AND  paymentTime IS NULL AND amount IS NULL)) nextPayment,
+	        OWNER,
+	        PartyB,ProjectId,ValidTimeBegin,ValidTimeEnd FROM  ProjectContract)a WHERE 1=1
+	        AND ProjectId IS NULL
+		     <if test="params.title!=null and params.title!='' ">
+		      AND title like ${concat("'%'", "'"+params.title+"'" ,"'%'")}
+		     </if>
+		     <if test="params.validTimeBegin!=null and params.validTimeBegin!=''">
+		      AND SignTime &gt;=#{params.validTimeBegin} 
+		     </if>
+		     <if test="params.validTimeEnd!=null and params.validTimeEnd!=''">
+		      AND SignTime &lt;=#{params.validTimeEnd}
+		     </if>
+		     <if test="params.owner!=null and params.owner!=''">
+		      AND OWNER like ${concat("'%'", "'"+params.owner+"'" ,"'%'")}
+		     </if>
+		     <if test="params.partyB!=null and params.partyB!=''">
+		      AND PartyB like ${concat("'%'", "'"+params.partyB+"'" ,"'%'")}
+		     </if>
+	)AS total
+</select>
+<update id="updateCompactProjectId" parameterType="Integer">
+    update ProjectContract set ProjectId=null where ProjectId=#{projectID,jdbcType=INTEGER}
+</update>
+</mapper>
+

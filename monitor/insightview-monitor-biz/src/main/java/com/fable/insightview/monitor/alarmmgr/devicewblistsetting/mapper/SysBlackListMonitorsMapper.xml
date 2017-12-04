@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.mapper.SysBlackListMonitorsMapper" >
+  <resultMap id="BaseResultMap" type="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.SysBlackListMonitorsBean" >
+    <id column="ID" property="ID" jdbcType="INTEGER" />
+    <result column="TaskID" property="taskID" jdbcType="INTEGER" />
+    <result column="MID" property="MID" jdbcType="INTEGER" />
+    <result column="DoIntervals" property="doIntervals" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insertSysBlackListMonitors" parameterType="com.fable.insightview.monitor.alarmmgr.devicewblistsetting.entity.SysBlackListMonitorsBean" >
+    insert into SysBlackListMonitors
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskID != null" >
+        TaskID,
+      </if>
+      <if test="MID != null" >
+        MID,
+      </if>
+      <if test="doIntervals != null" >
+        DoIntervals,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskID != null" >
+        #{taskID,jdbcType=INTEGER},
+      </if>
+      <if test="MID != null" >
+        #{MID,jdbcType=INTEGER},
+      </if>
+      <if test="doIntervals != null" >
+        #{doIntervals,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

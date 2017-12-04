@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmview.mapper.AlarmViewMapper" >
+<resultMap id="AlarmViewMap" type="alarmView" >
+    <id column="ViewCfgID" property="viewCfgID" jdbcType="INTEGER" />
+    <result column="CfgName" property="cfgName" jdbcType="INTEGER" />
+    <result column="UserID" property="userID" jdbcType="INTEGER" />
+    <result column="UserDefault" property="userDefault" jdbcType="INTEGER" />
+    <result column="Descr" property="descr" jdbcType="VARCHAR" />
+    <result column="IsSystem" property="isSystem" jdbcType="INTEGER" />
+    <result column="DefaultRows" property="defaultRows" jdbcType="INTEGER" />
+    <result column="DefaultInterval" property="defaultInterval" jdbcType="INTEGER" />
+</resultMap>
+ <resultMap id="AlarmEventMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmEventDefineBean" > 
+    <id column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+    <result column="AlarmName" property="alarmName" jdbcType="VARCHAR" />
+    <result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+    <result column="IsSystem" property="isSystem" jdbcType="INTEGER" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+</resultMap>
+<resultMap id="MOSourceMap" type="com.fable.insightview.monitor.alarmmgr.entity.MOSourceBean" > 
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+	<result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+	<result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+	<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+	<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+	<result column="MOClassID" property="moClassID" jdbcType="INTEGER" />
+	<result column="DeviceIP" property="deviceIP" jdbcType="VARCHAR" />
+</resultMap>
+<resultMap id="SoundCfgMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewSoundCfgInfo" > 
+    <id column="CfgID" property="cfgID" jdbcType="INTEGER" />
+    <result column="ViewCfgID" property="viewCfgID" jdbcType="INTEGER" />
+    <result column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+    <result column="SoundFileURL" property="soundFileURL" jdbcType="VARCHAR" />
+    <result column="LoopTime" property="loopTime" jdbcType="INTEGER" />
+</resultMap>
+<resultMap id="ColCfgMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo" > 
+    <id column="CfgID" property="cfgID" jdbcType="INTEGER" />
+    <result column="ViewCfgID" property="viewCfgID" jdbcType="INTEGER" />
+    <result column="ColID" property="colID" jdbcType="INTEGER" />
+    <result column="ColWidth" property="colWidth" jdbcType="INTEGER" />
+    <result column="ColOrder" property="colOrder" jdbcType="INTEGER" />
+     <result column="IsVisible" property="isVisible" jdbcType="INTEGER" />
+      <result column="ColValueOrder" property="colValueOrder" jdbcType="INTEGER" />
+</resultMap>
+<resultMap id="ColDefMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColDefInfo" > 
+    <id column="ColID" property="colID" jdbcType="INTEGER" />
+    <result column="ColName" property="colName" jdbcType="VARCHAR" />
+    <result column="ColTitle" property="colTitle" jdbcType="VARCHAR" />
+    <result column="ColIndex" property="colIndex" jdbcType="INTEGER" />
+    <result column="ColWidth" property="colWidth" jdbcType="INTEGER" />
+    <result column="IsVisible" property="isVisible" jdbcType="INTEGER" />
+    <result column="ColValueOrder" property="colValueOrder" jdbcType="INTEGER" />
+</resultMap>
+<resultMap id="FilterMap" type="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewFilterInfo" > 
+    <id column="FilterID" property="filterID" jdbcType="INTEGER" />
+    <result column="ViewCfgID" property="viewCfgID" jdbcType="INTEGER" />
+    <result column="FilterKey" property="filterKey" jdbcType="VARCHAR" />
+    <result column="FilterKeyValue" property="filterKeyValue" jdbcType="INTEGER" />   
+</resultMap>
+
+<select id="queryList" resultType="hashmap" resultMap="AlarmViewMap" parameterType="page">
+  		select t.ViewCfgID,t.CfgName,t.UserID,t.UserDefault,t.Descr,t.IsSystem,t.DefaultRows,t.DefaultInterval  			  
+		from AlarmViewDef t  		
+  		where (t.UserID = #{params.userID} or t.IsSystem = 1)
+  		<if test="params.cfgName != null and params.cfgName != '' ">
+			and t.CfgName like ${concat("'%'","'"+params.cfgName+"'","'%'")}  
+    	</if>    	
+  		order by t.ViewCfgID
+</select> 
+
+<select id="queryViewInfoById" resultType="alarmView"  parameterType="alarmView">
+  		select t.ViewCfgID,t.CfgName,t.UserID,t.UserDefault,t.Descr,t.IsSystem,t.DefaultRows,t.DefaultInterval  			  
+		from AlarmViewDef t where t.ViewCfgID=#{viewCfgID}
+</select>
+
+<update id="updateInfo" parameterType="alarmView" >
+    	update AlarmViewDef set 
+    			CfgName=#{cfgName},UserID=#{userID},UserDefault=#{userDefault},Descr=#{descr},IsSystem=#{isSystem},
+    			DefaultRows=#{defaultRows},DefaultInterval=#{defaultInterval}
+     	where ViewCfgID=#{viewCfgID}
+</update>
+
+<update id="updateUserDefault" parameterType="alarmView" >
+    	update AlarmViewDef set UserDefault=0
+     	where UserID=#{userID}
+</update>
+
+<delete id="deleteInfo" parameterType="java.lang.Integer">
+   		delete from AlarmViewDef where ViewCfgID=#{id}
+</delete>
+
+<insert id="insertInfo" parameterType="alarmView" >
+    	insert into AlarmViewDef
+    		(ViewCfgID,CfgName,UserID,UserDefault,Descr,IsSystem,DefaultRows,DefaultInterval)
+    	values
+    		(
+    		#{viewCfgID,jdbcType=INTEGER},#{cfgName,jdbcType=VARCHAR},#{userID,jdbcType=INTEGER},
+    		#{userDefault,jdbcType=INTEGER},#{descr,jdbcType=VARCHAR},#{isSystem,jdbcType=INTEGER},
+    		#{defaultRows,jdbcType=INTEGER},#{defaultInterval,jdbcType=INTEGER}
+      	 	)
+</insert>
+ 
+<select id="queryEventList" resultType="hashmap" resultMap="AlarmEventMap" parameterType="page">
+  		select t.AlarmDefineID,t.AlarmName,t.AlarmTitle,t.IsSystem,t.Description
+  		from  AlarmEventDefine t
+  		where t.AlarmDefineID not in 
+  	    (SELECT FilterKeyValue from AlarmViewFilter where ViewCfgID=#{params.viewCfgID,jdbcType=INTEGER} and FilterKey='AlarmDefineID')
+  	     <if test="params.alarmName != null and params.alarmName != '' ">
+			and t.AlarmName like ${concat("'%'","'"+params.alarmName+"'","'%'")}
+    	</if>
+		order by t.AlarmDefineID
+</select>
+
+<select id="queryMOSourceList" resultType="hashmap" resultMap="MOSourceMap" parameterType="page">
+		select
+<!-- 		m.MOID,m.MOName,m.MOAlias,m.OperStatus,m.AlarmLevel,m.DomainID,m.MOClassID, -->
+		m.MOID,m.MOName,m.AlarmLevel,m.MOClassID,m.DomainID,
+		m.DeviceIP,ta.AlarmLevelName,tb.OrganizationName  domainName,b.ClassLable className
+		from MOSource m 
+		left join AlarmLevel ta on m.AlarmLevel = ta.AlarmLevelID
+		left join SysOrganization tb on m.DomainID = tb.OrganizationID 
+		left join MObjectDef b on b.ClassID = m.MOClassID 
+		where m.MOID not in 
+  	    (SELECT FilterKeyValue from AlarmViewFilter where ViewCfgID=#{params.viewCfgID,jdbcType=INTEGER} and FilterKey='AlarmSourceMOID')
+  	    <if test="params.moName != null and params.moName != '' ">
+			and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+    	</if> 
+    	<if test="params.deviceIP != null and params.deviceIP != '' ">
+			and m.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")}
+    	</if> 
+		order by m.MOClassID,m.DeviceIP	
+</select>
+
+<select id="querySoundList" resultType="hashmap" resultMap="SoundCfgMap" parameterType="page">
+  		select ta.CfgID,ta.ViewCfgID,ta.AlarmLevelID,ta.SoundFileURL,ta.LoopTime,tb.AlarmLevelName
+  		from  AlarmViewSoundCfg ta 
+  		left join AlarmLevel tb on ta.AlarmLevelID = tb.AlarmLevelID  		
+  		where ta.ViewCfgID=#{params.viewCfgID}
+		order by ta.CfgID 
+</select>
+
+<select id="queryColCfgList" resultType="hashmap" resultMap="ColCfgMap" parameterType="page">		
+		select tb.ViewCfgID,tb.CfgID,ta.ColID,ta.ColName,ta.ColTitle,tb.ColWidth,tb.IsVisible,tb.ColValueOrder,tb.ColOrder 
+		from AlarmViewColumnDef ta left join AlarmViewColumnCfg tb on ta.ColID=tb.ColID and tb.ViewCfgID=#{params.viewCfgID,jdbcType=INTEGER}
+		order by tb.IsVisible desc,ta.ColID	
+</select>
+
+<select id="queryFilterList" resultType="hashmap" resultMap="FilterMap" parameterType="page">
+		select t.* from (
+		select ta.FilterID,ta.ViewCfgID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmLevelName FilterValeName
+		from  AlarmViewFilter ta left join AlarmLevel tb on ta.FilterKeyValue=tb.AlarmLevelID where ta.ViewCfgID=#{params.viewCfgID} and ta.FilterKey='AlarmLevel'
+		union all
+		select ta.FilterID,ta.ViewCfgID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmTypeName FilterValeName
+		from  AlarmViewFilter ta left join AlarmType tb on ta.FilterKeyValue=tb.AlarmTypeID where ta.ViewCfgID=#{params.viewCfgID}  and ta.FilterKey='AlarmType'
+		union all
+		select ta.FilterID,ta.ViewCfgID,ta.FilterKey,ta.FilterKeyValue,tb.MOName FilterValeName
+		from  AlarmViewFilter ta left join MOSource tb on ta.FilterKeyValue=tb.MOID where ta.ViewCfgID=#{params.viewCfgID} and ta.FilterKey='AlarmSourceMOID'
+		union all
+		select ta.FilterID,ta.ViewCfgID,ta.FilterKey,ta.FilterKeyValue,tb.AlarmName FilterValeName
+		from  AlarmViewFilter ta left join AlarmEventDefine tb on ta.FilterKeyValue=tb.AlarmDefineID where ta.ViewCfgID=#{params.viewCfgID} and ta.FilterKey='AlarmDefineID'
+		) t
+</select>
+
+<select id="queryColDefList" resultType="hashmap" resultMap="ColDefMap" >
+  		select t.ColID,t.ColName,t.ColTitle,t.ColWidth,t.IsVisible,t.ColValueOrder,t.ColIndex
+  		from  AlarmViewColumnDef t 
+</select>
+
+<insert id="insertColCfg" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo" >
+    	insert into AlarmViewColumnCfg
+    		(CfgID,ViewCfgID,ColID,ColWidth,ColOrder,ColValueOrder,IsVisible)
+    	values
+            (
+    		#{cfgID,jdbcType=INTEGER},#{viewCfgID,jdbcType=INTEGER},#{colID,jdbcType=INTEGER},
+    		#{colWidth,jdbcType=INTEGER},#{colOrder,jdbcType=INTEGER},#{colValueOrder,jdbcType=INTEGER},
+    		#{isVisible,jdbcType=INTEGER}
+      	 	) 
+</insert>
+
+<select id="queryColCfgInfoById" resultType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo"  parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo">
+  		select ta.CfgID,ta.ViewCfgID,ta.ColID,ta.ColWidth,ta.ColOrder,ta.ColValueOrder,ta.IsVisible,tb.ColName,tb.ColTitle 			  
+		from AlarmViewColumnCfg ta left join AlarmViewColumnDef tb  on ta.ColID=tb.ColID  			  
+		where ta.CfgID=#{cfgID}
+</select>
+
+<select id="queryColCfgInfoByColID" resultType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo"  parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo">
+  		select ta.CfgID,ta.ViewCfgID,ta.ColID,ta.ColWidth,ta.ColOrder,ta.ColValueOrder,ta.IsVisible			  
+		from AlarmViewColumnCfg ta			  
+		where ta.ViewCfgID=#{viewCfgID} and ta.ColID=#{colID}
+</select>
+
+<update id="updateCfgDlg" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewColCfgInfo" >
+    	update AlarmViewColumnCfg set 
+    		ColWidth=#{colWidth},ColOrder=#{colOrder},ColValueOrder=#{colValueOrder},IsVisible=#{isVisible}
+     	where CfgID=#{cfgID}
+</update>
+
+<delete id="deleteColCfgInfo" parameterType="com.fable.insightview.monitor.alarmmgr.alarmview.entity.ParamterVo">
+   		delete from AlarmViewColumnCfg where 1=1 
+   		<if test="key == 'viewCfgID' ">
+			and viewCfgID = ${val}
+		</if>
+   		<if test="key == 'cfgID' ">
+			and CfgID in (${val})
+		</if>
+</delete>
+
+<insert id="insertFilterInfo" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewFilterInfo" >
+    	insert into AlarmViewFilter
+    		(FilterID,ViewCfgID,FilterKey,FilterKeyValue)
+    	values
+    		(
+    		#{filterID,jdbcType=INTEGER},#{viewCfgID,jdbcType=INTEGER},
+    		#{filterKey,jdbcType=VARCHAR},#{filterKeyValue,jdbcType=INTEGER}
+      	 	)
+</insert>
+
+<delete id="deleteFilterInfo" parameterType="com.fable.insightview.monitor.alarmmgr.alarmview.entity.ParamterVo">
+   		delete from AlarmViewFilter where 1=1
+   		<if test="key == 'viewCfgID' ">
+			and viewCfgID = #{val}
+		</if>
+   		<if test="key == 'filterID' ">
+			and FilterID = #{val}
+		</if>
+</delete>  
+
+<select id="checkSoundLevelInfo" resultType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewSoundCfgInfo" 
+		parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewSoundCfgInfo" >
+      	select CfgID,ViewCfgID,AlarmLevelID,SoundFileURL,LoopTime from  AlarmViewSoundCfg where ViewCfgID=#{viewCfgID} and 	AlarmLevelID=#{alarmLevelID}
+</select>
+
+<insert id="insertSoundInfo" parameterType="com.fable.insightview.monitor.alarmmgr.entity.AlarmViewSoundCfgInfo" >
+    	insert into AlarmViewSoundCfg
+    		(CfgID,ViewCfgID,AlarmLevelID,SoundFileURL,LoopTime)
+    	values
+    		(
+    		#{cfgID,jdbcType=INTEGER},#{viewCfgID,jdbcType=INTEGER},#{alarmLevelID,jdbcType=INTEGER},
+    		#{soundFileURL,jdbcType=VARCHAR},#{loopTime,jdbcType=INTEGER}
+      	 	)
+</insert>
+
+<delete id="deleteSoundInfo" parameterType="com.fable.insightview.monitor.alarmmgr.alarmview.entity.ParamterVo">
+   		delete from AlarmViewSoundCfg where 1=1
+   		<if test="key == 'viewCfgID' ">
+			and viewCfgID = #{val}
+		</if>
+   		<if test="key == 'cfgID' ">
+			and cfgID = #{val}
+		</if>
+</delete>
+
+<select id="queryDefaultFilterByUser" resultMap="FilterMap" parameterType="hashmap">
+  		select ta.FilterID,ta.ViewCfgID,ta.FilterKey,ta.FilterKeyValue
+  		from  AlarmViewFilter ta 
+		left join AlarmViewDef	tb
+		on ta.ViewCfgID = tb.ViewCfgID
+		where tb.UserID = ${userID} ${viewFilter}
+		order by ta.FilterID
+</select>   
+
+<select id="queryColCfgListByUserID" resultMap="ColCfgMap" parameterType="hashmap">		
+		select ta.CfgID,ta.ViewCfgID,ta.ColID,ta.ColWidth,ta.ColOrder,ta.IsVisible,ta.ColValueOrder,tb.ColName,tb.ColTitle 
+		from AlarmViewColumnCfg ta left join AlarmViewColumnDef tb on
+		ta.ColID=tb.ColID where ta.ViewCfgID in (select ViewCfgID from AlarmViewDef where 1=1  ${userID} ${viewFilter})
+		and ta.IsVisible=1
+		order by ta.ColID 		
+</select>  
+
+<select id="queryViewListByUserID" resultMap="AlarmViewMap" parameterType="hashmap">		
+	 select ViewCfgID,CfgName,UserDefault,UserID,Descr,IsSystem,DefaultInterval,DefaultRows from AlarmViewDef where 1=1  ${userID} ${viewFilter}
+</select>  
+
+<select id="queryNewViewByUserID" resultMap="AlarmViewMap" parameterType="hashmap">		
+	select ViewCfgID,CfgName,UserDefault,UserID,Descr,IsSystem,DefaultInterval,DefaultRows
+	 from AlarmViewDef where 1=1  ${userID} and  ViewCfgID=(select max(ViewCfgID)from AlarmViewDef)
+</select>  
+
+<select id="queryAllViewByUserID" resultMap="AlarmViewMap" parameterType="com.fable.insightview.monitor.alarmmgr.alarmview.entity.ParamterVo">		
+  		select t.ViewCfgID,t.CfgName,t.UserID,t.UserDefault,t.Descr,t.IsSystem  			  
+		from AlarmViewDef t  		
+  		where t.UserID = #{val,jdbcType=INTEGER}
+  		order by t.ViewCfgID
+</select>   
+
+<select id="queryViewInfoByCfgID" resultMap="AlarmViewMap" parameterType="hashmap">		
+  		select tb.ViewCfgID,tb.CfgName,tb.UserID,tb.UserDefault,tb.Descr,tb.IsSystem,tb.DefaultRows,tb.DefaultInterval			  
+		from AlarmViewDef tb  		
+  		where   tb.UserID =  ${userID} ${viewFilter} 
+</select>   
+ 
+</mapper>

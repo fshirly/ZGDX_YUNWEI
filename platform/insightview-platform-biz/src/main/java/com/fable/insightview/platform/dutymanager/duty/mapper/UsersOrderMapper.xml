@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.dutymanager.duty.mapper.UsersOrderMapper">
+
+	<select id="query" resultType="HASHMAP">
+		SELECT ud.ID,ud.OrderIdOfDuty,su.UserName,su.MobilePhone,su.UserIcon,ud.UserType,ud.UserId
+		FROM PfUsersOfDuty ud left join SysUserInfo su ON ud.UserId=su.UserID
+		<if test="list.size() > 0"> 
+			WHERE ud.DutyId IN
+			<foreach collection="list" item="dutyId" open="( " separator="," close=" )">
+	        #{dutyId}
+	        </foreach>
+        </if>
+	</select>
+	
+	<insert id="insert" parameterType="com.fable.insightview.platform.dutymanager.duty.entity.PfUsersOrder">
+		INSERT INTO PfUsersOfDuty (ID,OrderIdOfDuty,DutyId,UserId,UserType)
+		VALUES 
+		(#{id,jdbcType=INTEGER},#{orderIdOfDuty,jdbcType=INTEGER},#{dutyId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{userType,jdbcType=INTEGER})
+	</insert>
+	
+	<select id="querySingle" resultType="HASHMAP">
+		SELECT ud.ID,ud.OrderIdOfDuty,ud.UserId,su.UserName,ud.UserType 
+		FROM PfUsersOfDuty ud left join SysUserInfo su ON ud.UserId=su.UserID
+		WHERE ud.DutyId=#{dutyId}
+	</select>
+	
+	<select id="queryNoRepeatDuty" resultType="HASHMAP">
+		SELECT ud.ID,ud.OrderIdOfDuty,ud.UserId,su.UserName,ud.UserType,su.MobilePhone 
+		FROM PfUsersOfDuty ud left join SysUserInfo su ON ud.UserId=su.UserID
+		WHERE ud.DutyId=#{dutyId} GROUP BY su.UserID
+	</select>
+	
+	<delete id="deleteByOrderId">
+		DELETE FROM PfUsersOfDuty WHERE OrderIdOfDuty=#{orderId}
+	</delete>
+	
+	<delete id="deleteMulti">
+		DELETE FROM PfUsersOfDuty WHERE OrderIdOfDuty IN (${orderIds})
+	</delete>
+	
+	<delete id="deleteByDutyId">
+		DELETE FROM PfUsersOfDuty WHERE DutyId=#{dutyId}
+	</delete>
+	
+	<select id="queryUsers" resultType="INTEGER">
+		SELECT COUNT(*) FROM PfUsersOfDuty WHERE OrderIdOfDuty=#{orderId}
+	</select>
+	
+	<select id="queryPrincle" resultType="INTEGER">
+		SELECT count(*) FROM PfUsersOfDuty WHERE UserId=#{userId} AND UserType=1 AND OrderIdOfDuty=#{orderId}
+	</select>
+</mapper>

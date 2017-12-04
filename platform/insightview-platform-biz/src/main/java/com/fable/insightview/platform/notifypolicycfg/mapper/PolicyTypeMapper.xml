@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.notifypolicycfg.mapper.PolicyTypeMapper">
+	<resultMap id="policyTypeMap" type="com.fable.insightview.platform.notifypolicycfg.entity.PolicyTypeBean">
+		<id column="TypeID" property="typeId" jdbcType="INTEGER" />
+		<result column="TypeName" property="typeName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="selectSql">
+	select t.TypeID,t.TypeName from PolicyType t where 1=1
+	</sql>
+	
+	<select id="getAllType" resultType="hashmap" resultMap="policyTypeMap">
+		<include refid="selectSql"/>
+		order by t.TypeID
+	</select>
+	
+	<select id="getByTypeID" resultType="com.fable.insightview.platform.notifypolicycfg.entity.PolicyTypeBean" parameterType="Integer">
+		<include refid="selectSql"/> and t.TypeID =#{typeId}
+		<if test="typeId !='' and typeId != null and typeId !='-1'">
+			 and t.TypeID =#{typeId}
+		</if>
+	</select>
+</mapper>
+
+

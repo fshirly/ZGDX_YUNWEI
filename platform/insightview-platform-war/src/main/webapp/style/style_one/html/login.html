@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登陆</title>
+<link rel="stylesheet" href="../css/global.css" type="text/css" />
+<link rel="stylesheet" href="../css/login.css" type="text/css" />
+<script type="text/javascript" src="../js/login.js"></script>
+</head>
+
+<body>
+<!-- begin #main -->
+<div id="main" > 
+  
+  <!-- begin #header -->
+  <div id="header">
+  		
+        <!-- begin #logo -->
+  		<div id="logo">
+        	<img src="../images/login/logo.gif"  />
+        </div>
+        <!-- end #logo -->
+        
+        <!-- begin #helps -->
+        <div id="helps">
+        	<ul>
+            	<li><a href="help.html" target="_self">帮助</a></li>
+            	<li><img src="../images/login/shuxian.gif" /></li>
+            	<li><a href="support.html" target="_self">支持</a></li>                                
+            </ul>
+        </div>
+        <!-- end #helps -->
+        
+  </div>
+  <!-- end #header -->  
+  	
+  <!-- begin #content -->
+  <div id="content">
+		
+        <!-- begin #loginArea -->
+        <div id="loginArea">
+        	<img  src="../images/login/login.gif"/>
+            
+            <!-- begin #split -->
+            <div id="split"></div>
+            <!-- end #split -->
+            
+            <!-- begin #inputArea -->
+            <div id="inputArea">
+                
+                <!-- begin #welcomeHere -->
+                <div id="welcomeHere">
+                	您好，欢迎登陆！<br />
+                    <img  src="../images/login/line_short.gif" />
+                </div>
+                <!-- end #welcomeHere -->
+                
+                
+                <!-- begin #myForm -->
+                <form action="" method="post" id="myForm">
+                
+                     <!-- begin #reallyHere -->
+                    <div id="reallyHere">
+                        <ul>
+                            <li class="keyWords">用户名：</li>
+                            <li><input type="text"  class="inputs"  id="inputs1" maxlength="40"/></li>
+                            <li class="keyWords">密&nbsp;&nbsp;&nbsp;码：</li>
+                            <li><input type="password"  class="inputs"  id="inputs2" maxlength="40"/></li>
+                            <li><input type="checkbox" class="checks" />
+                                <span class="remember">记住密码</span>
+                                <span class="register"><a href="register.html" target="_self">立即注册</a></span>
+                            </li>
+                            <li class="buttons">
+                                <input type="button"  onclick="doSubmit();"  
+                               	 onmouseover="doChange(this);" onmouseout="doBack(this);" value="登录"/>
+                                &nbsp;&nbsp;
+                                <input type="button"  onclick="doReset();"
+                                 onmouseover="doChange(this);" onmouseout="doBack(this);" value="重置"/>                            
+                            </li>                                                                                                                        
+                        </ul>
+                        
+                    </div>
+                    <!-- end #reallyHere -->
+                    
+                </form>
+                 <!-- end #myForm -->
+                
+            </div>      
+            <!-- end #inputArea -->
+        </div>      
+        <!-- end #loginArea -->
+        
+              
+  </div>
+  <!-- end #content -->  
+  
+  
+  <!-- begin #footer -->
+  <div id="footer">
+  
+  		<!-- begin #footer_1 -->
+		<div id="footer_1"></div>
+        <!-- end #footer_1 -->
+        
+        <!-- begin #footer_2 -->
+		<div id="footer_2">
+        	版权所有&nbsp;&copy;&nbsp;&nbsp;2013-2014&nbsp;&nbsp;&nbsp;江苏飞搏软件技术有限公司
+        </div>
+        <!-- end #footer_2 -->        
+  </div>
+  <!-- end #footer -->  
+  
+</div>
+<!-- end #main -->
+</body>
+</html>

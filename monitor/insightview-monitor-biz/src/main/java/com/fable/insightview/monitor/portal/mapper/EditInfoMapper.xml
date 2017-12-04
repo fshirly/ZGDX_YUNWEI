@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.portal.mapper.EditInfoMapper" >
+ <resultMap id="ModeviceResultMap" type="modeviceInfo">
+		<id column="MOID" property="moid" jdbcType="INTEGER" />
+		<result column="MOName" property="moname" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+		<result column="OperStatus" property="operstatus" jdbcType="INTEGER" />
+		<result column="AdminStatus" property="adminstatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+		<result column="DomainID" property="domainid" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="LastUpdateTime" property="lastupdatetime"
+			jdbcType="TIMESTAMP" />
+		<result column="CreateBy" property="createby" jdbcType="INTEGER" />
+		<result column="UpdateBy" property="updateby" jdbcType="INTEGER" />
+		<result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+		<result column="NeCollectorID" property="necollectorid"
+			jdbcType="INTEGER" />
+		<result column="NeManufacturerID" property="nemanufacturerid"
+			jdbcType="INTEGER" />
+		<result column="NeCategoryID" property="necategoryid" jdbcType="INTEGER" />
+		<result column="NeVersion" property="neversion" jdbcType="VARCHAR" />
+		<result column="OS" property="os" jdbcType="VARCHAR" />
+		<result column="OSVersion" property="osversion" jdbcType="VARCHAR" />
+		<result column="SnmpVersion" property="snmpversion" jdbcType="INTEGER" />
+		<result column="IsManage" property="ismanage" jdbcType="INTEGER" />
+		<result column="TaskId" property="taskid" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="getDeviceName" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		SELECT * FROM MODevice	WHERE moClassID in(${moClassID})
+	</select>
+	<select id="getMoClassIDBymoid" resultType="java.lang.Integer" 
+		parameterType="java.lang.Integer">
+		SELECT moClassID FROM MODevice	WHERE moID =#{moid}
+	</select>
+</mapper>
+

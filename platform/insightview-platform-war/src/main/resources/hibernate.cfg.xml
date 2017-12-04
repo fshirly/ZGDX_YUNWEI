@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+
+"-//Hibernate/Hibernate Configuration DTD 2.0//EN"
+
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+
+		<!-- 显示实际操作数据库时的SQL -->
+
+		<property name="show_sql">true</property>
+
+		<!-- SQL方言，这边设定的是MySQL -->
+
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+		<!--驱动程序，在后续的章节中将讲述mysql、sqlserver和Oracle数据库的配置 -->
+
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+
+		<!-- JDBC URL -->
+
+		<property name="connection.url">jdbc:mysql://192.168.20.136:3306/jbpm?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true&amp;tinyInt1isBit=false</property>
+
+		<!-- 数据库用户名,eg. root -->
+
+		<property name="connection.username">root</property>
+
+		<!-- 数据库密码, eg. root -->
+
+		<property name="connection.password">root</property>
+
+		<property name="dbcp.maxActive">100</property>
+
+		<property name="dbcp.whenExhaustedAction">1</property>
+
+		<property name="dbcp.maxWait">1000</property>
+
+		<property name="dbcp.maxIdle">10</property>
+
+		<property name="dbcp.ps.maxActive">100</property>
+
+		<property name="dbcp.ps.whenExhaustedAction">1</property>
+
+		<property name="dbcp.ps.maxWait">1000</property>
+
+		<property name="dbcp.ps.maxIdle">20</property>
+		
+		<property name="hibernate.hbm2ddl.auto">update</property>
+	</session-factory>
+
+</hibernate-configuration>

@@ -1,0 +1,1808 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.host.mapper.HostMapper">
+	<resultMap id="ModeviceResultMap" type="modeviceInfo">
+		<id column="MOID" property="moid" jdbcType="INTEGER" />
+		<result column="MOName" property="moname" jdbcType="VARCHAR" />
+		<result column="MOAlias" property="moalias" jdbcType="VARCHAR" />
+		<result column="OperStatus" property="operstatus" jdbcType="INTEGER" />
+		<result column="AdminStatus" property="adminstatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+		<result column="DomainID" property="domainid" jdbcType="INTEGER" />
+		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="LastUpdateTime" property="lastupdatetime"
+			jdbcType="TIMESTAMP" />
+		<result column="CreateBy" property="createby" jdbcType="INTEGER" />
+		<result column="UpdateBy" property="updateby" jdbcType="INTEGER" />
+		<result column="DeviceIP" property="deviceip" jdbcType="VARCHAR" />
+		<result column="NeCollectorID" property="necollectorid"
+			jdbcType="INTEGER" />
+		<result column="NeManufacturerID" property="nemanufacturerid"
+			jdbcType="INTEGER" />
+		<result column="NeCategoryID" property="necategoryid" jdbcType="INTEGER" />
+		<result column="NeVersion" property="neversion" jdbcType="VARCHAR" />
+		<result column="OS" property="os" jdbcType="VARCHAR" />
+		<result column="OSVersion" property="osversion" jdbcType="VARCHAR" />
+		<result column="SnmpVersion" property="snmpversion" jdbcType="INTEGER" />
+		<result column="IsManage" property="ismanage" jdbcType="INTEGER" />
+		<result column="TaskId" property="taskid" jdbcType="INTEGER" />
+		<result column="INSTANCE" property="instance" jdbcType="VARCHAR" />
+		<result column="IfOperStatus" property="ifoperstatus" jdbcType="INTEGER" />
+		<result column="PerfValue" property="perValue" jdbcType="VARCHAR" />
+		<result column="PerfValue" property="perfvalue" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="AlarmResultMap"
+		type="com.fable.insightview.monitor.host.entity.AlarmActiveDetail">
+		<id column="AlarmID" property="alarmid" jdbcType="INTEGER" />
+		<result column="AlarmDefineID" property="alarmdefineid"
+			jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmoid" jdbcType="VARCHAR" />
+		<result column="AlarmTitle" property="alarmtitle" jdbcType="VARCHAR" />
+		<result column="SourceMOID" property="sourcemoid" jdbcType="INTEGER" />
+		<result column="SourceMOName" property="sourcemoname" jdbcType="VARCHAR" />
+		<result column="SourceMOIPAddress" property="sourcemoipaddress"
+			jdbcType="VARCHAR" />
+		<result column="MOClassID" property="moclassid" jdbcType="INTEGER" />
+		<result column="MOID" property="moid" jdbcType="INTEGER" />
+		<result column="MOName" property="moname" jdbcType="VARCHAR" />
+		<result column="AlarmLevel" property="alarmlevel" jdbcType="INTEGER" />
+		<result column="AlarmType" property="alarmtype" jdbcType="INTEGER" />
+		<result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
+		<result column="LastTime" property="lasttime" jdbcType="TIMESTAMP" />
+		<result column="RepeatCount" property="repeatcount" jdbcType="INTEGER" />
+		<result column="UpgradeCount" property="upgradecount" jdbcType="INTEGER" />
+		<result column="AlarmStatus" property="alarmstatus" jdbcType="INTEGER" />
+		<result column="Confirmer" property="confirmer" jdbcType="VARCHAR" />
+		<result column="ConfirmTime" property="confirmtime" jdbcType="TIMESTAMP" />
+		<result column="ConfirmInfo" property="confirminfo" jdbcType="VARCHAR" />
+		<result column="Cleaner" property="cleaner" jdbcType="VARCHAR" />
+		<result column="CleanTime" property="cleantime" jdbcType="TIMESTAMP" />
+		<result column="CleanInfo" property="cleaninfo" jdbcType="VARCHAR" />
+		<result column="DispatchUser" property="dispatchuser" jdbcType="VARCHAR" />
+		<result column="DispatchID" property="dispatchid" jdbcType="VARCHAR" />
+		<result column="DispatchTime" property="dispatchtime" jdbcType="TIMESTAMP" />
+		<result column="DispatchInfo" property="dispatchinfo" jdbcType="VARCHAR" />
+		<result column="AlarmContent" property="alarmcontent" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="PerfNetworkMemoryResultMap"
+		type="com.fable.insightview.monitor.host.entity.PerfNetworkMemory">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="MemoryUsage" property="memoryUsage" jdbcType="DECIMAL" />
+		<result column="PerMemoryUsage" property="perMemoryUsage" jdbcType="DECIMAL" />
+		<result column="MOName" property="moName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="PerfNetworkCPUResultMap"
+		type="com.fable.insightview.monitor.host.entity.PerfNetworkCPU">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="CollectTime" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="PerUsage" property="perUsage" jdbcType="DECIMAL" />
+		<result column="CPUsage" property="cpUsage" jdbcType="DECIMAL" />
+		<result column="MOName" property="moName" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- get snapshot  FOR  -->
+	<select id="getMoClassIDCount" resultType="com.fable.insightview.monitor.host.entity.MODevice">
+	<![CDATA[
+     SELECT DISTINCT(moClassID) FROM MODevice WHERE moclassID in (${classids})
+]]>
+	</select>
+	<!--  get snapshotAll FOR  All-->
+	<select id="getMoClassIDAllCount" resultType="com.fable.insightview.monitor.host.entity.MODevice" parameterType="java.lang.Integer">
+	<![CDATA[
+	SELECT * FROM (
+SELECT DISTINCT(moClassID) FROM MODevice WHERE MOClassID<>75 and MOClassID<>-1 ) t WHERE 1=1
+]]>
+<if test="classids!=null">
+		AND moClassID  in (${classids})
+</if>
+	</select>
+ <select id="getTZMoClassIDCount" resultType="com.fable.insightview.monitor.host.entity.MODevice">
+        SELECT classID  moClassID FROM MObjectDef WHERE classID in(5,6,7,9,59,60,14,17,90)
+</select>
+	<select id="getSnapshotInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		<![CDATA[
+		select tb.*,ta.classlable from MObjectDef ta,
+		(
+		SELECT '1' flag,COUNT(a.SourceMOID) count,a.SourceMOClassID MOClassID  FROM AlarmActiveDetail a  WHERE a.SourceMOClassID=#{moClassID} and  a.AlarmLevel<=4 AND a.AlarmLevel>=1 GROUP BY a.SourceMOClassID
+		union all
+		SELECT '2' flag,COUNT(a.MOID) count,a.MOClassID  FROM MODevice a  WHERE  a.MOClassID=#{moClassID} and a.AlarmLevel<=3 AND a.AlarmLevel>=1 AND a.IsManage=1 GROUP BY a.MOClassID
+		union all
+		SELECT '3' flag,COUNT(MOID) count,m.MOClassID  FROM MODevice m  WHERE m.MOClassID=#{moClassID} AND m.IsManage=1 GROUP BY MOClassID
+		)
+		tb where ta.ClassID=tb.MOClassID and ta.ClassID=#{moClassID}
+		]]>
+	</select>
+
+	<select id="querySnapshotInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		 select count(distinct(alarm.SourceMOID)) as countdevice,object.classlable,alarm.AlarmLevel,alarm.SourceMOClassID,count(alarm.alarmID) as alarmCount
+ 		from AlarmActiveDetail alarm, MObjectDef object
+		where ${moClassID} and  alarm.SourceMOClassID = object.ClassID and alarm.AlarmLevel BETWEEN 1 and 4
+		group by alarm.SourceMOClassID
+	</select>
+
+	<select id="queryAllDeviceInfo" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+		sum((select COUNT(device.MOID) from  MODevice device where   mo.MOID = device.MOID and AlarmLevel BETWEEN 1 and 3))  as devicealarmcount
+		from  MObjectDef de,MODevice mo
+		where mo.MOClassID = de.ClassID and mo.MOClassID in (${classID}) GROUP BY mo.MOClassID
+	</select>
+
+	<select id="queryAlarmInfoCounts" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+		sum((select COUNT(*) as num  from AlarmActiveDetail alarm  where alarm.SourceMOID = mo.MOID and alarm.AlarmLevel between 1 and 4)) as alarmcount
+		from  MObjectDef de,MODevice mo
+		where mo.MOClassID = de.ClassID and mo.MOClassID in (${classID}) GROUP BY mo.MOClassID
+	</select>
+
+	<select id="querySeriousDeviceCount" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		 select count(distinct(alarm.SourceMOID)) as countdevice,object.classlable,alarm.AlarmLevel,alarm.SourceMOClassID,count(alarm.alarmID) as alarmCount
+ 		from AlarmActiveDetail alarm, MObjectDef object
+		where ${moClassID} and  alarm.SourceMOClassID = object.ClassID and alarm.AlarmLevel BETWEEN 1 and 3
+		group by alarm.SourceMOClassID
+	</select>
+
+	<select id="queryMObjectDef" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice from  MObjectDef de,MODevice mo where mo.MOClassID = de.ClassID and mo.MOClassID in (${classID}) GROUP BY mo.MOClassID
+	</select>
+
+		<select id="getVmSnapshotInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		<![CDATA[
+		select tb.*,ta.classlable from MObjectDef ta,
+		(
+		SELECT '1' flag,COUNT(a.SourceMOID) count,9 MOClassID  FROM AlarmActiveDetail a  WHERE (a.SourceMOClassID=9 OR (a.SourceMOClassID=8 AND a.MOClassID=9)) and  a.AlarmLevel<=4 AND a.AlarmLevel>=1
+		union all
+		SELECT '2' flag,COUNT(a.MOID) count,a.MOClassID  FROM MODevice a  WHERE  a.MOClassID=9 and a.AlarmLevel<=3 AND a.AlarmLevel>=1 AND a.IsManage=1 GROUP BY a.MOClassID
+		union all
+		SELECT '3' flag,COUNT(MOID) count,m.MOClassID  FROM MODevice m  WHERE m.MOClassID=9 AND m.IsManage=1 GROUP BY MOClassID
+		)
+		tb where ta.ClassID=tb.MOClassID and ta.ClassID=9
+		]]>
+	</select>
+	<!-- TOP10CPU -->
+	<select id="getPerfCPU" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		SELECT m.moid,m.DeviceIP, s.PerfValue
+		,s.DeviceMOID,(case when m.MOAlias is null or m.MOAlias='' then m.MOName else m.MOAlias end) MOName,m.moClassId FROM ${tableName} s,MODevice m
+		WHERE m.MOID=s.DeviceMOID and s.moid IS null
+		<if test="timeBegin!=null and timeBegin!='' and timeEnd!=null and timeEnd!=''">
+		AND s.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		</if>
+		AND KPIName ='CPUsage'
+		<if test="moClassID!=null and moClassID!=''">
+		 and m.MOClassID in(${moClassID})
+		</if>
+		 ORDER BY perfValue ${topOrder} ${limit(cpuNum)}
+
+	</select>
+	<!-- TOP10 Memory -->
+	<select id="getPerfMemory" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		SELECT m.moid,
+		(case when m.MOAlias is null or m.MOAlias='' then m.MOName else m.MOAlias end) MOName,m.DeviceIP,p.PerfValue,m.MOClassID FROM
+		${tableName}
+		p
+		,MODevice m
+		WHERE p.devicemoid=m.MOID and
+		p.kpiName=#{KPIName} AND
+		m.MOClassID in (${moClassID})
+		and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		and ${rownum(num)}
+		ORDER BY
+		p.PerfValue ${topOrder}
+		${limit(num)}
+
+	</select>
+	<!-- TOP10 Disk -->
+	<select id="getPerfDisk" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		SELECT
+		m.moid,(case when m.MOAlias is null or m.MOAlias='' then m.MOName else m.MOAlias end) MOName,m.DeviceIP,v.RawDescr,p.PerfValue,m.MOClassID
+		FROM
+		${tableName} p
+		,MOVolumes v,MODevice m
+		WHERE p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND
+		p.kpiName=#{KPIName} AND m.MOClassID in(${moClassID})
+		and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		and		${rownum(num)}
+		ORDER BY
+		p.PerfValue ${topOrder} ${limit(num)}
+	</select>
+
+	<!-- get AlarmActive -->
+	<select id="getAlarmActive"  resultMap="AlarmResultMap" parameterType="java.lang.Integer">
+		SELECT AlarmID
+		,ad.AlarmLevel,l.LevelIcon,l.AlarmLevelName,SourceMOIPAddress,AlarmTitle,
+		LastTime StartTime,m.MOClassID,m.MOID FROM AlarmActiveDetail
+		ad,AlarmLevel
+		l,MODevice m
+		WHERE
+		m.MOID=ad.SourceMOID AND
+		ad.AlarmLevel=l.AlarmLevelValue
+		<if test="_parameter!=1 and _parameter!=7 and _parameter!=9 and _parameter!=6 and _parameter!=3">
+		AND ad.SourceMOClassID=#{_parameter}
+		</if>
+		<if test="_parameter==7">
+		AND ad.SourceMOClassID in(7,138)
+		</if>
+		<if test="_parameter==3">
+		AND ad.SourceMOClassID in(7,8,9)
+		</if>
+		<if test="_parameter==6">
+		AND ad.SourceMOClassID in(59,60)
+		</if>
+		<if test="_parameter==9">
+		AND ((ad.SourceMOClassID=8 AND ad.MOClassID=9) OR ad.SourceMOClassID=9)
+		</if>
+		<if test="_parameter==106">
+		AND ad.SourceMOClassID in(62,118,135,133,136,137,117,132)
+		</if>
+		ORDER BY LastTime DESC
+
+	</select>
+	<!-- Host Detail -->
+	<select id="getHostDetail" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="java.lang.Integer">
+		SELECT m.MOID,
+		m.MOName,m.MOAlias,m.DeviceIP,r.ResCategoryName,m.OS,m.OSVersion,tmp1.CPUCount,tmp2.hMemorysize,tmp3.hmVirMemorysize,tmp4.sumDisksize,tmp5.IfCount,m.LastUpdateTime
+		FROM MODevice m
+		LEFT JOIN ResCategoryDefine r ON
+		m.NeCategoryID=r.ResCategoryID
+		LEFT JOIN (SELECT COUNT(c.MOID)
+		CPUCount,c.DeviceMOID DeviceMOID FROM
+		MOCPUs c ,MODevice m WHERE
+		c.DeviceMOID=m.MOID AND
+		m.MOID=#{MOID} group by DeviceMOID) tmp1 ON
+		tmp1.DeviceMOID=m.MOID
+		LEFT JOIN (SELECT MemorySize
+		hMemorysize,me.DeviceMOID FROM MOMemories
+		me
+		,MODevice m WHERE
+		me.DeviceMOID=m.MOID AND MemType='hrStorageRam' AND
+		m.MOID=#{MOID})
+		tmp2 ON tmp2.DeviceMOID=m.MOID
+		LEFT JOIN
+		(SELECT	MemorySize
+		hmVirMemorysize,me.DeviceMOID FROM MOMemories
+		me
+		,MODevice m
+		WHERE
+		me.DeviceMOID=m.MOID AND
+		MemType='hrStorageVirtualMemory' AND
+		m.MOID=#{MOID} LIMIT 1) tmp3 ON
+		tmp3.DeviceMOID=m.MOID
+		LEFT JOIN (SELECT
+		SUM(v.DiskSize) sumDisksize
+		,v.DeviceMOID FROM
+		MOVolumes
+		v ,MODevice m
+		WHERE v.DeviceMOID=m.MOID
+		AND
+		m.MOID=#{MOID} group
+		by DeviceMOID)tmp4 ON
+		tmp4.DeviceMOID=m.MOID
+		LEFT JOIN
+		(SELECT
+		COUNT(w.MOID)
+		IfCount,w.DeviceMOID FROM MONetworkIf
+		w,MODevice
+		m WHERE
+		w.DeviceMOID=m.MOID AND
+		m.MOID=#{MOID} group by DeviceMOID)tmp5 ON
+		tmp5.DeviceMOID=m.MOID
+		WHERE m.MOID=#{MOID}
+
+	</select>
+	<!-- get VmDetail -->
+	<select id="getVMDetail" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="java.lang.Integer">
+		SELECT t.*,m.deviceIP phyDeviceIP,m.moClassID,m.moID FROM (
+	    SELECT	m.MOName,m.MOAlias,m.DeviceIP,m.OS,v.CPUAllocated,v.CPUNumber,v.Memory,v.MemoryOverhead,v.ConnectStatus,
+		m.LastUpdateTime,v.PhyMOID from MODevice m,MOVMInfo v
+		WHERE v.MOID=m.MOID AND
+		m.MOID=#{MOID} )t,MODevice m WHERE t.PhyMOID=m.MOID
+	</select>
+
+	<!-- get If Detail-->
+	<select id="getIfDetail" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT w.MOID, w.IfName,w.IfDescr
+		,w.IfAlias,m.DeviceIP,m.MOName,w.Instance,w.IfType
+		,w.IfAdminStatus,p.PerfValue ifoperstatus,w.LastUpdateTime FROM MODevice m LEFT
+		JOIN MONetworkIf w
+		ON m.MOID=w.DeviceMOID
+		LEFT JOIN PerfSnapshotNetDevice p ON p.MOID=w.MOID AND
+		p.KPIName='ifOperStatus'   and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		WHERE w.MOID=#{IfMOID} AND
+		m.MOID=#{MOID}
+	</select>
+	<!-- get Device Detail-->
+	<select id="getDeviceDetail" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT DISTINCT
+		m.DeviceIP,c.ResManufacturerName,t.ClassLable ResTypeName,r.DeviceModelName ResCategoryName,m.MOName,m.CreateTime,m.MOAlias,t.ClassLable,
+		m.LastUpdateTime,p.PerfValue OperStatus,m.UpdateAlarmTime,p.CollectTime,e1.DoIntervals ,f.DoIntervals defDoIntervals
+		FROM MODevice m	LEFT JOIN	SNMPDeviceSysObjectID r	ON m.NeCategoryID=r.ResCategoryID
+		LEFT JOIN	MObjectDef t ON	m.MOClassID=t.ClassID
+		LEFT JOIN ManufacturerInfo c ON	m.NeManufacturerID=c.ResManufacturerID
+		LEFT JOIN PerfSnapshotHost p ON p.DeviceMOID=m.MOID AND KPIName='DeviceAvailability'
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=#{MID}
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=#{MID}) f on m.MOID=f.MOID
+		WHERE m.MOID=#{MOID}
+	</select>
+	<!-- get VhostDetail-->
+	<select id="getPhysicsDetail" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="java.lang.Integer">
+		SELECT
+		m.MOName,m.MOAlias,m.DeviceIP,c.ResManufacturerName,m.OS,m.OSVersion,
+		h.CPUCores,h.PhyProcessors,h.LogicalProcessors,h.ProcessorType,h.CPUUsage,
+		h.MemoryUsage,h.ConnectionStatus,h.NICs,h.HBAs,LastUpdateTime
+		FROM
+		MODevice m
+		LEFT JOIN MOPhysicsHostInfo h ON
+		m.MOID=h.MOID
+		LEFT JOIN
+		ManufacturerInfo c ON
+		m.NeManufacturerID=c.ResManufacturerID
+		WHERE
+		m.MOID=#{MOID}
+	</select>
+
+	<!--  get  Host View Count -->
+	<select id="getHostViewCount" resultType="com.fable.insightview.monitor.host.entity.MODevice">
+		select distinct(DeviceMOID) from PerfSnapshotHost
+	</select>
+
+	<select id="getViewLevel" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		SELECT alarmLevel FROM MODevice WHERE MOID=#{MOID}
+	</select>
+	<!--  get HostViewInfo-->
+	<select id="getHostViewInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select t.*,m.DeviceIP,m.MOName,m.os,b.LevelIcon,b.AlarmLevelName,m.moid
+		,m.moClassId from (
+		SELECT '1' flag ,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotHost s WHERE
+		s.moid IS null
+		union all
+		SELECT '1' flag,a.perfValue viewValue,a.DeviceMOID FROM PerfSnapshotHost a,
+		(SELECT
+		DeviceMOID,COUNT(DeviceMOID) num FROM PerfSnapshotHost WHERE
+		KPIName='PerUsage' GROUP BY DeviceMOID) b
+		WHERE KPIName='PerUsage' AND a.DeviceMOID=b.DeviceMOID AND b.num=1
+		union all
+		SELECT '2' flag,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotHost s WHERE
+		s.KPIName='PhyMemUsage'
+		union all
+		SELECT '3' flag, ${nvl("p.PerfValue","0")} viewValue,p.DeviceMOID FROM PerfSnapshotHost p
+		WHERE p.kpiName='DeviceAvailability'
+		 and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		UNION all
+		SELECT '4' flag, COUNT(s.MOID) viewValue, s.DeviceMOID FROM
+		PerfSnapshotNetDevice s WHERE s.KPIName = 'Flows' GROUP BY
+		s.DeviceMOID
+		)t, MODevice m , AlarmLevel b where t.DeviceMOID= m.MOID
+		AND m.AlarmLevel=b.AlarmLevelValue AND m.MOClassID = 7 AND
+		t.DeviceMOID=#{MOID}
+	</select>
+	<!-- get HostViewInfo  AlarmLevel 0 -->
+	<select id="getHostViewLevInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select t.*,m.DeviceIP,m.MOName,m.os,m.moid,m.moClassId
+		from (
+		SELECT '1' flag ,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotHost s WHERE
+		s.moid IS null
+		union all
+		SELECT '1' flag,a.perfValue viewValue,a.DeviceMOID FROM PerfSnapshotHost a,
+		(SELECT
+		DeviceMOID,COUNT(DeviceMOID) num FROM PerfSnapshotHost WHERE
+		KPIName='PerUsage' GROUP BY DeviceMOID) b
+		WHERE KPIName='PerUsage' AND a.DeviceMOID=b.DeviceMOID AND b.num=1
+		union all
+		SELECT '2' flag,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotHost s WHERE
+		s.KPIName='PhyMemUsage'
+		union all
+		SELECT '3' flag, ${nvl("p.PerfValue","0")} viewValue,p.DeviceMOID FROM PerfSnapshotHost p
+		WHERE p.kpiName='DeviceAvailability'
+		 and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		UNION all
+		SELECT '4' flag, COUNT(s.MOID)  viewValue, s.DeviceMOID FROM
+		PerfSnapshotNetDevice s WHERE s.KPIName = 'Flows' GROUP BY
+		s.DeviceMOID
+		)t, MODevice m where t.DeviceMOID= m.MOID AND m.MOClassID
+		= 7 AND t.DeviceMOID=#{MOID}
+	</select>
+
+	<select id="getVHostViewCount" resultType="com.fable.insightview.monitor.host.entity.MODevice">
+		select distinct(DeviceMOID) from PerfSnapshotVHost
+	</select>
+	<!-- getVHostViewInfo -->
+	<select id="getVHostViewInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select
+		t.*,m.DeviceIP,m.MOName,b.LevelIcon,b.AlarmLevelName,m.moid,m.moClassId from (
+		SELECT '1' flag ,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotVHost s WHERE
+		s.moid IS null
+		union all
+		SELECT '1' flag,a.perfValue viewValue,a.DeviceMOID FROM PerfSnapshotVHost a,
+		(SELECT
+		DeviceMOID,COUNT(DeviceMOID) num FROM PerfSnapshotVHost WHERE
+		KPIName='PerUsage' GROUP BY DeviceMOID) b
+		WHERE KPIName='PerUsage' AND a.DeviceMOID=b.DeviceMOID AND b.num=1
+		union all
+		SELECT '2' flag,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotVHost s
+		WHERE s.KPIName='PhyMemUsage'
+		union all
+		SELECT '3' flag, ${nvl("p.PerfValue","0")} viewValue,p.DeviceMOID FROM PerfSnapshotHost p
+		WHERE p.kpiName='DeviceAvailability'
+		 and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		) t, MODevice m , AlarmLevel b where t.DeviceMOID= m.MOID AND
+		m.AlarmLevel=b.AlarmLevelValue AND m.MOClassID = 8 AND
+		t.DeviceMOID=#{MOID}
+	</select>
+	<!-- getVHostViewInfo  alarmLevel 0-->
+	<select id="getVHostViewLevInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select t.*,m.DeviceIP,m.MOName,m.moid,m.moClassId from (
+		SELECT '1' flag ,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotVHost s
+		WHERE s.moid IS null
+		union all
+		SELECT '1' flag,a.perfValue viewValue,a.DeviceMOID FROM PerfSnapshotVHost a,
+		(SELECT
+		DeviceMOID,COUNT(DeviceMOID) num FROM PerfSnapshotVHost WHERE
+		KPIName='PerUsage' GROUP BY DeviceMOID) b
+		WHERE KPIName='PerUsage' AND a.DeviceMOID=b.DeviceMOID AND b.num=1
+		union all
+		SELECT '2' flag,s.PerfValue viewValue,s.DeviceMOID FROM PerfSnapshotVHost s
+		WHERE s.KPIName='PhyMemUsage'
+		union all
+		SELECT '3' flag, ${nvl("p.PerfValue","0")} viewValue,p.DeviceMOID FROM PerfSnapshotHost p
+		WHERE p.kpiName='DeviceAvailability'
+		 and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		) t, MODevice m where t.DeviceMOID= m.MOID AND m.MOClassID = 8 AND
+		t.DeviceMOID=#{MOID}
+	</select>
+	<!-- CPU  Gauge-->
+	<select id="getChartCPU" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT temp.moid ,temp.DeviceIP ,(CASE temp.deviceStatus when 2 then null ELSE temp.perValue end ) perValue,temp.DeviceMOID
+		,temp.MOName ,temp.moClassId ,temp.deviceStatus devicestatus,temp.DoIntervals,temp.defDoIntervals,temp.CollectTime
+ 		from (SELECT m.moid,m.DeviceIP, s.PerfValue as perValue,s.DeviceMOID,m.MOName,m.moClassId,
+ 		e1.DoIntervals,f.DoIntervals defDoIntervals,s.CollectTime
+		,(SELECT deviceStatus from PerfDeviceAvailability WHERE MOID = #{MOID} ORDER BY CollectTime desc limit 1) deviceStatus
+		FROM ${tableName} s,MODevice m
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=1
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=1 ) f on m.MOID=f.MOID
+		WHERE m.MOID=s.DeviceMOID and s.moid IS null AND m.MOID=#{MOID} AND s.kpiName='CPUsage' )temp
+	</select>
+	<!-- Memory Gauge -->
+	<select id="getChartMemory" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT temp.DeviceIP ,(CASE temp.deviceStatus when 2 then null ELSE temp.perValue end ) perValue ,temp.MOName ,temp.deviceStatus devicestatus,
+		temp.DoIntervals,temp.defDoIntervals,temp.CollectTime
+	 	from (SELECT m.MOName,m.DeviceIP,p.PerfValue as perValue,e1.DoIntervals,f.DoIntervals defDoIntervals,p.CollectTime
+	 	,(SELECT deviceStatus from PerfDeviceAvailability WHERE MOID = #{MOID} ORDER BY CollectTime desc limit 1) deviceStatus
+	 	FROM ${tableName} p
+		,MODevice m
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=1
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=1 ) f on m.MOID=f.MOID
+		WHERE p.devicemoid=m.MOID AND m.MOID=#{MOID} and
+		p.kpiName=#{KPIName}) temp
+
+	</select>
+	<!-- getChartAvailability  Gauge-->
+	<select id="getChartAvailability" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT round(t1.count1/t2.Sumcount,2)*100 DeviceAvailability FROM
+		(SELECT COUNT(b.DeviceStatus) count1 FROM MODevice a LEFT JOIN
+		PerfDeviceAvailability b ON a.MOID=b.MOID
+		WHERE a.MOID=#{MOID} AND b.DeviceStatus=1 AND a.moClassID=#{moClassID} AND
+		b.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)} )
+		t1,
+		(SELECT COUNT(b.DeviceStatus) Sumcount FROM MODevice a LEFT JOIN
+		PerfDeviceAvailability b ON a.MOID=b.MOID
+		WHERE a.MOID=#{MOID} AND a.moClassID=#{moClassID} AND b.CollectTime BETWEEN
+		${toDate(timeBegin)} and ${toDate(timeEnd)}) t2
+	</select>
+	<!-- Interface(Host Router  Switcher ) ChartAvailability  Gauge -->
+	<select id="getHSWChartAvailability" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT round(t1.count1/t2.Sumcount,2)*100
+		DeviceAvailability FROM
+		(SELECT COUNT(perf.operStatus) count1 FROM  PerfNetworkIf perf LEFT JOIN MONetworkIf mone ON perf.MOID=mone.MOID
+		WHERE mone.DeviceMOID=#{MOID} AND mone.MOID=#{IfMOID} AND perf.operStatus=1 AND
+		perf.CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}) t1,
+		(SELECT COUNT(perf.operStatus) Sumcount FROM   PerfNetworkIf perf LEFT JOIN MONetworkIf mone ON perf.MOID=mone.MOID
+		WHERE mone.DeviceMOID=#{MOID} AND mone.MOID=#{IfMOID}  AND perf.CollectTime BETWEEN
+		${toDate(timeBegin)} and ${toDate(timeEnd)} ) t2
+	</select>
+
+	<!-- Didk I/O Gauge -->
+	<select id="getChartDisk" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT m.MOName,m.DeviceIP,v.RawDescr,p.PerfValue FROM
+		${tableName} p
+		,MOVolumes v,MODevice m
+		WHERE p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND
+		p.kpiName=#{KPIName} AND m.MOID=#{MOID}
+		ORDER BY
+		p.moid
+
+	</select>
+	<!-- SumIfUsage Gauge -->
+	<select id="getChartSumIfUsage" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT v.moid, v.MOName,m.DeviceIP,p.PerfValue FROM
+		PerfSnapshotNetDevice p
+		,MONetworkIf v,MODevice m
+		WHERE
+		p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND
+		p.kpiName=#{KPIName} AND
+		m.MOID=#{MOID} AND
+		v.moid=#{IfMOID}
+
+	</select>
+	<!-- ChartIfUsage Gauge -->
+	<select id="getChartIfUsage" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT v.moid, v.MOName,m.DeviceIP,p.PerfValue as perValue,e1.DoIntervals,f.DoIntervals defDoIntervals,p.CollectTime
+		FROM
+		PerfSnapshotNetDevice p ,MONetworkIf v,MODevice m
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=1
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=1 ) f on m.MOID=f.MOID
+		WHERE
+		p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND
+		p.kpiName=#{KPIName} AND
+		m.MOID=#{MOID} AND v.moid=#{IfMOID} AND m.MOClassID=#{moClassID}
+	</select>
+	<!-- Loss Response   -->
+	<select id="getDeviceLoss" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT m.MOName,m.DeviceIP,p.PerfValue,e1.DoIntervals,f.DoIntervals defDoIntervals,p.CollectTime,p.PerfValue perValue
+		 FROM PerfSnapshotHost
+		p ,MODevice m
+		LEFT JOIN SysPerfPollTask d1 on m.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5)
+		LEFT JOIN SysPerfPollMonitors e1 on d1.TaskID=e1.TaskID and e1.MID=1
+		LEFT JOIN (select MODevice.*,SysMOList.DoIntervals from MODevice,SysMOList where MID=1 ) f on m.MOID=f.MOID
+		WHERE p.devicemoid=m.MOID AND m.MOID=#{MOID} and
+		p.kpiName=#{KPIName}
+		AND m.MOClassID=#{moClassID}
+	</select>
+	<!-- Disk Usage Bar -->
+	<select id="getBarChartDisk" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT m.MOName,m.DeviceIP,v.RawDescr,p.PerfValue FROM
+		${tableName} p
+		,MOVolumes v,MODevice m
+		WHERE p.devicemoid=m.MOID AND
+		v.DeviceMOID= m.MOID AND
+		v.MOID=p.MOID AND m.MOID=#{MOID} AND
+		p.kpiName= #{KPIName}
+		ORDER BY
+		p.moid
+	</select>
+	<!--Datastore Usage Bar  -->
+	<select id="getBarChartDatastore" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT v.MOName,m.DeviceIP,p.PerfValue FROM
+		${tableName}
+		p
+		,MOStorage v,MODevice m
+		WHERE p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND
+		m.MOID=#{MOID} AND
+		p.kpiName=#{KPIName}
+		ORDER BY
+		p.moid
+	</select>
+	<!--If Usage Bar  -->
+	<select id="getBarChartIfUsage" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		<![CDATA[
+		SELECT m.MOName,m.DeviceIP,v.IfName,v.MOName ifMoName,p.PerfValue viewValue,v.moid ifMOID FROM
+		PerfSnapshotNetDevice p
+		,MONetworkIf v,MODevice m
+		WHERE
+		p.devicemoid=m.MOID and
+		v.MOID=p.MOID AND m.MOID=#{MOID} AND
+		p.kpiName=
+		#{KPIName} AND m.MOClassID=#{moClassID} AND v.IfOperStatus=1 AND p.PerfValue<>0
+		ORDER BY p.moid
+		]]>
+	</select>
+	<!--
+		***
+		******************************************************Host Detail Tab List********************************************************************
+		*
+	-->
+	<!-- 主机详情列表信息  FOR  接口-->
+	<select id="getDetailFlowsInfo" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT
+		m.DeviceIP,n.IfName,m.OperStatus,(n.IfSpeed/1000/1000)IfSpeed,n.IfMtu
+		FROM MODevice m,MONetworkIf n
+		WHERE
+		m.MOID=n.DeviceMOID AND
+		m.MOID=#{MOID}
+	</select>
+	<select id="getDetailAlarmInfo"
+		resultType="com.fable.insightview.monitor.host.entity.AlarmActiveDetail"
+		parameterType="hashmap">
+		SELECT ad.AlarmID
+		,ad.AlarmLevel,l.LevelIcon,l.alarmLevelName,ad.SourceMOName,ad.SourceMOIPAddress,ad.AlarmTitle,s.StatusName,
+		StartTime FROM
+		AlarmActiveDetail ad,AlarmLevel l
+		,AlarmStatusDef s
+		WHERE
+		ad.AlarmLevel=l.AlarmLevelValue AND
+		s.StatusID=ad.AlarmStatus AND
+		ad.SourceMOID=#{MOID} ORDER
+		BY ad.StartTime
+		desc
+	</select>
+
+	<select id="getVHostForVMInfo" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT
+		b.powerStatus operstatus,a.OS,a.MOName,a.DeviceIP,a.moid,a.MOClassID,b.CPUNumber,b.Memory
+		FROM
+		(SELECT MOID,OperStatus,OS,MOName, DeviceIP,MOClassID FROM
+		MODevice WHERE
+		MOID IN
+		(SELECT MOID FROM MOVMInfo WHERE
+		PhyMOID=#{MOID})) a,
+		MOVMInfo b
+		WHERE a.MOID=b.MOID
+	</select>
+
+
+	<!-- Tab  FOR Count -->
+	<select id="getKPICount" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select MOID from ${tabName} where DeviceMOID=#{MOID}
+	</select>
+	<!-- Tab  FOR CPU -->
+	<select id="getKPICPUValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select perf.*,perf.perfValue perValue,cpu.instance from ${snapTable} perf, ${tabName} cpu
+		where perf.MOID=cpu.MOID and cpu.deviceMOID=#{MOID} order by cpu.moID
+		
+		<!-- select perf.*,perf.perfValue perValue,cpu.instance,p.PerUsage perUsage from ${snapTable} perf 
+		INNER JOIN ${tabName} cpu on perf.MOID=cpu.MOID INNER JOIN ${perfTabName} p on p.MOID = cpu.MOID
+		where cpu.deviceMOID=#{MOID} and perf.deviceMOID =#{MOID} order by cpu.moID -->
+	</select>
+	<!-- Tab  FOR  Memory -->
+	<select id="getKPIMemoryValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select v.*, v.perfValue perValue, d.instance,d.MemorySize from ${snapTable} v,
+		${tabName} d
+		where v.MOID=d.MOID and d.DeviceMOID=#{MOID} order by  d.MOID,
+		v.KPIName
+	</select>
+	<!-- Tab  FOR  Disk -->
+	<select id="getKPIDiskValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select v.*,v.perfValue perValue,d.rawDescr from ${snapTable} v, ${tabName} d
+		where v.MOID=d.MOID and v.deviceMOID=#{MOID}  and d.VolumeType=#{volType} order by v.KPIName
+	</select>
+	<!-- Tab  FOR DataStore -->
+	<select id="getKPIDatastoreValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select v.*,v.perfValue perValue,d.moName from ${snapTable} v, ${tabName} d
+		where v.MOID=d.MOID and v.deviceMOID=#{MOID} order by v.KPIName
+	</select>
+	<!-- Tab  FOR  If -->
+	<select id="getKPIFlowsValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select v.*,d.moName ifName,m.moClassID,m.DeviceIP
+		from ${snapTable} v,
+		${tabName} d,MODevice m
+		where v.MOID=d.MOID AND
+		v.deviceMOID=m.moID AND
+		m.moClassID=#{moClassID}
+		AND v.MOID=#{COMMID}
+		order by v.KPIName
+	</select>
+
+	<!-- Tab  FOR  Flows -->
+	<select id="getKPIIFCount" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT p.MOID from ${snapTable} p,MODevice m
+		WHERE
+		KPIName=#{KPISUM} and m.MOID=p.DeviceMOID
+		and m.MOClassID in(${moClassID})
+		and p.CollectTime between	${toDate(timeBegin)} and ${toDate(timeEnd)}
+		and ${rownum(num)}
+		order by PerFvalue ${topOrder} ${limit(num)}
+	</select>
+	<select id="getKPIIFValue" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		SELECT pc.moid
+		ifMOID,pc.kpiname,pc.Perfvalue viewValue,m.moid,m.moname,m.deviceIP,n.moName as
+		ifname,m.MOClassID,m.MOAlias moalias
+		FROM ${snapTable}
+		pc
+		LEFT JOIN MODevice m ON
+		m.MOID=pc.DeviceMOID
+		LEFT JOIN MONetworkIf n
+		ON n.MOID=pc.MOID and
+		n.DeviceMOID=pc.DeviceMOID
+		where
+		pc.MOID=#{COMMID} and (KPIName=#{KPIIN}
+		or KPIName=#{KPIOUT})
+	</select>
+	<!--
+		***************************zxh	Line******************************************
+	-->
+	<!-- get Device Count -->
+	<select id="queryNumsByDevice" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select MOID,MOName from ${tableName} where
+		DeviceMOID=#{DeviceMOID}
+	</select>
+
+		<select id="queryVoNameByDevice" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select MOID,MOName from ${tableName} where
+		DeviceMOID=#{DeviceMOID}  and VolumeType=#{volType}
+	</select>
+
+<select id="queryNumsByAvg" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select mo.MOID,mo.MOName,t.avgUsage from ${tableName} mo join (
+		SELECT MOID,avg(${avgUsage})  avgUsage FROM ${perfTabName} where MOID in (SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID}) and ${rownum(10)}
+		 group by  MOID order by avgUsage desc  LIMIT 0,10)t on mo.MOID=t.MOID
+	</select>
+	<select id="queryMemByDevice" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		<![CDATA[
+		select mo.MOID,mo.MOName,t.avgUsage from MOMemories mo join (SELECT MOID,avg(PerMemoryUsage)  avgUsage FROM PerfNetworkMemory
+		 where MOID in (SELECT MOID FROM MOMemories WHERE DeviceMOID=#{DeviceMOID}) and ${rownum(10)}
+		group by  MOID order by avgUsage desc LIMIT 0,10)t on mo.MOID=t.MOID
+		]]>
+	</select>
+
+	<select id="queryInfaceByDevice" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+			select mo.MOID,mo.MOName,t.avgUsage from MONetworkIf mo join (SELECT MOID,avg(ifUsage)  avgUsage FROM PerfNetworkIf where MOID in
+			 (SELECT MOID FROM MONetworkIf WHERE DeviceMOID=#{DeviceMOID} AND IfOperStatus=1)  and ${rownum(10)}
+			 group by  MOID order by avgUsage desc LIMIT 0,10)t on mo.MOID=t.MOID
+	</select>
+
+	<select id="queryAll" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		 select p.MOID, p.CollectTime,p.UtilizationCore,p.CPUsage,p.Idle,p.Used,m.moname from ${perfTabName} p
+			 left join  ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+			(
+			  select mo.MOID from ${tableName} mo join
+			   (
+				select MOID,avg(CPUsage)  avgUsage from ${perfTabName}
+					where MOID in
+					(
+					 select MOID from ${tableName}
+					  where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					 )
+				 group by  MOID order by avgUsage desc  LIMIT 0,10
+				)t on mo.MOID=t.MOID
+		 	 )
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+			order by p.CollectTime
+	</select>
+
+	<select id="queryAllMemory" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.MemUsage,m.moname from ${perfTabName} p
+		 left join ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		(
+			select mo.MOID from ${tableName} mo join
+			(
+				select MOID,avg(MemUsage) MemUsage from ${perfTabName}
+				 where MOID in
+				 (
+				 	select MOID from ${tableName}
+				 	 where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+				 )
+			 group by  MOID order by MemUsage desc  LIMIT 0,10
+			)t on mo.MOID=t.MOID
+		)
+		and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryAllMainMemory" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID, p.CollectTime,p.MemoryUsage,p.MemoryFreeSize freesize,m.moname
+		<if test="tableName='MOMemories'">
+		    ,m.memType
+		</if>
+		 from ${perfTabName} p
+		 left join ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		 (
+		 	select mo.MOID from ${tableName} mo join
+		 	(
+				select MOID,avg(MemoryUsage)  MemoryUsage from ${perfTabName}
+				where MOID in
+					(
+						select MOID from ${tableName}
+						where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					)
+					and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by MemoryUsage desc  LIMIT 0,10
+			 )t on mo.MOID=t.MOID
+			)
+		and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryMainMemoryData" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.FreeSpace  freesize,p.MemUsage,p.Active,p.Overhead,p.Shared,
+				p.SharedCommon,p.SwapIn,p.SwapOut,p.SwapUsed,m.moname from ${perfTabName} p
+		 left join ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+			(
+				select mo.MOID from ${tableName} mo join
+				(
+					select MOID,avg(MemUsage)  MemUsage from ${perfTabName}
+					where MOID in
+					(
+						select MOID from ${tableName}
+						 where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					)
+			 group by  MOID order by MemUsage desc  LIMIT 0,10
+			 )t on mo.MOID=t.MOID
+			)
+		and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryAllMainCpu" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select  p.MOID, p.CollectTime,p.PerUsage,p.CPUsage,m.moname from ${perfTabName} p
+		 LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		(select mo.MOID from ${tableName} mo join (
+			SELECT MOID,avg(perUsage)  avgUsage FROM ${perfTabName} where MOID in
+			(SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+			and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+			 group by  MOID order by avgUsage desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+		and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryHostStoreDataList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+			p.moid,p.collectTime,p.DatastoreUsage,p.FreeSpace freesize,p.WriteSpeed/1000 WriteSpeed,p.ReadSpeed/1000 ReadSpeed,
+			p.ReadRequests,p.WriteRequests,p.ReadLatency,p.WriteLatency,p.NormalizedLatency,p.IOPS,m.MOName
+		from
+			${perfTabName} p left join  ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		 (
+			 select mo.MOID from ${tableName} mo join
+		 		(
+					select MOID,avg(DatastoreUsage)  datastoreUsage from ${perfTabName}
+					 where MOID in
+					 (
+					    select MOID from ${tableName}
+					    where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					  )
+					 group by  MOID order by datastoreUsage desc  LIMIT 0,10
+				 )t on mo.MOID=t.MOID
+			)
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+		</select>
+
+		<select id="queryHostHardDataList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.moid,p.collectTime,p.IOUsage/1000 IOUsage,p.WriteSpeed/1000 WriteSpeed,
+		  p.ReadSpeed/1000 ReadSpeed,p.ReadRequests,p.WriteRequests,p.ReadLatency,
+		  p.WriteLatency,p.BusResets,p.CommandAborts,m.MOName
+		from
+			${perfTabName} p LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		 (
+		 	select mo.MOID from  ${tableName} mo join
+		 		(
+					select MOID,avg(IOUsage)  IOUsage from ${perfTabName} where MOID in
+					(
+					   select MOID from  ${tableName}
+					  where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					 )
+					 group by  MOID order by IOUsage desc  LIMIT 0,10
+			 	)t on mo.MOID=t.MOID
+			)
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+		</select>
+
+
+			<select id="queryVhostInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.moid,p.collectTime,p.NetworkUsage/1000 NetworkUsage,
+			p.ReceivedSpeed/1000 ReceivedSpeed,p.TransmittedSpeed/1000 TransmittedSpeed,
+			p.PacketsReceived,p.PacketsTransmitted,p.Rate*100 Rate,
+			p.IfUsage,p.InUsage,p.OutUsage,m.MOName
+		from
+			${perfTabName} p LEFT JOIN  ${tableName} m on p.MOID = m.MOID
+		 where p.MOID in
+		 (
+		  select mo.MOID from ${tableName} mo join
+		   (
+			 select MOID,avg(NetworkUsage)  NetworkUsage from ${perfTabName}
+			 where MOID in
+			  (
+			  	select MOID from ${tableName}
+			  	 where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+			  )
+			 group by  MOID order by NetworkUsage desc  LIMIT 0,10
+			)t on mo.MOID=t.MOID
+		)
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+		</select>
+
+
+
+	<select id="queryMainHardList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.DiskUsage  DiskUsage,p.FreeSize FreeSize,p.FullSize FullSize,m.moname from ${perfTabName} p
+			 LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+			(select mo.MOID from ${tableName} mo join (
+				SELECT MOID,avg(DiskUsage)  DiskUsage FROM ${perfTabName} where MOID in
+				(SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+				 and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by DiskUsage desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+				  and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+
+	<select id="queryMainInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.moid,p.CollectTime, p.Rate ifspeed,p.Inflows/8/1000 Inflows,p.Outflows/8/1000 Outflows,
+				p.InflowLoss,p.OutflowLoss,p.InflowErrors,p.OutflowErrors,p.InflowPkts,
+				p.OutflowPkts,p.InflowNpkts,p.OutflownPkts,p.AdminStatus,p.OperStatus,
+				p.InUsage,p.OutUsage,p.IfUsage iousage,m.moname from ${perfTabName} p
+		 left join ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+				(
+				 select mo.MOID from ${tableName} mo join
+			 		(
+					select MOID,avg(OutUsage)  OutUsage FROM ${perfTabName}
+					 where MOID in
+					 (
+				 	  select MOID from ${tableName}
+				  		 where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER} AND ${IfOperStatus} =1
+				  	 )   and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+					 group by  MOID order by OutUsage desc  LIMIT 0,10
+					)	t on mo.MOID=t.MOID
+		  	 )
+		  and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryInterfaceDataList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.moid,p.CollectTime, p.Rate ifspeed,p.Inflows/8/1000 Inflows,p.Outflows/8/1000 Outflows,
+				p.InflowLoss,p.OutflowLoss,p.InflowErrors,p.OutflowErrors,p.InflowPkts,
+				p.OutflowPkts,p.InflowNpkts,p.OutflownPkts,p.AdminStatus,p.OperStatus,
+				p.InUsage,p.OutUsage,p.IfUsage iousage,m.moname from ${perfTabName} p
+		 left join ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+				(
+				 select mo.MOID from ${tableName} mo join
+			 		(
+					select MOID,avg(OutUsage)  OutUsage FROM ${perfTabName}
+					 where MOID in
+					 (
+				 	  select MOID from ${tableName}
+				  		 where MOID=#{MOID,jdbcType=INTEGER}
+				  	 )
+				  	 and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+					 group by  MOID order by OutUsage desc  LIMIT 0,10
+					)	t on mo.MOID=t.MOID
+		  	 )
+		  and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryVirtualMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.MemUsage  MemUsage,p.Active Active,
+			p.Overhead Overhead,p.Shared Shared,p.Balloon Balloon,
+			p.Swapped Swapped,p.Consumed  Consumed,m.moname from ${perfTabName} p
+			 LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+			(select mo.MOID from ${tableName} mo join (
+				SELECT MOID,avg(MemUsage)  MemUsage FROM ${perfTabName} where MOID in (SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+				 group by  MOID order by MemUsage desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+				  and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+		<select id="queryVirtualCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.UsageCore/1000000 UsageCore,p.Used Used,
+			p.Ready Ready,p.Wait Wait ,m.moname from ${perfTabName} p
+			 LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+			(select mo.MOID from ${tableName} mo join (
+				SELECT MOID,avg(Usagecore)  Usagecore FROM ${perfTabName} where MOID in
+				(SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+				 and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by Usagecore desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+				   and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+	<select id="queryVirtualStoreList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.WriteSpeed/1000 WriteSpeed,p.ReadSpeed/1000 ReadSpeed,
+				p.ReadRequests ReadRequests,p.WriteRequests WriteRequests ,
+				p.ReadLatency ReadLatency,p.WriteLatency WriteLatency,m.moname
+				from ${perfTabName} p
+			 LEFT JOIN   ${tableName} m on p.MOID = m.MOID
+			 where p.MOID in
+			(select mo.MOID from ${tableName} mo join (
+				SELECT MOID,avg(ReadSpeed)  ReadSpeed FROM ${perfTabName}
+				where MOID in (SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+				 group by  MOID order by ReadSpeed desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+				   and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by p.CollectTime
+	</select>
+
+
+		<select id="queryVirtualHardList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+			p.MOID,p.CollectTime,p.WriteSpeed/1000 WriteSpeed,p.ReadSpeed/1000 ReadSpeed,
+			p.ReadRequests,p.WriteRequests,p.BusResets,${nvl("p.DiskFree","0")} as DiskFree,
+			${nvl("p.DiskSize","0")} as DiskSize,${nvl("p.DiskUsage","0")} as  DiskUsage,${nvl("p.DiskUsed","0")} as DiskUsed,m.moname
+		from ${perfTabName} p  LEFT JOIN  ${tableName} m on p.MOID = m.MOID
+		where p.MOID  IN
+			(select mo.MOID from ${tableName} mo join
+				(
+					select MOID,avg(ReadSpeed) ReadSpeed from ${perfTabName} where MOID in
+					(
+						select MOID from ${tableName} where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+						  and VolumeType=#{volType}
+					 )
+				 group by  MOID order by ReadSpeed desc  LIMIT 0,10
+				 )t on mo.MOID=t.MOID
+			 )
+				 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+
+	<select id="queryVirtualInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+			p.MOID,p.CollectTime,p.NetworkUsage/1000 NetworkUsage,p.ReceivedSpeed/1000 ReceivedSpeed,
+			p.ReceivedSpeed,TransmittedSpeed/1000 TransmittedSpeed,p.PacketsReceived,p.PacketsTransmitted,m.moname
+		from ${perfTabName} p
+			 LEFT JOIN  ${tableName} m on p.MOID = m.MOID
+			where p.MOID  IN (select mo.MOID from ${tableName} mo join (
+			SELECT MOID,avg(NetworkUsage)  NetworkUsage FROM ${perfTabName} where MOID in
+			(SELECT MOID FROM ${tableName} WHERE DeviceMOID=#{DeviceMOID,jdbcType=INTEGER})
+			 group by  MOID order by NetworkUsage desc  LIMIT 0,10)t on mo.MOID=t.MOID)
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+
+	<select id="queryNetCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select p.MOID,p.CollectTime,p.PerUsage,p.CPUsage,m.moname
+		from ${perfTabName} p  left join  ${tableName} m on p.MOID = m.MOID
+			where p.MOID  IN
+			(
+			  select mo.MOID  from ${tableName} mo join
+			   (
+				 select MOID,avg(perUsage)  perUsage from ${perfTabName}
+				  where MOID in
+				  (
+				    select MOID from ${tableName}
+				      where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+				  )
+				   and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by perUsage desc  LIMIT 0,10
+			   )t on mo.MOID=t.MOID
+		  )
+			 and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+			order by CollectTime
+	</select>
+
+	<select id="queryNetMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+			parameterType="hashmap">
+			select p.MOID,p.CollectTime,p.PerMemoryUsage,p.memoryUsage,m.moname
+				from ${perfTabName} p  LEFT JOIN  ${tableName} m on p.MOID = m.MOID
+			where p.MOID  IN
+			(
+			 	select mo.MOID  from ${tableName} mo join
+			 	 (
+					select MOID,avg(PerMemoryUsage)  PerMemoryUsage from ${perfTabName}
+					where MOID in
+					 (
+					 	select MOID from ${tableName} where DeviceMOID=#{DeviceMOID,jdbcType=INTEGER}
+					  ) and ${rownum(10)}
+					   and  CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+					 group by  MOID order by PerMemoryUsage desc  LIMIT 0,10
+				 )t on mo.MOID=t.MOID
+				)
+				  and  p.CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+			order by CollectTime
+		</select>
+
+
+	<select id="mainCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")} collTime,PerUsage,CPUsage
+		from
+		PerfServCPU
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+
+	<select id="netCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+			select
+		${dateFormat("CollectTime")} collTime,PerUsage,CPUsage
+		from
+		PerfNetworkCPU
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+
+	<select id="mainHardList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")}
+		collTime,DiskUsage,FreeSize,FullSize
+		from PerfServDisk
+		where
+		MOID=#{MOID}
+		and
+		CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="mainInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")} collTime, Rate
+		ifspeed,Inflows/8/1000 Inflows,Outflows/8/1000
+		Outflows,InflowLoss,OutflowLoss,InflowErrors,OutflowErrors,InflowPkts,
+		OutflowPkts,InflowNpkts,OutflownPkts,AdminStatus,OperStatus,InUsage,OutUsage,IfUsage
+		iousage
+		from
+		PerfNetworkIf
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="mainMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")}
+		collTime,MemoryUsage,MemoryFreeSize freesize
+		from PerfServMemory
+		where
+		MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="netMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")}
+		collTime,perMemoryUsage, memoryUsage
+		from PerfNetworkMemory
+		where
+		MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<!-- virtualCPUList -->
+	<select id="virtualCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,UsageCore/1000000 UsageCore,Used,Ready,Wait
+		from PerfVmCPU
+		where MOID=#{MOID}
+		and
+		CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="virtualHardList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,WriteSpeed/1000 WriteSpeed,ReadSpeed/1000 ReadSpeed,
+		ReadRequests,WriteRequests,BusResets,${nvl("DiskFree","0")} as DiskFree,${nvl("DiskSize","0")} as DiskSize,${nvl("DiskUsage","0")} as  DiskUsage,${nvl("DiskUsed","0")} as DiskUsed
+		from PerfVmDisk
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="virtualInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,NetworkUsage/1000 NetworkUsage,ReceivedSpeed/1000
+		ReceivedSpeed,
+		TransmittedSpeed/1000
+		TransmittedSpeed,PacketsReceived,PacketsTransmitted
+		from PerfVmNetwork
+		where MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+		<select id="vhostInterfaceList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,NetworkUsage/1000 NetworkUsage,ReceivedSpeed/1000
+		ReceivedSpeed,
+		TransmittedSpeed/1000
+		TransmittedSpeed,PacketsReceived,PacketsTransmitted,Rate*100 Rate,IfUsage,InUsage,OutUsage
+		from PerfVHostNetwork
+		where MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="virtualMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,MemUsage,Active,
+		Overhead,Shared,Balloon,Swapped,Consumed
+		from
+		PerfVmMemory
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<select id="virtualStoreList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,WriteSpeed/1000 WriteSpeed,ReadSpeed/1000 ReadSpeed,
+		ReadRequests,WriteRequests,ReadLatency,WriteLatency
+		from
+		PerfVmDatastore
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<select id="hostCPUList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,UtilizationCore,Used,Idle,CPUsage
+		from
+		PerfVHostCPU
+		where MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	<select id="hostHardList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		collTime,IOUsage/1000 IOUsage,WriteSpeed/1000
+		WriteSpeed,ReadSpeed/1000 ReadSpeed,
+		ReadRequests,WriteRequests,BusResets,ReadLatency,WriteLatency,CommandAborts
+		from PerfVHostDisk
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<select id="hostMemoryList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")} collTime,MemUsage,
+		FreeSpace
+		freesize,Active,Overhead,Shared,SharedCommon,SwapIn,SwapOut,SwapUsed
+		from PerfVHostMemory
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<select id="hostStoreList" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select
+		${dateFormat("CollectTime")}
+		collTime,DatastoreUsage,FreeSpace freesize,WriteSpeed/1000
+		WriteSpeed,ReadSpeed/1000 ReadSpeed,
+		ReadRequests,WriteRequests,ReadLatency,WriteLatency,NormalizedLatency,IOPS
+		from
+		PerfVHostDatastore
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<!--
+		***************************hl IF******************************************
+	-->
+	<select id="getNetworkIf" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select distinct n.DeviceMOID as moid,n.MOID as ifMOID,pc.DeviceMOID as ifDeviceMOID,
+		n.moName as ifname,n.IfDescr as ifdescr,${nvl("pc.PerfValue","0")} as pervalue,m.DeviceIP,m.MOClassID,pc.KPIName,n.instance,n.IfOperStatus,n.IfSpeed
+		from MONetworkIf n
+		left join MODevice m on m.MOID=n.DeviceMOID
+		left join ${tableName} pc on n.MOID=pc.MOID and n.DeviceMOID=pc.DeviceMOID
+		where n.isCollect = 1 and n.DeviceMOID=#{MOID} and m.moclassid=#{moClassID}
+		<!-- <if test="ifCount != 0 and ifCount != '' ">
+			and pc.KPIName in(${kpiNames})
+    	</if>	 -->
+		<!-- and pc.CollectTime between 	${toDate(timeBegin)} and ${toDate(timeEnd)} -->
+	</select>
+	<select id="getPerfValue" resultType="String">
+		select PerfValue
+		from
+		PerfSnapshotNetDevice
+		where MOID=#{moID} and KPIName=#{kpiName} and DeviceMOID=#{deviceMOID}
+	</select>
+
+	<!--
+		*************************** switcher  router******************************************
+	-->
+	<select id="getRSAlarmActive" resultType="hashmap" resultMap="AlarmResultMap"
+		parameterType="java.lang.Integer">
+		SELECT AlarmID
+		,ad.AlarmLevel,l.LevelIcon,l.AlarmLevelName,SourceMOIPAddress,AlarmTitle,
+		StartTime,m.MOClassID,m.MOID FROM AlarmActiveDetail
+		ad,AlarmLevel
+		l,MODevice m
+		WHERE
+		m.MOID=ad.SourceMOID AND
+		ad.AlarmLevel=l.AlarmLevelValue
+		and ${rownum(10)} and
+		ad.SourceMOClassID=#{moClassID}
+		ORDER BY StartTime
+		desc ${limit(10)}
+	</select>
+	<select id="getNeManufacturerIDCount" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="java.lang.String">
+		SELECT DISTINCT(NeManufacturerID) FROM MODevice m WHERE
+		m.moClassID  in(#{moClassID} )
+	</select>
+	<select id="getRsSnapshotInfo" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		<![CDATA[
+		select tb.*,ta.ResManufacturerName from ManufacturerInfo ta,
+		(
+		SELECT '1' flag, COUNT(a.SourceMOID) count,m.NeManufacturerID ,m.MOClassID FROM AlarmActiveDetail a, MODevice m WHERE a.SourceMOID=m.MOID and  a.SourceMOClassID in(#{moClassID}) and  a.AlarmLevel<=4 AND a.AlarmLevel>=1 GROUP BY m.NeManufacturerID
+		union all
+		SELECT '2' flag,COUNT(a.MOID) count,a.NeManufacturerID ,a.MOClassID FROM MODevice a  WHERE  a.MOClassID in(#{moClassID}) and a.AlarmLevel<=3 AND a.AlarmLevel>=1 AND a.IsManage=1 GROUP BY a.NeManufacturerID
+		union all
+		SELECT '3' flag, COUNT(MOID) count,m.NeManufacturerID ,m.MOClassID FROM MODevice m  WHERE m.MOClassID in(#{moClassID}) AND m.IsManage=1 GROUP BY NeManufacturerID
+		)
+		tb where ta.ResManufacturerID=tb.NeManufacturerID and ta.ResManufacturerID=#{NeManufacturerID}
+		]]>
+	</select>
+
+	<select id="getRsSnapshotInfomation"  resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select count(distinct(alarm.SourceMOID)) as countdevice,mo.NeManufacturerID,
+        factory.ResManufacturerName,mo.MOClassID,alarm.AlarmLevel,count(alarm.alarmID) as alarmCount
+		from AlarmActiveDetail alarm, MODevice mo, ManufacturerInfo factory
+		where alarm.SourceMOID=mo.MOID  ${moClassID}
+      	and  mo.NeManufacturerID = factory.ResManufacturerID  and alarm.AlarmLevel BETWEEN 1 and 4
+		group by alarm.SourceMOClassID,mo.NeManufacturerID
+	</select>
+
+	<select id="queryfactoryInfs"  resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select DISTINCT(mo.NeManufacturerID), count(mo.MOID) as countdevice,factory.ResManufacturerName,
+		sum((select COUNT(device.MOID) from  MODevice device where   mo.MOID = device.MOID and AlarmLevel BETWEEN 1 and 3))
+		 as devicealarmcount
+		from  MODevice mo,ManufacturerInfo factory
+		 where   mo.MOClassID in(${newMoClassID})  and mo.NeManufacturerID = factory.ResManufacturerID
+		group by mo.NeManufacturerID
+		</select>
+
+	<select id="getAlarmCountInfomation"  resultType="hashmap" resultMap="ModeviceResultMap"   parameterType="hashmap">
+		select mo.NeManufacturerID, factory.ResManufacturerName,mo.MOClassID,
+		sum((select COUNT(*) as num  from AlarmActiveDetail alarm  where alarm.SourceMOID = mo.MOID and alarm.AlarmLevel between 1 and 4)) as alarmcount
+		 from MODevice mo,ManufacturerInfo factory
+		where mo.NeManufacturerID = factory.ResManufacturerID  ${moClassID}
+		group by mo.NeManufacturerID
+	</select>
+
+	<select id="getAlarmdeviceCount"  resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		select count(distinct(alarm.SourceMOID)) as countdevice,mo.NeManufacturerID,
+        factory.ResManufacturerName,mo.MOClassID,alarm.AlarmLevel,count(alarm.alarmID) as alarmCount
+		from AlarmActiveDetail alarm, MODevice mo, ManufacturerInfo factory
+		where alarm.SourceMOID=mo.MOID   ${moClassID}
+     	 and  mo.NeManufacturerID = factory.ResManufacturerID and alarm.AlarmLevel BETWEEN 1 and 3
+		group by alarm.SourceMOClassID,mo.NeManufacturerID
+	</select>
+
+	<select id="getfactoryInfomation" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select DISTINCT(mo.NeManufacturerID),count(mo.MOID) as countdevice,factory.ResManufacturerName,mo.MOClassID
+		 from  MODevice mo,ManufacturerInfo factory where
+		 mo.MOClassID in(${newMoClassID})  and mo.NeManufacturerID = factory.ResManufacturerID GROUP BY mo.NeManufacturerID
+	</select>
+
+	<select id="queryNamesByMoID" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		SELECT b.MOID,b.MOName FROM MODevice a,
+		${tabName} b
+		WHERE a.MOID=b.DeviceMOID AND a.MOID=#{MOID} AND
+		a.moClassID=#{moClassID}
+	</select>
+
+
+	<select id="queryMemMoidByMoID" resultType="hashmap" resultMap="ModeviceResultMap"
+		parameterType="hashmap">
+		<![CDATA[
+		SELECT MOID,MOName FROM	MOMemories 	WHERE DeviceMOID=#{MOID} AND	memorySize <>0
+		]]>
+	</select>
+
+	<!-- get RS LineInfo For  Memory-->
+	<select id="queryRSMemoryPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfNetworkMemoryResultMap">
+		SELECT
+		${dateFormat("CollectTime")}
+		formatTime,perMemoryUsage, memoryUsage
+		FROM
+		PerfNetworkMemory
+		where MOID=#{MOID}
+		and
+		CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by
+		CollectTime
+  </select>
+
+  <select id="queryRSMemoryPerfCurve" parameterType="hashmap" resultMap="PerfNetworkMemoryResultMap">
+		select p.ID,p.MOID,p.CollectTime,p.PerMemoryUsage,p.MemoryUsage,m.MOName
+		from PerfNetworkMemory p left join ${tabName} m on p.MOID = m.MOID
+		where p.MOID in
+		(select mo.MOID from ${tabName} mo join
+			(select MOID,avg(PerMemoryUsage) PerMemoryUsage
+				from PerfNetworkMemory where MOID in
+				(
+				    select MOID from ${tabName}
+				     where DeviceMOID = #{MOID,jdbcType=INTEGER}
+					   and memorySize != 0
+				 )
+				 and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by PerMemoryUsage desc LIMIT 0,10
+			)t on mo.MOID = t.MOID
+		 )
+		and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		 order by CollectTime
+  </select>
+
+  <select id="queryRSCPUPerfCurve" parameterType="hashmap" resultMap="PerfNetworkCPUResultMap">
+		select p.ID,p.MOID,p.CollectTime,p.PerUsage,p.CPUsage,m.MOName
+		from PerfNetworkCPU p left join ${tabName} m on p.MOID = m.MOID
+		where p.MOID in
+		(select mo.MOID from ${tabName} mo join
+			(select MOID,avg(CPUsage) CPUsage
+				from PerfNetworkCPU where MOID in
+				(
+				   SELECT b.MOID FROM MODevice a,${tabName} b
+						WHERE a.MOID=b.DeviceMOID AND a.MOID=#{MOID,jdbcType=INTEGER} AND
+						a.moClassID=#{moClassID,jdbcType=INTEGER}
+				 )
+				 and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+				 group by  MOID order by CPUsage desc LIMIT 0,10
+			)t on mo.MOID = t.MOID
+		 )
+		 and CollectTime between ${toDate(timeBegin)} and ${toDate(timeEnd)}
+		 order by CollectTime
+  </select>
+
+
+	<!-- get RS LineInfo For  CPU-->
+	<select id="queryRSCPUPerf" parameterType="hashmap" resultType="hashmap"
+		resultMap="PerfNetworkCPUResultMap">
+		SELECT
+		${dateFormat("CollectTime")}
+		formatTime,PerUsage,CPUsage
+		FROM
+		PerfNetworkCPU
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<select id="getMoClassID" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		SELECT moClassID FROM MODevice WHERE MOID=#{MOID}
+	</select>
+	<select id="queryRSMemoryTime" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfNetworkMemoryResultMap">
+		SELECT
+		${dateFormat("CollectTime")}
+		formatTime
+		FROM
+		PerfNetworkMemory
+		where  MOID  in (${MOID}) AND	CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		 GROUP BY CollectTime
+  </select>
+  <select id="getKPIFlowsValue2" resultType="com.fable.insightview.monitor.host.entity.MODevice"
+		parameterType="hashmap">
+		select v.KPIName,v.PerfValue viewValue,v.MOID,d.moName ifName,m.moClassID,m.DeviceIP,d.DeviceMOID
+		from ${snapTable} v,${tabName} d,MODevice m
+		where v.MOID=d.MOID and	v.deviceMOID=m.moID and	m.moClassID=#{moClassID} and d.DeviceMOID=#{MOID}
+		order by v.MOID
+	</select>
+		<select id="getIndexAlarmActive"  resultMap="AlarmResultMap" parameterType="java.lang.Integer">
+    SELECT * from (
+     SELECT AlarmID,ad.AlarmLevel,l.LevelIcon,l.AlarmLevelName,SourceMOIPAddress,AlarmTitle,alarmStatus.StatusName,
+		    LastTime StartTime ,ad.SourceMOClassID MOClassID,ad.SourceMOID MOID from AlarmActiveDetail
+		ad,AlarmLevel l,AlarmStatusDef alarmStatus		WHERE
+		ad.AlarmLevel=l.AlarmLevelValue   and alarmStatus.StatusID = ad.AlarmOperateStatus
+		and ${rownum(_parameter)}
+		ORDER BY LastTime DESC 	${limit(_parameter)})t ORDER BY alarmLevel ASC, StartTime DESC
+	</select>
+	<select id="getNetworkIfCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+			SELECT COUNT(*) FROM PerfSnapshotNetDevice WHERE DeviceMOID=#{MOID} AND KPIName='IfUsage'
+	</select>
+   <select id="getMoDeviceInfo" resultType="com.fable.insightview.monitor.host.entity.MODevice" parameterType="java.lang.Integer">
+	SELECT * from MODevice  WHERE moId=#{MOID}
+   </select>
+   <select id="getMoAlarmCount" resultType="java.lang.Integer" parameterType="hashmap">
+	  SELECT COUNT(*) from AlarmActiveDetail where sourceMOID=#{MOID} AND startTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)}
+   </select>
+ <select id="getAvgCpu" resultType="com.fable.insightview.monitor.host.entity.MODevice" parameterType="hashmap">
+	SELECT round(t1.sumValue/t2.sumCount,2) cpuvalue from
+		(SELECT SUM(perUsage) sumValue FROM ${cpuTableName} WHERE MOID in(SELECT MOID FROM MOCPUs WHERE DeviceMOID=#{MOID}) AND
+       CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)} )t1,
+		(SELECT COUNT(perUsage) sumCount FROM ${cpuTableName} WHERE MOID in(SELECT MOID FROM MOCPUs WHERE DeviceMOID=#{MOID}) AND CollectTime BETWEEN
+		${toDate(timeBegin)} and ${toDate(timeEnd)}) t2
+   </select>
+    <select id="getAvgMemory" resultType="com.fable.insightview.monitor.host.entity.MODevice" parameterType="hashmap">
+	SELECT round(t1.sumValue/t2.sumCount,2) memoryvalue from
+		(SELECT SUM(${colName}) sumValue FROM ${memTableName} WHERE MOID in(SELECT MOID FROM MOMemories WHERE DeviceMOID=#{MOID}) AND
+       CollectTime BETWEEN ${toDate(timeBegin)} and ${toDate(timeEnd)} )t1,
+		(SELECT COUNT(${colName}) sumCount FROM ${memTableName} WHERE MOID in(SELECT MOID FROM MOMemories WHERE DeviceMOID=#{MOID}) AND CollectTime BETWEEN
+		${toDate(timeBegin)} and ${toDate(timeEnd)}) t2
+   </select>
+   <select id="queryTZAllDeviceInfo" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+		sum((select COUNT(device.MOID) from  MODevice device where   mo.MOID = device.MOID and AlarmLevel BETWEEN 1 and 3))  as devicealarmcount
+		from  MObjectDef de,MODevice mo
+		where mo.MOClassID = de.ClassID and mo.MOClassID in (${classID}) GROUP BY mo.MOClassID
+		UNION ALL
+		SELECT '17' as SourceMOClassID,'中间件' as ClassLable, SUM(t.countdevice) as  countdevice,SUM(t.devicealarmcount) as devicealarmcount FROM
+		(
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+				sum((select COUNT(device.MOID) from  MOMiddleWareJMX device where   mo.MOID = device.MOID and AlarmLevel BETWEEN 1 and 3))  as devicealarmcount
+				from  MObjectDef de,MOMiddleWareJMX mo
+				where mo.MOClassID = de.ClassID and mo.MOClassID in (19,20,53) GROUP BY mo.MOClassID
+		)t
+		UNION ALL
+		SELECT '14' as SourceMOClassID,'数据库' as ClassLable, SUM(t.countdevice) as  countdevice,SUM(t.devicealarmcount) as devicealarmcount FROM
+		(
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+				sum((select COUNT(device.MOID) from  MODBMSServer device where   mo.MOID = device.MOID and AlarmLevel BETWEEN 1 and 3))  as devicealarmcount
+				from  MObjectDef de,MODBMSServer mo
+				where mo.MOClassID = de.ClassID and mo.MOClassID in (15,16,54,81,86) GROUP BY mo.MOClassID
+		)t
+		UNION ALL
+		SELECT '90' as SourceMOClassID,'站点' as ClassLable , SUM(t.countdevice) countdevice, SUM(t.devicealarmcount) devicealarmcount FROM (
+		SELECT COUNT(MOID) devicealarmcount,'' countdevice  FROM MOSiteDns WHERE AlarmLevel BETWEEN 1 and 3
+		UNION ALL
+		SELECT COUNT(MOID) devicealarmcount,'' countdevice  FROM MOSiteFtp WHERE AlarmLevel BETWEEN 1 and 3
+		UNION ALL
+		SELECT COUNT(MOID) devicealarmcount,'' countdevice  FROM MOSiteHttp WHERE AlarmLevel BETWEEN 1 and 3
+		UNION ALL
+		SELECT COUNT(MOID) devicealarmcount,'' countdevice  FROM MOSitePort WHERE AlarmLevel BETWEEN 1 and 3
+		UNION ALL
+		SELECT '' devicealarmcount,COUNT(MOID) countdevice FROM MOWebSite
+		) t
+	</select>
+		<select id="queryTZAlarmInfoCounts" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select  mo.MOClassID as SourceMOClassID, de.ClassLable,count(mo.MOID) as countdevice,
+		sum((select COUNT(*) as num  from AlarmActiveDetail alarm  where alarm.SourceMOID = mo.MOID and alarm.AlarmLevel between 1 and 4)) as alarmcount
+		from  MObjectDef de,MODevice mo
+		where mo.MOClassID = de.ClassID and mo.MOClassID in (${classID}) GROUP BY mo.MOClassID
+		UNION ALL
+		SELECT 17 SourceMOClassID,'中间件' ClassLable,'' countdevice, COUNT(*)  alarmcount  from AlarmActiveDetail alarm WHERE alarm.AlarmLevel between 1 and 4 AND alarm.sourceMOClassID in(SELECT DISTINCT(moClassID) from MOMiddleWareJMX)
+		UNION ALL
+		SELECT 14 SourceMOClassID,'数据库' ClassLable,'' countdevice, COUNT(*)  alarmcount  from AlarmActiveDetail alarm WHERE alarm.AlarmLevel between 1 and 4 AND alarm.sourceMOClassID in(SELECT DISTINCT(moClassID) from MODBMSServer)
+		UNION ALL
+		SELECT 90 SourceMOClassID,'站点' ClassLable,'' countdevice, COUNT(*)  alarmcount  from AlarmActiveDetail alarm WHERE alarm.AlarmLevel between 1 and 4 AND alarm.sourceMOClassID in(SELECT DISTINCT(moClassID) from MOWebSite)
+
+	</select>
+
+	<select id="getTopCPUByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue FROM PerfSnapshotHost host WHERE  host.KPIName ='CPUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='CPUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='CPUsage'
+	        UNION ALL
+	        SELECT net.DeviceMOID,net.MOID,net.PerfValue FROM PerfSnapshotNetDevice net WHERE net.KPIName ='CPUsage'
+		)s
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		order by s.perfValue ${orderType} ${limit(cpuNum)}
+	</select>
+
+	<select id="getTopMemoryByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue  FROM PerfSnapshotHost host WHERE host.KPIName ='PhyMemUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='PhyMemUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='PhyMemUsage'
+	        UNION ALL
+	        SELECT net.DeviceMOID,net.MOID,net.PerfValue
+	        FROM PerfSnapshotNetDevice net
+	        LEFT JOIN MODevice m on m.MOID=net.DeviceMOID
+	        WHERE net.KPIName ='NetMemUsage'
+		)s
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		order by s.perfValue ${orderType} ${limit(memNum)}
+	</select>
+
+	<select id="getTopDiskByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="hashmap">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID ,vol.MOName rawdescr,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue FROM PerfSnapshotHost host WHERE  host.KPIName ='DiskUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='DiskUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='DiskUsage'
+		)s
+		left join MOVolumes vol On vol.MOID = s.MOID
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		order by s.perfValue ${orderType} ${limit(volNum)}
+	</select>
+
+	<select id="getCpuListByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="page">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue FROM PerfSnapshotHost host WHERE  host.KPIName ='CPUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='CPUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='CPUsage'
+	        UNION ALL
+	        SELECT net.DeviceMOID,net.MOID,net.PerfValue FROM PerfSnapshotNetDevice net WHERE net.KPIName ='CPUsage'
+		)s
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		where 1=1
+		<if test="params.moName != null and params.moName != '' ">
+			and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+    	</if>
+    	<if test="params.deviceIp != null and params.deviceIp != '' ">
+			and m.DeviceIP like ${concat("'%'","'"+params.deviceIp+"'","'%'")}
+    	</if>
+    	<if test="params.lowerLimit != null and params.lowerLimit != '' and params.lowerLimit != -1">
+			and ROUND(s.PerfValue) &gt;=#{params.lowerLimit}
+    	</if>
+    	<if test="params.upperLimit != null and params.upperLimit != '' and params.upperLimit != -1">
+			and ROUND(s.PerfValue) &lt;=#{params.upperLimit}
+    	</if>
+		order by s.PerfValue ${params.orderType}
+	</select>
+
+	<select id="getMemListByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="page">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue  FROM PerfSnapshotHost host WHERE host.KPIName ='PhyMemUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='PhyMemUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='PhyMemUsage'
+	        UNION ALL
+	        SELECT net.DeviceMOID,net.MOID,net.PerfValue
+	        FROM PerfSnapshotNetDevice net
+	        LEFT JOIN MODevice m on m.MOID=net.DeviceMOID
+	        WHERE net.KPIName ='NetMemUsage'
+		)s
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		where 1=1
+		<if test="params.moName != null and params.moName != '' ">
+			and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+    	</if>
+    	<if test="params.deviceIp != null and params.deviceIp != '' ">
+			and m.DeviceIP like ${concat("'%'","'"+params.deviceIp+"'","'%'")}
+    	</if>
+    	<if test="params.lowerLimit != null and params.lowerLimit != '' and params.lowerLimit != -1">
+			and ROUND(s.PerfValue) &gt;=#{params.lowerLimit}
+    	</if>
+    	<if test="params.upperLimit != null and params.upperLimit != '' and params.upperLimit != -1">
+			and ROUND(s.PerfValue) &lt;=#{params.upperLimit}
+    	</if>
+		order by s.PerfValue ${params.orderType}
+	</select>
+
+	<select id="getVolListByDutyDesk" resultType="hashmap" resultMap="ModeviceResultMap" parameterType="page">
+		select s.DeviceMOID,m.DeviceIP,m.MOName,m.MOAlias,m.MOClassID,d.ClassIcon,d.ClassLable,ROUND(s.PerfValue) perfvalue,s.MOID ,vol.MOName rawdescr,m.ResID
+		from (
+	        SELECT host.DeviceMOID,host.MOID,host.PerfValue FROM PerfSnapshotHost host WHERE  host.KPIName ='DiskUsage'
+	        union all
+	        SELECT vhost.DeviceMOID,vhost.MOID,vhost.PerfValue FROM PerfSnapshotVHost vhost WHERE vhost.KPIName ='DiskUsage'
+	        UNION ALL
+	        SELECT vm.DeviceMOID,vm.MOID,vm.PerfValue FROM PerfSnapshotVM vm WHERE vm.KPIName ='DiskUsage'
+		)s
+		left join MOVolumes vol On vol.MOID = s.MOID
+		left join MODevice m on m.MOID=s.DeviceMOID
+		left join MObjectDef d on d.ClassID=m.MOClassID
+		where 1=1
+		<if test="params.moName != null and params.moName != '' ">
+			and m.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+    	</if>
+    	<if test="params.deviceIp != null and params.deviceIp != '' ">
+			and m.DeviceIP like ${concat("'%'","'"+params.deviceIp+"'","'%'")}
+    	</if>
+    	<if test="params.rawdescr != null and params.rawdescr != '' ">
+			and vol.MOName like ${concat("'%'","'"+params.rawdescr+"'","'%'")}
+    	</if>
+    	<if test="params.lowerLimit != null and params.lowerLimit != '' and params.lowerLimit != -1">
+			and ROUND(s.PerfValue) &gt;=#{params.lowerLimit}
+    	</if>
+    	<if test="params.upperLimit != null and params.upperLimit != '' and params.upperLimit != -1">
+			and ROUND(s.PerfValue) &lt;=#{params.upperLimit}
+    	</if>
+		order by s.PerfValue ${params.orderType}
+	</select>
+	<select id="getMobjectRelationClassIDS" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	   select ClassID from MObjectRelation where 1=1
+	   <if test="MOClassID!=null and MOClassID!=''">
+	      and parentClassID=#{MOClassID} or ClassID=#{MOClassID}
+	   </if>
+	</select>
+</mapper>

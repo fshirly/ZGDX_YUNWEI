@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:plugin="http://www.springframework.org/xmlns:plugin/"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="portalTemplateFactory"
+		class="com.fable.insightview.platform.core.portal.TemplateFactory">
+		<property name="templateCache">
+			<map>
+				<entry>
+					<key>
+						<value>Portal-pre</value>
+					</key>
+					<value><![CDATA[
+		 				$('<div id="$[portalName]" style="overflow-x:hidden;width:1400px;"/>').appendTo('body');
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>Portal-post</value>
+					</key>
+					<value><![CDATA[
+						$('#$[portalName]').portal({
+							border:false,
+							fit:true
+						});
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>Widget</value>
+					</key>
+					<value><![CDATA[
+			 			var $[widgetName] = $('<div class="sDashboardWidget"/>').appendTo('body');
+						$[widgetName].panel({
+							title:'$[widgetTitle]',
+							content:'<div style="height:100%;width:100%;" id="$[widgetName]"/>',
+							height:300,
+							headerCls:'sDashboardWidgetHeader sDashboard-clearfix',
+							closable:false,
+							collapsible:false
+						});
+						
+	 				]]></value>
+				</entry>
+				
+					<entry>
+					<key>
+						<value>TableWidget</value>
+					</key>
+					<value><![CDATA[
+			 			var $[widgetName] = $('<div/>').appendTo('body');
+						$[widgetName].panel({
+							title:'$[widgetTitle]',
+							content:'<table cellpadding="0" cellspacing="0" border="0" class="easyui-datagrid" id="$[widgetName]"></table>',
+							height:400,
+							closable:true,
+							collapsible:true
+						});
+						
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>BarChart</value>
+					</key>
+					<value><![CDATA[
+						(function(){
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+							var option = {
+							    title : {
+							        text: '$[widgetTitle]'
+							    },
+							    tooltip : {
+							        trigger: 'axis'
+							    },
+							    legend: {
+							        data:$[legends]
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            magicType : {show: true, type: ['line', 'bar']},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            data : resultData.category
+							         	//data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value'
+							        }
+							    ],
+							    grid: {
+							     	width : '30%',
+							     	height : '50%'
+							     },
+							    series : $[series]
+							};
+							
+							echarts.init(document.getElementById('$[widgetName]')).setOption(option);
+							
+						}());
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>ChartSeries</value>
+					</key>
+					<value><![CDATA[
+				        {
+				            name:'$[label]',
+				            type:'$[type]',
+				            data:resultData.data.$[fieldName]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           //	data:[{value: 50, name: '完成率'}]
+				            $[param]
+				            $[AxisChartItem]
+				        }
+				        ,
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>AxisChartItem</value>
+					</key>
+					<value><![CDATA[
+						,
+				        markPoint : {
+			                data : $[ChartMarks-markPoint]
+			            },
+			            markLine : {
+			                data : $[ChartMarks-markLine]
+			            }
+			            
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>ChartMark</value>
+					</key>
+					<value><![CDATA[
+				        {name:'$[name]',type:'$[type]'}
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>PieChart</value>
+					</key>
+					<value><![CDATA[
+					
+						(function(){
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						option = {
+							    title : {
+							        text: '$[widgetTitle]',
+							        subtext: '纯属虚构',
+							        x:'center'
+							    },
+							    tooltip : {
+							        trigger: 'item',
+							        formatter: "{a} <br/>{b} : {c} ({d}%)"
+							    },
+							    legend: {
+							        orient : 'vertical',
+							        x : 'left',
+							        data:$[legends]
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    series : $[series]
+							};
+							echarts.init(document.getElementById('$[widgetName]')).setOption(option);
+						}());
+	 				]]></value>
+				</entry>
+				
+				
+				<entry>
+					<key>
+						<value>GaugeChart</value>
+					</key>
+					<value><![CDATA[
+					
+						(function(){
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						option = {
+							    tooltip : {
+							        formatter: "{a} <br/>{b} : {c}%"
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    series : $[series]
+							};
+							echarts.init(document.getElementById('$[widgetName]')).setOption(option);
+						}());
+	 				]]></value>
+				</entry>
+				
+				
+				<entry>
+					<key>
+						<value>LineChart</value>
+					</key>
+					<value><![CDATA[
+					
+						(function(){
+							var resultData = {category:[], data:[]};
+								
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						option = {
+							    title : {
+							        text: '$[widgetTitle]'
+							    },
+							    tooltip : {
+							        trigger: 'axis'
+							    },
+							    legend: {
+							        data:$[legends]
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            magicType : {show: true, type: ['line', 'bar']},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            boundaryGap : false,
+							         //   data :  ['周一','周二','周三','周四','周五','周六','周日']
+							         	data : resultData.category
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value',
+							            axisLabel : {
+							                formatter: '{value} °C'
+							            }
+							        }
+							    ],
+							    series : $[series]
+							};
+	                    	echarts.init(document.getElementById('$[widgetName]')).setOption(option);
+                    	}());
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>EmbedWidget</value>
+					</key>
+					<value><![CDATA[
+ 						$('#$[widgetName]').append("<iframe src='"+getRootPatch()+"$[url]' frameborder='0' width='100%'/>")
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>DataTables</value>
+					</key>
+					<value><![CDATA[
+						(function(){
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'$[dataSourceUrl]',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+	 						
+							$('$[widgetName]')
+									.datagrid(
+											{
+												iconCls : 'icon-edit',// 图标
+												width : 700,
+												height : 'auto',
+												nowrap : false,
+												striped : true,
+												border : true,
+												collapsible : false,// 是否可折叠的
+												fit : true,// 自动大小
+												fitColumns:true,
+												url :getRootName()+'$[dataSourceUrl]',
+												
+												remoteSort : false,
+												idField : 'fldId',
+												singleSelect : false,// 是否单选
+												checkOnSelect : false,
+												selectOnCheck : true,
+												pagination : true,// 分页控件
+												rownumbers : true,// 行号
+												
+												columns : $[columns]
+											});
+						   
+
+						}());
+	 				]]></value>
+				</entry>
+				
+				<entry>
+					<key>
+						<value>Column</value>
+					</key>
+					<value><![CDATA[
+						$('#$[portalName]').append("<div style='width:$[width]'>")
+	 				]]></value>
+				</entry>
+
+				<entry>
+					<key>
+						<value>Grid</value>
+					</key>
+					<value><![CDATA[
+			 			$('#$[portalName]').portal('add', {
+							panel:$[widgetName],
+							columnIndex:$[columnIndex]
+						});
+	 				]]></value>
+				</entry>
+
+			</map>
+		</property>
+	</bean>
+</beans>

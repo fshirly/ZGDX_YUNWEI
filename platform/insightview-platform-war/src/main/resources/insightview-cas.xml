@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!--例外添加 -->
+	<http pattern="/style/**" security="none" />
+	<http pattern="/easyui/**" security="none" />
+	<http pattern="/js/**" security="none" />
+	<http pattern="/plugin/**" security="none" />
+	<http pattern="/framelayout/**" security="none" />
+	<!-- <http pattern="/login*" security="none" /> -->
+	<http pattern="/left*" security="none" />
+	<http pattern="/commonLogin/right.html" security="none" />
+	<http pattern="/commonLogin/refreshMenu" security="none" />
+	<http pattern="/dashboard/toDashboardList" security="none" />
+	<!-- 科信业务相关的外链 begin -->
+	<http pattern="/center/process/viewServiceCatalog" security="none" />
+	<http pattern="/center/process/viewPersonalService" security="none" />
+	<!-- 科信业务相关的外链 end -->
+	
+	<!-- REST鉴权 -->
+	<http pattern="/rest/**" entry-point-ref="restAuthenticationEntryPoint"
+		create-session="stateless">
+		<custom-filter ref="restAuthenticationFilter" before="CAS_FILTER" />
+	</http>
+	<beans:bean id="restAuthenticationFilter"
+		class="com.fable.insightview.platform.security.RestUsernamePasswordAuthenticationFilter">
+		<beans:property name="postOnly" value="false" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationSuccessHandler"
+			ref="restSuccessHandler" />
+	</beans:bean>
+	<beans:bean id="restAuthenticationEntryPoint"
+		class="com.fable.insightview.platform.security.RestAuthenticationEntryPoint" />
+	<beans:bean id="restSuccessHandler"
+		class="com.fable.insightview.platform.security.RestAuthenticationSuccessHandler" />
+		
+
+	<http entry-point-ref="casEntryPoint" auto-config="true">
+		<logout success-handler-ref="simpleUrlLogoutSuccessHandler" />
+		<intercept-url pattern="/**" access="ROLE_USER" />
+		<custom-filter position="CAS_FILTER" ref="casFilter" />
+	</http>
+
+	<!-- 在认证管理器中注册cas认证提供器 -->
+	<authentication-manager alias="authenticationManager">
+		<!-- 使用custom-authentication-provider之后，Spring Security其他的权限模块会从这个bean中获得权限验证信息 -->
+		<authentication-provider ref="casAuthenticationProvider" />
+		<authentication-provider user-service-ref="securityUserService" />
+	</authentication-manager>
+
+	<!-- cas 认证过滤器 -->
+	<beans:bean id="casFilter"
+		class="com.fable.insightview.platform.security.FableCasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="userDetailService" ref="securityUserService" />
+		<!--  <beans:property name="authenticationSuccessHandler"
+			ref="authenticationSuccessHandler" />-->
+	</beans:bean>
+
+
+	<!--  <beans:bean id="authenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="useReferer" value="true" />
+	</beans:bean>-->
+
+	<!-- 登录工程后处理 -->
+	 <beans:bean id="authenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<beans:property name="alwaysUseDefaultTargetUrl" value="false" />
+		<beans:property name="defaultTargetUrl" value="${security.login.success.url}" />
+	</beans:bean>
+
+
+	<!-- 登录失败后处理 -->
+	<beans:bean id="authenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/login.jsp" />
+	</beans:bean>
+
+
+	<!-- CAS认证切入点，声明cas服务器端登录的地址 -->
+	<beans:bean id="casEntryPoint"
+		class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<beans:property name="loginUrl" value="${security.login.url}" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+	</beans:bean>
+
+
+	<!-- 登录成功后的返回地址 -->
+	<beans:bean id="serviceProperties"
+		class="org.springframework.security.cas.ServiceProperties">
+		<beans:property name="service" value="${security.client.cas}" />
+		<!-- 若设置为true，则不管用户是否已经经过认证，每次都需要重新登陆 -->
+		<beans:property name="sendRenew" value="false" />
+	</beans:bean>
+
+
+	<!-- cas认证提供器，定义客户端的验证方式 -->
+	<beans:bean id="casAuthenticationProvider"
+		class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+
+		<!-- 客户端只验证用户名是否合法 -->
+		
+		<!--<beans:property name="userDetailsService" ref="securityUserService" />-->
+		<beans:property name="authenticationUserDetailsService" ref="authenticationUserDetailsService" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+
+		<!-- 系统需要验证当前用户的tickets是否有效 -->
+		<beans:property name="ticketValidator">
+			<beans:bean
+				class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<beans:constructor-arg index="0"
+					value="${security.casServer.url}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="key" value="cas" />
+	</beans:bean>
+	
+	
+	<beans:bean id="authenticationUserDetailsService" 
+	class="org.springframework.security.cas.userdetails.GrantedAuthorityFromAssertionAttributesUserDetailsService">
+	
+		<beans:constructor-arg>    
+			<beans:array>    
+			  <beans:value>role</beans:value>    
+			</beans:array>    
+		  </beans:constructor-arg>
+	</beans:bean>
+	
+	
+
+	<beans:bean id="simpleUrlLogoutSuccessHandler"
+		class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+		<beans:property name="alwaysUseDefaultTargetUrl" value="true" />
+		<beans:property name="defaultTargetUrl" value="${security.logout.url}" />
+	</beans:bean>
+
+	<!-- 认证用户信息 -->
+	<beans:bean id="securityUserService"
+		class="com.fable.insightview.platform.common.service.impl.SecurityUserServiceImpl"></beans:bean>
+
+</beans:beans>

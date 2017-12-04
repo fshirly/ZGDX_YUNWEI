@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<models>
+	<!-- 资产导入定义模板 -->
+	<model id="importResAsset" class="com.fable.insightview.platform.common.entity.ResAssetExcelBean">
+		<property name="serialNo" column="1" excelTitleName="资产编号" isNull="N" columnWidth="12" maxLength="20" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="assetName" column="1" excelTitleName="资产名称" isNull="N" columnWidth="12" maxLength="20" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="resAssetType" column="6" excelTitleName="资产类型" isNull="N"  columnWidth="12" maxLength="20" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="status" column="4" excelTitleName="资产状态" isNull="Y"  columnWidth="60" maxLength="5" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="receiveMode" column="6" excelTitleName="资产来源" isNull="Y"  columnWidth="12" maxLength="100" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="address" column="6" excelTitleName="位置" isNull="Y"  columnWidth="12" maxLength="50" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="description" column="7" excelTitleName="描述" isNull="Y"  columnWidth="12" maxLength="200" dataType="String" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="cost" column="8" excelTitleName="购入/租赁成本" isNull="Y"  columnWidth="60" maxLength="200" dataType="Integer" fixity="NO" codeTableName="" default="" greaterThan="" />
+		<property name="receiveTime" column="9" excelTitleName="购入/租赁日期" isNull="Y"  columnWidth="12" maxLength="100" dataType="Date yyyy/MM/dd" fixity="NO" codeTableName="" default="1900/1/1" greaterThan="" />
+		<!-- greaterThan:比较属性，配置类型相同的字段名的name属性 -->
+		<property name="warrantyPeriod" column="10" excelTitleName="质保/使用期限（月）" isNull="Y" columnWidth="6" maxLength="200" dataType="Date yyyy/MM/dd" fixity="NO" codeTableName="" default="1900/1/1" greaterThan="购入/租赁日期"/>
+		<property name="resManufacturerName" column="6" excelTitleName="供应商" isNull="Y"  columnWidth="12" maxLength="128" dataType="String" fixity="NO" codeTableName="ManufacturerInfo" default="" greaterThan="" />
+
+		<flag name="flag" />
+		<message name="message" excelTitleName="操作结果" /> 
+	</model> 
+</models>

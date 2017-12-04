@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.topo.mapper.TopoMapper">
+	<resultMap id="TopoMap" type="topo">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="TopoName" property="topoName" jdbcType="VARCHAR" />
+		<result column="TopoLevel" property="topoLevel" jdbcType="INTEGER" />
+		<result column="TopoType" property="topoType" jdbcType="INTEGER" />
+		<result column="JsonFilePath" property="jsonFilePath" jdbcType="VARCHAR" />
+		<result column="Description" property="description" jdbcType="VARCHAR" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="TotalNodeNum" property="totalNodeNum" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="TopoLinkMap" type="com.fable.insightview.monitor.topo.entity.TopoLink">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER" />
+		<result column="SourceMOClassID" property="sourceMOClassID" jdbcType="INTEGER" />
+		<result column="SourcePort" property="sourcePort" jdbcType="INTEGER" />
+		<result column="DesMOID" property="desMOID" jdbcType="INTEGER" />
+		<result column="DesMOClassID" property="desMOClassID" jdbcType="INTEGER" />
+		<result column="DesPort" property="desPort" jdbcType="INTEGER" /> 
+		<result column="LinkType" property="linkType" jdbcType="INTEGER" />
+		<result column="LinkStatus" property="linkStatus" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" /> 
+	</resultMap>
+	
+	<resultMap id="MOSubnetMap" type="com.fable.insightview.monitor.topo.entity.MOSubnetBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="DomainID" property="domainId" jdbcType="INTEGER" />
+		<result column="SubnetIP" property="subnetIp" jdbcType="VARCHAR" />
+		<result column="SubnetMask" property="subnetMask" jdbcType="VARCHAR" />
+		<result column="SubnetType" property="subnetType" jdbcType="VARCHAR" />
+	</resultMap>	
+
+	<select id="selectTopo" resultType="hashmap" resultMap="TopoMap" parameterType="page">
+		select t.*,le.LevelIcon,le.AlarmLevelName
+		from Topo t
+		left join AlarmLevel le on t.AlarmLevel = le.AlarmLevelID
+		where 1=1
+		<if test="params.topoName !='' and params.topoName != null ">
+			 and t.TopoName like ${concat("'%'","'"+params.topoName+"'","'%'")}
+		</if>
+		order by t.ID desc
+	</select>
+	
+	<select id="getTopoByID" parameterType="Integer" resultType="topo">
+		select t.*,le.LevelIcon,le.AlarmLevelName
+		from Topo t
+		left join AlarmLevel le on t.AlarmLevel = le.AlarmLevelID
+		where t.ID=#{id}
+	</select>
+	 
+  	<select id="getTopoViewList" resultType="hashmap" resultMap="TopoMap" parameterType="hashmap">
+	 	select * from Topo
+		where 1=1
+		<if test="topoName !='' and topoName != null ">
+			and TopoName like ${concat("'%'","'"+ topoName+"'","'%'")}
+		</if>
+		<if test="topoLevel != null and topoLevel != '' " >	   	
+			and TopoLevel=#{topoLevel}
+		</if>
+		<if test="topoType != null and topoType != '' " >	   	
+			and TopoType=#{topoType}
+		</if>
+		order by ID asc    
+  	</select>
+  
+  	<delete id="delTopoByID" >
+  		delete from Topo where ID in (${ids})
+  	</delete>
+  	
+  	<insert id="insertTopo" parameterType="topo">
+		insert into Topo (ID, TopoName, TopoLevel, TopoType, JsonFilePath,
+						Description,AlarmLevel,TotalNodeNum)
+		values (#{id,jdbcType=INTEGER}, #{topoName,jdbcType=VARCHAR},
+		#{topoLevel,jdbcType=INTEGER},#{topoType,jdbcType=INTEGER}, #{jsonFilePath,jdbcType=VARCHAR},
+		#{description,jdbcType=VARCHAR},#{alarmLevel,jdbcType=INTEGER},#{totalNodeNum,jdbcType=INTEGER}
+		)
+  	</insert>
+  	
+  	<update id="updateTopo" parameterType="topo">
+		update Topo set 
+		<if test="topoLevel != null" >	   	
+	   	TopoLevel=#{topoLevel,jdbcType=INTEGER},
+		</if>
+		<if test="topoType != null" >	   	
+	   	TopoType=#{topoType,jdbcType=INTEGER},
+		</if>
+		<if test="jsonFilePath != null and jsonFilePath != '' " >	   	
+	   	JsonFilePath=#{jsonFilePath,jdbcType=VARCHAR},
+		</if>
+		<if test="description != null and description != '' " >	   	
+	   	Description=#{description,jdbcType=VARCHAR}, 
+		</if>
+		<if test="alarmLevel != null" >	   	
+	   	AlarmLevel=#{alarmLevel,jdbcType=INTEGER}, 
+		</if>
+		<if test="totalNodeNum != null" >	   	
+	   	TotalNodeNum=#{totalNodeNum,jdbcType=INTEGER}, 
+		</if>	
+		<if test="topoName != null and topoName != '' " >	   	
+	   	TopoName=#{topoName,jdbcType=VARCHAR} 
+		</if>	
+		where ID=#{id}
+	</update>
+	
+	<select id="getTopoLink" resultMap="TopoLinkMap" parameterType="hashmap">
+		select ID,SourceMOID,SourceMOClassID,SourcePort,DesMOID,DesMOClassID,DesPort,LinkType,LinkStatus,AlarmLevel
+		from TopoLink where 1 = 2
+		<if test="moIDs != null and moIDs != '' " >	   	
+	   	or SourceMOID in (${moIDs}) 
+	 	or DesMOID in (${moIDs}) 
+		</if>
+		order by ID desc
+	</select>
+	
+	<select id="querySubNetList" resultType="hashmap" resultMap="MOSubnetMap" parameterType="hashmap">
+	 	select t1.*,t3.DomainName domainDesc, ifnull(t2.SubnetNum,0) SubnetNum from MOSubnet t1
+		left join 
+		(	
+		 	select SubnetMOID,count(ID) SubnetNum from MODeviceInSubnet		 	
+		 	group by SubnetMOID
+		 	
+		) t2 on t1.MOID=t2.SubnetMOID
+		left join SysManagedDomain  t3 on t1.DomainID=t3.DomainID
+		where 1=1
+		<if test="ipAddress != null and ipAddress != '' " >
+	   	and t1.SubnetIP like ${concat("'%'","'"+ipAddress+"'","'%'")}
+		</if>
+		<if test="mask != null and mask != '' " >
+	   	and t1.SubnetMask like ${concat("'%'","'"+mask+"'","'%'")}
+		</if>
+		<if test="domain != null and domain != '' " >
+	   	and t1.DomainID=${domain}
+		</if>		 	
+  	</select>
+  	
+  	<select id="getAllTopo" resultType="hashmap" resultMap="TopoMap">
+  		select t.*,le.LevelIcon,le.AlarmLevelName
+		from Topo t
+		left join AlarmLevel le on t.AlarmLevel = le.AlarmLevelID
+  	</select>
+  	
+  	<select id="getSubnetByIP" resultType="com.fable.insightview.monitor.topo.entity.MOSubnetBean" parameterType="String">
+  	select * from MOSubnet where SubnetIP = #{subnetIp,jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="getByNameAndID" resultType="topo"  parameterType="hashmap">
+  		select * from Topo
+  		where TopoName = #{topoName,jdbcType=VARCHAR}
+  		<if test="id != null and id != ''  and id != '-1' " >
+		  and ID !=#{id,jdbcType=INTEGER}
+		</if>
+  	</select>
+</mapper>

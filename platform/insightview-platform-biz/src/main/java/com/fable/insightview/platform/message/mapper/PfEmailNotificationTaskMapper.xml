@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.message.mapper.PfEmailNotificationTaskMapper">
+	<resultMap id="EmailNotificationTaskMap" type="com.fable.insightview.platform.message.entity.PfEmailNotificationTaskBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="EmailAddress" property="emailAddress" jdbcType="VARCHAR" />
+		<result column="Message" property="message" jdbcType="VARCHAR" />
+		<result column="Title" property="title" jdbcType="VARCHAR" />
+		<result column="SendedTimes" property="sendedTimes" jdbcType="INTEGER" />
+		<result column="MaxTimes" property="maxTimes" jdbcType="INTEGER" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="LastUpdateTime" property="lastUpdateTime"	jdbcType="VARCHAR" />
+		<result column="ExpectSendTime" property="expectSendTime"	jdbcType="VARCHAR" />
+		<result column="Source" property="source" jdbcType="INTEGER" />
+		<result column="NotifyType" property="notifyType" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getNotificationTask" resultMap="EmailNotificationTaskMap" resultType="hashmap">
+	select t.* from 
+	(select * from EmailNotificationTask where ${sysdate()}>=ExpectSendTime) t
+	where (t.Status = 3 and t.MaxTimes > t.SendedTimes) or t.Status=1
+	</select>
+	
+	<insert id="insertNotificationTask" parameterType="com.fable.insightview.platform.message.entity.PfEmailNotificationTaskBean">
+	insert into EmailNotificationTask (ID,EmailAddress,Message,SendedTimes,MaxTimes,Status,LastUpdateTime,ExpectSendTime,Source,NotifyType,Title)
+	values (#{id,jdbcType=INTEGER}, #{emailAddress,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR}, 
+      #{sendedTimes,jdbcType=INTEGER}, #{maxTimes,jdbcType=INTEGER},#{status,jdbcType=INTEGER},
+      #{lastUpdateTime,jdbcType=VARCHAR},#{expectSendTime,jdbcType=VARCHAR},#{source,jdbcType=INTEGER},#{notifyType,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+	<update id="updateNotificationTask" parameterType="com.fable.insightview.platform.message.entity.PfEmailNotificationTaskBean">
+	update EmailNotificationTask set EmailAddress=#{emailAddress},Message=#{message},
+	SendedTimes=#{sendedTimes},MaxTimes=#{maxTimes},Status=#{status},LastUpdateTime=#{lastUpdateTime},
+	ExpectSendTime=#{expectSendTime},Source=#{source},NotifyType=#{notifyType}
+	where ID=#{id,jdbcType=INTEGER}
+	</update>
+</mapper>
+

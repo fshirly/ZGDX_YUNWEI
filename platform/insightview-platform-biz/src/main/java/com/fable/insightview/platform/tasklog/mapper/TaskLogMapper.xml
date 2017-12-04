@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.tasklog.mapper.TaskLogMapper">
+
+	<select id="selectTaskLogs" parameterType="page" resultType="com.fable.insightview.platform.tasklog.entity.PfTaskLog">
+		select a.*,(SELECT UserName FROM SysUserInfo WHERE UserId=a.UserId) userName
+		from PfTaskLog a
+		where 1=1
+		<if test="params.taskTime1 != null">
+			AND a.TaskTime &gt;= #{params.taskTime1,jdbcType=DATE}
+		</if>
+		<if test="params.taskTime2 != null">
+			AND a.TaskTime &lt;= #{params.taskTime2,jdbcType=DATE}
+		</if>
+		<if test="params.title != null and params.title != ''">
+			AND a.Title LIKE CONCAT('%',#{params.title},'%')
+		</if>
+		<if test="params.status != null and params.status > 0">
+			AND a.Status = #{params.status,jdbcType=INTEGER}
+		</if>
+		<if test="params.userId != null">
+			AND a.UserId = #{params.userId,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="selectTaskLogById" resultType="com.fable.insightview.platform.tasklog.entity.PfTaskLog">
+		SELECT a.*,(SELECT UserName FROM SysUserInfo WHERE UserId=a.UserId) userName
+		FROM PfTaskLog a
+		WHERE a.Id=#{id,jdbcType=INTEGER}
+	</select>
+
+	<update id="updateTaskLog" parameterType="com.fable.insightview.platform.tasklog.entity.PfTaskLog">
+		UPDATE PfTaskLog a
+		<set>
+			<if test="title != null and title != ''">
+				a.Title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="starLevel != null">
+				a.StarLevel=#{starLevel,jdbcType=INTEGER},
+			</if>
+			<if test="logContent != null and logContent != ''">
+				a.LogContent=#{logContent,jdbcType=VARCHAR},
+			</if>
+			<if test="writeTime != null">
+				a.WriteTime=#{writeTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="file != null and file != ''">
+				a.File=#{file,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status > 0">
+				a.Status=#{status,jdbcType=INTEGER},
+			</if>
+		</set>
+		<where>
+			a.Id=#{id,jdbcType=INTEGER}
+		</where>
+	</update>
+
+	<insert id="insert" parameterType="com.fable.insightview.platform.tasklog.entity.PfTaskLog">
+		INSERT INTO PfTaskLog (Id,Title,TaskTime,StarLevel,Status,UserId)
+		VALUES (#{id,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{taskTime,jdbcType=DATE},
+		#{starLevel,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
+	</insert>
+	
+	<select id="queryTaskLogs" resultType="com.fable.insightview.platform.tasklog.entity.PfTaskLog">
+		SELECT Id,Title,TaskTime,StarLevel,Status,UserId FROM PfTaskLog WHERE TaskTime=#{taskTime, jdbcType=DATE}
+	</select>
+
+</mapper>

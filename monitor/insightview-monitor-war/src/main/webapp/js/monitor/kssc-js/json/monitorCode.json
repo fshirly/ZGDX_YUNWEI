@@ -1,0 +1,13 @@
+{
+	"recordsTotal": 57, 
+	"recordsFiltered": 57,
+	"data":[
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","hospital":"上海仁济医院","total":"10t","used":"100g","unUsed":"9.99T","rate":"10"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"30"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"40"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"50"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"60"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"70"},
+		{"name":"手术室1","account":"0210000000001","ip":"192.169.10.112","total":"10t","used":"100g","unUsed":"9.99T","rate":"80"}
+	]
+}

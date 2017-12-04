@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/com.fable.insightview.iml" filepath="$PROJECT_DIR$/com.fable.insightview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/insightview-monitor-alarmDispatcher/insightview-monitor-alarmdispatcher.iml" filepath="$PROJECT_DIR$/monitor/insightview-monitor-alarmDispatcher/insightview-monitor-alarmdispatcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/insightview-monitor-biz/insightview-monitor-biz.iml" filepath="$PROJECT_DIR$/monitor/insightview-monitor-biz/insightview-monitor-biz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/insightview-monitor-war/insightview-monitor-war.iml" filepath="$PROJECT_DIR$/monitor/insightview-monitor-war/insightview-monitor-war.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/insightview-monitor-web/insightview-monitor-web.iml" filepath="$PROJECT_DIR$/monitor/insightview-monitor-web/insightview-monitor-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-biz/insightview-platform-biz.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-biz/insightview-platform-biz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-common/insightview-platform-common.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-common/insightview-platform-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-core/insightview-platform-core.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-core/insightview-platform-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-security/insightview-platform-security.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-security/insightview-platform-security.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-war/insightview-platform-war.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-war/insightview-platform-war.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/insightview-platform-web/insightview-platform-web.iml" filepath="$PROJECT_DIR$/platform/insightview-platform-web/insightview-platform-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/monitor.iml" filepath="$PROJECT_DIR$/monitor/monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/platform.iml" filepath="$PROJECT_DIR$/platform/platform.iml" />
+    </modules>
+  </component>
+</project>

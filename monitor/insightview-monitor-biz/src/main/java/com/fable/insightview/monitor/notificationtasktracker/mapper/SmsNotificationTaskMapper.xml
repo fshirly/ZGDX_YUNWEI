@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.notificationtasktracker.mapper.SmsNotificationTaskMapper">
+	<resultMap id="SmsNotificationTaskMap" type="com.fable.insightview.monitor.notificationtasktracker.entity.SmsNotificationTaskBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="PhoneNumber" property="phoneNumber" jdbcType="VARCHAR" />
+		<result column="Message" property="message" jdbcType="VARCHAR" />
+		<result column="SendedTimes" property="sendedTimes" jdbcType="INTEGER" />
+		<result column="MaxTimes" property="maxTimes" jdbcType="INTEGER" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="LastUpdateTime" property="lastUpdateTime"	jdbcType="VARCHAR" />
+		<result column="ExpectSendTime" property="expectSendTime"	jdbcType="VARCHAR" />
+		<result column="Source" property="source" jdbcType="INTEGER" />
+		<result column="NotifyType" property="notifyType" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="getNotificationTask" resultMap="SmsNotificationTaskMap" >
+	select t.* from 
+	(select * from SmsNotificationTask where ${sysdate()}>=ExpectSendTime) t
+	where (t.Status = 3 and t.MaxTimes > t.SendedTimes) or t.Status=1  order by t.NotifyType desc
+	</select>
+	
+	<insert id="insertNotificationTask" parameterType="com.fable.insightview.monitor.notificationtasktracker.entity.SmsNotificationTaskBean">
+	insert into SmsNotificationTask (ID,PhoneNumber,Message,SendedTimes,MaxTimes,Status,LastUpdateTime,ExpectSendTime,Source,NotifyType)
+	values (#{id,jdbcType=INTEGER}, #{phoneNumber,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR}, 
+      #{sendedTimes,jdbcType=INTEGER}, #{maxTimes,jdbcType=INTEGER},#{status,jdbcType=INTEGER},
+      #{lastUpdateTime,jdbcType=VARCHAR},#{expectSendTime,jdbcType=VARCHAR},#{source,jdbcType=INTEGER},#{notifyType,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateNotificationTask" parameterType="com.fable.insightview.monitor.notificationtasktracker.entity.SmsNotificationTaskBean">
+	update SmsNotificationTask set PhoneNumber=#{phoneNumber},Message=#{message},
+	SendedTimes=#{sendedTimes},MaxTimes=#{maxTimes},Status=#{status},LastUpdateTime=#{lastUpdateTime},
+	ExpectSendTime=#{expectSendTime},Source=#{source},NotifyType=#{notifyType}
+	where ID=#{id,jdbcType=INTEGER}
+	</update>
+	
+</mapper>
+

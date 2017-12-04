@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmrepeatpolicy.mapper.AlarmRepeatPolicyMapper">
+	<resultMap id="AlarmRepeatPolicyMap" type="alarmRepeatPolicy">
+		<id column="PloicyID" property="ploicyID" jdbcType="INTEGER" />
+		<result column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+		<result column="TimeWindow" property="timeWindow" jdbcType="INTEGER" />
+		<result column="AlarmOnCount" property="alarmOnCount" jdbcType="INTEGER" />
+		<result column="UpgradeOnCount" property="upgradeOnCount" jdbcType="INTEGER" />
+		<result column="IsUsed" property="isUsed" jdbcType="INTEGER" />
+		<result column="MFlag" property="mFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<delete id="delRepeatPolicyByAlarmDefineID" parameterType="hashmap">
+		delete from AlarmRepeatPolicy where AlarmDefineID in 
+		<foreach collection="list" item="alarmDefineIds"  open="(" separator="," close=")">
+	     #{alarmDefineIds}
+	    </foreach> 
+	</delete>
+	
+	<select id="getAlarmRepeatByAlarmDefineID" parameterType="java.lang.Integer" resultType="alarmRepeatPolicy">
+	select
+	r.PloicyID,r.AlarmDefineID,r.TimeWindow,r.AlarmOnCount,r.UpgradeOnCount,
+	r.IsUsed,r.MFlag,define.AlarmName as alarmName
+	from AlarmRepeatPolicy r
+	left join AlarmEventDefine define on r.AlarmDefineID = define.AlarmDefineID where 1=1 
+	and r.AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER}
+	</select>
+	
+	<insert id="insertAlarmRepeatPolicy" parameterType="alarmRepeatPolicy">
+	insert into AlarmRepeatPolicy (PloicyID,AlarmDefineID,TimeWindow,AlarmOnCount,UpgradeOnCount,IsUsed,MFlag)
+	values (#{ploicyID,jdbcType=INTEGER}, #{alarmDefineID,jdbcType=INTEGER}, #{timeWindow,jdbcType=INTEGER}, 
+      #{alarmOnCount,jdbcType=INTEGER}, #{upgradeOnCount,jdbcType=INTEGER},
+      #{isUsed,jdbcType=INTEGER},#{mFlag,jdbcType=INTEGER}
+      )
+	</insert>
+	
+	<update id="updateAlarmRepeatPolicy" parameterType="alarmRepeatPolicy">
+	update AlarmRepeatPolicy set TimeWindow=#{timeWindow},AlarmOnCount=#{alarmOnCount},UpgradeOnCount=#{upgradeOnCount},IsUsed=#{isUsed},MFlag=#{mFlag}
+	where AlarmDefineID=#{alarmDefineID}
+	</update>
+	</mapper>
+

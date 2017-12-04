@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper  namespace="com.fable.insightview.platform.attendanceconf.mapper.AttendancePlanConfMapper">
+<resultMap  id="AttendancePlanConfMapper" type="com.fable.insightview.platform.attendanceconf.entity.AttendancePlanConf">
+<id column="AttendanceId"  property="attendanceId" jdbcType="INTEGER"/>
+<result column="Title"   property="title" jdbcType="VARCHAR"/>
+<result column="AttStartTime"   property="attStartTime" jdbcType="TIMESTAMP"/>
+<result column="AttEndTime"   property="attEndTime" jdbcType="TIMESTAMP"/>
+<result column="Planner"   property="planner" jdbcType="INTEGER"/>
+<result column="Status"   property="status" jdbcType="INTEGER"/>
+<result column="LaunchTime"   property="launchTime" jdbcType="TIMESTAMP"/>
+<result column="StopTime"  property="stopTime" jdbcType="TIMESTAMP"/>
+<result column="Attcount" property="attcount" jdbcType="INTEGER"/>
+<result column="statename" property="statename" jdbcType="VARCHAR"/>
+<result column="ConfigTime" property="configTime" jdbcType="TIMESTAMP" />
+<result column="plannerName" property="plannerName" jdbcType="VARCHAR"/>
+</resultMap>
+<!-- 查询签到信息 -->
+<select id="queryAttendancePlanConflist" resultMap="AttendancePlanConfMapper" resultType="hashmap" parameterType="page">
+ select a.AttendanceId,a.Title,a.AttStartTime,a.AttEndTime,a.Planner,a.STATUS,a.LaunchTime,a.StopTime,a.Attcount,a.statename,plannerName from 
+ ( select AttendanceId,Title,AttStartTime,AttEndTime,Planner,STATUS,LaunchTime,StopTime,(select count(1) from AttendancePeriodConf where AttendanceId=b.AttendanceId )attcount,(SELECT ConstantItemName FROM SysConstantItemDef WHERE ConstantTypeId='3075' AND ConstantItemId=b.STATUS ) statename,
+ (SELECT UserName FROM SysUserInfo WHERE userID=b.Planner) plannerName
+  from AttendancePlanConf b ) a 
+ where 1=1 
+ <if test="params.attStartTime_start!=null and params.attStartTime_start!=''">
+    and  a.AttStartTime &gt;=#{params.attStartTime_start} 
+ </if>
+ <if test="params.attStartTime_end!=null and params.attStartTime_end!=''">
+    and  a.AttStartTime &lt;=#{params.attStartTime_end} 
+ </if>
+ <if test="params.attEndTime_start!=null and params.attEndTime_start!=''">
+    and  a.AttEndTime &gt;=#{params.attEndTime_start} 
+ </if>
+  <if test="params.attEndTime_end!=null and params.attEndTime_end!=''">
+    and  a.AttEndTime &lt;=#{params.attEndTime_end} 
+ </if>
+  <if test="params.title!=null and params.title!=''">
+    and  a.Title like ${concat("'%'", "'"+params.title+"'" ,"'%'")} 
+ </if>
+</select>
+<!-- 插入签到计划信息 -->
+<insert id="insertAttendancePlanConf" parameterType="com.fable.insightview.platform.attendanceconf.entity.AttendancePlanConf">
+ insert into AttendancePlanConf(AttendanceId,Title,AttStartTime,AttEndTime,Planner,STATUS,LaunchTime,StopTime,ConfigTime) values
+ (
+     #{attendanceId,jdbcType=INTEGER},
+     #{title,jdbcType=VARCHAR},
+     #{attStartTime,jdbcType=TIMESTAMP},
+     #{attEndTime,jdbcType=TIMESTAMP},
+     #{planner,jdbcType=INTEGER},
+     #{status,jdbcType=INTEGER},
+     #{launchTime,jdbcType=TIMESTAMP},
+     #{stopTime,jdbcType=TIMESTAMP},
+     sysdate()
+  )
+</insert>
+<!-- 修改签到计划信息 -->
+<update id="updateAttendancePlanConf">
+  update AttendancePlanConf set 
+  Title=#{title,jdbcType=VARCHAR},
+  AttStartTime=#{attStartTime,jdbcType=TIMESTAMP},
+  AttEndTime=#{attEndTime,jdbcType=TIMESTAMP},
+  Planner=#{planner,jdbcType=INTEGER},
+  STATUS=#{status,jdbcType=INTEGER},
+  LaunchTime=#{launchTime,jdbcType=TIMESTAMP},
+  StopTime=#{stopTime,jdbcType=TIMESTAMP},ConfigTime=#{configTime,jdbcType=TIMESTAMP}
+  where AttendanceId=#{attendanceId,jdbcType=INTEGER}
+</update>
+<!-- 查询页 -->
+<select id="queryAttendancePlanConfDetail" parameterType="INTEGER" resultMap="AttendancePlanConfMapper" resultType="hashmap">
+ select a.AttendanceId,a.Title,a.AttStartTime,a.AttEndTime,a.Planner,a.STATUS,a.LaunchTime,a.StopTime,a.Attcount,a.statename,plannerName from 
+ ( select AttendanceId,Title,AttStartTime,AttEndTime,Planner,STATUS,LaunchTime,StopTime,(select count(1) from AttendancePeriodConf where AttendanceId=b.AttendanceId )attcount,(SELECT ConstantItemName FROM SysConstantItemDef WHERE ConstantTypeId='3075' AND ConstantItemId=b.STATUS ) statename,
+ (SELECT UserName FROM SysUserInfo WHERE userID=b.Planner) plannerName
+  from AttendancePlanConf b ) a 
+   where AttendanceId=#{attendanceId,jdbcType=INTEGER}
+</select>
+<!-- 删除 -->
+<delete id="deleteAttendancePlanConf" parameterType="INTEGER">
+ delete from AttendancePlanConf where  AttendanceId=#{attendanceId,jdbcType=INTEGER}
+</delete>
+<!-- 下拉框 -->
+<select id="queryZhuangtCombox" resultType="com.fable.insightview.platform.contractmanager.entity.ComboxBean"   >
+    SELECT ConstantItemId AS id,ConstantItemName AS neir FROM SysConstantItemDef WHERE ConstantTypeId='3075' and ConstantItemId!='3'
+</select>
+<!-- 效验签到时间是否重复 -->
+<select id="validatorAttendancePlanConfTime" parameterType="com.fable.insightview.platform.attendanceconf.entity.AttendancePlanConf" resultType="INTEGER">
+      select count(1) from  AttendancePlanConf where 1=1
+       <if test="planConf.attStartTime!=null and planConf.attStartTime!=''">
+           and ( AttStartTime &lt;=#{planConf.attStartTime,jdbcType=TIMESTAMP}  and AttEndTime &gt;=#{planConf.attEndTime,jdbcType=TIMESTAMP})
+       </if>
+       <if test="planConf.attEndTime!=null and planConf.attEndTime!=''">
+           or ( AttStartTime &lt;=#{planConf.attStartTime,jdbcType=TIMESTAMP}  and AttEndTime &gt;=#{planConf.attEndTime,jdbcType=TIMESTAMP})
+       </if>
+       <if test="planConf.attendanceId!=null">
+       	 and AttendanceId &lt;&gt;#{planConf.attendanceId,jdbcType=INTEGER} 
+       </if>
+</select>
+<!-- 修改状态 -->
+<update id="updateAttendancePlanConfzt" parameterType="com.fable.insightview.platform.attendanceconf.entity.AttendancePlanConf">
+  update AttendancePlanConf set
+  STATUS=#{status,jdbcType=INTEGER}
+  <if test="launchTime!=null and launchTime!=''">
+    ,LaunchTime=#{launchTime,jdbcType=TIMESTAMP}
+  </if>
+  <if test="stopTime!=null and stopTime!=''">
+   ,StopTime=#{stopTime,jdbcType=TIMESTAMP} 
+  </if>
+    where AttendanceId=#{attendanceId,jdbcType=INTEGER}
+</update>
+<!-- 判断标题是否重复 -->
+<select id="validatorAttendanceTitleDouble"  parameterType="String" resultType="INTEGER">
+  select count(1) from AttendancePlanConf where Title=#{title,jdbcType=VARCHAR}
+</select>
+<!-- 删除签到记录 -->
+<delete id="deleteAttendanceRecord" parameterType="INTEGER" >
+   delete from  AttendanceRecordInfo where AttPeopleId in (SELECT ID from AttendancePeopleConf where AttendanceId=#{attendanceId,jdbcType=INTEGER}) 
+</delete>
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.alarmmgr.alarmeventdefine.mapper.AlarmEventDefineMapper">
+	<resultMap id="AlarmEventDefineMap" type="alarmEventDefine">
+		<id column="AlarmDefineID" property="alarmDefineID" jdbcType="INTEGER" />
+		<result column="AlarmName" property="alarmName" jdbcType="VARCHAR" />
+		<result column="AlarmTitle" property="alarmTitle" jdbcType="VARCHAR" />
+		<result column="AlarmTypeID" property="alarmTypeID" jdbcType="INTEGER" />
+		<result column="AlarmLevelID" property="alarmLevelID" jdbcType="INTEGER" />
+		<result column="CategoryID" property="categoryID" jdbcType="INTEGER" />
+		<result column="AlarmOID" property="alarmOID" jdbcType="VARCHAR" />
+		<result column="AlarmSourceMOID" property="alarmSourceMOID"	jdbcType="INTEGER" />
+		<result column="Description" property="description" jdbcType="VARCHAR" />
+		<result column="AlarmManual" property="alarmManual" jdbcType="VARCHAR" />
+		<result column="IsSystem" property="isSystem" jdbcType="SMALLINT" />
+		<result column="FilterExpression" property="filterExpression" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectAlarmEventDefine" resultType="hashmap"
+		resultMap="AlarmEventDefineMap" parameterType="page">
+		select
+		define.AlarmDefineID,define.AlarmName,define.AlarmTitle,define.AlarmTypeID,define.alarmLevelID,define.categoryID,
+		define.AlarmOID,define.AlarmSourceMOID,define.Description,define.AlarmManual,define.IsSystem,define.FilterExpression, 
+		type.AlarmTypeName as alarmTypeName,l.AlarmLevelName as alarmLevelName,
+		category.CategoryName as categoryName, moSource.MOName as moName,moSource.DeviceIP as deviceIP
+		from AlarmEventDefine define
+		left join AlarmType type on define.AlarmTypeID = type.AlarmTypeID
+		left join AlarmLevel l on define.AlarmLevelID = l.AlarmLevelID
+		left join AlarmCategory category on define.CategoryID = category.CategoryID 
+		left join MOSource moSource on define.AlarmSourceMOID = moSource.MOID where 1=1
+	
+		<if test="params.alarmName !='' and params.alarmName != null ">
+			and define.AlarmName like ${concat("'%'","'"+params.alarmName+"'","'%'")}  
+		</if>
+	</select>
+
+	<select id="getAlarmEventDefineByID" parameterType="alarmEventDefine" resultType="alarmEventDefine"	>
+		select
+		define.AlarmDefineID,define.AlarmName,define.AlarmTitle,define.AlarmTypeID,define.alarmLevelID,define.categoryID,
+		define.AlarmOID,define.AlarmSourceMOID,define.Description,define.AlarmManual,define.IsSystem,define.FilterExpression,
+		type.AlarmTypeName as alarmTypeName,le.AlarmLevelName as alarmLevelName,
+		category.CategoryName as categoryName, moSource.MOName as moName,moSource.DeviceIP as deviceIP
+		from AlarmEventDefine define
+		left join AlarmType type on define.AlarmTypeID = type.AlarmTypeID
+		left join AlarmLevel le on define.AlarmLevelID = le.AlarmLevelID
+		left join AlarmCategory category on define.CategoryID = category.CategoryID 
+		left join MOSource moSource on define.AlarmSourceMOID = moSource.MOID where 1=1 
+		and define.AlarmDefineID = #{alarmDefineID,jdbcType=INTEGER} 
+	</select>
+
+	<delete id="delAlarmEventDefine" parameterType="hashmap">
+		delete from AlarmEventDefine where AlarmDefineID in 
+		<foreach collection="list" item="alarmDefineIds"  open="(" separator="," close=")">
+	     #{alarmDefineIds}
+	    </foreach> 
+	</delete>
+	
+	<insert id="insertAlarmEventDefine" parameterType="alarmEventDefine">
+	insert into AlarmEventDefine (AlarmDefineID,AlarmName,AlarmTitle,AlarmTypeID,AlarmLevelID,CategoryID,AlarmOID,AlarmSourceMOID,Description,AlarmManual,IsSystem,FilterExpression)
+	values (#{alarmDefineID,jdbcType=INTEGER}, #{alarmName,jdbcType=VARCHAR}, #{alarmTitle,jdbcType=VARCHAR}, 
+      #{alarmTypeID,jdbcType=INTEGER}, #{alarmLevelID,jdbcType=VARCHAR},
+      #{categoryID,jdbcType=INTEGER},#{alarmOID,jdbcType=VARCHAR}, #{alarmSourceMOID,jdbcType=INTEGER},
+       #{description,jdbcType=VARCHAR},#{alarmManual,jdbcType=VARCHAR}, #{isSystem,jdbcType=SMALLINT},#{filterExpression,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+	<select id="getAlarmEventDefineByName" parameterType="String" resultType="Integer">
+	select count(1) from AlarmEventDefine
+	where 1=1 and AlarmName = #{alarmName,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateAlarmEventDefine" parameterType="alarmEventDefine">
+	update AlarmEventDefine set AlarmName=#{alarmName,jdbcType=VARCHAR},AlarmTitle=#{alarmTitle,jdbcType=VARCHAR},
+	AlarmTypeID=#{alarmTypeID,jdbcType=INTEGER},AlarmLevelID=#{alarmLevelID,jdbcType=INTEGER},CategoryID=#{categoryID,jdbcType=INTEGER},
+	AlarmOID=#{alarmOID,jdbcType=VARCHAR},AlarmSourceMOID=#{alarmSourceMOID,jdbcType=INTEGER},Description=#{description,jdbcType=VARCHAR},
+	AlarmManual=#{alarmManual,jdbcType=VARCHAR},IsSystem=#{isSystem,jdbcType=INTEGER},FilterExpression = #{filterExpression,jdbcType=VARCHAR}
+	where AlarmDefineID=#{alarmDefineID,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getDefineByNameAndID" parameterType="alarmEventDefine" resultType="Integer">
+	select count(1) from AlarmEventDefine
+	where 1=1 and AlarmName = #{alarmName,jdbcType=VARCHAR} and AlarmDefineID != #{alarmDefineID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getAllAlarmEvent" resultType="hashmap" resultMap="AlarmEventDefineMap">
+		select
+		define.AlarmDefineID,define.AlarmName,define.AlarmTitle,define.AlarmTypeID,define.alarmLevelID,define.categoryID,
+		define.AlarmOID,define.AlarmSourceMOID,define.Description,define.AlarmManual,define.IsSystem,define.FilterExpression
+		from AlarmEventDefine define
+		where 1=1
+	</select>
+	
+	<select id="getAlarmByName" resultType="hashmap" resultMap="AlarmEventDefineMap">
+		select
+		define.AlarmDefineID,define.AlarmName,define.AlarmTitle,define.AlarmTypeID,define.alarmLevelID,define.categoryID,
+		define.AlarmOID,define.AlarmSourceMOID,define.Description,define.AlarmManual,define.IsSystem,define.FilterExpression
+		from AlarmEventDefine define
+		where 1=1 and define.AlarmName is null
+	</select>
+	
+	<update id="updateFilterExpression" >
+	update AlarmEventDefine set FilterExpression = #{filterExpression}
+	where AlarmDefineID=#{alarmDefineID}
+	</update>
+	
+	<select id="getByIDAndAlarmOID" parameterType="alarmEventDefine" resultType="Integer">
+	select count(1) from AlarmEventDefine
+	where 1=1 and AlarmOID = #{alarmOID,jdbcType=VARCHAR} and AlarmDefineID != #{alarmDefineID,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByAlarmOID" parameterType="alarmEventDefine" resultType="Integer">
+	select count(1) from AlarmEventDefine
+	where 1=1 and AlarmOID = #{alarmOID,jdbcType=VARCHAR} 
+	</select>
+	
+	<select id="getAlarmeventByAlarmType" parameterType="Integer" resultType="alarmEventDefine">
+	select * from AlarmEventDefine where AlarmTypeID=#{alarmTypeID}
+	</select>
+	
+	<select id="getDefinedEvent" resultType="hashmap" resultMap="AlarmEventDefineMap" parameterType="page">
+		select define.AlarmDefineID,define.AlarmName,define.AlarmTitle,define.AlarmTypeID,define.alarmLevelID,define.categoryID,
+		define.AlarmOID,define.AlarmSourceMOID,define.Description,define.AlarmManual,define.IsSystem,define.FilterExpression,
+		type.AlarmTypeName as alarmTypeName,le.AlarmLevelName as alarmLevelName,category.CategoryName as categoryName,
+		le.LevelColorName levelColorName,le.LevelColor levelColor
+		from AlarmEventDefine define
+		left join AlarmType type on define.AlarmTypeID = type.AlarmTypeID
+		left join AlarmLevel le on define.AlarmLevelID = le.AlarmLevelID
+		left join AlarmCategory category on define.CategoryID = category.CategoryID
+		left join AlarmEventOfMOClass eventOfClass on eventOfClass.AlarmDefineID=define.AlarmDefineID
+		where 1=1
+		<if test="params.alarmName !='' and params.alarmName != null ">
+			and define.AlarmName like ${concat("'%'","'"+params.alarmName+"'","'%'")}  
+		</if>
+		<if test="params.alarmTypeID !='' and params.alarmTypeID != null and params.alarmTypeID != -1">
+			and define.AlarmTypeID=#{params.alarmTypeID}
+		</if>
+		<if test="params.categoryID !='' and params.categoryID != null and params.categoryID != -1">
+			and define.CategoryID=#{params.categoryID}
+		</if>
+		<if test="params.moClassId !='' and params.moClassId != null and params.moClassId != -1">
+			and eventOfClass.MOClassID=#{params.moClassId}
+		</if>
+		<if test="params.alarmDefineIds !='' and params.alarmDefineIds != null">
+			and define.AlarmDefineID not in(${params.alarmDefineIds})
+		</if>
+		order by define.AlarmDefineID
+	</select>
+</mapper>
+

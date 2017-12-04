@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.platform.restSecurity.mapper.MethodBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.fable.insightview.platform.restSecurity.entity.MethodBean" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+        <result column="URL" property="url" jdbcType="VARCHAR" />
+        <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+        <result column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+        <result column="NOTE" property="note" jdbcType="VARCHAR" />
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+        <result column="CREATOR_NAME" property="creatorName" jdbcType="VARCHAR" />
+        <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <resultMap id="ModuleRestResultMap" type="com.fable.insightview.platform.restSecurity.entity.ModuleRestDto" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, SYS_ID, URL, METHOD_NAME, MODULE_ID, NOTE, CREATOR_ID, CREATOR_NAME, CREATED_TIME
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select 
+        <include refid="Base_Column_List" />
+        from FBS_METHOD
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from FBS_METHOD
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.fable.insightview.platform.restSecurity.entity.MethodBean" >
+        insert into FBS_METHOD (ID, SYS_ID, URL, 
+            METHOD_NAME, MODULE_ID, NOTE, 
+            CREATOR_ID, CREATOR_NAME, CREATED_TIME
+            )
+        values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+            #{methodName,jdbcType=VARCHAR}, #{moduleId,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+            #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    <insert id="insertSelective" parameterType="com.fable.insightview.platform.restSecurity.entity.MethodBean" >
+        insert into FBS_METHOD
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="sysId != null" >
+                SYS_ID,
+            </if>
+            <if test="url != null" >
+                URL,
+            </if>
+            <if test="methodName != null" >
+                METHOD_NAME,
+            </if>
+            <if test="moduleId != null" >
+                MODULE_ID,
+            </if>
+            <if test="note != null" >
+                NOTE,
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID,
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME,
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null" >
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null" >
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="methodName != null" >
+                #{methodName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null" >
+                #{moduleId,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fable.insightview.platform.restSecurity.entity.MethodBean" >
+        update FBS_METHOD
+        <set >
+            <if test="sysId != null" >
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null" >
+                URL = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="methodName != null" >
+                METHOD_NAME = #{methodName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null" >
+                MODULE_ID = #{moduleId,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null" >
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorId != null" >
+                CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorName != null" >
+                CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdTime != null" >
+                CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fable.insightview.platform.restSecurity.entity.MethodBean" >
+        update FBS_METHOD
+        set SYS_ID = #{sysId,jdbcType=VARCHAR},
+            URL = #{url,jdbcType=VARCHAR},
+            METHOD_NAME = #{methodName,jdbcType=VARCHAR},
+            MODULE_ID = #{moduleId,jdbcType=VARCHAR},
+            NOTE = #{note,jdbcType=VARCHAR},
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR},
+            CREATOR_NAME = #{creatorName,jdbcType=VARCHAR},
+            CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+	
+	<select id="queryModuleRest" resultMap="ModuleRestResultMap">
+        select id, pid, name, type
+		  from (select id, pid, name, '1' type, sort_order from FBS_MODULE
+		        union all (select id, module_id pid, method_name name, '2' type, 1 sort_order from FBS_METHOD t)) v
+		 where FIND_IN_SET(id, getChildLst_moduleRest('-1'))
+		 order by v.sort_order
+    </select>
+    
+    <select id="queryRestByModuleId" resultType="java.lang.String" parameterType="java.lang.String">
+        select t.method_name from FBS_METHOD t where t.module_id = #{moduleId,jdbcType=VARCHAR}
+    </select>
+    
+    <delete id="batchDeleteByModuleId" parameterType="java.util.Map">
+		DELETE FROM FBS_METHOD where MODULE_ID =#{moduleId,jdbcType=VARCHAR}
+		  and METHOD_NAME in
+		<foreach item="idItem" collection="list" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="queryModuleNameByMethod" resultType="java.lang.String" parameterType="java.lang.String">
+        select t2.NAME from FBS_METHOD t1, FBS_MODULE t2 
+         where t1.METHOD_NAME = #{methodName,jdbcType=VARCHAR}
+           and t2.ID = t1.MODULE_ID
+    </select>
+    
+    <select id="queryModuleIdByMethod" resultType="java.lang.String" parameterType="java.lang.String">
+        select B.name as MODULE_NAME from FBS_METHOD A 
+		inner join FBS_MODULE B on A.module_id = B.id
+        where METHOD_NAME = #{methodName,jdbcType=VARCHAR}
+        limit 1 OFFSET 0
+    </select>
+</mapper>

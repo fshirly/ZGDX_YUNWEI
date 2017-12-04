@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.alarmmgr.mokpithreshold.mapper.MOKPIThresholdMapper">
+	<resultMap id="ThresholdMap" type="threshold">
+		<id column="RuleID" property="ruleID" jdbcType="INTEGER" />
+		<result column="ClassID" property="classID" jdbcType="INTEGER" />
+		<result column="SourceMOID" property="sourceMOID" jdbcType="INTEGER" />
+		<result column="MOID" property="moID" jdbcType="INTEGER" />
+		<result column="KPIID" property="kpiID" jdbcType="INTEGER" />
+		<result column="UpThreshold" property="upThreshold" jdbcType="NUMERIC" />
+		<result column="DownThreshold" property="downThreshold" jdbcType="NUMERIC" />
+		<result column="UpRecursiveThreshold" property="upRecursiveThreshold" jdbcType="NUMERIC" />
+		<result column="DownRecursiveThreshold" property="downRecursiveThreshold" jdbcType="NUMERIC" />
+		<result column="Descr" property="descr" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectThreshold" resultType="hashmap"
+		resultMap="ThresholdMap" parameterType="page">
+		select
+		k.RuleID,k.ClassID,k.SourceMOID,k.MOID,k.KPIID,k.UpThreshold,k.DownThreshold,k.DownRecursiveThreshold,k.UpRecursiveThreshold,k.Descr,
+		p.Name as kpiName,mo.ClassLable as className,d.MOName as sourceMOName,p.ClassID as kpiClassID
+		from MOKPIThreshold k
+		left join PerfKPIDef p on k.KPIID = p.KPIID
+		left join MObjectDef mo on k.ClassID = mo.ClassID
+		left join MODevice d on k.SourceMOID = d.MOID
+		where 1=1
+		<if test="params.className !='' and params.className != null ">
+			 and k.classID in
+			 (
+			 select ClassID from MObjectDef where ClassLable like ${concat("'%'","'"+params.className+"'","'%'")}
+			 )
+		</if>
+		order by k.RuleID desc
+	</select>
+	
+	<select id="getThresholdById"  parameterType="Integer" resultType="threshold">
+		select 
+		k.RuleID,k.ClassID,k.SourceMOID,k.MOID,k.KPIID,k.UpThreshold,k.DownThreshold,k.DownRecursiveThreshold,k.UpRecursiveThreshold,k.Descr,
+		p.Name as kpiName,mo.ClassLable as className,d.MOName as sourceMOName,p.ClassID as kpiClassID
+		from MOKPIThreshold k
+		left join PerfKPIDef p on k.KPIID = p.KPIID
+		left join MObjectDef mo on k.ClassID = mo.ClassID
+		left join MODevice d on k.SourceMOID = d.MOID
+		where 1=1 and 
+		k.RuleID = #{ruleID,jdbcType=INTEGER} 
+	</select>
+	
+	<delete id="delThreshold" parameterType="hashmap">
+		delete from MOKPIThreshold where RuleID in 
+		<foreach collection="list" item="ruleIDs"  open="(" separator="," close=")">
+	     #{ruleIDs}
+	    </foreach> 
+	</delete>
+	
+	<insert id="insertThreshold" parameterType="threshold">
+	insert into MOKPIThreshold (RuleID,ClassID,SourceMOID,MOID,KPIID,UpThreshold,DownThreshold,UpRecursiveThreshold,DownRecursiveThreshold,Descr)
+	values (#{ruleID,jdbcType=INTEGER}, #{classID,jdbcType=INTEGER},
+			#{sourceMOID,jdbcType=INTEGER},#{moID,jdbcType=INTEGER},
+			#{kpiID,jdbcType=INTEGER},#{upThreshold,jdbcType=NUMERIC},
+			#{downThreshold,jdbcType=NUMERIC},#{upRecursiveThreshold,jdbcType=NUMERIC},#{downRecursiveThreshold,jdbcType=NUMERIC},
+			#{descr,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+	<update id="updateThreshold" parameterType="threshold">
+	update MOKPIThreshold set ClassID=#{classID},SourceMOID=#{sourceMOID},MOID=#{moID},KPIID=#{kpiID},
+	UpThreshold=#{upThreshold},DownThreshold=#{downThreshold},UpRecursiveThreshold=#{upRecursiveThreshold},DownRecursiveThreshold=#{downRecursiveThreshold},Descr=#{descr}
+	where RuleID=#{ruleID}
+	</update>
+	
+	<select id="getByConditions" parameterType="threshold" resultType="Integer">
+	select count(1) from MOKPIThreshold
+	where 1=1 and ClassID=#{classID} and SourceMOID=#{sourceMOID} and MOID=#{moID} and KPIID=#{kpiID}
+	</select>
+	
+	<select id="getByIDs" parameterType="threshold" resultType="Integer">
+	select count(1) from MOKPIThreshold
+	where 1=1 and ClassID=#{classID} and SourceMOID=#{sourceMOID} and MOID=#{moID} and KPIID=#{kpiID} and RuleID != #{ruleID}
+	</select>
+	
+	<select id="getMOName" parameterType="threshold" resultType="String">
+	select MOName
+	from ${attributeTableName}
+	where MOID = #{moID}
+	</select>
+	
+	<select id="getThreshold" resultType="hashmap"
+		resultMap="ThresholdMap" parameterType="page">
+		select
+		k.RuleID,k.ClassID,k.SourceMOID,k.MOID,k.KPIID,k.UpThreshold,k.DownThreshold,k.DownRecursiveThreshold,k.UpRecursiveThreshold,k.Descr,
+		p.Name as kpiName,mo.ClassLable as className,d.MOName as sourceMOName,p.ClassID as kpiClassID
+		from MOKPIThreshold k
+		left join PerfKPIDef p on k.KPIID = p.KPIID
+		left join MObjectDef mo on k.ClassID = mo.ClassID
+		left join MODevice d on k.SourceMOID = d.MOID
+		where 1=1
+		<if test="params.classIDs !='' and params.classIDs != null ">
+		and k.ClassID in (${params.classIDs})
+		</if>
+		<if test="params.sourceMOID !='' and params.sourceMOID != null ">
+		and k.SourceMOID = #{params.sourceMOID}	
+		</if>
+		<if test="params.sourceMoIds !='' and params.sourceMoIds != null ">
+		and k.SourceMOID in (${params.sourceMoIds})	
+		</if>
+	</select>
+	
+	<select id="getInfoBySourceMOID"  parameterType="String" resultType="threshold">
+		select 
+		k.RuleID,k.ClassID,k.SourceMOID,k.MOID,k.KPIID,k.UpThreshold,k.DownThreshold,k.DownRecursiveThreshold,k.UpRecursiveThreshold,k.Descr,
+		p.Name as kpiName,mo.ClassLable as className
+		from MOKPIThreshold k
+		left join PerfKPIDef p on k.KPIID = p.KPIID
+		left join MObjectDef mo on k.ClassID = mo.ClassID
+		where k.ClassID=${classID}
+		and k.SourceMOID=${sourceMOID}
+		<if test="moID !='' and moID != null ">
+		and k.MOID=${moID}
+		</if>			
+	</select>
+</mapper>
+

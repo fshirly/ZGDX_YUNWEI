@@ -1,0 +1,87 @@
+/*锟�锟斤拷锟斤拷锟斤拷械锟斤拷锟绞�*/
+.left{
+    width:140px;
+    float:left;
+}
+.left table{
+    background:#e4edf2;
+    border:1px solid #cfdde6;
+}
+.left tr, .left td{
+	border:0 none;
+}
+.left td{
+	padding:5px 10px;
+}
+.right{
+    float:left;
+    width:80%;
+}
+.right table{
+    background:#E0ECFF;
+    width:100%;
+    margin-top:5px;
+}
+.right td{
+    background:#fafafa;
+    height:25px;
+}
+
+.right td.drop{
+    background:#fafafa;
+    width:33.3%;
+    height: 25px;
+}
+.right td.over{
+    background:#FBEC88;
+}
+.item{
+    border:1px solid #2988cc;
+    background:#d9f2ff;
+    font-size:0.9em;
+    width:150px;
+    height:30px;
+    line-height:30px;
+}
+
+.item:hover{
+	background:#36a3d9;
+	color:#ffffff;
+}
+.assigned{
+    border:1px solid #BC2A4D;
+}
+.trash{
+    background-color:red;
+}
+/* .label{
+    line-height: 24px;
+    min-width: 100px;
+    vertical-align: top;
+    display: inline-block;
+    text-align: right;
+    margin-left: 35px;
+} */
+.FormModel_form{
+	border:1px solid #2B89D8;
+	width:100%;
+	height: 360px;
+}
+.formModelTable{
+	width:80%;
+	border:0;
+}
+.formModelTable .formModelTdLeft{
+	width:20%;
+}
+.formModelTable .formModelTdRight{
+	width:80%;
+}
+.formModelTable .formModelTdTextarea{
+	width:595px;
+	height:20px;
+}
+.formModelTable .formModelTdTextArea{
+	width:595px;
+	height:60px;
+}

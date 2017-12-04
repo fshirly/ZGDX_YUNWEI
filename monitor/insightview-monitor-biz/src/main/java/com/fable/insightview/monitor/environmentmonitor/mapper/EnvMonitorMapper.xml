@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.environmentmonitor.mapper.EnvMonitorMapper" >
+  <resultMap id="MOReaderResultMap" type="com.fable.insightview.monitor.environmentmonitor.entity.MOReader" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="READERID" property="readerID" jdbcType="VARCHAR" />
+    <result column="READERLABEL" property="readerLabel" jdbcType="VARCHAR" />
+    <result column="READERLABEL" property="moname" jdbcType="VARCHAR" />
+    <result column="PORT" property="port" jdbcType="INTEGER" />
+    <result column="ENABLED" property="enabled" jdbcType="VARCHAR" />
+    <result column="NOISEA" property="noiseA" jdbcType="INTEGER" />
+    <result column="NOISEB" property="noiseB" jdbcType="INTEGER" />
+    <result column="EVENTRATEA" property="eventRateA" jdbcType="INTEGER" />
+    <result column="EVENTRATEB" property="eventRateB" jdbcType="INTEGER" />
+    <result column="FIRMWAREVERSION" property="firmwareVersion" jdbcType="VARCHAR" />
+    <result column="IPAddress" property="iPAddress" jdbcType="VARCHAR" /> 
+    <result column="CONNECTIONENCRYPTED" property="connectionEncrypted" jdbcType="VARCHAR" />
+    <result column="READERSTATUS" property="readerStatus" jdbcType="VARCHAR" />
+    <result column="RESID" property="resID" jdbcType="INTEGER" />
+    <result column="PARENTMOID" property="parentID" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="MOTagResultMap" type="com.fable.insightview.monitor.environmentmonitor.entity.MOTag" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="TAGID" property="tagID" jdbcType="VARCHAR" />
+    <result column="TAGGROUPID" property="tagGroupID" jdbcType="VARCHAR" />
+    <result column="ClassLable" property="tagType" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="RESID" property="resID" jdbcType="INTEGER" />
+    <result column="PARENTMOID" property="deviceMOID" jdbcType="INTEGER" />
+     <result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" /> 
+  </resultMap>
+  
+   <resultMap id="ZoneManagerMap" type="com.fable.insightview.monitor.environmentmonitor.entity.MOZoneManagerBean" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="IPAddress" property="ipAddress" jdbcType="VARCHAR" />
+    <result column="Port" property="port" jdbcType="INTEGER" />
+    <result column="MOClassID" property="moClassId" jdbcType="INTEGER" />
+    <result column="DomainID" property="domainID" jdbcType="INTEGER" />
+  </resultMap>
+  
+    <select id="queryZoneManagerList" resultType="hashmap" resultMap="ZoneManagerMap" parameterType="page">
+	 	SELECT a.*,COUNT(b.MOID) readerCount,a.MOID as id from MOZoneManager a LEFT JOIN  MOReader b ON a.MOID=b.ParentMOID WHERE a.MOClassID=44
+      <if test="params.ipAddress != null and params.ipAddress != '' " >
+         and a.IPAddress like ${concat("'%'","'"+params.ipAddress+"'","'%'")}
+      </if>  
+      group by a.MOID    
+  </select>
+  
+  <select id="queryList" resultType="hashmap" resultMap="MOReaderResultMap" parameterType="page">
+	 	SELECT a.*,b.IPAddress deviceIP from MOReader a left join MOZoneManager b on a.ParentMOID=b.MOID WHERE a.moClassID=45 
+      <if test="params.readerLabel != null and params.readerLabel != '' " >
+         and a.readerLabel like ${concat("'%'","'"+params.readerLabel+"'","'%'")} 
+      </if> 
+      <if test="params.iPAddress != null and params.iPAddress != '' " >
+         and a.IPAddress like ${concat("'%'","'"+params.iPAddress+"'","'%'")}
+      </if>  
+      <if test="params.parentID != null and params.parentID != '' and params.parentID != -1" >
+         and b.MOID=#{params.parentID} 
+      </if>
+      order by a.MOID    
+  </select>
+  
+      <select id="queryTagList" resultType="hashmap" resultMap="MOTagResultMap" parameterType="page">
+	 	SELECT a.*,b.IPAddress,c.ClassLable from MOTag a LEFT JOIN MOReader b ON a.ParentMOID=b.MOID
+	  LEFT JOIN MObjectDef c ON a.MOClassID=c.ClassID WHERE 1=1 
+	  <if test="params.moClassId != null and params.moClassId != '' ">
+	    and a.MOClassID=#{params.moClassId} 
+	  </if>
+      <if test="params.iPAddress != null and params.iPAddress != '' " >
+         and b.IPAddress like ${concat("'%'","'"+params.iPAddress+"'","'%'")}
+      </if>  
+       <if test="params.classLable != null and params.classLable != '' " >
+         and c.ClassLable like ${concat("'%'","'"+params.classLable+"'","'%'")}
+      </if> 
+      order by a.MOID      
+  </select>
+  
+  <resultMap id="MOTagPrefDataMap" type="com.fable.insightview.monitor.environmentmonitor.entity.PerfSnapshotRoom" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" /> 
+    <result column="TagID" property="tagID" jdbcType="VARCHAR" />
+    <result column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="KPIName" property="kpiName" jdbcType="VARCHAR" />
+    <result column="Name" property="kpiChnName" jdbcType="VARCHAR" /> 
+    <result column="PrefValue" property="perfValue" jdbcType="VARCHAR" />
+    <result column="MOClassID" property="classID" jdbcType="INTEGER" />
+    <result column="ResID" property="resID" jdbcType="INTEGER" />
+    <result column="Descr" property="descr" jdbcType="VARCHAR" />
+    <result column="KPIID" property="kpiID" jdbcType="INTEGER" />
+    <result column="UpThreshold" property="upThreshold" jdbcType="DECIMAL" />
+    <result column="DownThreshold" property="downThreshold" jdbcType="DECIMAL" />
+    <result column="MOCLASSID" property="MOClassID" jdbcType="INTEGER" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="MOTagResIDMap" type="com.fable.insightview.monitor.environmentmonitor.entity.MOTag" > 
+    <result column="MOID" property="moID" jdbcType="INTEGER" /> 
+    <result column="ResID" property="resID" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="queryRelationByResID"  resultType="hashmap" resultMap="MOTagResIDMap">
+  	select MOID,ResID from MOTag where  ResID in (${resId}) order by ResID 
+  </select>
+  
+  <select id="synchronMOReaderToRes" resultMap="MOReaderResultMap" parameterType="page">
+	select MOID,ReaderID,ReaderLabel,Port,Enabled,IPAddress,MOClassID,ResID from MOReader where MOID in (${params.moIDs}) and (ResID is null  or ResID=0)
+  </select>
+ 
+  <select id="synchronMOTagToRes" resultMap="MOTagResultMap" parameterType="page">  
+   	SELECT tag.MOID,tag.TAGID,tag.TAGGROUPID,tag.PARENTMOID,tag.RESID,tag.MOClassID,def.ClassLable from  MOTag tag
+	left join MObjectDef def on tag.MOClassID = def.ClassID
+	where  tag.ParentMOID in (${params.moIDs}) and tag.MOClassID = ${params.motype} and (tag.ResID is null or tag.ResID=0)
+  </select>
+  
+  <select id="loadEnvDataBy3DResID" resultMap="MOTagPrefDataMap" parameterType="hashmap">  
+	select perf.ID,tag.MOClassID,tag.TagID,tag.ResID,perf.DeviceMOID,perf.MOID,perf.KPIName,perf.PerfValue,def.Descr,kpiDef.Name
+	from PerfSnapshotRoom perf left join MOTag tag on perf.MOID = tag.MOID left join MObjectDef def on tag.MOClassID = def.ClassID
+	left join PerfKPIDef kpiDef on perf.KPIName = kpiDef.EnName
+ 	where tag.MOID in(select MOID from MOTag where ResID in(${resid})) order by tag.MOID desc
+  </select> 
+  
+  <update id="updateTagResId" parameterType="hashmap" >
+	update MOTag set ResID = ${resid}  where MOID = ${moid}
+  </update> 
+  
+  <update id="updateReaderResId" parameterType="hashmap" >
+	update MOReader set ResID = ${resid}  where MOID = ${moid}
+  </update> 
+  
+  <select id="getMoReaderByMOID" parameterType="Integer" resultType="com.fable.insightview.monitor.environmentmonitor.entity.MOReader">
+  select * from MOReader where MOID= #{moID}
+  </select>
+  
+  <select id="getMOTagBYMOID" parameterType="Integer" resultType="com.fable.insightview.monitor.environmentmonitor.entity.MOTag">
+  select * from MOTag where MOID= #{moID}
+  </select>
+  
+   <select id="queryElectronicTag" resultMap="MOTagPrefDataMap" parameterType="hashmap" >  
+	select perf.ID,tag.MOClassID,tag.TagID,tag.ResID,perf.DeviceMOID,perf.MOID,perf.KPIName,perf.PerfValue,def.Descr,kpiDef.KPIID,kpiDef.Name,
+	threshold.UpThreshold,threshold.DownThreshold,tag.ParentMOID
+	from PerfSnapshotRoom perf 
+	left join MOTag tag on perf.MOID = tag.MOID
+	left join MObjectDef def on tag.MOClassID = def.ClassID
+	left join PerfKPIDef kpiDef on perf.KPIName = kpiDef.EnName
+	left join MOKPIThreshold threshold on tag.ParentMOID = threshold.SourceMOID
+	and tag.MOClassID = threshold.ClassID and kpiDef.KPIID = threshold.KPIID
+	where tag.MOID in(select MOID from MOTag where ResID in(${resid})) order by tag.MOID desc
+  </select> 
+  
+    <select id="queryRelationPath" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select relationPath from MObjectRelation where classId =${moClassId}
+  </select>
+    <select id="queryAlarmUpAndDownVlaue" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select * from MOKPIThreshold where  ClassID=${upAndDownClass} and KPIID=${kpiID}
+  </select>
+  
+  <select id="queryUpAndDownValue" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select UpThreshold,DownThreshold from MOKPIThreshold where SourceMOID=-1 and ClassID=${moClassId} and KPIID=${kpiID}
+  </select>
+  
+  <select id="UpAndDownValue" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select UpThreshold,DownThreshold from MOKPIThreshold where  ClassID=${moClassId} and KPIID=${kpiID} and MOID=-1 and SourceMOID=${parentMOID}
+  </select>
+  
+  <select id="UpAndDownValue2" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select UpThreshold,DownThreshold from MOKPIThreshold where ClassID=${moClassId} and KPIID=${kpiID} and MOID=-1 and SourceMOID=-1 
+  </select>
+  
+   <select id="parentUpAndDownValue" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select UpThreshold,DownThreshold from MOKPIThreshold where  ClassID=${ParentClassId} and KPIID=${kpiID} and MOID=-1 and SourceMOID=${parentMOID}
+  </select>
+  
+  <select id="parentUpAndDownValue2" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select UpThreshold,DownThreshold from MOKPIThreshold where ClassID=${ParentClassId} and KPIID=${kpiID} and MOID=-1 and SourceMOID=-1 
+  </select>
+   <select id="queryParentClassId" parameterType="hashmap" resultType="com.fable.insightview.monitor.environmentmonitor.entity.UpAndDownThresholdBean">
+   select parentClassid from MObjectRelation where classId =${moClassId}
+  </select>
+  <select id="queryTemperatureTagList" parameterType="page" resultType="hashmap" resultMap="MOTagResultMap">
+  	select t.*,t1.temperature,t2.messageLossRate,t3.sensorDisconnected 
+ 	from (select a.IPAddress,b.TagID,b.MOID,c.PerfValue lowBattery from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.lowBattery})t left join 
+      (select b.MOID,c.PerfValue temperature from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.temperature})t1 on t.MOID=t1.MOID left join 
+      (select b.MOID,c.PerfValue messageLossRate from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.messageLossRate})t2 on t1.MOID=t2.MOID left join 
+      (select b.MOID,c.PerfValue sensorDisconnected from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.sensorDisconnected})t3 on t2.MOID=t3.MOID where 1=1
+ 	<if test="params.tagID != null and params.tagID != '' " >
+         and t.TagID like ${concat("'%'","'"+params.tagID+"'","'%'")}
+    </if> 
+  </select>
+  
+  <select id="queryWaterHoseTagList" parameterType="page" resultType="hashmap" resultMap="MOTagResultMap">
+  	select t.*,t1.fluidDetected,t2.tamper,t3.sensorDisconnected 
+ 	from (select a.IPAddress,b.TagID,b.MOID,c.PerfValue lowBattery from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.lowBattery})t left join 
+      (select b.MOID,c.PerfValue fluidDetected from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.fluidDetected})t1 on t.MOID=t1.MOID left join 
+      (select b.MOID,c.PerfValue tamper from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.tamper})t2 on t1.MOID=t2.MOID left join 
+      (select b.MOID,c.PerfValue sensorDisconnected from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.sensorDisconnected})t3 on t2.MOID=t3.MOID where 1=1
+ 	<if test="params.tagID != null and params.tagID != '' " >
+         and t.TagID like ${concat("'%'","'"+params.tagID+"'","'%'")}
+    </if>  
+  </select>
+  
+  <select id="queryTemperatureHumidityTagList" parameterType="page" resultType="hashmap" resultMap="MOTagResultMap">
+  	select t.*,t1.humidity,t2.lowBattery,t3.messageLossRate ,t4.temperature
+ 	from (select a.IPAddress,b.TagID,b.MOID,c.PerfValue dewPoint from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.dewPoint})t left join 
+      (select b.MOID,c.PerfValue humidity from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.humidity})t1 on t.MOID=t1.MOID left join 
+      (select b.MOID,c.PerfValue lowBattery from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.lowBattery})t2 on t1.MOID=t2.MOID left join 
+      (select b.MOID,c.PerfValue messageLossRate from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.messageLossRate})t3 on t2.MOID=t3.MOID left join
+      (select b.MOID,c.PerfValue temperature from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.temperature})t4 on t3.MOID=t4.MOID   
+      where 1=1
+ 	<if test="params.tagID != null and params.tagID != '' " >
+         and t.TagID like ${concat("'%'","'"+params.tagID+"'","'%'")}
+    </if>  
+  </select>
+  
+  <select id="queryDoorMagneticTagList" parameterType="page" resultType="hashmap" resultMap="MOTagResultMap">
+  	select t.*,t1.motion,t2.lowBattery,t3.doorOpen 
+ 	from (select a.IPAddress,b.TagID,b.MOID,c.PerfValue tamper from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.tamper})t left join 
+      (select b.MOID,c.PerfValue motion from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.motion})t1 on t.MOID=t1.MOID left join 
+      (select b.MOID,c.PerfValue lowBattery from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.lowBattery})t2 on t1.MOID=t2.MOID left join 
+      (select b.MOID,c.PerfValue doorOpen from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.doorOpen})t3 on t2.MOID=t3.MOID where 1=1
+ 	<if test="params.tagID != null and params.tagID != '' " >
+         and t.TagID like ${concat("'%'","'"+params.tagID+"'","'%'")}
+    </if>  
+  </select>
+  
+  <select id="queryDryContactTagList" parameterType="page" resultType="hashmap" resultMap="MOTagResultMap">
+  	select t.*,t1.lowBattery,t2.tamper,t3.motion 
+ 	from (select a.IPAddress,b.TagID,b.MOID,c.PerfValue dryContactOpen from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.dryContactOpen})t left join 
+      (select b.MOID,c.PerfValue lowBattery from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.lowBattery})t1 on t.MOID=t1.MOID left join 
+      (select b.MOID,c.PerfValue tamper from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.tamper})t2 on t1.MOID=t2.MOID left join 
+      (select b.MOID,c.PerfValue motion from MOReader a
+        left join MOTag b on a.MOID=b.ParentMOID 
+        left join PerfSnapshotRoom c on b.MOID=c.MOID where b.MOClassID=#{params.moClassId} and c.KPIName=#{params.motion})t3 on t2.MOID=t3.MOID where 1=1
+ 	<if test="params.tagID != null and params.tagID != '' " >
+         and t.TagID like ${concat("'%'","'"+params.tagID+"'","'%'")}
+    </if> 
+  </select>
+  
+  <select id="getReadIDByMOID"  resultType="Integer" parameterType="Integer">
+ 	select a.MOID 
+ 	from  MOReader a
+ 	left join MOZoneManager b on a.ParentMOID=b.MOID
+ 	where b.MOID = #{moID}
+  </select>
+  </mapper>

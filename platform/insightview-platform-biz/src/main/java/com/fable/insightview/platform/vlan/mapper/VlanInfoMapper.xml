@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.vlan.mapper.VlanInfoMapper">
+	
+	<resultMap type="vlanInfo" id="vlanInfo">
+	  <id column="Id" property="id" jdbcType="INTEGER"/>
+	  <result column="VlanNo" property="vlanNo" jdbcType="VARCHAR"/>
+	  <result column="VlanName" property="vlanName" jdbcType="VARCHAR"/>
+	  <result column="VlanDesc" property="vlanDesc" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="insertVlanInfo" parameterType="vlanInfo">
+	  insert into VlanInfo(Id,VlanNo,VlanName,VlanDesc)
+	  <trim prefix="values (" suffix=")" suffixOverrides=",">
+	    #{id,jdbcType=INTEGER},
+	    #{vlanNo,jdbcType=VARCHAR},
+	    #{vlanName,jdbcType=VARCHAR},
+	    #{vlanDesc,jdbcType=VARCHAR}
+	  </trim>
+	</insert>
+	
+	<select id="queryVlan" resultType="com.fable.insightview.platform.common.util.KeyValPair">
+	   select vlan.VlanNo `val`,vlan.Id `key` from VlanInfo vlan
+	</select>
+	
+	<select id="getVlanInfo" resultType="vlanInfo" >
+	   select v.* from VlanInfo v
+	</select>
+	
+	<select id="getVlanByVlanNo" resultType="vlanInfo" parameterType="String">
+	   select vl.* from VlanInfo vl where vl.VlanNo = #{vlanNo, jdbcType=VARCHAR}
+	</select>
+</mapper>
+

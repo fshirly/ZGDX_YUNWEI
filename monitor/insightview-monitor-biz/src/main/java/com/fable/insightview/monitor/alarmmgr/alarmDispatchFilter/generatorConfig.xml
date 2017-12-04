@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+        
+<generatorConfiguration>
+	<classPathEntry location="E:\JAVA\workspace\monitor\insightview-monitor-war\target\insightview-monitor-war\WEB-INF\lib\mysql-connector-java-5.1.12.jar"/>
+	<context id="MysqlContext">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/itsm_haian" userId="root" password=""></jdbcConnection>
+		<javaModelGenerator targetPackage="com.fable.insightview.monitor.alarmmgr.alarmDispatchFilter.entity" targetProject="insightview-monitor-biz">
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="com.fable.insightview.monitor.alarmmgr.alarmDispatchFilter.mapper" targetProject="insightview-monitor-biz" />
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.fable.insightview.monitor.alarmmgr.alarmDispatchFilter.mapper" targetProject="insightview-monitor-biz" />
+		
+		<table schema="" tableName="Alarm_Dispatch_Filter_Def"></table>
+	</context>
+</generatorConfiguration>

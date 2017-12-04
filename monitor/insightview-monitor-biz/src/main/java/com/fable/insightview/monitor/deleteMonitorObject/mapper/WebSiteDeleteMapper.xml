@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.WebSiteDeleteMapper">
+ 
+ <sql id="limit">
+ LIMIT 100000;
+ </sql>
+<delete id="deletePrefAndSnap"  parameterType="hashmap">
+delete from ${prefTableName} where  MOID in (${MOID}) <include refid="limit"></include>
+</delete> 
+ 
+ <delete id="deleteWebSiteAlarm" parameterType="hashmap">
+delete from ${tableName} where SourceMOID in (${MOID})<include refid="limit"></include>
+</delete>
+
+<delete id="deleteAlarmFilter" parameterType="hashmap">
+delete from ${tableName} where FilterKeyValue in (${MOID}) and FilterKey='AlarmSourceMOID' <include refid="limit"></include>
+</delete>
+
+ <delete id="deleteChildDevice" parameterType="hashmap">
+ delete from  ${tableName} where MOID in (${MOID})
+ </delete>
+ 
+<select id="queryParentMOID" resultType="java.lang.Integer" parameterType="hashmap">
+ select ParentMOID from ${tableName} where MOID in (${MOID})
+</select>
+ 
+<delete id="deleteDevice" parameterType="hashmap">
+ delete from  MOWebSite where MOID in (${MOID})
+ </delete>
+ 
+  <delete id="deleteSysSite" parameterType="hashmap">
+ delete sys from ${tableName} ftp,${snmpTableName}  sys where ftp.IPAddr = sys.IPAddress and ftp.Port = sys.Port and ftp.MOID in (${MOID})
+ </delete>
+ 
+ <delete id="deleteHttpSysSite" parameterType="hashmap">
+ delete from ${snmpTableName} where IPAddress in (SELECT HttpUrl FROM ${tableName} WHERE MOID IN (${MOID})) and SiteType=2
+ </delete>
+ <delete id="deleteTemplate" parameterType="hashmap">
+delete from SysMonitorsTemplateUsed  where MOID in (${MOID})
+</delete>
+</mapper>

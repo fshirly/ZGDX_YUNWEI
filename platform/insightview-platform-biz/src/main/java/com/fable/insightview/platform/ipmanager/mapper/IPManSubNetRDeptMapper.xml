@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.platform.ipmanager.mapper.IPManSubNetRDeptMapper">
+	<resultMap id="subNetRDeptMap" type="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="DeptID" property="deptId" jdbcType="INTEGER" />
+		<result column="SubNetID" property="subNetId" jdbcType="INTEGER" />
+		<result column="UsedNum" property="usedNum" jdbcType="INTEGER" />
+		<result column="PreemptNum" property="preemptNum" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getAllSubNetRDeptInfo" resultType="hashmap" resultMap="subNetRDeptMap" >
+		select r.*,d.deptName
+		from IPManSubNetRDept r
+		left join SysDepartment d on d.DeptID = r.DeptID
+	</select>
+	
+	<select id="listSubnetConDept" resultType="hashmap" resultMap="subNetRDeptMap" parameterType="page">
+		select r.*,(UsedNum+PreemptNum) as totalNum,d.deptName
+		from IPManSubNetRDept r
+		left join SysDepartment d on d.DeptID = r.DeptID
+		where r.SubNetID=#{params.subNetId}
+		<if test="params.deptName !='' and params.deptName != null ">
+			 and d.DeptName like ${concat("'%'","'"+params.deptName+"'","'%'")}
+		</if>
+	</select>
+	
+	<select id="getAllSubNetRDeptInfo2" resultType="hashmap" resultMap="subNetRDeptMap">
+		select r.*,(UsedNum+PreemptNum) as totalNum,d.deptName
+		from IPManSubNetRDept r
+		left join SysDepartment d on d.DeptID = r.DeptID
+		where r.SubNetID=#{subNetId}
+	</select>
+	
+	<select id="getBySubNetAndDept" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean" resultType="hashmap" resultMap="subNetRDeptMap">
+		select * from IPManSubNetRDept where DeptID=#{deptId} and SubNetID=#{subNetId}
+	</select>
+	
+	<update id="updateSubNetRDept" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		update IPManSubNetRDept
+	    <set>
+	      <if test="usedNum != null" >
+	        UsedNum = #{usedNum,jdbcType=INTEGER},
+	      </if>
+	      <if test="preemptNum != null" >
+	        PreemptNum = #{preemptNum,jdbcType=INTEGER},
+	      </if>
+	    </set>
+	    where ID = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<insert id="insertSubnetRDept" parameterType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		insert into IPManSubNetRDept (ID,DeptID,SubNetID,UsedNum,PreemptNum)
+		values (#{id,jdbcType=INTEGER}, #{deptId,jdbcType=INTEGER},#{subNetId,jdbcType=INTEGER},
+				#{usedNum,jdbcType=INTEGER},#{preemptNum,jdbcType=INTEGER})
+	</insert>
+	
+	<select id="getBySubNet" parameterType="Integer" resultType="hashmap" resultMap="subNetRDeptMap">
+		select * from IPManSubNetRDept where SubNetID=#{subNetId}
+	</select>
+	
+	<delete id="delSubNetDDeptById" parameterType="Integer">
+		delete from IPManSubNetRDept where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="getByID" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		select r.*,d.deptName from IPManSubNetRDept r
+		left join SysDepartment d on d.DeptID = r.DeptID
+		where r.ID = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="delSubNetDeptBySubNetID" parameterType="Integer">
+		delete from IPManSubNetRDept where SubNetID=#{subNetId}
+	</delete>
+	
+	<select id="getDeptByCondition" resultType="hashmap" resultMap="subNetRDeptMap" parameterType="page">
+		select distinct r.DeptID,d.DeptName
+		from IPManSubNetRDept r
+		left join SysDepartment d on d.DeptID = r.DeptID
+		left join SysOrganization o on d.OrganizationID = o.OrganizationID
+		where 1=1
+		<if test="params.organizationId !='' and params.organizationId !='-1' and params.organizationId != null ">
+			 and o.OrganizationID =#{params.organizationId} 
+		</if>
+		<if test="params.deptName !='' and params.deptName != null ">
+			 and d.DeptName like ${concat("'%'","'"+params.deptName+"'","'%'")}
+		</if>
+	</select>
+	
+	<select id="getUseNumAndPreemptNum" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		select sum(PreemptNum)as preemptNum,sum(UsedNum) as usedNum from IPManSubNetRDept where DeptID=#{deptId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByDeptID" parameterType="Integer" resultType="com.fable.insightview.platform.ipmanager.entity.IPManSubNetRDeptBean">
+		select * from IPManSubNetRDept where DeptID = #{deptId,jdbcType=INTEGER}
+	</select>
+	<select id="getUsedBySubNet" parameterType="Integer" resultType="hashmap" resultMap="subNetRDeptMap">
+		select * from IPManSubNetRDept where SubNetID=#{subNetId} and (UsedNum != 0 or UsedNum != null)
+	</select>
+</mapper>
+

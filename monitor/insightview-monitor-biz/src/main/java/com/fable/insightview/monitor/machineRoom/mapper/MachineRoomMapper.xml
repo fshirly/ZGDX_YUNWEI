@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.machineRoom.mapper.MachineRoomMapper" >
+   
+   <select id="queryInfo" resultType="com.fable.insightview.monitor.machineRoom.entity.MachineRoomBean">
+   		select de.OriDesc as deviceDesc,de.IpAddr,de.Type as type,a.* from rtnodevalue a 
+		left join rtdevice  de on de.Address = a.Address and de.HostName = a.HostName
+   </select>
+   
+   <select id="queryAlarmList" resultType="com.fable.insightview.monitor.util.CurwarnBean">
+	   select WarnLevel,StartTime,Content from rtcurwarn
+   </select>
+   
+   <select id="queryDeviceInfo" resultType="com.fable.insightview.monitor.machineRoom.entity.MoiemBean">
+	 select mo.ClassID as moClassID ,mo.ClassLable  from  MObjectDef  mo  where mo.AttributeTableName ='MOiem'
+   </select>
+   
+   <select id="MOiemList" resultType="com.fable.insightview.monitor.machineRoom.entity.MoiemBean">
+  	 	select * from MOiem where IdRtDevice in  (${idRtDevice})
+   </select>
+   
+   <update id="updateMOiemInfo" parameterType="com.fable.insightview.monitor.machineRoom.entity.MoiemBean">
+                update  MOiem 
+                <set>
+                  DefDesc =#{defDesc, jdbcType=VARCHAR},
+                  IpAddr = #{ipAddr,jdbcType=VARCHAR},
+                  LastUpdateTime = #{lastUpdateTime,jdbcType=VARCHAR}
+                </set>
+                where  IdRtDevice = #{idRtDevice,jdbcType=INTEGER}   
+   </update>
+   
+   <insert id="insertMOiemInfo" useGeneratedKeys="true" parameterType="java.util.List">
+   		insert into MOiem (MOID,IdRtDevice,DeviceType,Address,HostName,SerialNo,DefDesc,OriDesc,IpAddr,CreateTime,LastUpdateTime,MOClassID)
+   		values
+   		<foreach collection="list" item="item" index="index" separator="," >  
+       	 (#{item.MOID},#{item.idRtDevice},#{item.type},#{item.address},#{item.hostName},#{item.serialNo},#{item.defDesc},#{item.oriDesc},
+       	 #{item.ipAddr},#{item.createTime},#{item.lastUpdateTime},#{item.moClassID})  
+    </foreach>  
+   </insert>
+</mapper>

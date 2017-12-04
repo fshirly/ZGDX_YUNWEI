@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.deleteMonitorObject.mapper.DeleteDeviceMapper">
+ 
+
+<select id="queryWebSiteTask"  resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.RelationBean" parameterType="hashmap">
+select poll.Status,def.ClassLable as className, '${type}' as type,${result} as deviceIp  from SysPerfPollTask  poll, ${tableName} mo,MObjectDef def 
+where def.ClassID =poll.MOClassID and poll.MOID = mo.MOID and (poll.Status!=-1 or poll.ProgressStatus!=5)and (poll.OperateStatus!=3 or poll.ProgressStatus!=5) and  mo.MOID in  (${MOID})
+</select> 
+
+<select id="queryAlarmMaintenancePolicy"  resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.RelationBean" parameterType="hashmap">
+SELECT alarm.MaintainTitle as className,'${type}' as type,mo.MOName as deviceIp from AlarmMaintenancePolicy alarm,MODevice mo 
+where mo.MOID = alarm.SourceMOID AND alarm.SourceMOID in (${MOID});
+</select> 
+
+ <sql id="limit">
+ LIMIT 100000;
+ </sql>
+ 
+<select id="queryChildMOID" resultType="java.lang.Integer" parameterType="hashmap">
+SELECT MOID FROM ${tableName} WHERE  DeviceMOID IN (${MOID})
+</select> 
+ 
+<delete id="deletePrefData" parameterType="hashmap">
+delete from  ${prefTableName} where MOID  in  (${MOID}) <include refid="limit"></include>
+</delete>
+ 
+ <delete id="deletePrefSnapshotAndChild" parameterType="hashmap">
+ delete from ${prefTableName} where DeviceMOID  in (${MOID})  <include refid="limit"></include>
+ </delete>
+ 
+ <delete id="deleteAlarmDetail" parameterType="hashmap">
+delete from ${alarmTableName} where SourceMOID in (${MOID}) <include refid="limit"></include>
+</delete>
+
+<delete id="deleteTaskAndIP" parameterType="hashmap">
+delete from ${tableName} where MOID in (${MOID})  <include refid="limit"></include>
+</delete>
+ 
+ <delete id="deleteVhostAndVMSNMP" parameterType="hashmap">
+ delete from ${tableName} where DeviceIP in (SELECT DeviceIP FROM  MODevice WHERE MOID IN (${MOID}))
+ </delete>
+ 
+ <delete id="deleteSNMP" parameterType="hashmap">
+delete from ${tableName} where MOID in (${MOID})
+</delete>
+ 
+<delete id="deleteAlarmFilter" parameterType="hashmap">
+delete from ${tableName} where FilterKey='AlarmSourceMOID'  and  FilterKeyValue in (${MOID})  <include refid="limit"></include>
+</delete>
+<delete id="deleteMOVolumes" parameterType="hashmap">
+delete from MOVolumes where DeviceMOID in(${MOID})
+</delete>
+<delete id="deleteMODevice" parameterType="hashmap">
+delete from MODevice where MOID in (${MOID})
+</delete>
+
+<delete id="deleteTemplate" parameterType="hashmap">
+delete from SysMonitorsTemplateUsed  where MOID in (${MOID})
+</delete>
+
+<select id="queryDeviceInfo" resultType="com.fable.insightview.monitor.deleteMonitorObject.entity.ServiceBean" parameterType="hashmap">
+select mo.DeviceIP as ip,def.ClassName as MOName  from MODevice mo ,MObjectDef  def where mo.MOClassID = def.ClassID and mo.MOID IN (${MOID})
+</select> 
+
+<delete id="deleteDiscoverTask" parameterType="hashmap">
+	delete from SysNetworkDiscoverTask where TaskType=4 and  MOClassNames='${MOName}' and IPAddress1='${IP}';
+</delete>
+
+<select id="queryStoneuChildMOID" resultType="java.lang.Integer" parameterType="hashmap">
+	select MOID from StoneuModevice where  SourceMOID in (${MOID})
+</select>
+
+<delete id="deletePerfStoneuModevice">
+	delete perftem.*,perfsmoke.*,soundLight.*,contacts.*
+	from StoneuModevice st
+	left join PerfStoneUTempHum perftem on st.MOID = perftem.MOID
+	left join PerfStoneuSmoke perfsmoke on st.MOID = perfsmoke.MOID
+	left join PerfSoundLight soundLight on st.MOID = soundLight.MOID
+	left join PerfStoneuContacts contacts on st.MOID = contacts.MOID
+	where st.MOID in (${MOID})
+</delete>
+
+<delete id="deleteStoneuModevice">
+	delete from StoneuModevice where MOID in (${MOID})
+</delete>
+</mapper>

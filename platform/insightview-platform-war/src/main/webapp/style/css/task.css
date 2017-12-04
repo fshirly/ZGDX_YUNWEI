@@ -1,0 +1,42 @@
+   #container {
+         margin:0 auto;
+         text-align:left;
+         font-size:13px;
+         font:Î¢ÈíÑÅºÚ;
+         width:600px;
+   }
+   .smallpart{
+         background-color:rgb(200,200,205); 
+         height:200px;
+         width:600px;
+   }
+   .smallpart tr{
+         line-height:22px;
+         background-color: #fff;
+   }
+   .smallpartSpec{
+         background-color:#595D5E;  
+         height:200px;
+         width:600px;
+   }
+   .smallpartSpec tr{
+         line-height:22px;
+         background-color: #fff;
+   }
+   .smallpart1{
+         background-color:rgb(200,200,205);
+   }
+   .smallpart1 tr{
+         line-height:22px;
+         background-color: #fff;
+         margin:0;
+   }
+   .showbtn{
+         width:70px;
+         margin-left:10px;
+         vertical-align: middle;
+   }
+   .fontalign{
+         text-align: right;
+   }
+}

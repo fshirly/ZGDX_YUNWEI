@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.insightview.monitor.mostorage.mapper.MOStorageMapper" >
+  <resultMap id="moStorageMap" type="com.fable.insightview.monitor.mostorage.entity.MOStorageBean" >
+    <id column="MOID" property="moID" jdbcType="INTEGER" />
+    <result column="MOName" property="moName" jdbcType="VARCHAR" />
+    <result column="MOAlias" property="moAlias" jdbcType="VARCHAR" />
+    <result column="OperStatus" property="operStatus" jdbcType="INTEGER" />
+    <result column="AdminStatus" property="adminStatus" jdbcType="INTEGER" />
+    <result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="DeviceMOID" property="deviceMOID" jdbcType="INTEGER" />
+    <result column="Instance" property="instance" jdbcType="VARCHAR" />
+    <result column="RawDescr" property="rawDescr" jdbcType="VARCHAR" />
+    <result column="VolumeType" property="volumeType" jdbcType="VARCHAR" />
+    <result column="Capacity" property="capacity" jdbcType="VARCHAR" />
+    <result column="MIBModule" property="mIBModule" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+   <select id="selectMOStorage" resultType="hashmap" resultMap="moStorageMap" parameterType="page">
+	select
+	v.*,mo.MOName as deviceMOName
+	from MOStorage v
+	left join MODevice mo on v.DeviceMOID=mo.MOID
+	where 1=1
+	<if test="params.moName !='' and params.moName != null ">
+		and v.MOName like ${concat("'%'","'"+params.moName+"'","'%'")}
+	</if>
+	<if test="params.deviceMOID != -1 and params.deviceMOID != '' ">
+	    and v.DeviceMOID=#{params.deviceMOID} 
+    </if>
+  </select>
+	
+ 	<select id="queryList" resultType="hashmap" resultMap="moStorageMap" parameterType="page">
+	 select me.MOID,me.MOName,me.MOAlias,me.OperStatus,me.AdminStatus,
+	me.AlarmLevel,me.DeviceMOID,me.Instance,me.RawDescr,me.VolumeType,me.Capacity,me.MIBModule,mo.MOName deviceMOName,mo.DeviceIP
+	from MOStorage me,MODevice mo
+	where me.DeviceMOID=mo.MOID  and mo.MOClassID=#{params.mOClassID}
+	<if test="params.deviceMOName !='' and params.deviceMOName != null ">
+		and mo.MOName like ${concat("'%'","'"+params.deviceMOName+"'","'%'")}
+	</if>
+	<if test="params.operStatus !='' and params.operStatus != null ">
+		and me.OperStatus like ${concat("'%'","'"+params.operStatus+"'","'%'")}
+	</if>
+	<if test="params.deviceIP !='' and params.deviceIP != null ">
+		and mo.DeviceIP like ${concat("'%'","'"+params.deviceIP+"'","'%'")} 
+	</if>
+	order by mo.MOID,me.MOID
+</select>
+	
+	 <select id="synchronMOStorage"  resultType="hashmap" resultMap="moStorageMap" parameterType="page"> 
+	 	SELECT * from MOStorage where DeviceMOID in (select MOID from MODevice where MOID in(${params.moIDs}))
+	 </select>
+	  	
+	<update id="updateResId" parameterType="hashmap" >
+		update MOStorage set ResID = ${resid}  where MOID = ${moid}
+	</update> 
+	
+	<select id="getResIDByDeviceId" parameterType="Integer" resultType="Integer">
+		select ResID from MOMemories where DeviceMOID = #{deviceMoId}
+	</select> 
+</mapper>
+

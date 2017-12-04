@@ -1,0 +1,185 @@
+.icon-runFtpServer{
+	background:url('icons/application_start.png') no-repeat center center;
+}
+.icon-columnMapping{
+	background:url('icons/table_column_add.png') no-repeat center center;
+}
+.icon-brench{
+	background:url('icons/bullet_wrench_red.png') no-repeat center center;
+}
+.icon-next_blue{
+	background:url('icons/next_blue.png') no-repeat center center;
+}
+.icon-next_green{
+	background:url('icons/next_green.png') no-repeat center center;
+}
+.icon-runschedule{
+	background:url('icons/server_start.png') no-repeat center center;
+}
+.icon-schedule{
+	background:url('icons/clock_start.png') no-repeat center center;
+}
+.icon-senior{
+	background:url('icons/cog_start.png') no-repeat center center;
+}
+.icon-blank{
+	background:url('icons/blank.gif') no-repeat center center;
+}
+.icon-cut{
+	background:url('icons/cut.png') no-repeat center center;
+}
+.icon-ok{
+	background:url('icons/ok.png') no-repeat center center;
+}
+.icon-no{
+	background:url('icons/no.png') no-repeat center center;
+}
+.icon-cancel{
+	background:url('icons/cancel.png') no-repeat center center;
+}
+.icon-reload{
+	background:url('icons/reload.png') no-repeat center center;
+}
+.icon-search{
+	background:url('icons/search.png') no-repeat center center;
+}
+.icon-print{
+	background:url('icons/print.png') no-repeat center center;
+}
+.icon-help{
+	background:url('icons/help.png') no-repeat center center;
+}
+.icon-undo{
+	background:url('icons/undo.png') no-repeat center center;
+}
+.icon-redo{
+	background:url('icons/redo.png') no-repeat center center;
+}
+.icon-sum{
+	background:url('icons/sum.png') no-repeat center center;
+}
+.icon-tip{
+	background:url('icons/tip.png') no-repeat center center;
+}
+.icon-filter{
+	background:url('icons/filter.png') no-repeat center center;
+}
+.icon-mini-add{
+	background:url('icons/mini_add.png') no-repeat center center;
+}
+.icon-mini-edit{
+	background:url('icons/mini_edit.png') no-repeat center center;
+}
+.icon-mini-refresh{
+	background:url('icons/mini_refresh.png') no-repeat center center;
+}
+
+/*--- table tools ---*/
+.icon-add{background:url('icons/tabletool.png') no-repeat;}
+.icon-modify{background:url('icons/tabletool.png') no-repeat -50px 0;}
+.icon-remove{background:url('icons/tabletool.png') no-repeat -100px 0;}
+.icon-delete{background:url('icons/tabletool.png') no-repeat -150px 0;}
+.icon-export{background:url('icons/tabletool.png') no-repeat -200px 0;}
+.icon-import{background:url('icons/tabletool.png') no-repeat -250px 0;}
+.icon-download{background:url('icons/tabletool.png') no-repeat -300px 0;}
+.icon-upload{background:url('icons/tabletool.png') no-repeat -350px 0;}
+.icon-refresh{background:url('icons/tabletool.png') no-repeat -400px 0;}
+.icon-back{background:url('icons/tabletool.png') no-repeat -450px 0;}
+.icon-view{background:url('icons/tabletool.png') no-repeat 0 -30px;}
+.icon-copy{background:url('icons/tabletool.png') no-repeat -50px -30px;}
+.icon-audit{background:url('icons/tabletool.png') no-repeat -100px -30px;}
+.icon-forbid{background:url('icons/tabletool.png') no-repeat -150px -30px;}
+.icon-permit{background:url('icons/tabletool.png') no-repeat -200px -30px;}
+.icon-up{background:url('icons/tabletool.png') no-repeat -250px -30px;}
+.icon-down{background:url('icons/tabletool.png') no-repeat -300px -30px;}
+.icon-top{background:url('icons/tabletool.png') no-repeat -350px -30px;}
+.icon-bottom{background:url('icons/tabletool.png') no-repeat -400px -30px;}
+.icon-setting{background:url('icons/tabletool.png') no-repeat -450px -30px;}
+.icon-save{background:url('icons/tabletool.png') no-repeat 0 -60px;}
+.icon-zip{background:url('icons/tabletool.png') no-repeat -50px -60px;}
+
+/*--- table td ---*/
+.tdaudit {background:url(icons/tdoperate.png) no-repeat -300px -30px;}
+.tdadd {background:url(icons/tdoperate.png) no-repeat -250px -60px;}
+
+
+/*--- login tabs ---*/
+.login_user, .login_certificate {background-image:url('icons/icon_login.png');}
+
+/*--- top menu ---*/
+.topmenu-home {background:url('icons/nav/home.png') center 7px no-repeat;} 
+.topmenu-serviceDesk {background:url('icons/nav/serviceDesk.png') center 7px no-repeat;} 
+.topmenu-monitorConsole {background:url('icons/nav/monitorConsole.png') center 7px no-repeat;} 
+.topmenu-serviceManage {background:url('icons/nav/serviceManage.png') center 7px no-repeat;} 
+.topmenu-operationalMonitoring{background:url('icons/nav/operationalMonitoring.png') center 7px no-repeat;} 
+.topmenu-resourceManage {background:url('icons/nav/resourceManage.png') center 7px no-repeat;} 
+.topmenu-assetManage {background:url('icons/nav/assetManage.png') center 7px no-repeat;} 
+.topmenu-projectManage {background:url('icons/nav/projectManage.png') center 7px no-repeat;} 
+.topmenu-operationAssess {background:url('icons/nav/operationAssess.png') center 7px no-repeat;} 
+.topmenu-systemManage {background:url('icons/nav/systemManage.png') center 7px no-repeat;} 
+
+/*--- left tree menu ---*/
+.treemenu-arrow{background:url('icons/menu_nav.png') no-repeat center center;}
+.treemenu-event {background:url('icons/treemenu.png') no-repeat;}
+.treemenu-question {background:url('icons/treemenu.png') no-repeat -50px 0;}
+.treemenu-change {background:url('icons/treemenu.png') no-repeat -100px 0;}
+.treemenu-publish {background:url('icons/treemenu.png') no-repeat -150px 0;}
+.treemenu-task {background:url('icons/treemenu.png') no-repeat -200px 0;}
+.treemenu-service {background:url('icons/treemenu.png') no-repeat -250px 0;}
+.treemenu-knowledge {background:url('icons/treemenu.png') no-repeat -300px 0;}
+.treemenu-bulletin {background:url('icons/treemenu.png') no-repeat -350px 0;}
+.treemenu-alarm-realtime {background:url('icons/treemenu.png') no-repeat -400px 0;}
+.treemenu-topo {background:url('icons/treemenu.png') no-repeat -450px 0;}
+.treemenu-performance {background:url('icons/treemenu.png') no-repeat 0 -30px;}
+.treemenu-resource-object {background:url('icons/treemenu.png') no-repeat -50px -30px;}
+.treemenu-alarm {background:url('icons/treemenu.png') no-repeat -100px -30px;}
+.treemenu-network {background:url('icons/treemenu.png') no-repeat -150px -30px;}
+.treemenu-host {background:url('icons/treemenu.png') no-repeat -200px -30px;}
+.treemenu-databases {background:url('icons/treemenu.png') no-repeat -250px -30px;}
+.treemenu-middleware {background:url('icons/treemenu.png') no-repeat -300px -30px;}
+.treemenu-app {background:url('icons/treemenu.png') no-repeat -350px -30px;}
+.treemenu-service-room {background:url('icons/treemenu.png') no-repeat -400px -30px;}
+.treemenu-virtual-environment {background:url('icons/treemenu.png') no-repeat -450px -30px;}
+.treemenu-cloud {background:url('icons/treemenu.png') no-repeat 0 -60px;}
+.treemenu-resource {background:url('icons/treemenu.png') no-repeat -50px -60px;}
+.treemenu-resource-audit {background:url('icons/treemenu.png') no-repeat -100px -60px;}
+.treemenu-resource-reports {background:url('icons/treemenu.png') no-repeat -150px -60px;}
+.treemenu-autodiscover {background:url('icons/treemenu.png') no-repeat -200px -60px;}
+.treemenu-consumable {background:url('icons/treemenu.png') no-repeat -250px -60px;}
+.treemenu-spare {background:url('icons/treemenu.png') no-repeat -300px -60px;}
+.treemenu-config {background:url('icons/treemenu.png') no-repeat -350px -60px;}
+.treemenu-asset {background:url('icons/treemenu.png') no-repeat -400px -60px;}
+.treemenu-asset-reports {background:url('icons/treemenu.png') no-repeat -450px -60px;}
+.treemenu-project {background:url('icons/treemenu.png') no-repeat 0 -90px;}
+.treemenu-contract {background:url('icons/treemenu.png') no-repeat -50px -90px;}
+.treemenu-purchase {background:url('icons/treemenu.png') no-repeat -100px -90px;}
+.treemenu-supplier {background:url('icons/treemenu.png') no-repeat -150px -90px;}
+.treemenu-manufacturer {background:url('icons/treemenu.png') no-repeat -200px -90px;}
+.treemenu-safety {background:url('icons/treemenu.png') no-repeat -250px -90px;}
+.treemenu-run {background:url('icons/treemenu.png') no-repeat -300px -90px;}
+.treemenu-harvester {background:url('icons/treemenu.png') no-repeat -350px -90px;}
+.treemenu-upgrade {background:url('icons/treemenu.png') no-repeat -400px -90px;}
+.treemenu-license {background:url('icons/treemenu.png') no-repeat -450px -90px;}
+.treemenu-dd {background:url('icons/treemenu.png') no-repeat 0 -120px;}
+.treemenu-knowledge-base {background:url('icons/treemenu.png') no-repeat -50px -120px;}
+.treemenu-default {background:url('icons/treemenu.png') no-repeat -100px -120px;}
+.treemenu-software-agreemen {background:url('icons/treemenu.png') no-repeat -150px -120px;}
+.treemenu-monitor {background:url('icons/treemenu.png') no-repeat -200px -120px;}
+.treemenu-performance-manage {background:url('icons/treemenu.png') no-repeat -250px -120px;}
+.treemenu-home {background:url('icons/treemenu.png') no-repeat -300px -120px;}
+.treemenu-data-switching {background:url('icons/treemenu.png') no-repeat -350px -120px;}
+.treemenu-system-service {background:url('icons/treemenu.png') no-repeat -400px -120px;}
+.treemenu-log-audit {background:url('icons/treemenu.png') no-repeat -450px -120px;}
+.treemenu-system-status {background:url('icons/treemenu.png') no-repeat 0 -150px;}
+
+/*--- window left tabs ---*/
+.icon-info {background:url('icons/tabs_icon.png') no-repeat;}
+.icon-parameter {background:url('icons/tabs_icon.png') no-repeat -80px 0;}
+.icon-set {background:url('icons/tabs_icon.png') no-repeat -160px 0;}
+.icon-apply {background:url('icons/tabs_icon.png') no-repeat 0 -60px;}
+.icon-solution {background:url('icons/tabs_icon.png') no-repeat -80px -60px;}
+.icon-processing {background:url('icons/tabs_icon.png') no-repeat -160px -60px;}
+.icon-project {background:url('icons/tabs_icon.png') no-repeat 0 -120px;}
+.icon-bidding {background:url('icons/tabs_icon.png') no-repeat -80px -120px;}
+.icon-agreement {background:url('icons/tabs_icon.png') no-repeat -160px -120px;}
+.icon-check {background:url('icons/tabs_icon.png') no-repeat 0 -180px;}

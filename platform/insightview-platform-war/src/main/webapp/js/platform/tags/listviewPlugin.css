@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+.listviewConditions input[type="text"] {margin-right:0px; box-sizing:border-box;} 
+
+.listviewConditions  .datebox {box-sizing:border-box;} 
+
+/* .listviewConditions  .title {min-width:100px;}  */
+
+/* .listviewConditions input[type="text"] {margin-right:0px;}
+
+.listviewConditions .combo{margin-right : 2px;} 
+
+.listviewConditions  .datebox {margin-right : 0px;} 
+ */
+ 
+.toptreesearch .datagrid-cell {word-wrap:break-word;}

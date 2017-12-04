@@ -1,0 +1,82 @@
+.gridster * {
+  margin:0;
+  padding:0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+
+/*/
+/* demo
+/*/
+
+
+body {
+    font-size: 16px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #444;
+  /*  margin: 30px 40px;*/
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+/*/
+/* gridster
+/*/
+
+.gridster ul {
+  /*  background-color: #EFEFEF; */
+}
+
+.gridster li {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+    border: 1px solid #b8c3cc;
+}
+
+
+.gridster {
+    margin: 0 auto;
+
+    opacity: .8;
+
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+
+.gridster .gs-w {
+  /*  background: #DDD; */
+  	background:#ffffff
+    cursor: pointer;
+}
+
+.gridster .player {
+    background: #BBB;
+}
+
+
+
+.gridster .preview-holder {
+    border: none!important;
+    background: red!important;
+}
+
+
+.gridsterHeader {
+	background: url("../images/icon_dashboard.png") no-repeat scroll -55px 7px #7498b3;
+    border: 0 none;
+    color: #ffffff;
+    cursor: move;
+    font-size: 12px;
+    padding: 7px 5px 7px 28px;
+    text-align: left;
+}

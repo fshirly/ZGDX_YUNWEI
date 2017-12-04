@@ -1,0 +1,460 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Portal - jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="portal.css">
+	<style type="text/css">
+	</style>
+	<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="../easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="jquery.portal.js"></script>
+	<script type="text/javascript" src="../flotr2/hsd-flotr2.js"></script>
+	
+	<!--<script type="text/javascript" src="../echarts-2.0.0/doc/asset/js/esl/esl.js"></script>-->
+	<!--<script type="text/javascript" src="../echarts-2.0.0/build/echarts.js"></script>-->
+	<script>
+		$(function(){
+		 				$('<div id="host"/>').appendTo('body');
+	 				
+			 			var server_bits_Gauge = $('<div/>').appendTo('body');
+						server_bits_Gauge.panel({
+							title:'某站点用户访问来源',
+							content:'<div style="padding:5px;height:300px;width:100%;" id="server_bits_Gauge"/>',
+							height:400,
+							closable:true,
+							collapsible:true
+						});
+						
+	 				
+					
+						(function(){
+						/**
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+							*/
+	 						option = {
+							    tooltip : {
+							        formatter: "{a} <br/>{b} : {c}%"
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    series : [
+				        {
+				            name:'业务指标',
+				            type:'gauge',
+				           // data:resultData.data.server_bits _in]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            ,detail:{formatter:'{value}%'}
+				            
+				        }
+				        
+	 				]
+							};
+							echarts.init(document.getElementById('server_bits_Gauge')).setOption(option);
+						}());
+	 				
+			 			var server_bits_bars = $('<div/>').appendTo('body');
+						server_bits_bars.panel({
+							title:'主机流量图',
+							content:'<div style="padding:5px;height:300px;width:100%;" id="server_bits_bars"/>',
+							height:400,
+							closable:true,
+							collapsible:true
+						});
+						
+	 				
+						(function(){
+						/**
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+			*/
+							var option = {
+							    title : {
+							        text: '主机流量图'
+							    },
+							    tooltip : {
+							        trigger: 'axis'
+							    },
+							    legend: {
+							        data:['输入流量bit数','输出流量bit数']
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            magicType : {show: true, type: ['line', 'bar']},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							         //   data : resultData.category
+							         	data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value'
+							        }
+							    ],
+							    series : [
+				        {
+				            name:'输入流量bit数',
+				            type:'bar',
+				           // data:resultData.data.server_bits _in]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            
+				            
+						,
+				        markPoint : {
+			                data : [
+				        {name:'最小值',type:'min'}
+	 				,
+				        {name:'最大值',type:'max'}
+	 				]
+			            },
+			            markLine : {
+			                data : [
+				        {name:'平均值',type:'average'}
+	 				]
+			            }
+			            
+	 				
+				        }
+				        ,
+	 				
+				        {
+				            name:'输出流量bit数',
+				            type:'bar',
+				           // data:resultData.data.server_bits_out]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            
+				            
+						,
+				        markPoint : {
+			                data : [
+				        {name:'最小值',type:'min'}
+	 				,
+				        {name:'最大值',type:'max'}
+	 				]
+			            },
+			            markLine : {
+			                data : [
+				        {name:'平均值',type:'average'}
+	 				]
+			            }
+			            
+	 				
+				        }
+				        
+	 				]
+							};
+							
+							echarts.init(document.getElementById('server_bits_bars')).setOption(option);
+							
+						}());
+	 				
+						$('#host').append("<div style='width:60%'>")
+	 				
+			 			var server_bits_Line = $('<div/>').appendTo('body');
+						server_bits_Line.panel({
+							title:'未来一周气温变化',
+							content:'<div style="padding:5px;height:300px;width:100%;" id="server_bits_Line"/>',
+							height:400,
+							closable:true,
+							collapsible:true
+						});
+						
+	 				
+					
+						(function(){
+						/**
+							var resultData = {category:[], data:[]};
+								
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+								*/
+	 						option = {
+							    title : {
+							        text: '未来一周气温变化'
+							    },
+							    tooltip : {
+							        trigger: 'axis'
+							    },
+							    legend: {
+							        data:['最高气温','最低气温']
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            magicType : {show: true, type: ['line', 'bar']},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            boundaryGap : false,
+							            data :  ['周一','周二','周三','周四','周五','周六','周日']
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value',
+							            axisLabel : {
+							                formatter: '{value} °C'
+							            }
+							        }
+							    ],
+							    series : [
+				        {
+				            name:'最高气温',
+				            type:'line',
+				           // data:resultData.data.server_bits _in]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            
+				            
+						,
+				        markPoint : {
+			                data : [
+				        {name:'最小值',type:'min'}
+	 				,
+				        {name:'最大值',type:'max'}
+	 				]
+			            },
+			            markLine : {
+			                data : [
+				        {name:'平均值',type:'average'}
+	 				]
+			            }
+			            
+	 				
+				        }
+				        ,
+	 				
+				        {
+				            name:'最低气温',
+				            type:'line',
+				           // data:resultData.data.server_bits_out]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            
+				            
+						,
+				        markPoint : {
+			                data : [
+				        {name:'最小值',type:'min'}
+	 				,
+				        {name:'最大值',type:'max'}
+	 				]
+			            },
+			            markLine : {
+			                data : [
+				        {name:'平均值',type:'average'}
+	 				]
+			            }
+			            
+	 				
+				        }
+				        
+	 				]
+							};
+	                    	echarts.init(document.getElementById('server_bits_Line')).setOption(option);
+                    	}());
+	 				
+			 			var server_bits_Pie = $('<div/>').appendTo('body');
+						server_bits_Pie.panel({
+							title:'某站点用户访问来源',
+							content:'<div style="padding:5px;height:300px;width:100%;" id="server_bits_Pie"/>',
+							height:400,
+							closable:true,
+							collapsible:true
+						});
+						
+	 				
+					
+						(function(){
+						/**
+							var resultData = {category:[], data:[]};
+							
+							//从后台加载要显示的数据  
+							$.ajax({
+								async : false,
+								type : "post",
+								url : getRootName()+'',
+								data : {},
+								dataType : "json",
+								success : function(results) {
+									resultData = results;
+								}
+							});
+							*/
+	 						option = {
+							    title : {
+							        text: '某站点用户访问来源',
+							        subtext: '纯属虚构',
+							        x:'center'
+							    },
+							    tooltip : {
+							        trigger: 'item',
+							        formatter: "{a} <br/>{b} : {c} ({d}%)"
+							    },
+							    legend: {
+							        orient : 'vertical',
+							        x : 'left',
+							        data:['直接访问','邮件营销','联盟广告','视频广告']
+							    },
+							    toolbox: {
+							        show : true,
+							        feature : {
+							            mark : {show: true},
+							            dataView : {show: true, readOnly: false},
+							            restore : {show: true},
+							            saveAsImage : {show: true}
+							        }
+							    },
+							    calculable : true,
+							    series : [
+				        {
+				            name:'直接访问',
+				            type:'pie',
+				           // data:resultData.data.server_bits _in]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            ,center:['50%', '60%'],radius:'55%'
+				            
+				        }
+				        ,
+	 				
+				        {
+				            name:'邮件营销',
+				            type:'pie',
+				           // data:resultData.data.server_bits_out]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            ,center:['50%', '60%'],radius:'55%'
+				            
+				        }
+				        ,
+	 				
+				        {
+				            name:'联盟广告',
+				            type:'pie',
+				           // data:resultData.data.server_bits_out]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            ,center:['50%', '60%'],radius:'55%'
+				            
+				        }
+				        ,
+	 				
+				        {
+				            name:'视频广告',
+				            type:'pie',
+				           // data:resultData.data.server_bits_out]
+				         //   data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+				         //	data:[{value:335, name:'直接访问'},{value:310, name:'邮件营销'},{value:234, name:'联盟广告'},{value:135, name:'视频广告'},{value:1548, name:'搜索引擎'}]
+				           	data:[{value: 50, name: '完成率'}]
+				            ,center:['50%', '60%'],radius:'55%'
+				            
+				        }
+				        
+	 				]
+							};
+							echarts.init(document.getElementById('server_bits_Pie')).setOption(option);
+						}());
+	 				
+						$('#host').append("<div style='width:40%'>")
+	 				
+						$('#host').portal({
+							border:false,
+							fit:true
+						});
+	 				
+			 			$('#host').portal('add', {
+							panel:server_bits_Gauge,
+							columnIndex:0
+						});
+	 				
+			 			$('#host').portal('add', {
+							panel:server_bits_bars,
+							columnIndex:0
+						});
+	 				
+			 			$('#host').portal('add', {
+							panel:server_bits_Line,
+							columnIndex:1
+						});
+	 				
+			 			$('#host').portal('add', {
+							panel:server_bits_Pie,
+							columnIndex:1
+						});
+	 				});
+	</script>
+</head>
+<body >
+<script type="text/javascript" src="../echarts-2.0.0/build/echarts-plain.js"></script>
+	
+</body>
+</html>

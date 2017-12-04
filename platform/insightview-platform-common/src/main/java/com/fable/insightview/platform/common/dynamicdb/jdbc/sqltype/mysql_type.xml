@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqltype>
+	<type>
+		<java>String</java>
+		<sql>varchar(255)</sql>
+	</type>
+	<type>
+		<java>Integer</java>
+		<sql>int(11)</sql>
+	</type>
+	<type>
+		<java>Date</java>
+		<sql>date</sql>
+	</type>
+	<type>
+		<java>DateTime</java>
+		<sql>datetime</sql>
+	</type>
+	<type>
+		<java>Text</java>
+		<sql>text</sql>
+	</type>
+	<type>
+		<java>String(500)</java>
+		<sql>varchar(500)</sql>
+	</type>
+	<datatype>
+		<java>String</java>
+		<sql>varchar</sql>
+	</datatype>
+	<datatype>
+		<java>Integer</java>
+		<sql>int</sql>
+	</datatype>
+</sqltype>

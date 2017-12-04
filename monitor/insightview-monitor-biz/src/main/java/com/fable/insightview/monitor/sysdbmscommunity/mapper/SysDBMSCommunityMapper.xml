@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.sysdbmscommunity.mapper.SysDBMSCommunityMapper">
+	<resultMap id="DBMSCommunityMap" type="sysDBMSCommunity">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="DBName" property="dbName" jdbcType="VARCHAR" />
+		<result column="DBMSType" property="dbmsType" jdbcType="VARCHAR" />
+		<result column="DomainID" property="domainID" jdbcType="INTEGER" />
+		<result column="UserName" property="userName" jdbcType="VARCHAR" />
+		<result column="Password" property="password" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="getDBMSInfo" resultType="hashmap" resultMap="DBMSCommunityMap"  parameterType="page">
+		select ID , IP,DBName,DBMSType,DomainID,UserName,Password,Port
+		from  SysDBMSCommunity where 1=1
+		<if test="params.ip != null and params.ip != '' " >
+			and IP like ${concat("'%'","'"+params.ip+"'","'%'")}
+		</if>
+		<if test="params.dbName != null and params.dbName != '' " >
+			and DBName like ${concat("'%'","'"+params.dbName+"'","'%'")}
+		</if>
+		<if test="params.dbmsType != null and params.dbmsType != '' " >
+			and DBMSType like ${concat("'%'","'"+params.dbmsType+"'","'%'")}
+		</if>
+		<if test="params.userName != null and params.userName != '' " >
+			and UserName like ${concat("'%'","'"+params.userName+"'","'%'")}
+		</if>
+		<if test="params.port != null and params.port != '' " >
+			and Port like ${concat("'%'","'"+params.port+"'","'%'")}
+		</if>
+	</select>
+	
+	<insert id="insertDBMSCommunity" parameterType="sysDBMSCommunity">
+	insert into SysDBMSCommunity (ID,IP,DBName,DBMSType,DomainID,UserName,Password,Port)
+	values (#{id,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR},
+			#{dbName,jdbcType=VARCHAR},#{dbmsType,jdbcType=VARCHAR},
+			#{domainID,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},
+			#{password,jdbcType=VARCHAR},#{port,jdbcType=INTEGER}
+      	    )
+	</insert>
+	
+	<select id="getByIP" parameterType="sysDBMSCommunity" resultMap="DBMSCommunityMap" resultType="hashmap">
+	select ID,IP,DBName,DBMSType,DomainID,UserName,Password,Port 
+	from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getByIPAndTypeAndPort" parameterType="sysDBMSCommunity"  resultType="Integer">
+	select count(1) from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByIDAndIPAndTypeAndPort" parameterType="sysDBMSCommunity" resultType="Integer">
+	select count(1) from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} and ID != #{id,jdbcType=INTEGER}
+	</select>
+	
+	<update id="updateDBMSCommunity" parameterType="sysDBMSCommunity">
+	update SysDBMSCommunity set DBName=#{dbName},DomainID=#{domainID},DBMSType=#{dbmsType},
+	UserName=#{userName},Password=#{password},Port=#{port}
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getDBMSByTaskId" resultType="sysDBMSCommunity" parameterType="java.lang.Integer" >
+  	select db.*  from SysDBMSCommunity db
+  	left join MODBMSServer dbms on dbms.IP=db.IP and db.DBMSType=dbms.DBMSType and db.PORT=dbms.Port
+  	left join SysPerfPollTask task on task.MOID=dbms.MOID
+  	where task.TaskID=#{taskId} 
+  </select>
+  
+  <select id="getDBMSByID" resultType="sysDBMSCommunity" parameterType="java.lang.Integer" >
+  select dbms.ID,dbms.IP,dbms.DBName,dbms.DBMSType,dbms.DomainID,dbms.UserName,dbms.Password,dbms.Port 
+  from SysDBMSCommunity dbms
+  left join MODBMSServer dbserver on dbms.IP=dbserver.IP and dbms.DBMSType = dbserver.DBMSType and dbms.Port=dbserver.PORT
+  where dbserver.MOID=#{moId}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from SysDBMSCommunity
+		where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByIDs" parameterType="hashmap">
+		delete from SysDBMSCommunity
+		where ID in (#{id,jdbcType=VARCHAR})
+  </delete>
+  
+   <delete id="delDBMS" parameterType="hashmap">
+		delete from SysDBMSCommunity
+		where ID in (#{id,jdbcType=VARCHAR})
+		<foreach collection="list" item="ids"  open="(" separator="," close=")">
+	     #{ids}
+	    </foreach> 
+  </delete>
+  
+  <select id="getInfoByID" parameterType="java.lang.Integer" resultType="sysDBMSCommunity">
+	select ID,IP,DBName,DBMSType,DomainID,UserName,Password,Port
+	from SysDBMSCommunity
+	where ID=#{id,jdbcType=INTEGER}
+</select>
+
+	<select id="getByIPAndPort" parameterType="sysDBMSCommunity" resultMap="DBMSCommunityMap" resultType="hashmap">
+	select ID,IP,DBName,DBMSType,DomainID,UserName,Password,Port 
+	from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+	</select>
+	
+ 	<update id="updateDBMSCommunityByID" parameterType="sysDBMSCommunity">
+	update SysDBMSCommunity set DBName=#{dbName},DomainID=#{domainID},DBMSType=#{dbmsType},
+	UserName=#{userName},Password=#{password},Port=#{port}
+	where ID=#{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getByConditions" parameterType="sysDBMSCommunity" resultMap="DBMSCommunityMap" resultType="hashmap">
+	select * from SysDBMSCommunity 
+	where IP like ${concat("'%'","'"+ip+"'","'%'")} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getByIPAndTypeAndPortAndName" parameterType="sysDBMSCommunity" resultMap="DBMSCommunityMap" resultType="hashmap">
+	select ID,IP,DBName,DBMSType,DomainID,UserName,Password,Port 
+	from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} and DBName = #{dbName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getByIDAndIPAndTypeAndPortAndName" parameterType="sysDBMSCommunity" resultType="Integer">
+	select count(1) from SysDBMSCommunity 
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} and DBName = #{dbName,jdbcType=VARCHAR} and ID != #{id,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getDBMSByTaskIdAndDBName" resultType="sysDBMSCommunity" parameterType="java.lang.Integer" >
+  	select db.*  from SysDBMSCommunity db
+  	left join MODBMSServer dbms on dbms.IP=db.IP and db.DBMSType=dbms.DBMSType and db.PORT=dbms.Port
+  	left join SysPerfPollTask task on task.MOID=dbms.MOID
+  	where db.DBName = task.DBName and task.TaskID=#{taskId} and (task.Status!=-1 or task.ProgressStatus!=5) and (task.OperateStatus!=3 or task.ProgressStatus!=5)
+  </select>
+  
+  <update id="updateDBMSCommunity2" parameterType="sysDBMSCommunity">
+	update SysDBMSCommunity set DBName=#{dbName},DomainID=#{domainID},DBMSType=#{dbmsType},
+	UserName=#{userName},Password=#{password},Port=#{port}
+	where IP=#{ip,jdbcType=VARCHAR} and DBMSType=#{dbmsType,jdbcType=VARCHAR} and Port=#{port,jdbcType=INTEGER} and DBName=#{dbName,jdbcType=VARCHAR}
+	</update>
+</mapper>
+

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.fable.insightview.monitor.middleware.weblogic.mapper.WeblogicMapper">
+	<resultMap id="MOMiddleWareJMXResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.MOMiddleWareJMXBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="JMXTYPE" property="jmxType" jdbcType="VARCHAR" />
+		<result column="PORTTYPE" property="portType" jdbcType="VARCHAR" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="Port" property="port" jdbcType="INTEGER" />
+		<result column="USERNAME" property="userName" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="passWord" jdbcType="VARCHAR" />
+		<result column="SERVERNAME" property="serverName" jdbcType="VARCHAR" />
+		<result column="JMXVERSION" property="jmxVersion" jdbcType="VARCHAR" />
+		<result column="STARTUPTIME" property="startupTime" jdbcType="TIMESTAMP" />
+		<result column="OSNAME" property="oSName" jdbcType="VARCHAR" />
+		<result column="OSVERSION" property="oSVersion" jdbcType="VARCHAR" />
+		<result column="OPERSTATUS" property="operStatus" jdbcType="INTEGER" />
+		<result column="ADMINSTATUS" property="adminStatus" jdbcType="INTEGER" />
+		<result column="DEVICEMOID" property="deviceMOID" jdbcType="INTEGER" />
+		<result column="ALARMLEVEL" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="CREATETIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="LASTUPDATETIME" property="lastUpdateTime"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+		<resultMap id="PerfWebLogicJVMHeapResultMap"
+		type="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJVMHeapBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="HEAPUSAGE" property="heapUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWebLogicJDBCPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJDBCPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="CURRCAPACITY" property="currCapacity" jdbcType="DECIMAL" />
+		<result column="NUMAVAILABLE" property="numAvailable" jdbcType="DECIMAL" />
+		<result column="WAITINGFORCONNECTIONCURRENT" property="waitingForConnectionCurrent" jdbcType="DECIMAL" />
+		<result column="LEAKEDCONNECTION" property="leakedConnection" jdbcType="DECIMAL" />
+		<result column="ACTIVECONNECTIONSCURRENT" property="activeConnectionsCurrent" jdbcType="DECIMAL" />
+		<result column="FAILURESTORECONNECT" property="failuresToReconnect" jdbcType="DECIMAL" />
+		<result column="CONNECTIONSTOTAL" property="connectionsTotal" jdbcType="DECIMAL" />
+		<result column="CONNECTIONPOOLUSAGE" property="connectionPoolUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWebLogicThreadPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicThreadPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="EXECUTETHREADTOTAL" property="executeThreadTotal"
+			jdbcType="DECIMAL" />
+		<result column="EXECUTETHREADIDLE" property="executeThreadIdle"
+			jdbcType="DECIMAL" />
+		<result column="PENDINGUSERREQUEST" property="pendingUserRequest"
+			jdbcType="DECIMAL" />
+		<result column="THREADPOOLUSAGE" property="threadPoolUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWebLogicMemoryPoolResultMap"
+		type="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicMemoryPoolBean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="MEMORYUSAGE" property="memoryUsage" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="PerfWebLogicJTAResultMap"
+		type="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJTABean">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="COLLECTTIME" property="collectTime" jdbcType="TIMESTAMP" />
+		<result column="TRANSABANDONEDTOTAL" property="transAbandonedTotal" jdbcType="DECIMAL" />
+		<result column="TRANSTOTAL" property="transTotal" jdbcType="DECIMAL" />
+		<result column="TRANSROLLBACKTOTAL" property="transRollBackTotal" jdbcType="DECIMAL" />
+		<result column="ACTIVETRANSTOTAL" property="activeTransTotal" jdbcType="DECIMAL" />
+		<result column="TRANSLLRCOMMITEDTOTAL" property="transLLRCommitedTotal" jdbcType="DECIMAL" />
+		<result column="TRANSTWOPHASETOTAL" property="transTwoPhaseTotal" jdbcType="DECIMAL" />
+		<result column="TRANSROLLBACKSYSTOTAL" property="transRollBackSysTotal" jdbcType="DECIMAL" />
+		<result column="TRANSNORESCOMMITTEDTOTAL" property="transNoResCommittedTotal" jdbcType="DECIMAL" />
+		<result column="TRANSCOMMITTEDTOTAL" property="transCommittedTotal" jdbcType="DECIMAL" />
+		<result column="TRANSROLLBACKAPPTOTAL" property="transRollBackAppTotal" jdbcType="DECIMAL" />
+		<result column="TRANSROLLBACKTIMEOUTTOTAL" property="transRollBackTimeoutTotal" jdbcType="DECIMAL" />
+		<result column="TRANSROLLBACKRESTOTAL" property="transRollBackResTotal" jdbcType="DECIMAL" />
+		<result column="TRANSREADONEPHASETOTAL" property="transReadOnePhaseTotal" jdbcType="DECIMAL" />
+		<result column="TRANSONERESONEPHASETOTAL" property="transOneResOnePhaseTotal" jdbcType="DECIMAL" />
+	</resultMap>
+	
+	<resultMap id="WebLogicOperSituationResultMap"
+		type="com.fable.insightview.monitor.middleware.tomcat.entity.TomcatOperSituationBean">
+		<id column="MOID" property="moId" jdbcType="INTEGER" />
+		<result column="AlarmLevel" property="alarmLevel" jdbcType="INTEGER" />
+		<result column="useStatus" property="useStatus" jdbcType="INTEGER" />
+		<result column="UpTime" property="upTime" jdbcType="VARCHAR" />
+		<result column="LevelIcon" property="levelIcon" jdbcType="VARCHAR" />
+	</resultMap>
+	<!--
+		获取监测对象信息列表-->
+	<select id="getWeblogicInfo" resultType="hashmap" resultMap="MOMiddleWareJMXResultMap"
+		parameterType="java.lang.Integer">
+	SELECT
+		a.ServerName,a.MoAlias,a.JmxVersion,b.moName,b.MOID,b.DeviceIP,a.Port,a.StartupTime,e.UpTime,e.JavaVendor,e.JavaVersion,c.Name
+		JtaName,c.Status JtaStatus,a.OSName,a.OSVersion,d.Name
+		jmsName,d.Status jmsStatus,e.JvmVendor,e.HeapSizeMax
+		FROM MOMiddleWareJMX a
+		LEFT JOIN MODevice b ON	a.DeviceMOID=b.MOID 
+		LEFT JOIN MOMiddleWareJTA c	ON	a.MOID=c.ParentMOID
+		LEFT JOIN MOMiddleWareJMS d	ON	a.MOID=d.ParentMOID
+		LEFT JOIN MOMiddleWareJVM e ON a.MOID=e.ParentMOID
+		WHERE a.MOID=#{MOID}
+	</select>
+	<select id="getWebLogicOperSituationInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="WebLogicOperSituationResultMap">
+		select
+		jmx.AlarmLevel,jvm.UpTime,snapMid.PerfValue useStatus,al.LevelIcon,jmx.UpdateAlarmTime,snapMid.CollectTime,e.DoIntervals,f.DoIntervals defDoIntervals
+		from MOMiddleWareJMX jmx left join AlarmLevel al on		jmx.AlarmLevel=al.AlarmLevelID
+		left join MOMiddleWareJVM jvm	on	jmx.MOID=jvm.ParentMOID
+		left join PerfSnapshotMiddleware snapMid	on	jmx.MOID=snapMid.MOID and	snapMid.KPIName=#{KPIserviceAvailability}
+		LEFT JOIN SysPerfPollTask d1 on jmx.MOID=d1.MOID AND d1.IsOffline is NULL AND (d1.Status!=-1 or d1.ProgressStatus!=5)and (d1.OperateStatus!=3 or d1.ProgressStatus!=5) 
+		LEFT JOIN SysPerfPollMonitors e on d1.TaskID=e.TaskID and e.MID=#{MID}
+		LEFT JOIN (select MOMiddleWareJMX.*,SysMOList.DoIntervals from MOMiddleWareJMX,SysMOList where MID=#{MID}) f on jmx.MOID=f.MOID
+		where jmx.MOID=#{MOID}
+	</select>
+	<select id="queryServerPerf" resultType="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJMSBean"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		formatTime,ConnectionsTotal,JMSServersTotal,ConnectionsCurrent,JMSServersHigh,JMSServersCurrent,ConnectionsHigh
+	  	 from PerfWebLogicJMS a,MOMiddleWareJMS b 
+		where b.ParentMOID=#{MOID} AND a.MOID=b.MOID
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>	
+		<!-- 获取内存曲线数据 -->
+	<select id="queryWebLogicMemoryPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWebLogicJVMHeapResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,heapUsage FROM
+		PerfWebLogicJVMHeap a,MOMiddleWareJVM b
+		where b.ParentMOID=${seltItem} AND a.MOID=b.MOID
+		and
+		CollectTime BETWEEN
+		${toDate(timeBegin)}
+		and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+  
+  <select id="getCurrMemUsage"  resultType="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJVMHeapBean"
+		parameterType="hashmap">
+	select a.heapSize,b.heapUsed,c.heapUsage FROM
+ (SELECT b.perfValue heapSize,a.MOID FROM MOMiddleWareJVM a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{heapSize}) a
+ left join (SELECT b.perfValue heapUsed,a.MOID FROM MOMiddleWareJVM a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{heapUsed}) b on a.MOID=b.MOID 
+left join (SELECT b.perfValue heapUsage,a.MOID FROM MOMiddleWareJVM a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{heapUsage}) c on b.MOID=c.MOID 
+	</select>
+	
+		<!-- 获取JDBC连接池详情 -->
+	<select id="getPerfJdbcPoolList" resultType="hashmap" resultMap="PerfWebLogicJDBCPoolResultMap"
+	 parameterType="hashmap">
+		SELECT
+		${dateFormat("CollectTime")} formatTime,ConnectionPoolUsage
+		from
+		PerfWebLogicJDBCPool
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+		<!-- 获取一条JDBC数据源详情 -->
+	<select id="getJdbcPoolDetailInfos" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWebLogicJDBCPoolResultMap">
+			select a.currCapacity,b.numAvailable,c.waitingForConnectionCurrent,d.leakedConnection,e.activeConnectionsCurrent,f.failuresToReconnect,g.connectionsTotal,h.connectionPoolUsage from 
+		(SELECT perfValue currCapacity,MOID FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{CurrConnections}) a 
+		left join 
+		(SELECT perfValue numAvailable,MOID  FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{AvailableSessions}) b on a.MOID=b.MOID
+		left join 
+		(SELECT perfValue waitingForConnectionCurrent ,MOID FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{CurrWaitingConnections}) c on b.MOID=c.MOID
+		left join 
+		(SELECT perfValue leakedConnection,MOID  FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{LeakedConnections}) d on c.MOID=d.MOID
+		left join 
+		(SELECT perfValue activeConnectionsCurrent,MOID  FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{CurrActiveConnections}) e on d.MOID=e.MOID
+	 left join 
+		(SELECT perfValue failuresToReconnect,MOID  FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{FailuresReconnect}) f on e.MOID=f.MOID
+	 left join 
+		(SELECT perfValue connectionsTotal,MOID  FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{TotalConnections}) g on f.MOID=g.MOID
+     left join 
+		(SELECT perfValue connectionPoolUsage ,MOID FROM PerfSnapshotMiddleware 	WHERE MOID=#{MOID} and KPIName=#{JDBCPoolUsage}) h on g.MOID=h.MOID
+	</select>
+	<!-- 获取线程曲线 -->
+	<select id="queryWebLogicThreadPoolPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWebLogicThreadPoolResultMap">
+		SELECT
+		${dateFormat("CollectTime")}
+		formatTime,ExecuteThreadTotal,ExecuteThreadIdle,PendingUserRequest,ThreadPoolUsage
+		FROM
+		PerfWebLogicThreadPool
+		where MOID=#{MOID}
+		and CollectTime between
+		${toDate(timeBegin)} and ${toDate(timeEnd)}
+		order by CollectTime
+	</select>
+	<!-- 获取内存池曲线数据?-->
+	<select id="queryWebLogicMemoryPoolPerf" parameterType="hashmap"
+		resultType="hashmap" resultMap="PerfWebLogicMemoryPoolResultMap">
+		select ${dateFormat("collectTime")}
+		formatTime,memoryUsage FROM
+		PerfWebLogicMemoryPool 
+		where MOID=${seltItem}
+		and
+		CollectTime BETWEEN ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by
+		CollectTime
+  </select>
+  <select id="queryJdbcPerf" resultType="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJDBCPoolBean"
+		parameterType="hashmap">
+		select ${dateFormat("CollectTime")}
+		formatTime,CurrCapacity,NumAvailable,WaitingForConnectionCurrent,LeakedConnection,ActiveConnectionsCurrent,FailuresToReconnect,ConnectionsTotal,ConnectionPoolUsage
+	   from PerfWebLogicJDBCPool
+		where MOID=#{MOID}
+		and CollectTime between ${toDate(timeBegin)} and
+		${toDate(timeEnd)}
+		order
+		by CollectTime
+	</select>
+	
+	  <select id="getJTAInfo" resultType="hashmap" resultMap="PerfWebLogicJTAResultMap" 
+		parameterType="hashmap">
+		select a.transHeuristicsTotal,b.transTwoPhaseTotal,c.jtaRolledBackResource,d.transOneResOnePhaseTotal,
+e.transRollBackAppTotal,f.transLLRCommitedTotal,g.jtaRolledBackTimeout,h.transReadOnePhaseTotal,i.transAbandonedTotal,
+j.activeTransTotal,k.transRollBackSysTotal
+,m.transRollBackTotal,n.transNoResCommittedTotal,o.transTotal,p.transCommittedTotal
+ FROM
+ (SELECT b.perfValue transHeuristicsTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaHeuristics}) a
+ left join (SELECT b.perfValue transTwoPhaseTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaTwoPhaseCommitted}) b on a.MOID=b.MOID 
+left join (SELECT b.perfValue jtaRolledBackResource,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaRolledBackResource}) c on b.MOID=c.MOID
+ left join (SELECT b.perfValue transOneResOnePhaseTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaOneResourceOnePhaseCommitted}) d on c.MOID=d.MOID 
+left join (SELECT b.perfValue transRollBackAppTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaRolledBackApp}) e on d.MOID=e.MOID
+ left join (SELECT b.perfValue transLLRCommitedTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaLLRCommitted}) f on e.MOID=f.MOID 
+left join (SELECT b.perfValue jtaRolledBackTimeout,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaRolledBackTimeout}) g on f.MOID=g.MOID
+  left join (SELECT b.perfValue transReadOnePhaseTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaReadOnlyOnePhaseCommitted}) h on g.MOID=h.MOID 
+left join (SELECT b.perfValue transAbandonedTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaAbandoned}) i on h.MOID=i.MOID
+  left join (SELECT b.perfValue activeTransTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaActive}) j on i.MOID=j.MOID 
+left join (SELECT b.perfValue transRollBackSysTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaRolledBackSystem}) k on j.MOID=k.MOID
+  left join (SELECT b.perfValue transRollBackTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaRolledBack}) m on k.MOID=m.MOID 
+left join (SELECT b.perfValue transNoResCommittedTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaNoResourcesCommitted}) n on m.MOID=n.MOID
+ left join (SELECT b.perfValue transTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaTotal}) o on n.MOID=o.MOID 
+left join (SELECT b.perfValue transCommittedTotal,a.MOID FROM MOMiddleWareJTA a,PerfSnapshotMiddleware b WHERE a.ParentMOID=#{MOID} AND a.MOID=b.MOID AND b.KPIName=#{JtaCommitted}) p on o.MOID=p.MOID
+	</select>
+	<select id="getPieInfo" resultType="com.fable.insightview.monitor.middleware.weblogic.entity.PerfWebLogicJTABean"
+		parameterType="java.lang.Integer">
+		SELECT a.* FROM PerfWebLogicJTA a,MOMiddleWareJTA b WHERE a.MOID=b.MOID AND b.ParentMOID=#{MOID}
+	</select>
+</mapper>
